@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Ks.Core;
 using Ks.Core.Domain.Common;
+using Ks.Core.Domain.Directory;
 
 namespace Ks.Services.Common
 {
@@ -28,7 +29,7 @@ namespace Ks.Services.Common
         public static Address FindAddress(this List<Address> source,
             string firstName, string lastName, string phoneNumber,
             string email, string faxNumber, string company, string address1,
-            string address2, string city, int? stateProvinceId,
+            string address2, int? cityId, int? stateProvinceId,
             string zipPostalCode, int? countryId, string customAttributes)
         {
             return source.Find(a => ((String.IsNullOrEmpty(a.FirstName) && String.IsNullOrEmpty(firstName)) || a.FirstName == firstName) &&
@@ -39,7 +40,7 @@ namespace Ks.Services.Common
                 ((String.IsNullOrEmpty(a.Company) && String.IsNullOrEmpty(company)) || a.Company == company) &&
                 ((String.IsNullOrEmpty(a.Address1) && String.IsNullOrEmpty(address1)) || a.Address1 == address1) &&
                 ((String.IsNullOrEmpty(a.Address2) && String.IsNullOrEmpty(address2)) || a.Address2 == address2) &&
-                ((String.IsNullOrEmpty(a.City) && String.IsNullOrEmpty(city)) || a.City == city) &&
+                ((a.CityId.IsNullOrDefault() && cityId.IsNullOrDefault()) || a.CityId == cityId) &&
                 ((a.StateProvinceId.IsNullOrDefault() && stateProvinceId.IsNullOrDefault()) || a.StateProvinceId == stateProvinceId) &&
                 ((String.IsNullOrEmpty(a.ZipPostalCode) && String.IsNullOrEmpty(zipPostalCode)) || a.ZipPostalCode == zipPostalCode) &&
                 ((a.CountryId.IsNullOrDefault() && countryId.IsNullOrDefault()) || a.CountryId == countryId) &&

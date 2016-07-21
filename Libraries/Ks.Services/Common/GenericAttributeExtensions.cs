@@ -29,10 +29,10 @@ namespace Ks.Services.Common
         /// <param name="entity">Entity</param>
         /// <param name="key">Key</param>
         /// <param name="genericAttributeService">GenericAttributeService</param>
-        /// <param name="storeId">Load a value specific for a certain store; pass 0 to load a value shared for all stores</param>
+        /// <param name="ksSystemId">Load a value specific for a certain ksSystemId; pass 0 to load a value shared for all system</param>
         /// <returns>Attribute</returns>
         public static TPropType GetAttribute<TPropType>(this BaseEntity entity,
-            string key, IGenericAttributeService genericAttributeService, int storeId = 0)
+            string key, IGenericAttributeService genericAttributeService, int ksSystemId = 0)
         {
             if (entity == null)
                 throw new ArgumentNullException("entity");
@@ -43,7 +43,7 @@ namespace Ks.Services.Common
             //little hack here (only for unit testing). we should write ecpect-return rules in unit tests for such cases
             if (props == null)
                 return default(TPropType);
-            props = props.Where(x => x.StoreId == storeId).ToList();
+            props = props.Where(x => x.KsSystemId == ksSystemId).ToList();
             if (props.Count == 0)
                 return default(TPropType);
 

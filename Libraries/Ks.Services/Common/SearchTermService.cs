@@ -64,15 +64,15 @@ namespace Ks.Services.Common
         /// Gets a search term record by keyword
         /// </summary>
         /// <param name="keyword">Search term keyword</param>
-        /// <param name="storeId">Store identifier</param>
+        /// <param name="ksSystemId">System identifier</param>
         /// <returns>Search term</returns>
-        public virtual SearchTerm GetSearchTermByKeyword(string keyword, int storeId)
+        public virtual SearchTerm GetSearchTermByKeyword(string keyword, int ksSystemId)
         {
             if (String.IsNullOrEmpty(keyword))
                 return null;
 
             var query = from st in _searchTermRepository.Table
-                        where st.Keyword == keyword && st.StoreId == storeId
+                        where st.Keyword == keyword && st.KsSystemId == ksSystemId
                         orderby st.Id
                         select st;
             var searchTerm = query.FirstOrDefault();

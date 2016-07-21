@@ -247,13 +247,15 @@ namespace Ks.Services.Common
                         var state = states.FirstOrDefault(x => x.Id == address.StateProvinceId.Value);
                         if (state == null)
                             return false;
+
+                        
                     }
                 }
             }
 
             if (_addressSettings.CityEnabled &&
                 _addressSettings.CityRequired &&
-                String.IsNullOrWhiteSpace(address.City))
+                address.CityId==null)
                 return false;
 
             if (_addressSettings.PhoneEnabled &&

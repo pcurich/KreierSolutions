@@ -4,7 +4,7 @@ using System.Web;
 using Ks.Core;
 using Ks.Core.Domain.Catalog;
 using Ks.Core.Html;
-using Ks.Services.Localization;
+//using Ks.Services.Localization;
 
 namespace Ks.Services.Common
 {
@@ -52,7 +52,7 @@ namespace Ks.Services.Common
                         if (attribute.AttributeControlType == AttributeControlType.MultilineTextbox)
                         {
                             //multiline textbox
-                            var attributeName = attribute.GetLocalized(a => a.Name, _workContext.WorkingLanguage.Id);
+                            var attributeName = attribute.Name;//.GetLocalized(a => a.Name, _workContext.WorkingLanguage.Id);
                             //encode (if required)
                             if (htmlEncode)
                                 attributeName = HttpUtility.HtmlEncode(attributeName);
@@ -67,7 +67,8 @@ namespace Ks.Services.Common
                         else
                         {
                             //other attributes (textbox, datepicker)
-                            formattedAttribute = string.Format("{0}: {1}", attribute.GetLocalized(a => a.Name, _workContext.WorkingLanguage.Id), valueStr);
+                            //formattedAttribute = string.Format("{0}: {1}", attribute.GetLocalized(a => a.Name, _workContext.WorkingLanguage.Id), valueStr);
+                            formattedAttribute = string.Format("{0}: {1}", attribute.Name, valueStr);
                             //encode (if required)
                             if (htmlEncode)
                                 formattedAttribute = HttpUtility.HtmlEncode(formattedAttribute);
@@ -81,7 +82,8 @@ namespace Ks.Services.Common
                             var attributeValue = _addressAttributeService.GetAddressAttributeValueById(attributeValueId);
                             if (attributeValue != null)
                             {
-                                formattedAttribute = string.Format("{0}: {1}", attribute.GetLocalized(a => a.Name, _workContext.WorkingLanguage.Id), attributeValue.GetLocalized(a => a.Name, _workContext.WorkingLanguage.Id));
+                                //formattedAttribute = string.Format("{0}: {1}", attribute.GetLocalized(a => a.Name, _workContext.WorkingLanguage.Id), attributeValue.GetLocalized(a => a.Name, _workContext.WorkingLanguage.Id));
+                                formattedAttribute = string.Format("{0}: {1}", attribute.Name, attributeValue.Name);
                             }
                             //encode (if required)
                             if (htmlEncode)

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Xml;
 using Ks.Core.Domain.Common;
-using Ks.Services.Localization;
+//using Ks.Services.Localization;
 
 namespace Ks.Services.Common
 {
@@ -13,13 +13,12 @@ namespace Ks.Services.Common
     public partial class AddressAttributeParser : IAddressAttributeParser
     {
         private readonly IAddressAttributeService _addressAttributeService;
-        private readonly ILocalizationService _localizationService;
+        //private readonly ILocalizationService _localizationService;
 
-        public AddressAttributeParser(IAddressAttributeService addressAttributeService,
-            ILocalizationService localizationService)
+        public AddressAttributeParser(IAddressAttributeService addressAttributeService)
         {
             this._addressAttributeService = addressAttributeService;
-            this._localizationService = localizationService;
+            //this._localizationService = localizationService;
         }
 
         /// <summary>
@@ -260,7 +259,8 @@ namespace Ks.Services.Common
                     //if not found
                     if (!found)
                     {
-                        var notFoundWarning = string.Format(_localizationService.GetResource("ShoppingCart.SelectAttribute"), a2.GetLocalized(a => a.Name));
+                        //var notFoundWarning = string.Format(_localizationService.GetResource("ShoppingCart.SelectAttribute"), a2.GetLocalized(a => a.Name));
+                        var notFoundWarning = string.Format("Por favor seleccione un atributo");
 
                         warnings.Add(notFoundWarning);
                     }

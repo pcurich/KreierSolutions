@@ -123,13 +123,34 @@
     <Compile Include="Common\IFulltextService.cs" />
     <Compile Include="Common\IGenericAttributeService.cs" />
     <Compile Include="Common\IMaintenanceService.cs" />
-    <Compile Include="Common\IMiscPlugin.cs" />
-    <Compile Include="Common\IPdfService.cs" />
     <Compile Include="Common\ISearchTermService.cs" />
     <Compile Include="Common\KeepAliveTask.cs" />
     <Compile Include="Common\MaintenanceService.cs" />
-    <Compile Include="Common\PdfService.cs" />
     <Compile Include="Common\SearchTermService.cs" />
+    <Compile Include="Directory\CityService.cs" />
+    <Compile Include="Directory\CountryService.cs" />
+    <Compile Include="Directory\CurrencyService.cs" />
+    <Compile Include="Directory\GeoLookupService.cs" />
+    <Compile Include="Directory\ICityService.cs" />
+    <Compile Include="Directory\ICountryService.cs" />
+    <Compile Include="Directory\ICurrencyService.cs" />
+    <Compile Include="Directory\IExchangeRateProvider.cs" />
+    <Compile Include="Directory\IGeoLookupService.cs" />
+    <Compile Include="Directory\IMeasureService.cs" />
+    <Compile Include="Directory\IStateProvinceService.cs" />
+    <Compile Include="Directory\MeasureService.cs" />
+    <Compile Include="Directory\StateProvinceService.cs" />
+    <Compile Include="Directory\UpdateExchangeRateTask.cs" />
+    <Compile Include="Events\EventPublisher.cs" />
+    <Compile Include="Events\EventPublisherExtensions.cs" />
+    <Compile Include="Events\IConsumer.cs" />
+    <Compile Include="Events\IEventPublisher.cs" />
+    <Compile Include="Events\ISubscriptionService.cs" />
+    <Compile Include="Events\SubscriptionService.cs" />
+    <Compile Include="Helpers\DateTimeHelper.cs" />
+    <Compile Include="Helpers\DateTimeSettings.cs" />
+    <Compile Include="Helpers\IDateTimeHelper.cs" />
+    <Compile Include="Helpers\IUserAgentHelper.cs" />
     <Compile Include="Infrastructure\AzureWebsitesMachineNameProvider.cs" />
     <Compile Include="Infrastructure\DefaultMachineNameProvider.cs" />
     <Compile Include="Infrastructure\IMachineNameProvider.cs" />
@@ -161,6 +182,9 @@
       <Project>{9862C2A7-E5AD-46E4-9819-557156CC0385}</Project>
       <Name>Ks.Data</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Configuration\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
