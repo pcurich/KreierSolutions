@@ -88,6 +88,11 @@ namespace Ks.Core.Domain.Customers
         /// Gets or sets a value indicating the number of minutes for 'online customers' module
         /// </summary>
         public int OnlineCustomerMinutes { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating we should kssystem last visited page URL for each customer
+        /// </summary>
+        public bool KsSystemLastVisitedPage { get; set; }
  
         /// <summary>
         /// Gets or sets a value indicating whether deleted customer records should be prefixed suffixed with "-DELETED"

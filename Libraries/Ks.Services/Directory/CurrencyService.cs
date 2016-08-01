@@ -118,9 +118,9 @@ namespace Ks.Services.Directory
         /// Gets all currencies
         /// </summary>
         /// <param name="showHidden">A value indicating whether to show hidden records</param>
-        /// <param name="storeId">Load records allowed only in a specified store; pass 0 to load all records</param>
+        /// <param name="ksSystemId">Load records allowed only in a specified ksSystem; pass 0 to load all records</param>
         /// <returns>Currencies</returns>
-        public virtual IList<Currency> GetAllCurrencies(bool showHidden = false )
+        public virtual IList<Currency> GetAllCurrencies(bool showHidden = false, int ksSystemId=0 )
         {
             string key = string.Format(CURRENCIES_ALL_KEY, showHidden);
             var currencies = _cacheManager.Get(key, () =>

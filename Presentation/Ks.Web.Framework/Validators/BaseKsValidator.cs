@@ -1,4 +1,6 @@
-﻿namespace Ks.Web.Framework.Validators
+﻿using FluentValidation;
+
+namespace Ks.Web.Framework.Validators
 {
     public abstract class BaseKsValidator<T> : AbstractValidator<T> where T : class
     {

@@ -45,7 +45,7 @@ namespace Ks.Core.Domain.Directory
         public virtual ICollection<City> Cities
         {
             get { return _cities ?? (_cities = new List<City>()); }
-            protected set { _cities = value; }
+            set { _cities = value; }
         }
     }
 

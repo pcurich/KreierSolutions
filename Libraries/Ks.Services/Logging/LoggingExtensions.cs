@@ -6,7 +6,7 @@ namespace Ks.Services.Logging
 {
     public static class LoggingExtensions
     {
-        public static void Debug(this ILogger logger, string message, Exception exception = null, Customer customer = null)
+        public static void Debug(this ILogger logger, string message, Exception exception = null,Customer customer = null)
         {
             FilteredLog(logger, LogLevel.Debug, message, exception, customer);
         }

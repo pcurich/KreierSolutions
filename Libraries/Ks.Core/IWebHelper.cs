@@ -39,7 +39,7 @@ namespace Ks.Core
         /// </summary>
         /// <returns>true - secured, false - not secured</returns>
         bool IsCurrentConnectionSecured();
-        
+
         /// <summary>
         /// Gets server variable by name
         /// </summary>
@@ -84,7 +84,7 @@ namespace Ks.Core
         /// .ashx
         /// </remarks>
         bool IsStaticResource(HttpRequest request);
-        
+
         /// <summary>
         /// Maps a virtual path to a physical disk path.
         /// </summary>
@@ -109,7 +109,7 @@ namespace Ks.Core
         /// <param name="queryString">Query string to remove</param>
         /// <returns>New url</returns>
         string RemoveQueryString(string url, string queryString);
-        
+
         /// <summary>
         /// Gets query string value by name
         /// </summary>
@@ -124,7 +124,7 @@ namespace Ks.Core
         /// <param name="makeRedirect">A value indicating whether we should made redirection after restart</param>
         /// <param name="redirectUrl">Redirect URL; empty string if you want to redirect to the current page URL</param>
         void RestartAppDomain(bool makeRedirect = false, string redirectUrl = "");
-        
+
         /// <summary>
         /// Gets a value that indicates whether the client is being redirected to a new location
         /// </summary>

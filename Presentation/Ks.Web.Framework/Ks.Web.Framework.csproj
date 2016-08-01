@@ -33,16 +33,66 @@
     <Reference Include="Autofac">
       <HintPath>..\..\packages\Autofac.3.5.2\lib\net40\Autofac.dll</HintPath>
     </Reference>
+    <Reference Include="Autofac.Integration.Mvc, Version=3.3.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Autofac.Mvc5.3.3.4\lib\net45\Autofac.Integration.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="FluentValidation">
+      <HintPath>..\..\packages\FluentValidation.6.2.1.0\lib\Net45\FluentValidation.dll</HintPath>
+    </Reference>
+    <Reference Include="FluentValidation.Mvc">
+      <HintPath>..\..\packages\FluentValidation.MVC5.6.2.1.0\lib\Net45\FluentValidation.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Recaptcha">
+      <HintPath>..\..\packages\recaptcha.1.0.5.0\lib\.NetFramework 4.0\Recaptcha.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization">
+      <HintPath>..\..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -51,7 +101,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\AdminAuthorizeAttribute.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\FormValueRequiredAttribute.cs" />
+    <Compile Include="Controllers\ParameterBasedOnFormNameAndValueAttribute.cs" />
+    <Compile Include="Controllers\ParameterBasedOnFormNameAttribute.cs" />
+    <Compile Include="CustomerLastActivity.cs" />
+    <Compile Include="DependencyRegistrar.cs" />
     <Compile Include="Events\AdminTabStripCreated.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="HtmlExtensions.cs" />
     <Compile Include="Kendoui\DataSourceRequest.cs" />
     <Compile Include="Kendoui\DataSourceResult.cs" />
     <Compile Include="Kendoui\Dynamic.cs" />
@@ -59,6 +118,18 @@
     <Compile Include="Kendoui\ModelStateExtensions.cs" />
     <Compile Include="Kendoui\QueryableExtensions.cs" />
     <Compile Include="Kendoui\Sort.cs" />
+    <Compile Include="KsResourceDisplayName.cs" />
+    <Compile Include="KsSystemIpAddressAttribute.cs" />
+    <Compile Include="KsValidatorFactory.cs" />
+    <Compile Include="LanguageSeoCodeAttribute.cs" />
+    <Compile Include="KsSystemLastVisitedPageAttribute.cs" />
+    <Compile Include="Localization\ILocalizedModel.cs" />
+    <Compile Include="Localization\ILocalizedModelLocal.cs" />
+    <Compile Include="Localization\LocalizedRoute.cs" />
+    <Compile Include="Localization\LocalizedRouteExtensions.cs" />
+    <Compile Include="Localization\LocalizedString.cs" />
+    <Compile Include="Localization\LocalizedUrlExtenstions.cs" />
+    <Compile Include="Localization\Localizer.cs" />
     <Compile Include="Menu\SiteMapNode.cs" />
     <Compile Include="Menu\XmlSiteMap.cs" />
     <Compile Include="Mvc\BaseKsModel.cs" />
@@ -75,14 +146,61 @@
     <Compile Include="Mvc\Routes\RoutePublisher.cs" />
     <Compile Include="Mvc\XmlDownloadResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PublicKsSystemAllowNavigationAttribute.cs" />
+    <Compile Include="PublicSystemAllowNavigationAttribut.cs" />
+    <Compile Include="RemotePost.cs" />
+    <Compile Include="RssActionResult.cs" />
+    <Compile Include="Security\AdminAntiForgeryAttribute.cs" />
+    <Compile Include="Security\AdminValidateIpAddressAttribute.cs" />
+    <Compile Include="Security\Captcha\CaptchaSettings.cs" />
+    <Compile Include="Security\Captcha\CaptchaValidatorAttribute.cs" />
+    <Compile Include="Security\Captcha\HtmlExtensions.cs" />
+    <Compile Include="Security\FilePermissionHelper.cs" />
+    <Compile Include="Security\Honeypot\HoneypotValidatorAttribute.cs" />
+    <Compile Include="Security\Honeypot\HtmlExtensions.cs" />
+    <Compile Include="Security\KsHttpsRequirementAttribute.cs" />
+    <Compile Include="Security\PublicAntiForgeryAttribute.cs" />
+    <Compile Include="Security\SslRequirement.cs" />
+    <Compile Include="Seo\CustomUrlRecordEntityNameRequested.cs" />
+    <Compile Include="Seo\GenericPathRoute.cs" />
+    <Compile Include="Seo\GenericPathRouteExtensions.cs" />
+    <Compile Include="Seo\WwwRequirementAttribute.cs" />
+    <Compile Include="Themes\IThemeContext.cs" />
+    <Compile Include="Themes\IThemeProvider.cs" />
+    <Compile Include="Themes\ThemeableRazorViewEngine.cs" />
+    <Compile Include="Themes\ThemeableVirtualPathProviderViewEngine.cs" />
+    <Compile Include="Themes\ThemeConfiguration.cs" />
+    <Compile Include="Themes\ThemeContext.cs" />
+    <Compile Include="Themes\ThemeProvider.cs" />
+    <Compile Include="UI\AsIsBundleOrderer.cs" />
+    <Compile Include="UI\DataListExtensions.cs" />
+    <Compile Include="UI\IPageHeadBuilder.cs" />
+    <Compile Include="UI\LayoutExtensions.cs" />
+    <Compile Include="UI\NotifyType.cs" />
+    <Compile Include="UI\PageHeadBuilder.cs" />
+    <Compile Include="UI\Paging\BasePageableModel.cs" />
+    <Compile Include="UI\Paging\IPageableModel.cs" />
+    <Compile Include="UI\Paging\Pager.cs" />
+    <Compile Include="UI\ResourceLocation.cs" />
+    <Compile Include="UrlHelperExtensions.cs" />
+    <Compile Include="Validators\BaseKsValidator.cs" />
+    <Compile Include="ViewEngines\Razor\WebViewPage.cs" />
+    <Compile Include="WebKsSystemContext.cs" />
+    <Compile Include="WebWorkContext.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\..\Libraries\Ks.Core\Ks.Core.csproj">
       <Project>{6541E843-3FDA-4C0D-B6C1-4EB7F2BEC43B}</Project>
       <Name>Ks.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\Ks.Data\Ks.Data.csproj">
+      <Project>{9862C2A7-E5AD-46E4-9819-557156CC0385}</Project>
+      <Name>Ks.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\Ks.Services\Ks.Services.csproj">
+      <Project>{76034A15-E53D-4CE7-935C-598E58F60CBE}</Project>
+      <Name>Ks.Services</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -44,8 +44,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="StackExchange.Redis">
-      <HintPath>..\..\packages\StackExchange.Redis.1.1.603\lib\net45\StackExchange.Redis.dll</HintPath>
+    <Reference Include="StackExchange.Redis.StrongName">
+      <HintPath>..\..\packages\StackExchange.Redis.StrongName.1.1.603\lib\net45\StackExchange.Redis.StrongName.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -115,6 +115,7 @@
     <Compile Include="Domain\Common\GenericAttribute.cs" />
     <Compile Include="Domain\Common\SearchTerm.cs" />
     <Compile Include="Domain\Common\SearchTermReportLine.cs" />
+    <Compile Include="Domain\Configuration\Setting.cs" />
     <Compile Include="Domain\Customers\Customer.cs" />
     <Compile Include="Domain\Customers\CustomerAttribute.cs" />
     <Compile Include="Domain\Customers\CustomerAttributeValue.cs" />
@@ -140,6 +141,13 @@
     <Compile Include="Domain\Directory\MeasureSettings.cs" />
     <Compile Include="Domain\Directory\MeasureWeight.cs" />
     <Compile Include="Domain\Directory\StateProvince.cs" />
+    <Compile Include="Domain\KsSystemInformationSettings.cs" />
+    <Compile Include="Domain\Localization\ILocalizedEntity.cs" />
+    <Compile Include="Domain\Localization\ILocalizedEnum.cs" />
+    <Compile Include="Domain\Localization\Language.cs" />
+    <Compile Include="Domain\Localization\LocaleStringResource.cs" />
+    <Compile Include="Domain\Localization\LocalizationSettings.cs" />
+    <Compile Include="Domain\Localization\LocalizedProperty.cs" />
     <Compile Include="Domain\Logging\ActivityLog.cs" />
     <Compile Include="Domain\Logging\ActivityLogType.cs" />
     <Compile Include="Domain\Logging\Log.cs" />
@@ -148,11 +156,20 @@
     <Compile Include="Domain\Media\MediaSettings.cs" />
     <Compile Include="Domain\Media\Picture.cs" />
     <Compile Include="Domain\Media\PictureType.cs" />
+    <Compile Include="Domain\Messages\EmailAccount.cs" />
+    <Compile Include="Domain\Messages\MessageTemplate.cs" />
+    <Compile Include="Domain\Messages\QueuedEmail.cs" />
+    <Compile Include="Domain\Messages\QueuedEmailPriority.cs" />
     <Compile Include="Domain\Security\AclRecord.cs" />
     <Compile Include="Domain\Security\DefaultPermissionRecord.cs" />
     <Compile Include="Domain\Security\IAclSupported.cs" />
     <Compile Include="Domain\Security\PermissionRecord.cs" />
     <Compile Include="Domain\Security\SecuritySettings.cs" />
+    <Compile Include="Domain\Seo\ISlugSupported.cs" />
+    <Compile Include="Domain\Seo\PageTitleSeoAdjustment.cs" />
+    <Compile Include="Domain\Seo\SeoSettings.cs" />
+    <Compile Include="Domain\Seo\UrlRecord.cs" />
+    <Compile Include="Domain\Seo\WwwRequirement.cs" />
     <Compile Include="Domain\System\KsSystem.cs" />
     <Compile Include="Domain\System\KsSystemExtensions.cs" />
     <Compile Include="Domain\Tasks\ScheduleTask.cs" />

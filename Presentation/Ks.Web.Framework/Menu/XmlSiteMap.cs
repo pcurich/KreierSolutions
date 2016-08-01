@@ -3,14 +3,9 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Web.Routing;
 using System.Xml;
 using Ks.Core;
 using Ks.Core.Infrastructure;
-using Ks.Web.Framework.Menu;
-using Ks.Core;
-using Ks.Core.Infrastructure;
-using Ks.Services.Localization;
 using Ks.Services.Security;
 
 namespace Ks.Web.Framework.Menu
@@ -79,20 +74,19 @@ namespace Ks.Web.Framework.Menu
 
             //title
             var nopResource = GetStringValueFromAttribute(xmlNode, "nopResource");
-            var localizationService = EngineContext.Current.Resolve<ILocalizationService>();
-            siteMapNode.Title = localizationService.GetResource(nopResource);
+            siteMapNode.Title = (nopResource);
 
             //routes, url
             string controllerName = GetStringValueFromAttribute(xmlNode, "controller");
             string actionName = GetStringValueFromAttribute(xmlNode, "action");
-            string url = GetStringValueFromAttribute(xmlNode,  "url");
+            string url = GetStringValueFromAttribute(xmlNode, "url");
             if (!string.IsNullOrEmpty(controllerName) && !string.IsNullOrEmpty(actionName))
             {
                 siteMapNode.ControllerName = controllerName;
                 siteMapNode.ActionName = actionName;
 
                 //apply admin area as described here - http://www.nopcommerce.com/boards/t/20478/broken-menus-in-admin-area-whilst-trying-to-make-a-plugin-admin-page.aspx
-                siteMapNode.RouteValues = new RouteValueDictionary { {"area", "Admin"} };
+                //siteMapNode.RouteValues = new RouteValueDictionary { { "area", "Admin" } };
             }
             else if (!string.IsNullOrEmpty(url))
             {
@@ -107,7 +101,7 @@ namespace Ks.Web.Framework.Menu
             if (!string.IsNullOrEmpty(permissionNames))
             {
                 var permissionService = EngineContext.Current.Resolve<IPermissionService>();
-                siteMapNode.Visible = permissionNames.Split(new [] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                siteMapNode.Visible = permissionNames.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                    .Any(permissionName => permissionService.Authorize(permissionName.Trim()));
             }
             else

@@ -1,0 +1,22 @@
+﻿@{
+    Layout = "~/Views/Shared/_ColumnsOne.cshtml";
+    Html.AddTitleParts("Paguina no encontrada");
+}
+
+<h2>PageNotFound</h2>
+
+<div class="page not-found-page">
+    <div class="page-title">
+        <h1>Paguina no encontrada</h1>
+    </div>
+    <div class="page-body">
+        @*@Html.Action("TopicBlock", "Topic", new { systemName = "PageNotFound" })*@
+        <p>
+            <strong>La página solicitada no se encuentra disponible debido a una de las siguientes razones</strong>
+        </p><ul>
+            <li>Si escribió la URL directamente, por favor asegúrese de que la ortografía es la correcta.</li>
+            <li>La página ya no existe. En este caso, profusamente disculpas por las molestias y de los perjuicios que esto pueda causar</li>
+        </ul>
+
+    </div>
+</div>

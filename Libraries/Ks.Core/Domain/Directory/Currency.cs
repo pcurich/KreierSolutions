@@ -1,11 +1,12 @@
 using System;
+using Ks.Core.Domain.Localization;
 
 namespace Ks.Core.Domain.Directory
 {
     /// <summary>
     /// Represents a currency
     /// </summary>
-    public partial class Currency : BaseEntity
+    public partial class Currency : BaseEntity, ILocalizedEntity
     {
         /// <summary>
         /// Gets or sets the name

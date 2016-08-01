@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Routing;
 using Ks.Core.Infrastructure;
-using Ks.Core.Plugins;
 
 namespace Ks.Web.Framework.Mvc.Routes
 {
@@ -28,22 +27,22 @@ namespace Ks.Web.Framework.Mvc.Routes
         /// </summary>
         /// <param name="providerType">Provider type</param>
         /// <returns>Plugin descriptor</returns>
-        protected virtual PluginDescriptor FindPlugin(Type providerType)
-        {
-            if (providerType == null)
-                throw new ArgumentNullException("providerType");
+        //protected virtual PluginDescriptor FindPlugin(Type providerType)
+        //{
+        //    if (providerType == null)
+        //        throw new ArgumentNullException("providerType");
 
-            foreach (var plugin in PluginManager.ReferencedPlugins)
-            {
-                if (plugin.ReferencedAssembly == null)
-                    continue;
+        //    foreach (var plugin in PluginManager.ReferencedPlugins)
+        //    {
+        //        if (plugin.ReferencedAssembly == null)
+        //            continue;
 
-                if (plugin.ReferencedAssembly.FullName == providerType.Assembly.FullName)
-                    return plugin;
-            }
+        //        if (plugin.ReferencedAssembly.FullName == providerType.Assembly.FullName)
+        //            return plugin;
+        //    }
 
-            return null;
-        }
+        //    return null;
+        //}
 
         /// <summary>
         /// Register routes
@@ -56,9 +55,9 @@ namespace Ks.Web.Framework.Mvc.Routes
             foreach (var providerType in routeProviderTypes)
             {
                 //Ignore not installed plugins
-                var plugin = FindPlugin(providerType);
-                if (plugin != null && !plugin.Installed)
-                    continue;
+                //var plugin = FindPlugin(providerType);
+                //if (plugin != null && !plugin.Installed)
+                //    continue;
 
                 var provider = Activator.CreateInstance(providerType) as IRouteProvider;
                 routeProviders.Add(provider);

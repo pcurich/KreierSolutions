@@ -74,6 +74,7 @@
     <Compile Include="Mapping\Common\AddressMap.cs" />
     <Compile Include="Mapping\Common\GenericAttributeMap.cs" />
     <Compile Include="Mapping\Common\SearchTermMap.cs" />
+    <Compile Include="Mapping\Configuration\SettingMap.cs" />
     <Compile Include="Mapping\Customers\CustomerAttributeMap.cs" />
     <Compile Include="Mapping\Customers\CustomerAttributeValueMap.cs" />
     <Compile Include="Mapping\Customers\CustomerMap.cs" />
@@ -87,11 +88,17 @@
     <Compile Include="Mapping\Directory\StateProvinceMap.cs" />
     <Compile Include="Mapping\KsEntityTypeConfiguration.cs" />
     <Compile Include="KsObjectContext.cs" />
+    <Compile Include="Mapping\Localization\LanguageMap.cs" />
+    <Compile Include="Mapping\Localization\LocaleStringResourceMap.cs" />
+    <Compile Include="Mapping\Localization\LocalizedPropertyMap.cs" />
     <Compile Include="Mapping\Logging\ActivityLogMap.cs" />
     <Compile Include="Mapping\Logging\ActivityLogTypeMap.cs" />
     <Compile Include="Mapping\Logging\LogMap.cs" />
     <Compile Include="Mapping\Media\DownloadMap.cs" />
     <Compile Include="Mapping\Media\PictureMap.cs" />
+    <Compile Include="Mapping\Messages\EmailAccountMap.cs" />
+    <Compile Include="Mapping\Messages\MessageTemplateMap.cs" />
+    <Compile Include="Mapping\Messages\QueuedEmailMap.cs" />
     <Compile Include="Mapping\Security\AclRecordMap.cs" />
     <Compile Include="Mapping\Security\PermissionRecordMap.cs" />
     <Compile Include="Mapping\System\KsSystemMap.cs" />

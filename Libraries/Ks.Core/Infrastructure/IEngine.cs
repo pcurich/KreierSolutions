@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Web.Mvc;
 using Ks.Core.Configuration;
 using Ks.Core.Infrastructure.DependencyManagement;
 

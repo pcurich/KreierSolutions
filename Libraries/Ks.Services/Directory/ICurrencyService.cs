@@ -32,8 +32,9 @@ namespace Ks.Services.Directory
         /// Gets all currencies
         /// </summary>
         /// <param name="showHidden">A value indicating whether to show hidden records</param>
+        /// <param name="ksSystemId">Load records allowed only in a specified ksSystem; pass 0 to load all records</param>
         /// <returns>Currencies</returns>
-        IList<Currency> GetAllCurrencies(bool showHidden = false);
+        IList<Currency> GetAllCurrencies(bool showHidden = false,int ksSystemId = 0);
 
         /// <summary>
         /// Inserts a currency

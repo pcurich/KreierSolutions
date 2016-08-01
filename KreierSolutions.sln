@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ks.Web", "Presentation\Ks.W
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ks.Web.Framework", "Presentation\Ks.Web.Framework\Ks.Web.Framework.csproj", "{4AC80531-7AD1-4A34-A025-B1578EF1B895}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ks.Admin", "Presentation\Ks.Web\Administration\Ks.Admin.csproj", "{F4DFC8E4-488E-47EA-8BF8-C12FE27D9B76}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,10 @@ Global
 		{4AC80531-7AD1-4A34-A025-B1578EF1B895}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4AC80531-7AD1-4A34-A025-B1578EF1B895}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4AC80531-7AD1-4A34-A025-B1578EF1B895}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4DFC8E4-488E-47EA-8BF8-C12FE27D9B76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4DFC8E4-488E-47EA-8BF8-C12FE27D9B76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4DFC8E4-488E-47EA-8BF8-C12FE27D9B76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4DFC8E4-488E-47EA-8BF8-C12FE27D9B76}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -53,5 +59,6 @@ Global
 		{76034A15-E53D-4CE7-935C-598E58F60CBE} = {5D04F66B-9776-4482-A3F0-C3F73E40BFC4}
 		{89811FA9-B7AE-4D21-94CB-48D343B383FB} = {E22A7556-C753-4F41-A71B-FB847FE4E84C}
 		{4AC80531-7AD1-4A34-A025-B1578EF1B895} = {E22A7556-C753-4F41-A71B-FB847FE4E84C}
+		{F4DFC8E4-488E-47EA-8BF8-C12FE27D9B76} = {E22A7556-C753-4F41-A71B-FB847FE4E84C}
 	EndGlobalSection
 EndGlobal

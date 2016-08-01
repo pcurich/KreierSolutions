@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using Ks.Core.Domain.Catalog;
+using Ks.Core.Domain.Localization;
 
 namespace Ks.Core.Domain.Customers
 {
     /// <summary>
     /// Represents a customer attribute
     /// </summary>
-    public partial class CustomerAttribute : BaseEntity
+    public partial class CustomerAttribute : BaseEntity, ILocalizedEntity
     {
         private ICollection<CustomerAttributeValue> _customerAttributeValues;
 

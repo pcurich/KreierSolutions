@@ -1,0 +1,10 @@
+﻿@model AdminHeaderLinksModel
+@using Ks.Web.Models.Common;
+<div class="admin-header-links">
+    @if (Model.DisplayAdminLink)
+    {
+        <a href="@Url.Content("~/admin")" class="administration">@T("Account.Administration")</a>
+    }
+</div>
+
+
