@@ -1,0 +1,29 @@
+﻿@{
+    //resources
+    Html.AppendScriptParts("~/Scripts/jquery-1.10.2.min.js");
+}
+<!DOCTYPE html>
+<html @Html.Partial("LanguageAttributes")>
+<head>
+    <title>@Html.KsTitle(true)</title>
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+    <meta name="description" content="@(Html.KsMetaDescription())" />
+    <meta name="keywords" content="@(Html.KsMetaKeywords())" />
+    @Html.KsHeadCustom()
+    @*This is used so that themes can inject content into the header*@
+    @Html.Partial("Head")
+    @Html.KsCssFiles(this.Url, ResourceLocation.Head)
+    @Html.KsScripts(this.Url, ResourceLocation.Head)
+    @Html.KsCanonicalUrls()
+    @*Favicon - upload favicon.ico file to the root directory*@
+    @Html.Action("Favicon", "Common")
+ 
+</head>
+<body class="popup-window">
+    
+    @RenderBody()
+     
+    @Html.KsCssFiles(this.Url, ResourceLocation.Foot)
+    @Html.KsScripts(this.Url, ResourceLocation.Foot)
+</body>
+</html>

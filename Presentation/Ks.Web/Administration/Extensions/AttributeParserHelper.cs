@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Web.Mvc;
 using Ks.Core.Domain.Catalog;
 using Ks.Services.Common;
