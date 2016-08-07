@@ -17,9 +17,10 @@ namespace Ks.Services.Directory
         /// <summary>
         /// Gets all countries
         /// </summary>
+        /// <param name="languageId">Language identifier. It's used to sort countries by localized names (if specified); pass 0 to skip it</param>
         /// <param name="showHidden">A value indicating whether to show hidden records</param>
         /// <returns>Countries</returns>
-        IList<Country> GetAllCountries( bool showHidden = false);
+        IList<Country> GetAllCountries(int languageId = 0, bool showHidden = false);
 
 
         /// <summary>

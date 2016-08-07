@@ -1,9 +1,11 @@
+using Ks.Core.Domain.Localization;
+
 namespace Ks.Core.Domain.Common
 {
     /// <summary>
     /// Represents an address attribute value
     /// </summary>
-    public partial class AddressAttributeValue : BaseEntity
+    public partial class AddressAttributeValue : BaseEntity, ILocalizedEntity
     {
         /// <summary>
         /// Gets or sets the address attribute identifier

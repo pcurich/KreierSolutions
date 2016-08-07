@@ -5,6 +5,7 @@ using Ks.Core.Caching;
 using Ks.Core.Data;
 using Ks.Core.Domain.Directory;
 using Ks.Services.Events;
+using Ks.Services.Localization;
 
 namespace Ks.Services.Directory
 {
@@ -38,9 +39,10 @@ namespace Ks.Services.Directory
         ///     Key for caching
         /// </summary>
         /// <remarks>
-        ///     {0} : show hidden records?
+        /// {0} : language ID
+        /// {1} : show hidden records?
         /// </remarks>
-        private const string COUNTRIES_ALL_KEY = "Ks.country.all-{0}";
+        private const string COUNTRIES_ALL_KEY = "Ks.country.all-{0}-{1}";
 
         /// <summary>
         ///     Key pattern to clear cache
@@ -77,13 +79,14 @@ namespace Ks.Services.Directory
         }
 
         /// <summary>
-        ///     Gets all countries
+        /// Gets all countries
         /// </summary>
+        /// <param name="languageId">Language identifier. It's used to sort countries by localized names (if specified); pass 0 to skip it</param>
         /// <param name="showHidden">A value indicating whether to show hidden records</param>
         /// <returns>Countries</returns>
-        public virtual IList<Country> GetAllCountries(bool showHidden = false)
+        public virtual IList<Country> GetAllCountries(int languageId = 0, bool showHidden = false)
         {
-            var key = string.Format(COUNTRIES_ALL_KEY, showHidden);
+            string key = string.Format(COUNTRIES_ALL_KEY, languageId, showHidden);
             return _cacheManager.Get(key, () =>
             {
                 var query = _countryRepository.Table;
@@ -91,7 +94,17 @@ namespace Ks.Services.Directory
                     query = query.Where(c => c.Published);
                 query = query.OrderBy(c => c.DisplayOrder).ThenBy(c => c.Name);
                 var countries = query.ToList();
+
+                if (languageId > 0)
+                {
+                    //we should sort countries by localized names when they have the same display order
+                    countries = countries
+                        .OrderBy(c => c.DisplayOrder)
+                        .ThenBy(c => c.GetLocalized(x => x.Name, languageId))
+                        .ToList();
+                }
                 return countries;
+
             });
         }
 
@@ -120,8 +133,8 @@ namespace Ks.Services.Directory
                 return new List<Country>();
 
             var query = from c in _countryRepository.Table
-                where countryIds.Contains(c.Id)
-                select c;
+                        where countryIds.Contains(c.Id)
+                        select c;
             var countries = query.ToList();
             //sort by passed identifiers
             var sortedCountries = new List<Country>();
@@ -145,8 +158,8 @@ namespace Ks.Services.Directory
                 return null;
 
             var query = from c in _countryRepository.Table
-                where c.TwoLetterIsoCode == twoLetterIsoCode
-                select c;
+                        where c.TwoLetterIsoCode == twoLetterIsoCode
+                        select c;
             var country = query.FirstOrDefault();
             return country;
         }
@@ -162,8 +175,8 @@ namespace Ks.Services.Directory
                 return null;
 
             var query = from c in _countryRepository.Table
-                where c.ThreeLetterIsoCode == threeLetterIsoCode
-                select c;
+                        where c.ThreeLetterIsoCode == threeLetterIsoCode
+                        select c;
             var country = query.FirstOrDefault();
             return country;
         }

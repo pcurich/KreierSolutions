@@ -1,11 +1,12 @@
 using System.Collections.Generic;
+using Ks.Core.Domain.Localization;
 
 namespace Ks.Core.Domain.Directory
 {
     /// <summary>
     /// Represents a country
     /// </summary>
-    public partial class Country : BaseEntity
+    public partial class Country : BaseEntity, ILocalizedEntity
     {
         private ICollection<StateProvince> _stateProvinces;
 

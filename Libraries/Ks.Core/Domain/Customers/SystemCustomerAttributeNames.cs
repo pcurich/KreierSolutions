@@ -11,7 +11,7 @@
         public static string StreetAddress { get { return "StreetAddress"; } }
         public static string StreetAddress2 { get { return "StreetAddress2"; } }
         public static string ZipPostalCode { get { return "ZipPostalCode"; } }
-        public static string City { get { return "City"; } }
+        public static string City { get { return "CityId"; } }
         public static string CountryId { get { return "CountryId"; } }
         public static string StateProvinceId { get { return "StateProvinceId"; } }
         public static string Phone { get { return "Phone"; } }

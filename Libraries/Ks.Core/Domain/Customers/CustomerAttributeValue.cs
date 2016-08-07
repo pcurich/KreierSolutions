@@ -1,9 +1,11 @@
-﻿namespace Ks.Core.Domain.Customers
+﻿using Ks.Core.Domain.Localization;
+
+namespace Ks.Core.Domain.Customers
 {
     /// <summary>
     /// Represents a customer attribute value
     /// </summary>
-    public partial class CustomerAttributeValue : BaseEntity
+    public partial class CustomerAttributeValue : BaseEntity, ILocalizedEntity
     {
         /// <summary>
         /// Gets or sets the customer attribute identifier

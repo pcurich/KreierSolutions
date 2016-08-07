@@ -170,6 +170,21 @@ namespace Ks.Web.Controllers
             return PartialView(model);
         }
 
+        //header links
+        [ChildActionOnly]
+        public ActionResult HeaderLinks()
+        {
+            var customer = _workContext.CurrentCustomer;
+            var model = new HeaderLinksModel
+            {
+                IsAuthenticated = customer.IsRegistered(),
+                CustomerEmailUsername = customer.IsRegistered() ? (_customerSettings.UsernamesEnabled ? customer.Username : customer.Email) : "",
+                AlertMessage = "alertMessage",
+            };
+
+            return PartialView(model);
+        }
+
         [ChildActionOnly]
         public ActionResult AdminHeaderLinks()
         {

@@ -25,9 +25,10 @@ namespace Ks.Services.Directory
         ///     Gets a city collection by state/province identifier
         /// </summary>
         /// <param name="stateProvinceId">State/Province identifier</param>
+        /// <param name="languageId">Language identifier. It's used to sort states by localized names (if specified); pass 0 to skip it</param>
         /// <param name="showHidden">A value indicating whether to show hidden records</param>
         /// <returns>States</returns>
-        IList<City> GetCitiesByStateProvinceId(int stateProvinceId, bool showHidden = false);
+        IList<City> GetCitiesByStateProvinceId(int stateProvinceId, int languageId = 0, bool showHidden = false);
 
         /// <summary>
         ///     Gets all cities

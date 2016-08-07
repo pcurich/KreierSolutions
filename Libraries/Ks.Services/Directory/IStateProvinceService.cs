@@ -32,9 +32,10 @@ namespace Ks.Services.Directory
         /// Gets a state/province collection by country identifier
         /// </summary>
         /// <param name="countryId">Country identifier</param>
+        /// /// <param name="languageId">Language identifier. It's used to sort states by localized names (if specified); pass 0 to skip it</param>
         /// <param name="showHidden">A value indicating whether to show hidden records</param>
         /// <returns>States</returns>
-        IList<StateProvince> GetStateProvincesByCountryId(int countryId,  bool showHidden = false);
+        IList<StateProvince> GetStateProvincesByCountryId(int countryId, int languageId = 0, bool showHidden = false);
 
         /// <summary>
         /// Gets all states/provinces

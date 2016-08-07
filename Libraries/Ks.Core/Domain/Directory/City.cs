@@ -1,9 +1,11 @@
-﻿namespace Ks.Core.Domain.Directory
+﻿using Ks.Core.Domain.Localization;
+
+namespace Ks.Core.Domain.Directory
 {
     /// <summary>
     /// Represents a City
     /// </summary>
-    public partial class City:BaseEntity
+    public partial class City : BaseEntity, ILocalizedEntity
     {
         /// <summary>
         /// Gets or sets the stateprovince identifier

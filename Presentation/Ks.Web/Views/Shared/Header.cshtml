@@ -1,12 +1,12 @@
 ﻿@using Ks.Core
 @using Ks.Core.Infrastructure
 @using Ks.Services.Localization
+@using Ks.Web.Framework.Themes
 @{
     //logo path
-    //var currentThemeName = EngineContext.Current.Resolve<IThemeContext>().WorkingThemeName;
-    //var logoPath = "~/Themes/" + currentThemeName + "/Content/images/logo.png";
+    var currentThemeName = EngineContext.Current.Resolve<IThemeContext>().WorkingThemeName;
+    var logoPath = "~/Themes/" + currentThemeName + "/Content/images/logo.png";
 
-    var logoPath = "~/Content/images/logo.png";
     //store name
     var storeName = EngineContext.Current.Resolve<IKsSystemContext>().CurrentSystem.GetLocalized(x => x.Name);
 }
@@ -20,8 +20,8 @@
 
         </div>
         <div class="header-links-wrapper">
-            @*@Html.Action("HeaderLinks", "Common")
-            @Html.Action("FlyoutShoppingCart", "ShoppingCart")*@
+            @Html.Action("HeaderLinks", "Common")
+            @*@Html.Action("FlyoutShoppingCart", "ShoppingCart")*@
         </div>
     </div>
     <div class="header-lower">

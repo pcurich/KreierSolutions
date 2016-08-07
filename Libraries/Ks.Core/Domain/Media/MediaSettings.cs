@@ -4,7 +4,9 @@ using Ks.Core.Configuration;
 namespace Ks.Core.Domain.Media
 {
     public class MediaSettings : ISettings
-    { 
+    {
+        public int AvatarPictureSize { get; set; }
+
         public int AutoCompleteSearchThumbPictureSize { get; set; }
 
         public bool DefaultPictureZoomEnabled { get; set; }

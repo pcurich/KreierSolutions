@@ -1,12 +1,13 @@
 using System.Collections.Generic;
 using Ks.Core.Domain.Catalog;
+using Ks.Core.Domain.Localization;
 
 namespace Ks.Core.Domain.Common
 {
     /// <summary>
     /// Represents an address attribute
     /// </summary>
-    public partial class AddressAttribute : BaseEntity
+    public partial class AddressAttribute : BaseEntity, ILocalizedEntity
     {
         private ICollection<AddressAttributeValue> _addressAttributeValues;
 

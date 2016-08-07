@@ -9,7 +9,10 @@
     }
 }
 <div class="side-2">
-    
+    @if (IsSectionDefined("left"))
+    {
+        @RenderSection("left")
+    }
 </div>
 <div class="center-2">
      

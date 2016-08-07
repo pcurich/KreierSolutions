@@ -147,6 +147,7 @@
   <ItemGroup>
     <Compile Include="Controllers\BasePublicController.cs" />
     <Compile Include="Controllers\CommonController.cs" />
+    <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InstallController.cs" />
     <Compile Include="Controllers\KeepAliveController.cs" />
@@ -164,15 +165,30 @@
     <Compile Include="Infrastructure\Installation\InstallationLanguage.cs" />
     <Compile Include="Infrastructure\Installation\InstallationLocalizationService.cs" />
     <Compile Include="Infrastructure\RouteProvider.cs" />
+    <Compile Include="Models\Common\AddressAttributeModel.cs" />
+    <Compile Include="Models\Common\AddressModel.cs" />
     <Compile Include="Models\Common\AdminHeaderLinksModel.cs" />
     <Compile Include="Models\Common\CurrencyModel.cs" />
     <Compile Include="Models\Common\CurrencySelectorModel.cs" />
     <Compile Include="Models\Common\FaviconModel.cs" />
+    <Compile Include="Models\Common\HeaderLinksModel.cs" />
     <Compile Include="Models\Common\LanguageModel.cs" />
     <Compile Include="Models\Common\LanguageSelectorModel.cs" />
     <Compile Include="Models\Common\PagerModel.cs" />
+    <Compile Include="Models\Customer\ChangePasswordModel.cs" />
+    <Compile Include="Models\Customer\CustomerAddressEditModel.cs" />
+    <Compile Include="Models\Customer\CustomerAddressListModel.cs" />
+    <Compile Include="Models\Customer\CustomerAvatarModel.cs" />
+    <Compile Include="Models\Customer\CustomerInfoModel.cs" />
+    <Compile Include="Models\Customer\CustomerNavigationModel.cs" />
+    <Compile Include="Models\Customer\LoginModel.cs" />
     <Compile Include="Models\Install\InstallModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Validators\Common\AddressValidator.cs" />
+    <Compile Include="Validators\Customer\ChangePasswordValidator.cs" />
+    <Compile Include="Validators\Customer\CustomerAttributeModel.cs" />
+    <Compile Include="Validators\Customer\CustomerInfoValidator.cs" />
+    <Compile Include="Validators\Customer\LoginValidator.cs" />
     <Compile Include="Validators\Install\InstallValidator.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -1201,7 +1217,7 @@
     <Content Include="Themes\DefaultClean\Content\images\watch.png" />
     <Content Include="Themes\DefaultClean\Content\images\wishlist-button.png" />
     <Content Include="Themes\DefaultClean\preview.jpg" />
-    <Content Include="Views\Common\Favicon.cshtml" />
+    <Content Include="Views\Common\HeaderLinks.cshtml" />
     <Content Include="Views\Shared\Head.cshtml" />
     <Content Include="Views\Shared\Header.cshtml" />
     <Content Include="Views\Common\CurrencySelector.cshtml" />
@@ -1762,12 +1778,19 @@
     <Content Include="Views\Shared\_CreateOrUpdateAddress.cshtml" />
     <Content Include="Views\Shared\_ColumnsTwo.cshtml" />
     <Content Include="Views\Shared\_AddressAttributes.cshtml" />
+    <Content Include="Views\Common\Favicon.cshtml" />
+    <Content Include="Views\Customer\Login.cshtml" />
+    <Content Include="Views\Customer\Info.cshtml" />
+    <Content Include="Views\Customer\CustomerNavigation.cshtml" />
+    <Content Include="Views\Customer\ChangePassword.cshtml" />
+    <Content Include="Views\Customer\Avatar.cshtml" />
+    <Content Include="Views\Customer\Addresses.cshtml" />
+    <Content Include="Views\Customer\AddressAdd.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\Roxy_Fileman\tmp\" />
     <Folder Include="Plugins\" />
-    <Folder Include="Validators\Customer\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

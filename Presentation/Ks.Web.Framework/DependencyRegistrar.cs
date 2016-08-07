@@ -134,6 +134,10 @@ namespace Ks.Web.Framework
             builder.RegisterType<WebKsSystemContext>().As<IKsSystemContext>().InstancePerLifetimeScope();
 
             //services
+            builder.RegisterType<AddressAttributeFormatter>().As<IAddressAttributeFormatter>().InstancePerLifetimeScope();
+            builder.RegisterType<AddressAttributeParser>().As<IAddressAttributeParser>().InstancePerLifetimeScope();
+            builder.RegisterType<AddressService>().As<IAddressService>().InstancePerLifetimeScope();
+            builder.RegisterType<AddressAttributeService>().As<IAddressAttributeService>().InstancePerLifetimeScope();
             builder.RegisterType<SearchTermService>().As<ISearchTermService>().InstancePerLifetimeScope();
             builder.RegisterType<GenericAttributeService>().As<IGenericAttributeService>().InstancePerLifetimeScope();
             builder.RegisterType<FulltextService>().As<IFulltextService>().InstancePerLifetimeScope();

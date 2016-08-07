@@ -5,6 +5,7 @@ using Ks.Core.Caching;
 using Ks.Core.Data;
 using Ks.Core.Domain.Directory;
 using Ks.Services.Events;
+using Ks.Services.Localization;
 
 
 namespace Ks.Services.Directory
@@ -21,9 +22,10 @@ namespace Ks.Services.Directory
         /// </summary>
         /// <remarks>
         /// {0} : country ID
-        /// {1} : show hidden records?
+        /// {1} : language ID
+        /// {2} : show hidden records?
         /// </remarks>
-        private const string STATEPROVINCES_ALL_KEY = "Ks.stateprovince.all-{0}-{1}";
+        private const string STATEPROVINCES_ALL_KEY = "Ks.stateprovince.all-{0}-{1}-{2}";
         /// <summary>
         /// Key pattern to clear cache
         /// </summary>
@@ -107,12 +109,12 @@ namespace Ks.Services.Directory
         /// Gets a state/province collection by country identifier
         /// </summary>
         /// <param name="countryId">Country identifier</param>
-        
+        /// <param name="languageId">Language identifier. It's used to sort states by localized names (if specified); pass 0 to skip it</param>
         /// <param name="showHidden">A value indicating whether to show hidden records</param>
         /// <returns>States</returns>
-        public virtual IList<StateProvince> GetStateProvincesByCountryId(int countryId,   bool showHidden = false)
+        public virtual IList<StateProvince> GetStateProvincesByCountryId(int countryId, int languageId = 0, bool showHidden = false)
         {
-            string key = string.Format(STATEPROVINCES_ALL_KEY, countryId,  showHidden);
+            string key = string.Format(STATEPROVINCES_ALL_KEY, countryId, languageId, showHidden);
             return _cacheManager.Get(key, () =>
             {
                 var query = from sp in _stateProvinceRepository.Table
@@ -121,6 +123,14 @@ namespace Ks.Services.Directory
                             (showHidden || sp.Published)
                             select sp;
                 var stateProvinces = query.ToList();
+                if (languageId > 0)
+                {
+                    //we should sort states by localized names when they have the same display order
+                    stateProvinces = stateProvinces
+                        .OrderBy(c => c.DisplayOrder)
+                        .ThenBy(c => c.GetLocalized(x => x.Name, languageId))
+                        .ToList();
+                }
                 return stateProvinces;
             });
         }

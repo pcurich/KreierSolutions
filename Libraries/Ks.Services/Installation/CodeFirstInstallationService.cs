@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Ks.Core;
 using Ks.Core.Data;
@@ -17,6 +18,7 @@ using Ks.Core.Infrastructure;
 using Ks.Services.Common;
 using Ks.Services.Configuration;
 using Ks.Services.Customers;
+using Ks.Services.Localization;
 
 namespace Ks.Services.Installation
 {
@@ -173,6 +175,21 @@ namespace Ks.Services.Installation
             _languageRepository.Insert(language);
         }
 
+        protected virtual void InstallLocaleResources()
+        {
+            //'English' language
+            var language = _languageRepository.Table.Single(l => l.Name == "Español");
+
+            //save resources
+            foreach (var filePath in System.IO.Directory.EnumerateFiles(_webHelper.MapPath("~/App_Data/Localization/"), "*.ksres.xml", SearchOption.TopDirectoryOnly))
+            {
+                var localesXml = File.ReadAllText(filePath);
+                var localizationService = EngineContext.Current.Resolve<ILocalizationService>();
+                localizationService.ImportResourcesFromXml(language, localesXml);
+            }
+
+        }
+
         protected virtual void InstallCountriesAndStatesAndCities()
         {
             var cPer = new Country
@@ -269,6 +286,12 @@ namespace Ks.Services.Installation
                 SystemName = SystemCustomerRoleNames.Administrators,
             };
 
+            var crRegistered = new CustomerRole
+            {
+                Name = "Registrado",Active = true,IsSystemRole = false,
+                SystemName = SystemCustomerRoleNames.Registered
+            };
+
             var crAuxAccountant = new CustomerRole
             {
                 Name = "Auxiliar Contable",Active = true,IsSystemRole = false,
@@ -334,6 +357,7 @@ namespace Ks.Services.Installation
             };
             adminUser.Addresses.Add(defaultAdminUserAddress);
             adminUser.CustomerRoles.Add(crAdministrators);
+            adminUser.CustomerRoles.Add(crRegistered);
             _customerRepository.Insert(adminUser);
             //set default customer name
             _genericAttributeService.SaveAttribute(adminUser, SystemCustomerAttributeNames.FirstName, "Pedro");
@@ -448,6 +472,52 @@ namespace Ks.Services.Installation
                 OpenGraphMetaTags = true,
                 ReservedUrlRecordSlugs = new List<string>()
             });
+
+            settingService.SaveSetting(new CustomerSettings
+            {
+                UsernamesEnabled = false,
+                CheckUsernameAvailabilityEnabled = false,
+                AllowUsersToChangeUsernames = false,
+                DefaultPasswordFormat = PasswordFormat.Hashed,
+                HashedPasswordFormat = "SHA1",
+                PasswordMinLength = 6,
+                PasswordRecoveryLinkDaysValid = 7,
+                UserRegistrationType = UserRegistrationType.Standard,
+                AllowCustomersToUploadAvatars = false,
+                AvatarMaximumSizeBytes = 20000,
+                DefaultAvatarEnabled = true,
+                ShowCustomersLocation = false,
+                ShowCustomersJoinDate = false,
+                AllowViewingProfiles = false,
+                NotifyNewCustomerRegistration = false,
+                //HideDownloadableProductsTab = false,
+                //HideBackInStockSubscriptionsTab = false,
+                //DownloadableProductsValidateUser = false,
+                CustomerNameFormat = CustomerNameFormat.ShowFirstName,
+                GenderEnabled = true,
+                DateOfBirthEnabled = true,
+                DateOfBirthRequired = false,
+                DateOfBirthMinimumAge = null,
+                CompanyEnabled = true,
+                StreetAddressEnabled = false,
+                StreetAddress2Enabled = false,
+                ZipPostalCodeEnabled = false,
+                CityEnabled = false,
+                CountryEnabled = false,
+                CountryRequired = false,
+                StateProvinceEnabled = false,
+                StateProvinceRequired = false,
+                PhoneEnabled = false,
+                FaxEnabled = false,
+                //AcceptPrivacyPolicyEnabled = false,
+                //NewsletterEnabled = true,
+                //NewsletterTickedByDefault = true,
+                //HideNewsletterBlock = false,
+                //NewsletterBlockAllowToUnsubscribe = false,
+                OnlineCustomerMinutes = 20,
+                KsSystemLastVisitedPage = false,
+                SuffixDeletedCustomers = false,
+            });
         }
 
         protected virtual void InstallActivityLogTypes()
@@ -525,6 +595,7 @@ namespace Ks.Services.Installation
             InstallMeasures();
             InstallLanguages();
             InstallCurrencies();
+            InstallLocaleResources();
             InstallCountriesAndStatesAndCities();
             InstallCustomersAndUsers(defaultUserEmail,defaultUserPassword);
             InstallEmailAccounts();
