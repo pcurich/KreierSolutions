@@ -82,17 +82,13 @@
             @Html.ValidationMessageFor(model => model.StateProvinceId)
         </div>
     }
-    @if (Model.CityEnabled)
+    @if (Model.CountryEnabled && Model.StateProvinceEnabled && Model.CityEnabled)
     {
         <div class="inputs">
-            @Html.LabelFor(model => model.City, new { }, ":")
-            @Html.EditorFor(model => model.City)
-
-            @if (Model.CityRequired)
-            {
-                @Html.RequiredHint()
-            }
-            @Html.ValidationMessageFor(model => model.City)
+            @Html.LabelFor(model => model.CityId, new { }, ":")
+            @Html.DropDownListFor(model => model.CityId, Model.AvailableCities)
+            <span id="states-loading-progress" style="display: none;" class="please-wait">@T("Common.Wait...")</span>
+            @Html.ValidationMessageFor(model => model.CityId)
         </div>
     }
     @if (Model.StreetAddressEnabled)

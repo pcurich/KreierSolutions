@@ -12,6 +12,7 @@ namespace Ks.Web.Validators.Common
     {
         public AddressValidator(ILocalizationService localizationService,
             IStateProvinceService stateProvinceService,
+            ICityService cityService,
             AddressSettings addressSettings)
         {
             RuleFor(x => x.FirstName)
@@ -54,6 +55,30 @@ namespace Ks.Web.Validators.Common
                     return null;
                 });
             }
+            if (addressSettings.CountryEnabled && addressSettings.StateProvinceEnabled && addressSettings.CityEnabled)
+            {
+                Custom(x =>
+                {
+                    //does selected country has states?
+                    var countryId = x.CountryId.HasValue ? x.CountryId.Value : 0;
+                    var hasCities = cityService.GetCitiesByStateProvinceId(x.StateProvinceId??0).Count > 0;
+
+                    if (hasCities)
+                    {
+                        //if yes, then ensure that state is selected
+                        if (!x.StateProvinceId.HasValue || x.StateProvinceId.Value == 0)
+                        {
+                            return new ValidationFailure("CityId", localizationService.GetResource("Address.Fields.City.Required"));
+                        }
+                    }
+                    return null;
+                });
+            }
+
+            //if (addressSettings.CityRequired && addressSettings.CityEnabled)
+            //{
+            //    RuleFor(x => x.City).NotEmpty().WithMessage(localizationService.GetResource("Account.Fields.City.Required"));
+            //}
             if (addressSettings.CompanyRequired && addressSettings.CompanyEnabled)
             {
                 RuleFor(x => x.Company).NotEmpty().WithMessage(localizationService.GetResource("Account.Fields.Company.Required"));
@@ -69,10 +94,6 @@ namespace Ks.Web.Validators.Common
             if (addressSettings.ZipPostalCodeRequired && addressSettings.ZipPostalCodeEnabled)
             {
                 RuleFor(x => x.ZipPostalCode).NotEmpty().WithMessage(localizationService.GetResource("Account.Fields.ZipPostalCode.Required"));
-            }
-            if (addressSettings.CityRequired && addressSettings.CityEnabled)
-            {
-                RuleFor(x => x.City).NotEmpty().WithMessage(localizationService.GetResource("Account.Fields.City.Required"));
             }
             if (addressSettings.PhoneRequired && addressSettings.PhoneEnabled)
             {

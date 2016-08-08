@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Ks.Admin.Models.Localization;
+using Ks.Core.Domain.Localization;
 
 namespace Ks.Admin.Extensions
 {
@@ -14,22 +16,22 @@ namespace Ks.Admin.Extensions
             return Mapper.Map(source, destination);
         }
 
-        #region Category
+        #region Languages
 
-        //public static CategoryModel ToModel(this Category entity)
-        //{
-        //    return entity.MapTo<Category, CategoryModel>();
-        //}
+        public static LanguageModel ToModel(this Language entity)
+        {
+            return entity.MapTo<Language, LanguageModel>();
+        }
 
-        //public static Category ToEntity(this CategoryModel model)
-        //{
-        //    return model.MapTo<CategoryModel, Category>();
-        //}
+        public static Language ToEntity(this LanguageModel model)
+        {
+            return model.MapTo<LanguageModel, Language>();
+        }
 
-        //public static Category ToEntity(this CategoryModel model, Category destination)
-        //{
-        //    return model.MapTo(destination);
-        //}
+        public static Language ToEntity(this LanguageModel model, Language destination)
+        {
+            return model.MapTo(destination);
+        }
 
         #endregion
     }

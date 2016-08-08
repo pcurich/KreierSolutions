@@ -64,24 +64,28 @@
                                     @address.Address2
                                 </li>
                             }
-                            @if (address.CityEnabled || address.StateProvinceEnabled || address.ZipPostalCodeEnabled)
+                            @if (address.CountryEnabled || address.StateProvinceEnabled || address.CityEnabled)
                             {
                                 var cityStateZip = "";
-                                if (address.CityEnabled)
+                                if (address.CountryEnabled)
                                 {
-                                    cityStateZip = address.City;
-                                    if (address.StateProvinceEnabled || address.ZipPostalCodeEnabled)
+                                    if (address.CountryEnabled || address.ZipPostalCodeEnabled)
                                     {
-                                        cityStateZip += ",";
+                                        cityStateZip +=(address.CountryName+ ",");
                                     }
                                 }
                                 if (address.StateProvinceEnabled)
                                 {
-                                    if (!String.IsNullOrEmpty(cityStateZip))
+                                    //cityStateZip = address.City;
+                                    if (address.StateProvinceEnabled || address.ZipPostalCodeEnabled)
                                     {
-                                        cityStateZip += " ";
+                                        cityStateZip += (address.StateProvinceName+ ",");
                                     }
-                                    cityStateZip += address.StateProvinceName;
+                                }
+                                if (address.CityEnabled)
+                                {
+                                    cityStateZip += (address.CityName + ",");
+                                     
                                 }
                                 if (address.ZipPostalCodeEnabled)
                                 {
