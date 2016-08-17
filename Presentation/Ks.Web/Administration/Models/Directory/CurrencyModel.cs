@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Web.Mvc;
 using FluentValidation.Attributes;
-using Ks.Admin.Models.Stores;
+//using Ks.Admin.Models.Stores;
 using Ks.Admin.Validators.Directory;
 using Ks.Web.Framework;
 using Ks.Web.Framework.Localization;
@@ -11,11 +11,11 @@ using Ks.Web.Framework.Mvc;
 namespace Ks.Admin.Models.Directory
 {
     [Validator(typeof(CurrencyValidator))]
-    public partial class CurrencyModel : BaseKsEntityModel, ILocalizedModel<CurrencyLocalizedModel>
+    public partial class CurrencyModel : BaseKsEntityModel//, ILocalizedModel<CurrencyLocalizedModel>
     {
         public CurrencyModel()
         {
-            Locales = new List<CurrencyLocalizedModel>();
+           // Locales = new List<CurrencyLocalizedModel>();
         }
         [KsResourceDisplayName("Admin.Configuration.Currencies.Fields.Name")]
         [AllowHtml]
@@ -54,11 +54,11 @@ namespace Ks.Admin.Models.Directory
         //public IList<CurrencyLocalizedModel> Locales { get; set; }
 
         //Store mapping
-        [KsResourceDisplayName("Admin.Configuration.Currencies.Fields.LimitedToStores")]
-        public bool LimitedToStores { get; set; }
-        [KsResourceDisplayName("Admin.Configuration.Currencies.Fields.AvailableStores")]
-        public List<StoreModel> AvailableStores { get; set; }
-        public int[] SelectedStoreIds { get; set; }
+        //[KsResourceDisplayName("Admin.Configuration.Currencies.Fields.LimitedToStores")]
+        //public bool LimitedToStores { get; set; }
+        //[KsResourceDisplayName("Admin.Configuration.Currencies.Fields.AvailableStores")]
+        //public List<StoreModel> AvailableStores { get; set; }
+        //public int[] SelectedStoreIds { get; set; }
     }
 
     public partial class CurrencyLocalizedModel : ILocalizedModelLocal

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Ks.Admin.Models.Common;
 using Ks.Admin.Models.Customers;
+using Ks.Admin.Models.Directory;
 using Ks.Admin.Models.Localization;
 using Ks.Core.Domain.Common;
 using Ks.Core.Domain.Customers;
@@ -61,8 +62,8 @@ namespace Ks.Admin.Infrastructure
 
 
             Mapper.CreateMap<CountryModel, Country>()
-                .ForMember(dest => dest.StateProvinces, mo => mo.Ignore())
-                .ForMember(dest => dest.RestrictedShippingMethods, mo => mo.Ignore());
+                .ForMember(dest => dest.StateProvinces, mo => mo.Ignore());
+                //.ForMember(dest => dest.RestrictedShippingMethods, mo => mo.Ignore());
             Mapper.CreateMap<Country, CountryModel>()
                 .ForMember(dest => dest.NumberOfStates, mo => mo.MapFrom(src => src.StateProvinces != null ? src.StateProvinces.Count : 0))
                 .ForMember(dest => dest.Locales, mo => mo.Ignore())
@@ -86,7 +87,7 @@ namespace Ks.Admin.Infrastructure
             #region Customer roles
 
             Mapper.CreateMap<CustomerRole, CustomerRoleModel>()
-                .ForMember(dest => dest.PurchasedWithProductName, mo => mo.Ignore())
+                //.ForMember(dest => dest.PurchasedWithProductName, mo => mo.Ignore())
                 .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
             Mapper.CreateMap<CustomerRoleModel, CustomerRole>()
                 .ForMember(dest => dest.PermissionRecords, mo => mo.Ignore());

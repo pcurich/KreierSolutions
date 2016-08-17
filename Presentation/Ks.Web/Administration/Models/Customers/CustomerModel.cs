@@ -26,7 +26,7 @@ namespace Ks.Admin.Models.Customers
             //this.AvailableVendors = new List<SelectListItem>();
             this.CustomerAttributes = new List<CustomerAttributeModel>();
             this.AvailableNewsletterSubscriptionStores = new List<StoreModel>();
-            this.RewardPointsAvailableStores = new List<SelectListItem>();
+            //this.RewardPointsAvailableStores = new List<SelectListItem>();
         }
 
         public bool AllowUsersToChangeUsernames { get; set; }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Web.Mvc;
 using Ks.Admin.Extensions;
+using Ks.Admin.Models.Common;
 using Ks.Admin.Models.Customers;
 using Ks.Core;
 using Ks.Core.Domain.Catalog;
@@ -613,7 +614,7 @@ namespace Ks.Admin.Controllers
             PrepareCustomerModel(model, null, false);
             //default value
             model.Active = true;
-            return System.Web.UI.WebControls.View(model);
+            return View(model);
         }
 
         //[HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]

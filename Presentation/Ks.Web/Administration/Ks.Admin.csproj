@@ -179,6 +179,10 @@
     <Content Include="Views\Log\View.cshtml" />
     <Content Include="Views\Common\Maintenance.cshtml" />
     <Content Include="Views\ScheduleTask\List.cshtml" />
+    <Content Include="Views\CustomerRole\List.cshtml" />
+    <Content Include="Views\CustomerRole\Create.cshtml" />
+    <Content Include="Views\CustomerRole\_CreateOrUpdate.cshtml" />
+    <Content Include="Views\CustomerRole\Edit.cshtml" />
     <None Include="Views\Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -200,6 +204,7 @@
     <Compile Include="Controllers\BaseAdminController.cs" />
     <Compile Include="Controllers\CommonController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
+    <Compile Include="Controllers\CustomerRoleController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LogController.cs" />
     <Compile Include="Controllers\ScheduleTaskController.cs" />
