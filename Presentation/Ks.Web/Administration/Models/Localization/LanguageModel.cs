@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Web.Mvc;
 using FluentValidation.Attributes;
+using Ks.Admin.Validators.Localization;
 using Ks.Web.Framework;
 using Ks.Web.Framework.Mvc;
 

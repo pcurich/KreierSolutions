@@ -110,6 +110,7 @@
     <Compile Include="Domain\Common\AddressAttribute.cs" />
     <Compile Include="Domain\Common\AddressAttributeValue.cs" />
     <Compile Include="Domain\Common\AddressSettings.cs" />
+    <Compile Include="Domain\Common\AdminAreaSettings.cs" />
     <Compile Include="Domain\Common\CommonSettings.cs" />
     <Compile Include="Domain\Common\FulltextSearchMode.cs" />
     <Compile Include="Domain\Common\GenericAttribute.cs" />

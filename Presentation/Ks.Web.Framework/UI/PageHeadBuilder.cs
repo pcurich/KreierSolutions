@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using Ks.Core.Domain.Seo;
+using Ks.Services.Seo;
 
 namespace Ks.Web.Framework.UI
 {
@@ -64,7 +65,9 @@ namespace Ks.Web.Framework.UI
                 byte[] input = sha.ComputeHash(Encoding.Unicode.GetBytes(hashInput));
                 hash = HttpServerUtility.UrlTokenEncode(input);
             }
-            
+            //ensure only valid chars
+            hash = SeoExtensions.GetSeName(hash);
+
             var sb = new StringBuilder(prefix);
             sb.Append(hash);
             //we used "extension" when we had "runAllManagedModulesForAllRequests" set to "true" in web.config

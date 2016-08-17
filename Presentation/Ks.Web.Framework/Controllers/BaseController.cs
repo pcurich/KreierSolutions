@@ -76,7 +76,7 @@ namespace Ks.Web.Framework.Controllers
         /// <summary>
         /// Get active store scope (for multi-store configuration mode)
         /// </summary>
-        /// <param name="ksSystemService">Store service</param>
+        /// <param name="ksSystemService">KsSystem service</param>
         /// <param name="workContext">Work context</param>
         /// <returns>Store ID; 0 if we are in a shared mode</returns>
         public virtual int GetActiveStoreScopeConfiguration(IKsSystemService ksSystemService, IWorkContext workContext)
@@ -86,8 +86,8 @@ namespace Ks.Web.Framework.Controllers
                 return 0;
 
 
-            var storeId = workContext.CurrentCustomer.GetAttribute<int>(SystemCustomerAttributeNames.AdminAreaStoreScopeConfiguration);
-            var store = ksSystemService.GetKsSystemById(storeId);
+            var systemId = workContext.CurrentCustomer.GetAttribute<int>(SystemCustomerAttributeNames.AdminAreaStoreScopeConfiguration);
+            var store = ksSystemService.GetKsSystemById(systemId);
             return store != null ? store.Id : 0;
         }
 
@@ -142,7 +142,7 @@ namespace Ks.Web.Framework.Controllers
         /// <param name="persistForTheNextRequest">A value indicating whether a message should be persisted for the next request</param>
         protected virtual void AddNotification(NotifyType type, string message, bool persistForTheNextRequest)
         {
-            string dataKey = string.Format("Ks.notifications.{0}", type);
+            string dataKey = string.Format("ks.notifications.{0}", type);
             if (persistForTheNextRequest)
             {
                 if (TempData[dataKey] == null)

@@ -7,6 +7,7 @@ using Ks.Core.Data;
 using Ks.Core.Infrastructure;
 using Ks.Services.Localization;
 using Ks.Web.Framework.Localization;
+using Ks.Web.Framework.Themes;
 
 namespace Ks.Web.Framework.ViewEngines.Razor
 {
@@ -122,13 +123,13 @@ namespace Ks.Web.Framework.ViewEngines.Razor
         public bool ShouldUseRtlTheme()
         {
             var supportRtl = _workContext.WorkingLanguage.Rtl;
-            //if (supportRtl)
-            //{
-            //    //ensure that the active theme also supports it
-            //    var themeProvider = EngineContext.Current.Resolve<IThemeProvider>();
-            //    var themeContext = EngineContext.Current.Resolve<IThemeContext>();
-            //    supportRtl = themeProvider.GetThemeConfiguration(themeContext.WorkingThemeName).SupportRtl;
-            //}
+            if (supportRtl)
+            {
+                //ensure that the active theme also supports it
+                var themeProvider = EngineContext.Current.Resolve<IThemeProvider>();
+                var themeContext = EngineContext.Current.Resolve<IThemeContext>();
+                supportRtl = themeProvider.GetThemeConfiguration(themeContext.WorkingThemeName).SupportRtl;
+            }
             return supportRtl;
         }
 

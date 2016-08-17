@@ -53,33 +53,33 @@
     </li>
 }
 
-@*<ul id="admin-menu">
-    @{
+<ul id="admin-menu">
+     @{
         //standard (default) items
         var rootNode = siteMap.RootNode;
 
         //plugins
-        var adminMenuPlugins = EngineContext.Current.Resolve<Ks.Core.Plugins.IPluginFinder>()
-            .GetPlugins<IAdminMenuPlugin>()
-            .ToList();
-        foreach (var adminMenuPlugin in adminMenuPlugins)
-        {
-            adminMenuPlugin.ManageSiteMap(rootNode);
-        }
-        //"Plugins" menu item should be visible when it has some child nodes
-        var pluginNode = rootNode.ChildNodes.FirstOrDefault(x => x.SystemName == "Third party plugins");
-        if (pluginNode != null && pluginNode.Visible)
-        {
-            var permissionService = EngineContext.Current.Resolve<Nop.Services.Security.IPermissionService>();
-            var hasManagePluginsPermission = permissionService.Authorize(Nop.Services.Security.StandardPermissionProvider.ManagePlugins);
-            pluginNode.Visible = hasManagePluginsPermission && pluginNode.ChildNodes.Any(x => x.Visible);
-        }
+       @* var adminMenuPlugins = EngineContext.Current.Resolve<Ks.Core.Plugins.IPluginFinder>()
+        .GetPlugins<IAdminMenuPlugin>()
+        .ToList();
+    foreach (var adminMenuPlugin in adminMenuPlugins)
+    {
+        adminMenuPlugin.ManageSiteMap(rootNode);
     }
+    //"Plugins" menu item should be visible when it has some child nodes
+    var pluginNode = rootNode.ChildNodes.FirstOrDefault(x => x.SystemName == "Third party plugins");
+    if (pluginNode != null && pluginNode.Visible)
+    {
+        var permissionService = EngineContext.Current.Resolve<Ks.Services.Security.IPermissionService>();
+        var hasManagePluginsPermission = permissionService.Authorize(Ks.Services.Security.StandardPermissionProvider.ManagePlugins);
+        pluginNode.Visible = hasManagePluginsPermission && pluginNode.ChildNodes.Any(x => x.Visible);
+    }*@
+}
     @foreach (var item in rootNode.ChildNodes.Where(x => x.Visible))
     {
         @RenderMenuItem(item)
     }
-</ul>*@
+</ul>
 <script>
     $(document).ready(function() {
         $("#admin-menu").kendoMenu();

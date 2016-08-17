@@ -14,7 +14,7 @@ namespace Ks.Services.Caching
         /// </summary>
         public void Execute()
         {
-            var cacheManager = EngineContext.Current.ContainerManager.Resolve<ICacheManager>("nop_cache_static");
+            var cacheManager = EngineContext.Current.ContainerManager.Resolve<ICacheManager>("ks_cache_static");
             cacheManager.Clear();
         }
     }

@@ -166,6 +166,7 @@
     <Compile Include="Customers\CustomerAttributeExtensions.cs" />
     <Compile Include="Customers\CustomerAttributeParser.cs" />
     <Compile Include="Customers\CustomerAttributeService.cs" />
+    <Compile Include="Customers\CustomerExtensions.cs" />
     <Compile Include="Customers\CustomerRegistrationRequest.cs" />
     <Compile Include="Customers\CustomerRegistrationResult.cs" />
     <Compile Include="Customers\CustomerRegistrationService.cs" />

@@ -64,8 +64,8 @@ namespace Ks.Services.Tasks
                 if (ensureRunOnOneWebFarmInstance)
                 {
                     //is web farm enabled (multiple instances)?
-                    var nopConfig = EngineContext.Current.ContainerManager.Resolve<KsConfig>("", scope);
-                    if (nopConfig.MultipleInstancesEnabled)
+                    var ksConfig = EngineContext.Current.ContainerManager.Resolve<KsConfig>("", scope);
+                    if (ksConfig.MultipleInstancesEnabled)
                     {
                         var machineNameProvider =
                             EngineContext.Current.ContainerManager.Resolve<IMachineNameProvider>("", scope);

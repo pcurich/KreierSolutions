@@ -101,6 +101,7 @@
     <Compile Include="Mapping\Messages\QueuedEmailMap.cs" />
     <Compile Include="Mapping\Security\AclRecordMap.cs" />
     <Compile Include="Mapping\Security\PermissionRecordMap.cs" />
+    <Compile Include="Mapping\Seo\UrlRecordMap.cs" />
     <Compile Include="Mapping\System\KsSystemMap.cs" />
     <Compile Include="Mapping\Tasks\ScheduleTaskMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

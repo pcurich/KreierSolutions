@@ -559,104 +559,104 @@ namespace Ks.Admin.Controllers
         }
 
 
-        public ActionResult SeNames()
-        {
-            if (!_permissionService.Authorize(StandardPermissionProvider.ManageMaintenance))
-                return AccessDeniedView();
+        //public ActionResult SeNames()
+        //{
+        //    if (!_permissionService.Authorize(StandardPermissionProvider.ManageMaintenance))
+        //        return AccessDeniedView();
 
-            var model = new UrlRecordListModel();
-            return View(model);
-        }
+        //    var model = new UrlRecordListModel();
+        //    return View(model);
+        //}
 
-        [HttpPost]
-        public ActionResult SeNames(DataSourceRequest command, UrlRecordListModel model)
-        {
-            if (!_permissionService.Authorize(StandardPermissionProvider.ManageMaintenance))
-                return AccessDeniedView();
+        //[HttpPost]
+        //public ActionResult SeNames(DataSourceRequest command, UrlRecordListModel model)
+        //{
+        //    if (!_permissionService.Authorize(StandardPermissionProvider.ManageMaintenance))
+        //        return AccessDeniedView();
 
-            var urlRecords = _urlRecordService.GetAllUrlRecords(model.SeName, command.Page - 1, command.PageSize);
-            var gridModel = new DataSourceResult
-            {
-                Data = urlRecords.Select(x =>
-                {
-                    //language
-                    string languageName;
-                    if (x.LanguageId == 0)
-                    {
-                        languageName = _localizationService.GetResource("Admin.System.SeNames.Language.Standard");
-                    }
-                    else
-                    {
-                        var language = _languageService.GetLanguageById(x.LanguageId);
-                        languageName = language != null ? language.Name : "Unknown";
-                    }
+        //    var urlRecords = _urlRecordService.GetAllUrlRecords(model.SeName, command.Page - 1, command.PageSize);
+        //    var gridModel = new DataSourceResult
+        //    {
+        //        Data = urlRecords.Select(x =>
+        //        {
+        //            //language
+        //            string languageName;
+        //            if (x.LanguageId == 0)
+        //            {
+        //                languageName = _localizationService.GetResource("Admin.System.SeNames.Language.Standard");
+        //            }
+        //            else
+        //            {
+        //                var language = _languageService.GetLanguageById(x.LanguageId);
+        //                languageName = language != null ? language.Name : "Unknown";
+        //            }
 
-                    //details URL
-                    string detailsUrl = "";
-                    var entityName = x.EntityName != null ? x.EntityName.ToLowerInvariant() : "";
-                    switch (entityName)
-                    {
-                        case "blogpost":
-                            detailsUrl = Url.Action("Edit", "Blog", new { id = x.EntityId });
-                            break;
-                        case "category":
-                            detailsUrl = Url.Action("Edit", "Category", new { id = x.EntityId });
-                            break;
-                        case "manufacturer":
-                            detailsUrl = Url.Action("Edit", "Manufacturer", new { id = x.EntityId });
-                            break;
-                        case "product":
-                            detailsUrl = Url.Action("Edit", "Product", new { id = x.EntityId });
-                            break;
-                        case "newsitem":
-                            detailsUrl = Url.Action("Edit", "News", new { id = x.EntityId });
-                            break;
-                        case "topic":
-                            detailsUrl = Url.Action("Edit", "Topic", new { id = x.EntityId });
-                            break;
-                        case "vendor":
-                            detailsUrl = Url.Action("Edit", "Vendor", new { id = x.EntityId });
-                            break;
-                        default:
-                            break;
-                    }
+        //            //details URL
+        //            string detailsUrl = "";
+        //            var entityName = x.EntityName != null ? x.EntityName.ToLowerInvariant() : "";
+        //            switch (entityName)
+        //            {
+        //                case "blogpost":
+        //                    detailsUrl = Url.Action("Edit", "Blog", new { id = x.EntityId });
+        //                    break;
+        //                case "category":
+        //                    detailsUrl = Url.Action("Edit", "Category", new { id = x.EntityId });
+        //                    break;
+        //                case "manufacturer":
+        //                    detailsUrl = Url.Action("Edit", "Manufacturer", new { id = x.EntityId });
+        //                    break;
+        //                case "product":
+        //                    detailsUrl = Url.Action("Edit", "Product", new { id = x.EntityId });
+        //                    break;
+        //                case "newsitem":
+        //                    detailsUrl = Url.Action("Edit", "News", new { id = x.EntityId });
+        //                    break;
+        //                case "topic":
+        //                    detailsUrl = Url.Action("Edit", "Topic", new { id = x.EntityId });
+        //                    break;
+        //                case "vendor":
+        //                    detailsUrl = Url.Action("Edit", "Vendor", new { id = x.EntityId });
+        //                    break;
+        //                default:
+        //                    break;
+        //            }
 
-                    return new UrlRecordModel
-                    {
-                        Id = x.Id,
-                        Name = x.Slug,
-                        EntityId = x.EntityId,
-                        EntityName = x.EntityName,
-                        IsActive = x.IsActive,
-                        Language = languageName,
-                        DetailsUrl = detailsUrl
-                    };
-                }),
-                Total = urlRecords.TotalCount
-            };
-            return Json(gridModel);
-        }
-        [HttpPost]
-        public ActionResult DeleteSelectedSeNames(ICollection<int> selectedIds)
-        {
-            if (!_permissionService.Authorize(StandardPermissionProvider.ManageMaintenance))
-                return AccessDeniedView();
+        //            return new UrlRecordModel
+        //            {
+        //                Id = x.Id,
+        //                Name = x.Slug,
+        //                EntityId = x.EntityId,
+        //                EntityName = x.EntityName,
+        //                IsActive = x.IsActive,
+        //                Language = languageName,
+        //                DetailsUrl = detailsUrl
+        //            };
+        //        }),
+        //        Total = urlRecords.TotalCount
+        //    };
+        //    return Json(gridModel);
+        //}
+        //[HttpPost]
+        //public ActionResult DeleteSelectedSeNames(ICollection<int> selectedIds)
+        //{
+        //    if (!_permissionService.Authorize(StandardPermissionProvider.ManageMaintenance))
+        //        return AccessDeniedView();
 
-            if (selectedIds != null)
-            {
-                var urlRecords = new List<UrlRecord>();
-                foreach (var id in selectedIds)
-                {
-                    var urlRecord = _urlRecordService.GetUrlRecordById(id);
-                    if (urlRecord != null)
-                        urlRecords.Add(urlRecord);
-                }
-                foreach (var urlRecord in urlRecords)
-                    _urlRecordService.DeleteUrlRecord(urlRecord);
-            }
+        //    if (selectedIds != null)
+        //    {
+        //        var urlRecords = new List<UrlRecord>();
+        //        foreach (var id in selectedIds)
+        //        {
+        //            var urlRecord = _urlRecordService.GetUrlRecordById(id);
+        //            if (urlRecord != null)
+        //                urlRecords.Add(urlRecord);
+        //        }
+        //        foreach (var urlRecord in urlRecords)
+        //            _urlRecordService.DeleteUrlRecord(urlRecord);
+        //    }
 
-            return Json(new { Result = true });
-        }
+        //    return Json(new { Result = true });
+        //}
 
 
         //[ChildActionOnly]

@@ -518,6 +518,14 @@ namespace Ks.Services.Installation
                 KsSystemLastVisitedPage = false,
                 SuffixDeletedCustomers = false,
             });
+
+            settingService.SaveSetting(new AdminAreaSettings
+            {
+                DefaultGridPageSize = 15,
+                GridPageSizes = "10, 15, 20, 50, 100",
+                RichEditorAdditionalSettings = null,
+                RichEditorAllowJavaScript = false
+            });
         }
 
         protected virtual void InstallActivityLogTypes()

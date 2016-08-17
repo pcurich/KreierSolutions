@@ -14,6 +14,7 @@
         public static string City { get { return "CityId"; } }
         public static string CountryId { get { return "CountryId"; } }
         public static string StateProvinceId { get { return "StateProvinceId"; } }
+        public static string CityId { get { return "CityId"; } }
         public static string Phone { get { return "Phone"; } }
         public static string Fax { get { return "Fax"; } }
         public static string VatNumber { get { return "VatNumber"; } }

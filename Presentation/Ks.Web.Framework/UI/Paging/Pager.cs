@@ -9,14 +9,15 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using Ks.Core;
 using Ks.Core.Infrastructure;
+using Ks.Services.Localization;
 
 namespace Ks.Web.Framework.UI.Paging
 {
-	/// <summary>
+    /// <summary>
     /// Renders a pager component from an IPageableModel datasource.
-	/// </summary>
-	public partial class Pager : IHtmlString
-	{
+    /// </summary>
+    public partial class Pager : IHtmlString
+    {
         protected readonly IPageableModel model;
         protected readonly ViewContext viewContext;
         protected string pageQueryName = "page";
@@ -32,24 +33,24 @@ namespace Ks.Web.Framework.UI.Paging
         protected Func<int, string> urlBuilder;
         protected IList<string> booleanParameterNames;
 
-		public Pager(IPageableModel model, ViewContext context)
-		{
+        public Pager(IPageableModel model, ViewContext context)
+        {
             this.model = model;
             this.viewContext = context;
             this.urlBuilder = CreateDefaultUrl;
             this.booleanParameterNames = new List<string>();
-		}
+        }
 
-		protected ViewContext ViewContext 
-		{
-			get { return viewContext; }
-		}
-        
+        protected ViewContext ViewContext
+        {
+            get { return viewContext; }
+        }
+
         public Pager QueryParam(string value)
-		{
+        {
             this.pageQueryName = value;
-			return this;
-		}
+            return this;
+        }
         public Pager ShowTotalSummary(bool value)
         {
             this.showTotalSummary = value;
@@ -95,11 +96,11 @@ namespace Ks.Web.Framework.UI.Paging
             this.individualPagesDisplayedCount = value;
             return this;
         }
-		public Pager Link(Func<int, string> value)
-		{
+        public Pager Link(Func<int, string> value)
+        {
             this.urlBuilder = value;
-			return this;
-		}
+            return this;
+        }
         //little hack here due to ugly MVC implementation
         //find more info here: http://www.mindstorminteractive.com/topics/jquery-fix-asp-net-mvc-checkbox-truefalse-value/
         public Pager BooleanParameterName(string paramName)
@@ -112,16 +113,17 @@ namespace Ks.Web.Framework.UI.Paging
         {
             return ToHtmlString();
         }
-		public virtual string ToHtmlString()
-		{
-            if (model.TotalItems == 0) 
-				return null;
+        public virtual string ToHtmlString()
+        {
+            if (model.TotalItems == 0)
+                return null;
+            var localizationService = EngineContext.Current.Resolve<ILocalizationService>();
 
             var links = new StringBuilder();
             if (showTotalSummary && (model.TotalPages > 0))
             {
                 links.Append("<li class=\"total-summary\">");
-                links.Append(string.Format("Paguina {0} of {1} ({2} total)", model.PageIndex + 1, model.TotalPages, model.TotalItems));
+                links.Append(string.Format(localizationService.GetResource("Pager.CurrentPage"), model.PageIndex + 1, model.TotalPages, model.TotalItems));
                 links.Append("</li>");
             }
             if (showPagerItems && (model.TotalPages > 1))
@@ -131,7 +133,7 @@ namespace Ks.Web.Framework.UI.Paging
                     //first page
                     if ((model.PageIndex >= 3) && (model.TotalPages > individualPagesDisplayedCount))
                     {
-                        links.Append(CreatePageLink(1, "Primero", "first-page"));
+                        links.Append(CreatePageLink(1, localizationService.GetResource("Pager.First"), "first-page"));
                     }
                 }
                 if (showPrevious)
@@ -139,7 +141,7 @@ namespace Ks.Web.Framework.UI.Paging
                     //previous page
                     if (model.PageIndex > 0)
                     {
-                        links.Append(CreatePageLink(model.PageIndex, "Anterior", "previous-page"));
+                        links.Append(CreatePageLink(model.PageIndex, localizationService.GetResource("Pager.Previous"), "previous-page"));
                     }
                 }
                 if (showIndividualPages)
@@ -164,7 +166,7 @@ namespace Ks.Web.Framework.UI.Paging
                     //next page
                     if ((model.PageIndex + 1) < model.TotalPages)
                     {
-                        links.Append(CreatePageLink(model.PageIndex + 2, "Siguiente", "next-page"));
+                        links.Append(CreatePageLink(model.PageIndex + 2, localizationService.GetResource("Pager.Next"), "next-page"));
                     }
                 }
                 if (showLast)
@@ -172,7 +174,7 @@ namespace Ks.Web.Framework.UI.Paging
                     //last page
                     if (((model.PageIndex + 3) < model.TotalPages) && (model.TotalPages > individualPagesDisplayedCount))
                     {
-                        links.Append(CreatePageLink(model.TotalPages, "Ultima", "last-page"));
+                        links.Append(CreatePageLink(model.TotalPages, localizationService.GetResource("Pager.Last"), "last-page"));
                     }
                 }
             }
@@ -183,12 +185,12 @@ namespace Ks.Web.Framework.UI.Paging
                 result = "<ul>" + result + "</ul>";
             }
             return result;
-		}
-	    public virtual bool IsEmpty()
-	    {
+        }
+        public virtual bool IsEmpty()
+        {
             var html = ToString();
-	        return string.IsNullOrEmpty(html);
-	    }
+            return string.IsNullOrEmpty(html);
+        }
 
         protected virtual int GetFirstIndividualPageIndex()
         {
@@ -221,35 +223,35 @@ namespace Ks.Web.Framework.UI.Paging
             }
             return (model.PageIndex + num);
         }
-		protected virtual string CreatePageLink(int pageNumber, string text, string cssClass)
-		{
+        protected virtual string CreatePageLink(int pageNumber, string text, string cssClass)
+        {
             var liBuilder = new TagBuilder("li");
             if (!String.IsNullOrWhiteSpace(cssClass))
                 liBuilder.AddCssClass(cssClass);
 
-			var aBuilder = new TagBuilder("a");
+            var aBuilder = new TagBuilder("a");
             aBuilder.SetInnerText(text);
             aBuilder.MergeAttribute("href", urlBuilder(pageNumber));
 
             liBuilder.InnerHtml += aBuilder;
 
             return liBuilder.ToString(TagRenderMode.Normal);
-		}
+        }
         protected virtual string CreateDefaultUrl(int pageNumber)
-		{
-			var routeValues = new RouteValueDictionary();
+        {
+            var routeValues = new RouteValueDictionary();
 
             var parametersWithEmptyValues = new List<string>();
-			foreach (var key in viewContext.RequestContext.HttpContext.Request.QueryString.AllKeys.Where(key => key != null))
-			{
+            foreach (var key in viewContext.RequestContext.HttpContext.Request.QueryString.AllKeys.Where(key => key != null))
+            {
                 var value = viewContext.RequestContext.HttpContext.Request.QueryString[key];
                 if (renderEmptyParameters && String.IsNullOrEmpty(value))
-			    {
+                {
                     //we store query string parameters with empty values separately
                     //we need to do it because they are not properly processed in the UrlHelper.GenerateUrl method (dropped for some reasons)
                     parametersWithEmptyValues.Add(key);
-			    }
-			    else
+                }
+                else
                 {
                     if (booleanParameterNames.Contains(key, StringComparer.InvariantCultureIgnoreCase))
                     {
@@ -261,8 +263,8 @@ namespace Ks.Web.Framework.UI.Paging
                         }
                     }
                     routeValues[key] = value;
-			    }
-			}
+                }
+            }
 
             if (pageNumber > 1)
             {
@@ -277,7 +279,7 @@ namespace Ks.Web.Framework.UI.Paging
                 }
             }
 
-			var url = UrlHelper.GenerateUrl(null, null, null, routeValues, RouteTable.Routes, viewContext.RequestContext, true);
+            var url = UrlHelper.GenerateUrl(null, null, null, routeValues, RouteTable.Routes, viewContext.RequestContext, true);
             if (renderEmptyParameters && parametersWithEmptyValues.Count > 0)
             {
                 //we add such parameters manually because UrlHelper.GenerateUrl() ignores them
@@ -287,7 +289,7 @@ namespace Ks.Web.Framework.UI.Paging
                     url = webHelper.ModifyQueryString(url, key + "=", null);
                 }
             }
-			return url;
-		}
-	}
+            return url;
+        }
+    }
 }
