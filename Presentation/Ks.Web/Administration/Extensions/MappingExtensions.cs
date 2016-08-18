@@ -3,10 +3,12 @@ using AutoMapper;
 using Ks.Admin.Models.Common;
 using Ks.Admin.Models.Customers;
 using Ks.Admin.Models.Localization;
+using Ks.Admin.Models.Logging;
 using Ks.Core.Domain.Catalog;
 using Ks.Core.Domain.Common;
 using Ks.Core.Domain.Customers;
 using Ks.Core.Domain.Localization;
+using Ks.Core.Domain.Logging;
 using Ks.Services.Common;
 
 namespace Ks.Admin.Extensions
@@ -168,6 +170,35 @@ namespace Ks.Admin.Extensions
 
                 model.CustomAddressAttributes.Add(attributeModel);
             }
+        }
+
+        #endregion
+
+        #region Log
+
+        public static LogModel ToModel(this Log entity)
+        {
+            return entity.MapTo<Log, LogModel>();
+        }
+
+        public static Log ToEntity(this LogModel model)
+        {
+            return model.MapTo<LogModel, Log>();
+        }
+
+        public static Log ToEntity(this LogModel model, Log destination)
+        {
+            return model.MapTo(destination);
+        }
+
+        public static ActivityLogTypeModel ToModel(this ActivityLogType entity)
+        {
+            return entity.MapTo<ActivityLogType, ActivityLogTypeModel>();
+        }
+
+        public static CustomerModel.ActivityLogModel ToModel(this ActivityLog entity)
+        {
+            return entity.MapTo<ActivityLog, CustomerModel.ActivityLogModel>();
         }
 
         #endregion

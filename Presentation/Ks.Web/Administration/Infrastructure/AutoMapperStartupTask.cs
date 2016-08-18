@@ -3,10 +3,12 @@ using Ks.Admin.Models.Common;
 using Ks.Admin.Models.Customers;
 using Ks.Admin.Models.Directory;
 using Ks.Admin.Models.Localization;
+using Ks.Admin.Models.Logging;
 using Ks.Core.Domain.Common;
 using Ks.Core.Domain.Customers;
 using Ks.Core.Domain.Directory;
 using Ks.Core.Domain.Localization;
+using Ks.Core.Domain.Logging;
 using Ks.Core.Infrastructure;
 
 namespace Ks.Admin.Infrastructure
@@ -92,6 +94,29 @@ namespace Ks.Admin.Infrastructure
             Mapper.CreateMap<CustomerRoleModel, CustomerRole>()
                 .ForMember(dest => dest.PermissionRecords, mo => mo.Ignore());
 
+            #endregion
+
+            #region logs
+            Mapper.CreateMap<Log, LogModel>()
+                .ForMember(dest => dest.CustomerEmail, mo => mo.Ignore())
+                .ForMember(dest => dest.CreatedOn, mo => mo.Ignore())
+                .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
+            Mapper.CreateMap<LogModel, Log>()
+                .ForMember(dest => dest.CreatedOnUtc, mo => mo.Ignore())
+                .ForMember(dest => dest.LogLevelId, mo => mo.Ignore())
+                .ForMember(dest => dest.Customer, mo => mo.Ignore());
+            #endregion
+
+            #region ActivityLogType
+            Mapper.CreateMap<ActivityLogTypeModel, ActivityLogType>()
+                .ForMember(dest => dest.SystemKeyword, mo => mo.Ignore());
+            Mapper.CreateMap<ActivityLogType, ActivityLogTypeModel>()
+                .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
+            Mapper.CreateMap<ActivityLog, ActivityLogModel>()
+                .ForMember(dest => dest.ActivityLogTypeName, mo => mo.MapFrom(src => src.ActivityLogType.Name))
+                .ForMember(dest => dest.CustomerEmail, mo => mo.MapFrom(src => src.Customer.Email))
+                .ForMember(dest => dest.CreatedOn, mo => mo.Ignore())
+                .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
             #endregion
         }
 
