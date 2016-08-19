@@ -4,6 +4,7 @@ using Ks.Admin.Models.Common;
 using Ks.Admin.Models.Customers;
 using Ks.Admin.Models.Localization;
 using Ks.Admin.Models.Logging;
+using Ks.Admin.Models.Settings;
 using Ks.Core.Domain.Catalog;
 using Ks.Core.Domain.Common;
 using Ks.Core.Domain.Customers;
@@ -174,6 +175,25 @@ namespace Ks.Admin.Extensions
 
         #endregion
 
+        #region Address attributes
+
+        public static AddressAttributeModel ToModel(this AddressAttribute entity)
+        {
+            return entity.MapTo<AddressAttribute, AddressAttributeModel>();
+        }
+
+        public static AddressAttribute ToEntity(this AddressAttributeModel model)
+        {
+            return model.MapTo<AddressAttributeModel, AddressAttribute>();
+        }
+
+        public static AddressAttribute ToEntity(this AddressAttributeModel model, AddressAttribute destination)
+        {
+            return model.MapTo(destination);
+        }
+
+        #endregion
+
         #region Log
 
         public static LogModel ToModel(this Log entity)
@@ -200,6 +220,31 @@ namespace Ks.Admin.Extensions
         {
             return entity.MapTo<ActivityLog, CustomerModel.ActivityLogModel>();
         }
+
+        #endregion
+
+        #region Setting
+
+        #region CustomerUser
+
+        public static CustomerUserSettingsModel.CustomerSettingsModel ToModel(this CustomerSettings entity)
+        {
+            return entity.MapTo<CustomerSettings, CustomerUserSettingsModel.CustomerSettingsModel>();
+        }
+        public static CustomerSettings ToEntity(this CustomerUserSettingsModel.CustomerSettingsModel model, CustomerSettings destination)
+        {
+            return model.MapTo(destination);
+        }
+        public static CustomerUserSettingsModel.AddressSettingsModel ToModel(this AddressSettings entity)
+        {
+            return entity.MapTo<AddressSettings, CustomerUserSettingsModel.AddressSettingsModel>();
+        }
+        public static AddressSettings ToEntity(this CustomerUserSettingsModel.AddressSettingsModel model, AddressSettings destination)
+        {
+            return model.MapTo(destination);
+        }
+
+        #endregion
 
         #endregion
     }

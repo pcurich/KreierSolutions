@@ -4,6 +4,7 @@ using Ks.Admin.Models.Customers;
 using Ks.Admin.Models.Directory;
 using Ks.Admin.Models.Localization;
 using Ks.Admin.Models.Logging;
+using Ks.Admin.Models.Settings;
 using Ks.Core.Domain.Common;
 using Ks.Core.Domain.Customers;
 using Ks.Core.Domain.Directory;
@@ -117,6 +118,26 @@ namespace Ks.Admin.Infrastructure
                 .ForMember(dest => dest.CustomerEmail, mo => mo.MapFrom(src => src.Customer.Email))
                 .ForMember(dest => dest.CreatedOn, mo => mo.Ignore())
                 .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
+            #endregion
+
+            #region Setting
+
+            #region CustomerUser
+
+            Mapper.CreateMap<CustomerSettings, CustomerUserSettingsModel.CustomerSettingsModel>()
+                .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
+            Mapper.CreateMap<CustomerUserSettingsModel.CustomerSettingsModel, CustomerSettings>()
+                .ForMember(dest => dest.HashedPasswordFormat, mo => mo.Ignore())
+                .ForMember(dest => dest.AvatarMaximumSizeBytes, mo => mo.Ignore())
+                //.ForMember(dest => dest.DownloadableProductsValidateUser, mo => mo.Ignore())
+                .ForMember(dest => dest.OnlineCustomerMinutes, mo => mo.Ignore())
+                .ForMember(dest => dest.SuffixDeletedCustomers, mo => mo.Ignore());
+            Mapper.CreateMap<AddressSettings, CustomerUserSettingsModel.AddressSettingsModel>()
+                .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
+            Mapper.CreateMap<CustomerUserSettingsModel.AddressSettingsModel, AddressSettings>();
+
+            #endregion
+
             #endregion
         }
 
