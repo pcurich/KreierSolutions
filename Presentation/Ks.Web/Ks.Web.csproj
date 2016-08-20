@@ -177,6 +177,7 @@
     <Compile Include="Models\Common\LanguageModel.cs" />
     <Compile Include="Models\Common\LanguageSelectorModel.cs" />
     <Compile Include="Models\Common\PagerModel.cs" />
+    <Compile Include="Models\Customer\AccountActivationModel.cs" />
     <Compile Include="Models\Customer\ChangePasswordModel.cs" />
     <Compile Include="Models\Customer\CustomerAddressEditModel.cs" />
     <Compile Include="Models\Customer\CustomerAddressListModel.cs" />
@@ -184,6 +185,8 @@
     <Compile Include="Models\Customer\CustomerInfoModel.cs" />
     <Compile Include="Models\Customer\CustomerNavigationModel.cs" />
     <Compile Include="Models\Customer\LoginModel.cs" />
+    <Compile Include="Models\Customer\RegisterModel.cs" />
+    <Compile Include="Models\Customer\RegisterResultModel.cs" />
     <Compile Include="Models\Install\InstallModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Validators\Common\AddressValidator.cs" />
@@ -191,6 +194,7 @@
     <Compile Include="Validators\Customer\CustomerAttributeModel.cs" />
     <Compile Include="Validators\Customer\CustomerInfoValidator.cs" />
     <Compile Include="Validators\Customer\LoginValidator.cs" />
+    <Compile Include="Validators\Customer\RegisterValidator.cs" />
     <Compile Include="Validators\Install\InstallValidator.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -1788,6 +1792,9 @@
     <Content Include="Views\Customer\Avatar.cshtml" />
     <Content Include="Views\Customer\Addresses.cshtml" />
     <Content Include="Views\Customer\AddressAdd.cshtml" />
+    <Content Include="Views\Customer\AddressEdit.cshtml" />
+    <Content Include="Views\Customer\Register.cshtml" />
+    <Content Include="Views\Customer\RegisterResult.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

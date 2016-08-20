@@ -29,6 +29,7 @@ using Ks.Services.KsSystems;
 using Ks.Services.Localization;
 using Ks.Services.Logging;
 using Ks.Services.Media;
+using Ks.Services.Messages;
 using Ks.Services.Security;
 using Ks.Services.Seo;
 using Ks.Services.Tasks;
@@ -201,6 +202,8 @@ namespace Ks.Web.Framework
                 //standard file system
                 builder.RegisterType<PictureService>().As<IPictureService>().InstancePerLifetimeScope();
             }
+
+            builder.RegisterType<FakeWorkflowMessageService>().As<IWorkflowMessageService>().InstancePerLifetimeScope();
 
             builder.RegisterType<EncryptionService>().As<IEncryptionService>().InstancePerLifetimeScope();
             builder.RegisterType<FormsAuthenticationService>().As<IAuthenticationService>().InstancePerLifetimeScope();

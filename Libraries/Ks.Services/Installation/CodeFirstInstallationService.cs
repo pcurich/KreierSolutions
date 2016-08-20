@@ -509,7 +509,7 @@ namespace Ks.Services.Installation
                 StateProvinceRequired = false,
                 PhoneEnabled = false,
                 FaxEnabled = false,
-                //AcceptPrivacyPolicyEnabled = false,
+                AcceptPrivacyPolicyEnabled = false,
                 //NewsletterEnabled = true,
                 //NewsletterTickedByDefault = true,
                 //HideNewsletterBlock = false,
