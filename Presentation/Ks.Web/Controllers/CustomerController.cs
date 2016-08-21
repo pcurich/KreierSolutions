@@ -546,7 +546,13 @@ namespace Ks.Web.Controllers
 
                         model.AvailableStates.Add(new SelectListItem
                         {
-                            Text = _localizationService.GetResource(anyCountrySelected ? "Address.OtherNonUS" : "Address.SelectState"),
+                            Text = _localizationService.GetResource(anyCountrySelected ? "Address.Other" : "Address.SelectState"),
+                            Value = "0"
+                        });
+
+                        model.AvailableCities.Add(new SelectListItem 
+                        {
+                            Text = _localizationService.GetResource(anyCountrySelected ? "Address.Other" : "Address.SelectCity"),
                             Value = "0"
                         });
                     }

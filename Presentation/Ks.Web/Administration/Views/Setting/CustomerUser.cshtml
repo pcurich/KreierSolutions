@@ -20,9 +20,9 @@
     @Html.ValidationSummary(false)
 
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             $("#customersettings-edit").kendoTabStrip({
-                animation:  {
+                animation: {
                     open: {
                         effects: "fadeIn"
                     }
@@ -297,6 +297,7 @@
             $("#@Html.FieldIdFor(model => model.CustomerSettings.DateOfBirthRequired)").click(toggleCustomerRequiredFormField);
             $("#@Html.FieldIdFor(model => model.CustomerSettings.CountryEnabled)").click(toggleCustomerCountryFormField);
             $("#@Html.FieldIdFor(model => model.CustomerSettings.StateProvinceEnabled)").click(toggleCustomerStateProvinceFormField);
+            $("#@Html.FieldIdFor(model => model.CustomerSettings.CityEnabled)").click(toggleCustomerCityFormField);
             $("#@Html.FieldIdFor(model => model.CustomerSettings.CompanyEnabled)").click(toggleCustomerRequiredFormField);
             $("#@Html.FieldIdFor(model => model.CustomerSettings.StreetAddressEnabled)").click(toggleCustomerRequiredFormField);
             $("#@Html.FieldIdFor(model => model.CustomerSettings.StreetAddress2Enabled)").click(toggleCustomerRequiredFormField);
@@ -310,6 +311,7 @@
 
             toggleCustomerCountryFormField();
             toggleCustomerStateProvinceFormField();
+            toggleCustomerCityFormField();
             toggleCustomerRequiredFormField();
             toggleNewsletterEnabledField();
             toggleHideNewsletterBlock();
@@ -331,11 +333,21 @@
             if ($('#@Html.FieldIdFor(model => model.CustomerSettings.CountryEnabled)').is(':checked') &&
                 $('#@Html.FieldIdFor(model => model.CustomerSettings.StateProvinceEnabled)').is(':checked')) {
                 $('#pnlCustomerStateProvinceRequired').show();
+                $('#pnlCustomerCityEnabled').show();
             } else {
                 $('#pnlCustomerStateProvinceRequired').hide();
+                $('#pnlCustomerCityEnabled').hide();
             }
         }
-
+        function toggleCustomerCityFormField() {
+            if ($('#@Html.FieldIdFor(model => model.CustomerSettings.CountryEnabled)').is(':checked') &&
+                $('#@Html.FieldIdFor(model => model.CustomerSettings.StateProvinceEnabled)').is(':checked') &&
+                $('#@Html.FieldIdFor(model => model.CustomerSettings.CityEnabled)').is(':checked')) {
+                $('#pnlCustomerCityRequired').show();
+            } else {
+                $('#pnlCustomerCityRequired').hide();
+            }
+        }
         function toggleCustomerRequiredFormField() {
             if ($('#@Html.FieldIdFor(model => model.CustomerSettings.DateOfBirthEnabled)').is(':checked')) {
                 $('#pnlCustomerDateOfBirthRequired').show();
@@ -527,24 +539,6 @@
         </tr>
         <tr>
             <td class="adminTitle">
-                @Html.KsLabelFor(model => model.CustomerSettings.CityEnabled):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.CustomerSettings.CityEnabled)
-                @Html.ValidationMessageFor(model => model.CustomerSettings.CityEnabled)
-            </td>
-        </tr>
-        <tr id="pnlCustomerCityRequired">
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.CustomerSettings.CityRequired):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.CustomerSettings.CityRequired)
-                @Html.ValidationMessageFor(model => model.CustomerSettings.CityRequired)
-            </td>
-        </tr>
-        <tr>
-            <td class="adminTitle">
                 @Html.KsLabelFor(model => model.CustomerSettings.CountryEnabled):
             </td>
             <td class="adminData">
@@ -577,6 +571,24 @@
             <td class="adminData">
                 @Html.EditorFor(model => model.CustomerSettings.StateProvinceRequired)
                 @Html.ValidationMessageFor(model => model.CustomerSettings.StateProvinceRequired)
+            </td>
+        </tr>
+        <tr id="pnlCustomerCityEnabled">
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.CustomerSettings.CityEnabled):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.CustomerSettings.CityEnabled)
+                @Html.ValidationMessageFor(model => model.CustomerSettings.CityEnabled)
+            </td>
+        </tr>
+        <tr id="pnlCustomerCityRequired">
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.CustomerSettings.CityRequired):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.CustomerSettings.CityRequired)
+                @Html.ValidationMessageFor(model => model.CustomerSettings.CityRequired)
             </td>
         </tr>
         <tr>

@@ -51,7 +51,7 @@
             {
                 <div class="message-error">@validationSummary</div>
             }
-            @Html.Partial("_ExternalAuthentication.AssociateMessage")
+           @* @Html.Partial("_ExternalAuthentication.AssociateMessage")*@
             <div class="fieldset">
                 <div class="title">
                     <strong>@T("Account.YourPersonalDetails")</strong>
@@ -97,7 +97,7 @@
                                 Model.DateOfBirthDay,
                                 Model.DateOfBirthMonth,
                                 Model.DateOfBirthYear)
-                            @if (Model.DateOfBirthRequired)
+                            <@if (Model.DateOfBirthRequired)
                             {
                                 @Html.RequiredHint()
                             }
@@ -128,7 +128,7 @@
                     }
                 </div>
             </div>
-            @if (Model.CompanyEnabled || Model.DisplayVatNumber)
+            @if (Model.CompanyEnabled )
             {
                 <div class="fieldset">
                     <div class="title">
@@ -147,14 +147,7 @@
                                 @Html.ValidationMessageFor(model => model.Company)
                             </div>
                         }
-                        @if (Model.DisplayVatNumber)
-                        {
-                            <div class="inputs">
-                                @Html.LabelFor(model => model.VatNumber, new { }, ":")
-                                @Html.EditorFor(model => model.VatNumber)
-                                <span class="vat-note"><em>@T("Account.Fields.VatNumber.Note")</em></span>
-                            </div>
-                        }
+                        
                     </div>
                 </div>
             }
@@ -202,18 +195,6 @@
                                 @Html.ValidationMessageFor(model => model.ZipPostalCode)
                             </div>
                         }
-                        @if (Model.CityEnabled)
-                        {
-                            <div class="inputs">
-                                @Html.LabelFor(model => model.City, new { }, ":")
-                                @Html.EditorFor(model => model.City)
-                                @if (Model.CityRequired)
-                                {
-                                    @Html.RequiredHint()
-                                }
-                                @Html.ValidationMessageFor(model => model.City)
-                            </div>
-                        }
                         @if (Model.CountryEnabled)
                         {
                             <div class="inputs">
@@ -236,6 +217,20 @@
                                     @Html.RequiredHint()
                                 }
                                 @Html.ValidationMessageFor(model => model.StateProvinceId)
+                                <span id="states-loading-progress" style="display: none;" class="please-wait">@T("Common.Wait...")</span>
+                            </div>
+                        }
+
+                        @if (Model.CountryEnabled && Model.StateProvinceEnabled && Model.CityEnabled)
+                        {
+                            <div class="inputs">
+                                @Html.LabelFor(model => model.CityId, new { }, ":")
+                                @Html.DropDownList("CityId", Model.AvailableCities)
+                                @if (Model.CityRequired)
+                                {
+                                    @Html.RequiredHint()
+                                }
+                                @Html.ValidationMessageFor(model => model.CityId)
                                 <span id="states-loading-progress" style="display: none;" class="please-wait">@T("Common.Wait...")</span>
                             </div>
                         }
@@ -276,28 +271,7 @@
                     </div>
                 </div>
             }
-            @if (Model.NewsletterEnabled || Model.CustomerAttributes.Count > 0)
-            {
-                <div class="fieldset">
-                    <div class="title">
-                        <strong>@T("Account.Options")</strong>
-                    </div>
-                    <div class="form-fields">
-                        @if (Model.NewsletterEnabled)
-                        {
-                            <div class="inputs">
-                                @Html.LabelFor(model => model.Newsletter, new { }, ":")
-                                @Html.EditorFor(model => model.Newsletter)
-                                @Html.ValidationMessageFor(model => model.Newsletter)
-                            </div>
-                        }
-                        @if (Model.CustomerAttributes.Count > 0)
-                        {
-                            @Html.Partial("_CustomerAttributes", Model.CustomerAttributes)
-                        }
-                    </div>
-                </div>
-            }
+             
             @if (Model.AllowCustomersToSetTimeZone)
             {
                 <div class="fieldset">
