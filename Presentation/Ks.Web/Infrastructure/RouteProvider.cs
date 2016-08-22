@@ -480,6 +480,12 @@ namespace Ks.Web.Infrastructure
                             new { controller = "Country", action = "GetStatesByCountryId" },
                             new[] { "Ks.Web.Controllers" });
 
+            //get city list by state ID  (AJAX link)
+            routes.MapRoute("GetCitiesByStateId",
+                            "country/getcitiesbystateid/",
+                            new { controller = "StatesProvinces", action = "GetCitiesByStateId" },
+                            new[] { "Ks.Web.Controllers" });
+
             //EU Cookie law accept button handler (AJAX link)
             routes.MapRoute("EuCookieLawAccept",
                             "eucookielawaccept",

@@ -1,4 +1,6 @@
 ﻿using Ks.Core.Caching;
+using Ks.Core.Domain.Catalog;
+using Ks.Core.Domain.Configuration;
 using Ks.Core.Domain.Directory;
 using Ks.Core.Domain.Localization;
 using Ks.Core.Events;
@@ -15,7 +17,23 @@ namespace Ks.Web.Infrastructure.Cache
         //currencies
         IConsumer<EntityInserted<Currency>>,
         IConsumer<EntityUpdated<Currency>>,
-        IConsumer<EntityDeleted<Currency>>
+        IConsumer<EntityDeleted<Currency>>,
+        //settings
+        IConsumer<EntityUpdated<Setting>>,
+        //specification attributes
+        IConsumer<EntityUpdated<SpecificationAttribute>>,
+        IConsumer<EntityDeleted<SpecificationAttribute>>,
+        //specification attribute options
+        IConsumer<EntityUpdated<SpecificationAttributeOption>>,
+        IConsumer<EntityDeleted<SpecificationAttributeOption>>,
+        //states/province
+        IConsumer<EntityInserted<StateProvince>>,
+        IConsumer<EntityUpdated<StateProvince>>,
+        IConsumer<EntityDeleted<StateProvince>>,
+        //cities
+        IConsumer<EntityInserted<City>>,
+        IConsumer<EntityUpdated<City>>,
+        IConsumer<EntityDeleted<City>>
     {
 
         /// <summary>
@@ -49,6 +67,37 @@ namespace Ks.Web.Infrastructure.Cache
         public const string STATEPROVINCES_PATTERN_KEY = "Ks.pres.stateprovinces";
 
 
+        /// <summary>
+        /// Key for states by country id
+        /// </summary>
+        /// <remarks>
+        /// {0} : stateprovince ID
+        /// {1} : "empty" or "select" item
+        /// {2} : language ID
+        /// </remarks>
+        public const string CITY_BY_STATEPROVINCES_MODEL_KEY = "Ks.pres.city.bystateprovince-{0}-{1}-{2}";
+        public const string CITY_PATTERN_KEY = "Ks.pres.cities";
+
+        /// <summary>
+        /// Key for sitemap on the sitemap page
+        /// </summary>
+        /// <remarks>
+        /// {0} : language id
+        /// {1} : roles of the current user
+        /// {2} : current store ID
+        /// </remarks>
+        public const string SITEMAP_PAGE_MODEL_KEY = "Ks.pres.sitemap.page-{0}-{1}-{2}";
+        /// <summary>
+        /// Key for sitemap on the sitemap SEO page
+        /// </summary>
+        /// <remarks>
+        /// {0} : language id
+        /// {1} : roles of the current user
+        /// {2} : current store ID
+        /// </remarks>
+        public const string SITEMAP_SEO_MODEL_KEY = "Ks.pres.sitemap.seo-{0}-{1}-{2}";
+        public const string SITEMAP_PATTERN_KEY = "Ks.pres.sitemap";
+
         private readonly ICacheManager _cacheManager;
 
         public ModelCacheEventConsumer()
@@ -81,6 +130,7 @@ namespace Ks.Web.Infrastructure.Cache
         {
             //clear all localizable models
             _cacheManager.RemoveByPattern(STATEPROVINCES_PATTERN_KEY);
+            _cacheManager.RemoveByPattern(CITY_PATTERN_KEY);
             _cacheManager.RemoveByPattern(AVAILABLE_LANGUAGES_PATTERN_KEY);
             _cacheManager.RemoveByPattern(AVAILABLE_CURRENCIES_PATTERN_KEY);
         }
@@ -98,6 +148,67 @@ namespace Ks.Web.Infrastructure.Cache
             _cacheManager.RemoveByPattern(AVAILABLE_LANGUAGES_PATTERN_KEY);
             _cacheManager.RemoveByPattern(AVAILABLE_CURRENCIES_PATTERN_KEY);
         }
+
+        public void HandleEvent(EntityUpdated<Setting> eventMessage)
+        {
+            _cacheManager.RemoveByPattern(SITEMAP_PATTERN_KEY); //depends on distinct sitemap settings
+        }
+
+        public void HandleEvent(EntityUpdated<SpecificationAttribute> eventMessage)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void HandleEvent(EntityDeleted<SpecificationAttribute> eventMessage)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void HandleEvent(EntityUpdated<SpecificationAttributeOption> eventMessage)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void HandleEvent(EntityDeleted<SpecificationAttributeOption> eventMessage)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        #region State/province
+
+        public void HandleEvent(EntityInserted<StateProvince> eventMessage)
+        {
+            _cacheManager.RemoveByPattern(STATEPROVINCES_PATTERN_KEY);
+        }
+        public void HandleEvent(EntityUpdated<StateProvince> eventMessage)
+        {
+            _cacheManager.RemoveByPattern(STATEPROVINCES_PATTERN_KEY);
+        }
+        public void HandleEvent(EntityDeleted<StateProvince> eventMessage)
+        {
+            _cacheManager.RemoveByPattern(STATEPROVINCES_PATTERN_KEY);
+        }
+
+        #endregion
+
+        #region City
+
+        public void HandleEvent(EntityInserted<City> eventMessage)
+        {
+             _cacheManager.RemoveByPattern(CITY_PATTERN_KEY);
+        }
+
+        public void HandleEvent(EntityUpdated<City> eventMessage)
+        {
+             _cacheManager.RemoveByPattern(CITY_PATTERN_KEY);
+        }
+
+        public void HandleEvent(EntityDeleted<City> eventMessage)
+        {
+             _cacheManager.RemoveByPattern(CITY_PATTERN_KEY);
+        }
+
+        #endregion
 
         #endregion
     }
