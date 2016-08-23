@@ -14,6 +14,7 @@ namespace Ks.Web.Validators.Customer
     {
         public CustomerInfoValidator(ILocalizationService localizationService,
             IStateProvinceService stateProvinceService,
+            ICityService cityService,
             CustomerSettings customerSettings)
         {
             RuleFor(x => x.Email).NotEmpty().WithMessage(localizationService.GetResource("Account.Fields.Email.Required"));
@@ -52,6 +53,26 @@ namespace Ks.Web.Validators.Customer
                     return null;
                 });
             }
+            if (customerSettings.CountryEnabled &&
+                customerSettings.StateProvinceEnabled &&
+                customerSettings.CityEnabled && customerSettings.CityRequired)
+            {
+                Custom(x =>
+                {
+                    //does selected country have states?
+                    var hasCities = cityService.GetCitiesByStateProvinceId(x.StateProvinceId).Count > 0;
+                    if (hasCities)
+                    {
+                        //if yes, then ensure that a city is selected
+                        if (x.CityId == 0)
+                        {
+                            return new ValidationFailure("CityId", localizationService.GetResource("Account.Fields.City.Required"));
+                        }
+                    }
+                    return null;
+                });
+            }
+
             if (customerSettings.DateOfBirthEnabled && customerSettings.DateOfBirthRequired)
             {
                 Custom(x =>
@@ -86,10 +107,6 @@ namespace Ks.Web.Validators.Customer
             if (customerSettings.ZipPostalCodeRequired && customerSettings.ZipPostalCodeEnabled)
             {
                 RuleFor(x => x.ZipPostalCode).NotEmpty().WithMessage(localizationService.GetResource("Account.Fields.ZipPostalCode.Required"));
-            }
-            if (customerSettings.CityRequired && customerSettings.CityEnabled)
-            {
-                RuleFor(x => x.City).NotEmpty().WithMessage(localizationService.GetResource("Account.Fields.City.Required"));
             }
             if (customerSettings.PhoneRequired && customerSettings.PhoneEnabled)
             {

@@ -163,7 +163,7 @@ namespace Ks.Web.Controllers
 
             if (!excludeProperties)
             {
-                model.VatNumber = customer.GetAttribute<string>(SystemCustomerAttributeNames.VatNumber);
+                //model.VatNumber = customer.GetAttribute<string>(SystemCustomerAttributeNames.VatNumber);
                 model.FirstName = customer.GetAttribute<string>(SystemCustomerAttributeNames.FirstName);
                 model.LastName = customer.GetAttribute<string>(SystemCustomerAttributeNames.LastName);
                 model.Gender = customer.GetAttribute<string>(SystemCustomerAttributeNames.Gender);
@@ -178,7 +178,7 @@ namespace Ks.Web.Controllers
                 model.StreetAddress = customer.GetAttribute<string>(SystemCustomerAttributeNames.StreetAddress);
                 model.StreetAddress2 = customer.GetAttribute<string>(SystemCustomerAttributeNames.StreetAddress2);
                 model.ZipPostalCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.ZipPostalCode);
-                model.City = customer.GetAttribute<string>(SystemCustomerAttributeNames.City);
+                model.CityId = customer.GetAttribute<int>(SystemCustomerAttributeNames.CityId);
                 model.CountryId = customer.GetAttribute<int>(SystemCustomerAttributeNames.CountryId);
                 model.StateProvinceId = customer.GetAttribute<int>(SystemCustomerAttributeNames.StateProvinceId);
                 model.Phone = customer.GetAttribute<string>(SystemCustomerAttributeNames.Phone);
@@ -232,11 +232,34 @@ namespace Ks.Web.Controllers
 
                         model.AvailableStates.Add(new SelectListItem
                         {
-                            Text = _localizationService.GetResource(anyCountrySelected ? "Address.OtherNonUS" : "Address.SelectState"),
+                            Text = _localizationService.GetResource(anyCountrySelected ? "Address.Other" : "Address.SelectState"),
                             Value = "0"
                         });
                     }
+                }
 
+                if (_customerSettings.CityEnabled)
+                {
+                    //cities
+                    var cities = _cityService.GetCitiesByStateProvinceId(model.StateProvinceId, _workContext.WorkingLanguage.Id).ToList();
+                    if (cities.Count > 0)
+                    {
+                        model.AvailableCities.Add(new SelectListItem { Text = _localizationService.GetResource("Address.SelectCity"), Value = "0" });
+                        foreach (var s in cities)
+                        {
+                            model.AvailableCities.Add(new SelectListItem { Text = s.GetLocalized(x => x.Name), Value = s.Id.ToString(), Selected = (s.Id == model.CityId) });
+                        }
+                    }
+                }
+                else
+                {
+                    bool anyStateSelected = model.AvailableStates.Any(x => x.Selected);
+
+                    model.AvailableStates.Add(new SelectListItem
+                    {
+                        Text = _localizationService.GetResource(anyStateSelected ? "Address.Other" : "Address.SelectCity"),
+                        Value = "0"
+                    });
                 }
             }
             //model.DisplayVatNumber = _taxSettings.EuVatEnabled;
@@ -1098,12 +1121,12 @@ namespace Ks.Web.Controllers
                         _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.StreetAddress2, model.StreetAddress2);
                     if (_customerSettings.ZipPostalCodeEnabled)
                         _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.ZipPostalCode, model.ZipPostalCode);
-                    if (_customerSettings.CityEnabled)
-                        _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.City, model.City);
                     if (_customerSettings.CountryEnabled)
                         _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.CountryId, model.CountryId);
                     if (_customerSettings.CountryEnabled && _customerSettings.StateProvinceEnabled)
                         _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.StateProvinceId, model.StateProvinceId);
+                    if (_customerSettings.CountryEnabled && _customerSettings.StateProvinceEnabled && _customerSettings.CityEnabled)
+                        _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.CityId, model.CityId);
                     if (_customerSettings.PhoneEnabled)
                         _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Phone, model.Phone);
                     if (_customerSettings.FaxEnabled)

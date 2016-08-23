@@ -16,6 +16,7 @@ namespace Ks.Web.Models.Customer
             this.AvailableTimeZones = new List<SelectListItem>();
             this.AvailableCountries = new List<SelectListItem>();
             this.AvailableStates = new List<SelectListItem>();
+            this.AvailableCities = new List<SelectListItem>();
             this.AssociatedExternalAuthRecords = new List<AssociatedExternalAuthModel>();
             this.CustomerAttributes = new List<CustomerAttributeModel>();
         }
@@ -90,12 +91,6 @@ namespace Ks.Web.Models.Customer
         [AllowHtml]
         public string ZipPostalCode { get; set; }
 
-        public bool CityEnabled { get; set; }
-        public bool CityRequired { get; set; }
-        [KsResourceDisplayName("Account.Fields.City")]
-        [AllowHtml]
-        public string City { get; set; }
-
         public bool CountryEnabled { get; set; }
         public bool CountryRequired { get; set; }
         [KsResourceDisplayName("Account.Fields.Country")]
@@ -107,6 +102,12 @@ namespace Ks.Web.Models.Customer
         [KsResourceDisplayName("Account.Fields.StateProvince")]
         public int StateProvinceId { get; set; }
         public IList<SelectListItem> AvailableStates { get; set; }
+
+        public bool CityEnabled { get; set; }
+        public bool CityRequired { get; set; }
+        [KsResourceDisplayName("Account.Fields.City")]
+        public int CityId { get; set; }
+        public IList<SelectListItem> AvailableCities { get; set; }
 
         public bool PhoneEnabled { get; set; }
         public bool PhoneRequired { get; set; }
