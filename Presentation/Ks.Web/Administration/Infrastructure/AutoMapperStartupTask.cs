@@ -4,12 +4,14 @@ using Ks.Admin.Models.Customers;
 using Ks.Admin.Models.Directory;
 using Ks.Admin.Models.Localization;
 using Ks.Admin.Models.Logging;
+using Ks.Admin.Models.Messages;
 using Ks.Admin.Models.Settings;
 using Ks.Core.Domain.Common;
 using Ks.Core.Domain.Customers;
 using Ks.Core.Domain.Directory;
 using Ks.Core.Domain.Localization;
 using Ks.Core.Domain.Logging;
+using Ks.Core.Domain.Messages;
 using Ks.Core.Infrastructure;
 
 namespace Ks.Admin.Infrastructure
@@ -137,6 +139,27 @@ namespace Ks.Admin.Infrastructure
             Mapper.CreateMap<CustomerUserSettingsModel.AddressSettingsModel, AddressSettings>();
 
             #endregion
+
+            #endregion
+
+            #region Queued Email
+
+            Mapper.CreateMap<QueuedEmail, QueuedEmailModel>()
+                .ForMember(dest => dest.EmailAccountName, mo => mo.MapFrom(src => src.EmailAccount != null ? src.EmailAccount.FriendlyName : string.Empty))
+                .ForMember(dest => dest.CreatedOn, mo => mo.Ignore())
+                .ForMember(dest => dest.PriorityName, mo => mo.Ignore())
+                .ForMember(dest => dest.SentOn, mo => mo.Ignore())
+                .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
+            Mapper.CreateMap<QueuedEmailModel, QueuedEmail>()
+                .ForMember(dest => dest.Priority, dt => dt.Ignore())
+                .ForMember(dest => dest.PriorityId, dt => dt.Ignore())
+                .ForMember(dest => dest.CreatedOnUtc, dt => dt.Ignore())
+                .ForMember(dest => dest.SentOnUtc, mo => mo.Ignore())
+                .ForMember(dest => dest.EmailAccount, mo => mo.Ignore())
+                .ForMember(dest => dest.EmailAccountId, mo => mo.Ignore())
+                .ForMember(dest => dest.AttachmentFilePath, mo => mo.Ignore())
+                .ForMember(dest => dest.AttachmentFileName, mo => mo.Ignore())
+                .ForMember(dest => dest.AttachedDownloadId, mo => mo.Ignore());
 
             #endregion
         }

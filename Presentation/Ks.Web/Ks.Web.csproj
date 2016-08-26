@@ -187,6 +187,8 @@
     <Compile Include="Models\Customer\CustomerInfoModel.cs" />
     <Compile Include="Models\Customer\CustomerNavigationModel.cs" />
     <Compile Include="Models\Customer\LoginModel.cs" />
+    <Compile Include="Models\Customer\PasswordRecoveryConfirmModel.cs" />
+    <Compile Include="Models\Customer\PasswordRecoveryModel.cs" />
     <Compile Include="Models\Customer\RegisterModel.cs" />
     <Compile Include="Models\Customer\RegisterResultModel.cs" />
     <Compile Include="Models\Install\InstallModel.cs" />
@@ -196,6 +198,8 @@
     <Compile Include="Validators\Customer\CustomerAttributeModel.cs" />
     <Compile Include="Validators\Customer\CustomerInfoValidator.cs" />
     <Compile Include="Validators\Customer\LoginValidator.cs" />
+    <Compile Include="Validators\Customer\PasswordRecoveryConfirmValidator.cs" />
+    <Compile Include="Validators\Customer\PasswordRecoveryValidator.cs" />
     <Compile Include="Validators\Customer\RegisterValidator.cs" />
     <Compile Include="Validators\Install\InstallValidator.cs" />
   </ItemGroup>
@@ -1797,6 +1801,8 @@
     <Content Include="Views\Customer\AddressEdit.cshtml" />
     <Content Include="Views\Customer\Register.cshtml" />
     <Content Include="Views\Customer\RegisterResult.cshtml" />
+    <Content Include="Views\Customer\PasswordRecovery.cshtml" />
+    <Content Include="Views\Customer\PasswordRecoveryConfirm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

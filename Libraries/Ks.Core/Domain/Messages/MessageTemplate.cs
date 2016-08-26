@@ -1,6 +1,8 @@
-﻿namespace Ks.Core.Domain.Messages
+﻿using Ks.Core.Domain.Localization;
+
+namespace Ks.Core.Domain.Messages
 {
-    public partial class MessageTemplate : BaseEntity
+    public partial class MessageTemplate : BaseEntity,ILocalizedEntity
     {
         /// <summary>
         /// Gets or sets the name

@@ -18,6 +18,7 @@ using Ks.Core.Infrastructure;
 using Ks.Services.Common;
 using Ks.Services.Configuration;
 using Ks.Services.Customers;
+using Ks.Services.Helpers;
 using Ks.Services.Localization;
 
 namespace Ks.Services.Installation
@@ -433,16 +434,16 @@ namespace Ks.Services.Installation
                 new MessageTemplate
                                        {
                                            Name = "Customer.EmailValidationMessage",
-                                           Subject = "%Ks.Name%. Validación de correo",
-                                           Body = "<a href=\"%Ks.URL%\">%Ks.Name%</a>  <br />  <br />  Para activar su cuenta <a href=\"%Customer.AccountActivationURL%\">click aqui</a>.     <br />  <br />  %Ks.Name%",
+                                           Subject = "%System.Name%. Validación de correo",
+                                           Body = "<a href=\"%Ks.URL%\">%Ks.Name%</a>  <br />  <br />  Para activar su cuenta <a href=\"%Customer.AccountActivationURL%\">click aqui</a>.     <br />  <br />  %System.Name%",
                                            IsActive = true,
                                            EmailAccountId = eaGeneral.Id,
                                        },
                 new MessageTemplate
                                        {
                                            Name = "Customer.PasswordRecovery",
-                                           Subject = "%Store.Name%. Recuperación de contraseña",
-                                           Body = "<a href=\"%Ks.URL%\">%Ks.Name%</a>  <br />  <br />  Para cambiar su contraseña <a href=\"%Customer.PasswordRecoveryURL%\">click aqui</a>.     <br />  <br />  %Store.Name%",
+                                           Subject = "%System.Name%. Recuperación de contraseña",
+                                           Body = "<a href=\"%System.URL%\">%System.Name%</a>  <br />  <br />  Para cambiar su contraseña <a href=\"%Customer.PasswordRecoveryURL%\">click aqui</a>.     <br />  <br />  %System.Name%",
                                            IsActive = true,
                                            EmailAccountId = eaGeneral.Id,
                                        }
@@ -473,6 +474,23 @@ namespace Ks.Services.Installation
                 ReservedUrlRecordSlugs = new List<string>()
             });
 
+            settingService.SaveSetting(new CommonSettings
+            {
+                UseSystemEmailForContactUsForm = true,
+                UseStoredProceduresIfSupported = true,
+                SitemapEnabled = true,
+                SitemapIncludeCategories = true,
+                SitemapIncludeManufacturers = true,
+                SitemapIncludeProducts = false,
+                DisplayJavaScriptDisabledWarning = false,
+                UseFullTextSearch = false,
+                FullTextMode = FulltextSearchMode.ExactMatch,
+                Log404Errors = true,
+                BreadcrumbDelimiter = "/",
+                RenderXuaCompatible = false,
+                XuaCompatibleValue = "IE=edge"
+            });
+
             settingService.SaveSetting(new CustomerSettings
             {
                 UsernamesEnabled = false,
@@ -484,7 +502,7 @@ namespace Ks.Services.Installation
                 PasswordRecoveryLinkDaysValid = 7,
                 UserRegistrationType = UserRegistrationType.Standard,
                 AllowCustomersToUploadAvatars = false,
-                AvatarMaximumSizeBytes = 20000,
+                AvatarMaximumSizeBytes = 200000,
                 DefaultAvatarEnabled = true,
                 ShowCustomersLocation = false,
                 ShowCustomersJoinDate = false,
@@ -526,6 +544,45 @@ namespace Ks.Services.Installation
                 RichEditorAdditionalSettings = null,
                 RichEditorAllowJavaScript = false
             });
+
+            var eaGeneral = _emailAccountRepository.Table.FirstOrDefault();
+            if (eaGeneral == null)
+                throw new Exception("Default email account cannot be loaded");
+
+            settingService.SaveSetting(new EmailAccountSettings
+            {
+                DefaultEmailAccountId = eaGeneral.Id
+            });
+
+            settingService.SaveSetting(new CurrencySettings
+            {
+                DisplayCurrencyLabel = false,
+                PrimaryStoreCurrencyId = _currencyRepository.Table.Single(c => c.CurrencyCode == "USD").Id,
+                PrimaryExchangeRateCurrencyId = _currencyRepository.Table.Single(c => c.CurrencyCode == "USD").Id,
+                ActiveExchangeRateProviderSystemName = "CurrencyExchange.MoneyConverter",
+                AutoUpdateEnabled = false
+            });
+
+            settingService.SaveSetting(new MeasureSettings
+            {
+                BaseDimensionId = _measureDimensionRepository.Table.Single(m => m.SystemKeyword == "metros").Id,
+                BaseWeightId = _measureWeightRepository.Table.Single(m => m.SystemKeyword == "kg").Id,
+            });
+
+            settingService.SaveSetting(new MessageTemplatesSettings
+            {
+                CaseInvariantReplacement = false,
+                Color1 = "#b9babe",
+                Color2 = "#ebecee",
+                Color3 = "#dde2e6",
+            });
+
+            settingService.SaveSetting(new DateTimeSettings
+            {
+                DefaultStoreTimeZoneId = "",
+                AllowCustomersToSetTimeZone = false
+            });
+
         }
 
         protected virtual void InstallActivityLogTypes()
@@ -603,12 +660,12 @@ namespace Ks.Services.Installation
             InstallMeasures();
             InstallLanguages();
             InstallCurrencies();
-            InstallLocaleResources();
             InstallCountriesAndStatesAndCities();
             InstallCustomersAndUsers(defaultUserEmail,defaultUserPassword);
             InstallEmailAccounts();
             InstallMessageTemplates();
             InstallSettings();
+            InstallLocaleResources();
             InstallActivityLogTypes();
             HashDefaultCustomerPassword(defaultUserEmail, defaultUserPassword);
             InstallScheduleTasks();

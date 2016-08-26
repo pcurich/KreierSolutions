@@ -158,7 +158,10 @@
     <Compile Include="Domain\Media\Picture.cs" />
     <Compile Include="Domain\Media\PictureType.cs" />
     <Compile Include="Domain\Messages\EmailAccount.cs" />
+    <Compile Include="Domain\Messages\EmailAccountSettings.cs" />
+    <Compile Include="Domain\Messages\Events.cs" />
     <Compile Include="Domain\Messages\MessageTemplate.cs" />
+    <Compile Include="Domain\Messages\MessageTemplatesSettings.cs" />
     <Compile Include="Domain\Messages\QueuedEmail.cs" />
     <Compile Include="Domain\Messages\QueuedEmailPriority.cs" />
     <Compile Include="Domain\Security\AclRecord.cs" />

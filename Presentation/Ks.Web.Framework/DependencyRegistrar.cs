@@ -203,7 +203,17 @@ namespace Ks.Web.Framework
                 builder.RegisterType<PictureService>().As<IPictureService>().InstancePerLifetimeScope();
             }
 
-            builder.RegisterType<FakeWorkflowMessageService>().As<IWorkflowMessageService>().InstancePerLifetimeScope();
+            builder.RegisterType<MessageTemplateService>().As<IMessageTemplateService>().InstancePerLifetimeScope();
+            builder.RegisterType<QueuedEmailService>().As<IQueuedEmailService>().InstancePerLifetimeScope();
+            //builder.RegisterType<NewsLetterSubscriptionService>().As<INewsLetterSubscriptionService>().InstancePerLifetimeScope();
+            //builder.RegisterType<CampaignService>().As<ICampaignService>().InstancePerLifetimeScope();
+            builder.RegisterType<EmailAccountService>().As<IEmailAccountService>().InstancePerLifetimeScope();
+            builder.RegisterType<WorkflowMessageService>().As<IWorkflowMessageService>().InstancePerLifetimeScope();
+            builder.RegisterType<MessageTokenProvider>().As<IMessageTokenProvider>().InstancePerLifetimeScope();
+            builder.RegisterType<Tokenizer>().As<ITokenizer>().InstancePerLifetimeScope();
+            builder.RegisterType<EmailSender>().As<IEmailSender>().InstancePerLifetimeScope();
+
+            //builder.RegisterType<FakeWorkflowMessageService>().As<IWorkflowMessageService>().InstancePerLifetimeScope();
 
             builder.RegisterType<EncryptionService>().As<IEncryptionService>().InstancePerLifetimeScope();
             builder.RegisterType<FormsAuthenticationService>().As<IAuthenticationService>().InstancePerLifetimeScope();

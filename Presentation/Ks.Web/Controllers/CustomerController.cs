@@ -707,6 +707,132 @@ namespace Ks.Web.Controllers
 
         #endregion
 
+        #region Password recovery
+
+        [KsHttpsRequirement(SslRequirement.Yes)]
+        //available even when navigation is not allowed
+        [PublicKsSystemAllowNavigation(true)]
+        public ActionResult PasswordRecovery()
+        {
+            var model = new PasswordRecoveryModel();
+            return View(model);
+        }
+
+        [HttpPost, ActionName("PasswordRecovery")]
+        [PublicAntiForgery]
+        [FormValueRequired("send-email")]
+        //available even when navigation is not allowed
+        [PublicKsSystemAllowNavigation(true)]
+        public ActionResult PasswordRecoverySend(PasswordRecoveryModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var customer = _customerService.GetCustomerByEmail(model.Email);
+                if (customer != null && customer.Active && !customer.Deleted)
+                {
+                    //save token and current date
+                    var passwordRecoveryToken = Guid.NewGuid();
+                    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.PasswordRecoveryToken, passwordRecoveryToken.ToString());
+                    DateTime? generatedDateTime = DateTime.UtcNow;
+                    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.PasswordRecoveryTokenDateGenerated, generatedDateTime);
+
+                    //send email
+                    _workflowMessageService.SendCustomerPasswordRecoveryMessage(customer, _workContext.WorkingLanguage.Id);
+
+                    model.Result = _localizationService.GetResource("Account.PasswordRecovery.EmailHasBeenSent");
+                }
+                else
+                {
+                    model.Result = _localizationService.GetResource("Account.PasswordRecovery.EmailNotFound");
+                }
+
+                return View(model);
+            }
+
+            //If we got this far, something failed, redisplay form
+            return View(model);
+        }
+
+
+        [KsHttpsRequirement(SslRequirement.Yes)]
+        //available even when navigation is not allowed
+        [PublicKsSystemAllowNavigation(true)]
+        public ActionResult PasswordRecoveryConfirm(string token, string email)
+        {
+            var customer = _customerService.GetCustomerByEmail(email);
+            if (customer == null)
+                return RedirectToRoute("HomePage");
+
+            var model = new PasswordRecoveryConfirmModel();
+
+            //validate token
+            if (!customer.IsPasswordRecoveryTokenValid(token))
+            {
+                model.DisablePasswordChanging = true;
+                model.Result = _localizationService.GetResource("Account.PasswordRecovery.WrongToken");
+            }
+
+            //validate token expiration date
+            if (customer.IsPasswordRecoveryLinkExpired(_customerSettings))
+            {
+                model.DisablePasswordChanging = true;
+                model.Result = _localizationService.GetResource("Account.PasswordRecovery.LinkExpired");
+            }
+
+            return View(model);
+        }
+
+        [HttpPost, ActionName("PasswordRecoveryConfirm")]
+        [PublicAntiForgery]
+        [FormValueRequired("set-password")]
+        //available even when navigation is not allowed
+        [PublicKsSystemAllowNavigation(true)]
+        public ActionResult PasswordRecoveryConfirmPOST(string token, string email, PasswordRecoveryConfirmModel model)
+        {
+            var customer = _customerService.GetCustomerByEmail(email);
+            if (customer == null)
+                return RedirectToRoute("HomePage");
+
+            //validate token
+            if (!customer.IsPasswordRecoveryTokenValid(token))
+            {
+                model.DisablePasswordChanging = true;
+                model.Result = _localizationService.GetResource("Account.PasswordRecovery.WrongToken");
+            }
+
+            //validate token expiration date
+            if (customer.IsPasswordRecoveryLinkExpired(_customerSettings))
+            {
+                model.DisablePasswordChanging = true;
+                model.Result = _localizationService.GetResource("Account.PasswordRecovery.LinkExpired");
+                return View(model);
+            }
+
+            if (ModelState.IsValid)
+            {
+                var response = _customerRegistrationService.ChangePassword(new ChangePasswordRequest(email,
+                    false, _customerSettings.DefaultPasswordFormat, model.NewPassword));
+                if (response.Success)
+                {
+                    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.PasswordRecoveryToken, "");
+
+                    model.DisablePasswordChanging = true;
+                    model.Result = _localizationService.GetResource("Account.PasswordRecovery.PasswordHasBeenChanged");
+                }
+                else
+                {
+                    model.Result = response.Errors.FirstOrDefault();
+                }
+
+                return View(model);
+            }
+
+            //If we got this far, something failed, redisplay form
+            return View(model);
+        }
+
+        #endregion
+
         #region Register
 
         [KsHttpsRequirement(SslRequirement.Yes)]
@@ -1511,5 +1637,6 @@ namespace Ks.Web.Controllers
         }
 
         #endregion
+
     }
 }

@@ -202,6 +202,9 @@
     <Content Include="Views\Customer\_CustomerAttributes.cshtml" />
     <Content Include="Views\Customer\AddressCreate.cshtml" />
     <Content Include="Views\Customer\AddressEdit.cshtml" />
+    <Content Include="Views\QueuedEmail\Edit.cshtml" />
+    <Content Include="Views\QueuedEmail\List.cshtml" />
+    <Content Include="Views\QueuedEmail\_CreateOrUpdate.cshtml" />
     <None Include="Views\Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -226,8 +229,10 @@
     <Compile Include="Controllers\CommonController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\CustomerRoleController.cs" />
+    <Compile Include="Controllers\EmailAccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LogController.cs" />
+    <Compile Include="Controllers\QueuedEmailController.cs" />
     <Compile Include="Controllers\ScheduleTaskController.cs" />
     <Compile Include="Controllers\SecurityController.cs" />
     <Compile Include="Controllers\SettingController.cs" />
@@ -261,6 +266,8 @@
     <Compile Include="Models\Logging\ActivityLogTypeModel.cs" />
     <Compile Include="Models\Logging\LogListModel.cs" />
     <Compile Include="Models\Logging\LogModel.cs" />
+    <Compile Include="Models\Messages\QueuedEmailListModel.cs" />
+    <Compile Include="Models\Messages\QueuedEmailModel.cs" />
     <Compile Include="Models\Security\PermissionMappingModel.cs" />
     <Compile Include="Models\Security\PermissionRecordModel.cs" />
     <Compile Include="Models\Settings\CustomerUserSettingsModel.cs" />
@@ -277,6 +284,7 @@
     <Compile Include="Validators\Directory\MeasureWeightValidator.cs" />
     <Compile Include="Validators\Directory\StateProvinceValidator.cs" />
     <Compile Include="Validators\Localization\LanguageValidator.cs" />
+    <Compile Include="Validators\Messages\QueuedEmailValidator.cs" />
     <Compile Include="Validators\Tasks\ScheduleTaskValidator.cs" />
   </ItemGroup>
   <ItemGroup />

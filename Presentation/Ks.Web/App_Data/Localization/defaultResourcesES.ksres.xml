@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Language Name="Spanish" IsDefault="true">
+<Language Name="Español" IsDefault="true">
 	<LocaleResource Name="AboutUs"><Value><![CDATA[Quienes somos]]></Value></LocaleResource>
 	<LocaleResource Name="Account.AccountActivation"><Value><![CDATA[Activación de la cuenta]]></Value></LocaleResource>
 	<LocaleResource Name="Account.AccountActivation.Activated"><Value><![CDATA[Tu cuenta ha sido activada]]></Value></LocaleResource>
