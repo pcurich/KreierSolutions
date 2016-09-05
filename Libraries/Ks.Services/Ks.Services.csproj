@@ -171,6 +171,7 @@
     <Compile Include="Customers\CustomerRegistrationResult.cs" />
     <Compile Include="Customers\CustomerRegistrationService.cs" />
     <Compile Include="Customers\CustomerService.cs" />
+    <Compile Include="Customers\DeleteGuestsTask.cs" />
     <Compile Include="Customers\ICustomerAttributeParser.cs" />
     <Compile Include="Customers\ICustomerAttributeService.cs" />
     <Compile Include="Customers\ICustomerRegistrationService.cs" />
@@ -247,6 +248,7 @@
     <Compile Include="Messages\MessageTemplateService.cs" />
     <Compile Include="Messages\MessageTokenProvider.cs" />
     <Compile Include="Messages\QueuedEmailService.cs" />
+    <Compile Include="Messages\QueuedMessagesSendTask.cs" />
     <Compile Include="Messages\Token.cs" />
     <Compile Include="Messages\Tokenizer.cs" />
     <Compile Include="Messages\WorkflowMessageService.cs" />

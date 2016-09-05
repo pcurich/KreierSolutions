@@ -18,7 +18,7 @@ namespace Ks.Core.Domain.Directory
         /// <summary>
         /// Gets or sets the abbreviation
         /// </summary>
-        public string Abbreviation { get; set; }
+        public string Ubigeo { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the entity is published

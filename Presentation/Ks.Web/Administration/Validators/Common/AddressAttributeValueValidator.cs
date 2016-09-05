@@ -5,7 +5,7 @@ using Ks.Web.Framework.Validators;
 
 namespace Ks.Admin.Validators.Common
 {
-    public class AddressAttributeValueValidator : BaseKsValidator<AddressModel.AddressAttributeValueModel>
+    public class AddressAttributeValueValidator : BaseKsValidator<AddressAttributeValueModel>
     {
         public AddressAttributeValueValidator(ILocalizationService localizationService)
         {

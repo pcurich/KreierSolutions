@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Web.Mvc;
+using Ks.Admin.Extensions;
+using Ks.Admin.Models.Messages;
 using Ks.Core;
 using Ks.Core.Domain.Messages;
 using Ks.Services.Configuration;
@@ -17,13 +20,13 @@ namespace Ks.Admin.Controllers
         private readonly ILocalizationService _localizationService;
         private readonly ISettingService _settingService;
         private readonly IEmailSender _emailSender;
-        private readonly IStoreContext _storeContext;
+        private readonly IKsSystemContext _ksSystemContext;
         private readonly EmailAccountSettings _emailAccountSettings;
         private readonly IPermissionService _permissionService;
 
         public EmailAccountController(IEmailAccountService emailAccountService,
             ILocalizationService localizationService, ISettingService settingService,
-            IEmailSender emailSender, IStoreContext storeContext,
+            IEmailSender emailSender, IKsSystemContext ksSystemContext,
             EmailAccountSettings emailAccountSettings, IPermissionService permissionService)
         {
             this._emailAccountService = emailAccountService;
@@ -31,7 +34,7 @@ namespace Ks.Admin.Controllers
             this._emailAccountSettings = emailAccountSettings;
             this._emailSender = emailSender;
             this._settingService = settingService;
-            this._storeContext = storeContext;
+            this._ksSystemContext = ksSystemContext;
             this._permissionService = permissionService;
         }
 
@@ -187,7 +190,7 @@ namespace Ks.Admin.Controllers
                 if (String.IsNullOrWhiteSpace(model.SendTestEmailTo))
                     throw new KsException("Enter test email address");
 
-                string subject = _storeContext.CurrentStore.Name + ". Testing email functionality.";
+                string subject = _ksSystemContext.CurrentSystem.Name + ". Testing email functionality.";
                 string body = "Email works fine.";
                 _emailSender.SendEmail(emailAccount, subject, body, emailAccount.Email, emailAccount.DisplayName, model.SendTestEmailTo, null);
                 SuccessNotification(_localizationService.GetResource("Admin.Configuration.EmailAccounts.SendTestEmail.Success"), false);

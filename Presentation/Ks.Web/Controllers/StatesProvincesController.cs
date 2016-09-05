@@ -44,13 +44,13 @@ namespace Ks.Web.Controllers
         //available even when navigation is not allowed
         [PublicKsSystemAllowNavigation(true)]
         [AcceptVerbs(HttpVerbs.Get)]
-        public ActionResult GetCitiesByStateId(string stateProvinceId, bool addSelectStateItem)
+        public ActionResult GetCitiesByStateId(string stateProvinceId, bool addSelectCityItem)
         {
             //this action method gets called via an ajax request
             if (String.IsNullOrEmpty(stateProvinceId))
                 throw new ArgumentNullException("stateProvinceId");
 
-            string cacheKey = string.Format(ModelCacheEventConsumer.CITY_BY_STATEPROVINCES_MODEL_KEY, stateProvinceId, addSelectStateItem, _workContext.WorkingLanguage.Id);
+            string cacheKey = string.Format(ModelCacheEventConsumer.CITY_BY_STATEPROVINCES_MODEL_KEY, stateProvinceId, addSelectCityItem, _workContext.WorkingLanguage.Id);
             var cacheModel = _cacheManager.Get(cacheKey, () =>
             {
                 var state = _stateProvinceService.GetStateProvinceById(Convert.ToInt32(stateProvinceId));
@@ -63,7 +63,7 @@ namespace Ks.Web.Controllers
                 if (state == null)
                 {
                     //state is not selected ("choose state" item)
-                    if (addSelectStateItem)
+                    if (addSelectCityItem)
                     {
                         result.Insert(0, new { id = 0, name = _localizationService.GetResource("Address.SelectCity") });
                     }
@@ -83,7 +83,7 @@ namespace Ks.Web.Controllers
                     else
                     {
                         //state has some cities
-                        if (addSelectStateItem)
+                        if (addSelectCityItem)
                         {
                             result.Insert(0, new { id = 0, name = _localizationService.GetResource("Address.SelectCity") });
                         }

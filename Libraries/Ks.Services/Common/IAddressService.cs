@@ -30,6 +30,13 @@ namespace Ks.Services.Common
         int GetAddressTotalByStateProvinceId(int stateProvinceId);
 
         /// <summary>
+        /// Gets total number of addresses by city identifier
+        /// </summary>
+        /// <param name="cityId">City identifier</param>
+        /// <returns>Number of addresses</returns>
+        int GetAddressTotalByCityId(int cityId);
+
+        /// <summary>
         /// Gets an address by address identifier
         /// </summary>
         /// <param name="addressId">Address identifier</param>

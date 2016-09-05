@@ -20,7 +20,8 @@ using Ks.Services.Helpers;
 using Ks.Services.KsSystems;
 using Ks.Services.Localization;
 using Ks.Services.Logging;
-using Ks.Services.Security;
+ using Ks.Services.Messages;
+ using Ks.Services.Security;
 using Ks.Web.Framework.Controllers;
 using Ks.Web.Framework.Kendoui;
 using Ks.Web.Framework.Mvc;
@@ -56,9 +57,9 @@ namespace Ks.Admin.Controllers
         //private readonly IPriceCalculationService _priceCalculationService;
         //private readonly IProductAttributeFormatter _productAttributeFormatter;
         private readonly IPermissionService _permissionService;
-        //private readonly IQueuedEmailService _queuedEmailService;
-        //private readonly EmailAccountSettings _emailAccountSettings;
-        //private readonly IEmailAccountService _emailAccountService;
+        private readonly IQueuedEmailService _queuedEmailService;
+        private readonly EmailAccountSettings _emailAccountSettings;
+        private readonly IEmailAccountService _emailAccountService;
         //private readonly ForumSettings _forumSettings;
         //private readonly IForumService _forumService;
         //private readonly IOpenAuthenticationService _openAuthenticationService;
@@ -102,9 +103,9 @@ namespace Ks.Admin.Controllers
             //IPriceCalculationService priceCalculationService,
             //IProductAttributeFormatter productAttributeFormatter,
             IPermissionService permissionService,
-            //IQueuedEmailService queuedEmailService,
-            //EmailAccountSettings emailAccountSettings,
-            //IEmailAccountService emailAccountService,
+            IQueuedEmailService queuedEmailService,
+            EmailAccountSettings emailAccountSettings,
+            IEmailAccountService emailAccountService,
             //ForumSettings forumSettings,
             //IForumService forumService,
             //IOpenAuthenticationService openAuthenticationService,
@@ -145,9 +146,9 @@ namespace Ks.Admin.Controllers
             //this._priceCalculationService = priceCalculationService;
             //this._productAttributeFormatter = productAttributeFormatter;
             this._permissionService = permissionService;
-            //this._queuedEmailService = queuedEmailService;
-            //this._emailAccountSettings = emailAccountSettings;
-            //this._emailAccountService = emailAccountService;
+            this._queuedEmailService = queuedEmailService;
+            this._emailAccountSettings = emailAccountSettings;
+            this._emailAccountService = emailAccountService;
             //this._forumSettings = forumSettings;
             //this._forumService = forumService;
             //this._openAuthenticationService = openAuthenticationService;
@@ -346,7 +347,7 @@ namespace Ks.Admin.Controllers
                     model.StreetAddress = customer.GetAttribute<string>(SystemCustomerAttributeNames.StreetAddress);
                     model.StreetAddress2 = customer.GetAttribute<string>(SystemCustomerAttributeNames.StreetAddress2);
                     model.ZipPostalCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.ZipPostalCode);
-                    model.City = customer.GetAttribute<string>(SystemCustomerAttributeNames.City);
+                    //model.City = customer.GetAttribute<string>(SystemCustomerAttributeNames.City);
                     model.CountryId = customer.GetAttribute<int>(SystemCustomerAttributeNames.CountryId);
                     model.StateProvinceId = customer.GetAttribute<int>(SystemCustomerAttributeNames.StateProvinceId);
                     model.CityId = customer.GetAttribute<int>(SystemCustomerAttributeNames.CityId);
@@ -1218,55 +1219,55 @@ namespace Ks.Admin.Controllers
         //    return RedirectToAction("Edit", new { id = customer.Id });
         //}
 
-        //public ActionResult SendEmail(CustomerModel model)
-        //{
-        //    if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
-        //        return AccessDeniedView();
+        public ActionResult SendEmail(CustomerModel model)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
+                return AccessDeniedView();
 
-        //    var customer = _customerService.GetCustomerById(model.Id);
-        //    if (customer == null)
-        //        //No customer found with the specified id
-        //        return RedirectToAction("List");
+            var customer = _customerService.GetCustomerById(model.Id);
+            if (customer == null)
+                //No customer found with the specified id
+                return RedirectToAction("List");
 
-        //    try
-        //    {
-        //        if (String.IsNullOrWhiteSpace(customer.Email))
-        //            throw new NopException("Customer email is empty");
-        //        if (!CommonHelper.IsValidEmail(customer.Email))
-        //            throw new NopException("Customer email is not valid");
-        //        if (String.IsNullOrWhiteSpace(model.SendEmail.Subject))
-        //            throw new NopException("Email subject is empty");
-        //        if (String.IsNullOrWhiteSpace(model.SendEmail.Body))
-        //            throw new NopException("Email body is empty");
+            try
+            {
+                if (String.IsNullOrWhiteSpace(customer.Email))
+                    throw new KsException("Customer email is empty");
+                if (!CommonHelper.IsValidEmail(customer.Email))
+                    throw new KsException("Customer email is not valid");
+                if (String.IsNullOrWhiteSpace(model.SendEmail.Subject))
+                    throw new KsException("Email subject is empty");
+                if (String.IsNullOrWhiteSpace(model.SendEmail.Body))
+                    throw new KsException("Email body is empty");
 
-        //        var emailAccount = _emailAccountService.GetEmailAccountById(_emailAccountSettings.DefaultEmailAccountId);
-        //        if (emailAccount == null)
-        //            emailAccount = _emailAccountService.GetAllEmailAccounts().FirstOrDefault();
-        //        if (emailAccount == null)
-        //            throw new NopException("Email account can't be loaded");
+                var emailAccount = _emailAccountService.GetEmailAccountById(_emailAccountSettings.DefaultEmailAccountId);
+                if (emailAccount == null)
+                    emailAccount = _emailAccountService.GetAllEmailAccounts().FirstOrDefault();
+                if (emailAccount == null)
+                    throw new KsException("Email account can't be loaded");
 
-        //        var email = new QueuedEmail
-        //        {
-        //            Priority = QueuedEmailPriority.High,
-        //            EmailAccountId = emailAccount.Id,
-        //            FromName = emailAccount.DisplayName,
-        //            From = emailAccount.Email,
-        //            ToName = customer.GetFullName(),
-        //            To = customer.Email,
-        //            Subject = model.SendEmail.Subject,
-        //            Body = model.SendEmail.Body,
-        //            CreatedOnUtc = DateTime.UtcNow,
-        //        };
-        //        _queuedEmailService.InsertQueuedEmail(email);
-        //        SuccessNotification(_localizationService.GetResource("Admin.Customers.Customers.SendEmail.Queued"));
-        //    }
-        //    catch (Exception exc)
-        //    {
-        //        ErrorNotification(exc.Message);
-        //    }
+                var email = new QueuedEmail
+                {
+                    Priority = QueuedEmailPriority.High,
+                    EmailAccountId = emailAccount.Id,
+                    FromName = emailAccount.DisplayName,
+                    From = emailAccount.Email,
+                    ToName = customer.GetFullName(),
+                    To = customer.Email,
+                    Subject = model.SendEmail.Subject,
+                    Body = model.SendEmail.Body,
+                    CreatedOnUtc = DateTime.UtcNow,
+                };
+                _queuedEmailService.InsertQueuedEmail(email);
+                SuccessNotification(_localizationService.GetResource("Admin.Customers.Customers.SendEmail.Queued"));
+            }
+            catch (Exception exc)
+            {
+                ErrorNotification(exc.Message);
+            }
 
-        //    return RedirectToAction("Edit", new { id = customer.Id });
-        //}
+            return RedirectToAction("Edit", new { id = customer.Id });
+        }
 
         //public ActionResult SendPm(CustomerModel model)
         //{
@@ -1281,13 +1282,13 @@ namespace Ks.Admin.Controllers
         //    try
         //    {
         //        if (!_forumSettings.AllowPrivateMessages)
-        //            throw new NopException("Private messages are disabled");
+        //            throw new KsException("Private messages are disabled");
         //        if (customer.IsGuest())
-        //            throw new NopException("Customer should be registered");
+        //            throw new KsException("Customer should be registered");
         //        if (String.IsNullOrWhiteSpace(model.SendPm.Subject))
-        //            throw new NopException("PM subject is empty");
+        //            throw new KsException("PM subject is empty");
         //        if (String.IsNullOrWhiteSpace(model.SendPm.Message))
-        //            throw new NopException("PM message is empty");
+        //            throw new KsException("PM message is empty");
 
 
         //        var privateMessage = new PrivateMessage

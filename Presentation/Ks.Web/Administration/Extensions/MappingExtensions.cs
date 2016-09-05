@@ -2,6 +2,7 @@
 using AutoMapper;
 using Ks.Admin.Models.Common;
 using Ks.Admin.Models.Customers;
+using Ks.Admin.Models.Directory;
 using Ks.Admin.Models.Localization;
 using Ks.Admin.Models.Logging;
 using Ks.Admin.Models.Messages;
@@ -9,6 +10,7 @@ using Ks.Admin.Models.Settings;
 using Ks.Core.Domain.Catalog;
 using Ks.Core.Domain.Common;
 using Ks.Core.Domain.Customers;
+using Ks.Core.Domain.Directory;
 using Ks.Core.Domain.Localization;
 using Ks.Core.Domain.Logging;
 using Ks.Core.Domain.Messages;
@@ -47,6 +49,25 @@ namespace Ks.Admin.Extensions
 
         #endregion
 
+        #region Email account
+
+        public static EmailAccountModel ToModel(this EmailAccount entity)
+        {
+            return entity.MapTo<EmailAccount, EmailAccountModel>();
+        }
+
+        public static EmailAccount ToEntity(this EmailAccountModel model)
+        {
+            return model.MapTo<EmailAccountModel, EmailAccount>();
+        }
+
+        public static EmailAccount ToEntity(this EmailAccountModel model, EmailAccount destination)
+        {
+            return model.MapTo(destination);
+        }
+
+        #endregion
+
         #region Customer roles
 
  
@@ -61,6 +82,25 @@ namespace Ks.Admin.Extensions
         }
 
         public static CustomerRole ToEntity(this CustomerRoleModel model, CustomerRole destination)
+        {
+            return model.MapTo(destination);
+        }
+
+        #endregion
+
+        #region Customer attributes
+
+        public static CustomerAttributeModel ToModel(this CustomerAttribute entity)
+        {
+            return entity.MapTo<CustomerAttribute, CustomerAttributeModel>();
+        }
+
+        public static CustomerAttribute ToEntity(this CustomerAttributeModel model)
+        {
+            return model.MapTo<CustomerAttributeModel, CustomerAttribute>();
+        }
+
+        public static CustomerAttribute ToEntity(this CustomerAttributeModel model, CustomerAttribute destination)
         {
             return model.MapTo(destination);
         }
@@ -247,6 +287,74 @@ namespace Ks.Admin.Extensions
         }
 
         #endregion
+
+        #endregion
+
+        #region Countries / states / cities
+
+        public static CountryModel ToModel(this Country entity)
+        {
+            return entity.MapTo<Country, CountryModel>();
+        }
+
+        public static Country ToEntity(this CountryModel model)
+        {
+            return model.MapTo<CountryModel, Country>();
+        }
+
+        public static Country ToEntity(this CountryModel model, Country destination)
+        {
+            return model.MapTo(destination);
+        }
+
+        public static StateProvinceModel ToModel(this StateProvince entity)
+        {
+            return entity.MapTo<StateProvince, StateProvinceModel>();
+        }
+
+        public static StateProvince ToEntity(this StateProvinceModel model)
+        {
+            return model.MapTo<StateProvinceModel, StateProvince>();
+        }
+
+        public static StateProvince ToEntity(this StateProvinceModel model, StateProvince destination)
+        {
+            return model.MapTo(destination);
+        }
+
+        public static CityModel ToModel(this City entity)
+        {
+            return entity.MapTo<City, CityModel>();
+        }
+
+        public static City ToEntity(this CityModel model)
+        {
+            return model.MapTo<CityModel, City>();
+        }
+
+        public static City ToEntity(this CityModel model, City destination)
+        {
+            return model.MapTo(destination);
+        }
+
+        #endregion
+
+        #region Message templates
+
+        public static MessageTemplateModel ToModel(this MessageTemplate entity)
+        {
+            return entity.MapTo<MessageTemplate, MessageTemplateModel>();
+        }
+
+        public static MessageTemplate ToEntity(this MessageTemplateModel model)
+        {
+            return model.MapTo<MessageTemplateModel, MessageTemplate>();
+        }
+
+        public static MessageTemplate ToEntity(this MessageTemplateModel model, MessageTemplate destination)
+        {
+            return model.MapTo(destination);
+        }
 
         #endregion
 

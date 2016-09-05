@@ -61,6 +61,11 @@ namespace Ks.Core.Domain.Common
         public bool StateProvinceEnabled { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether 'State / province' is required
+        /// </summary>
+        public bool StateProvinceRequired { get; set; }
+        
+        /// <summary>
         /// Gets or sets a value indicating whether 'Phone number' is enabled
         /// </summary>
         public bool PhoneEnabled { get; set; }

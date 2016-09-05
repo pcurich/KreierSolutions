@@ -183,6 +183,9 @@ namespace Ks.Admin.Models.Settings
             [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.AddressFormFields.StateProvinceEnabled")]
             public bool StateProvinceEnabled { get; set; }
 
+            [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.AddressFormFields.StateProvinceRequired")]
+            public bool StateProvinceRequired { get; set; }
+
             [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.AddressFormFields.PhoneEnabled")]
             public bool PhoneEnabled { get; set; }
             [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.AddressFormFields.PhoneRequired")]

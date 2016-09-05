@@ -2,7 +2,7 @@
 using Ks.Core.Domain.Catalog;
 using Ks.Web.Framework.Mvc;
 
-namespace Ks.Web.Validators.Customer
+namespace Ks.Web.Models.Customer
 {
     public partial class CustomerAttributeModel : BaseKsEntityModel
     {

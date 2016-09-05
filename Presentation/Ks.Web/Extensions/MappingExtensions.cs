@@ -148,7 +148,7 @@ namespace Ks.Web.Extensions
 
                                 foreach (var c in cities)
                                 {
-                                    model.AvailableStates.Add(new SelectListItem
+                                    model.AvailableCities.Add(new SelectListItem
                                     {
                                         Text = c.GetLocalized(x => x.Name),
                                         Value = c.Id.ToString(),

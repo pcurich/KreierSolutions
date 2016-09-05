@@ -195,7 +195,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Validators\Common\AddressValidator.cs" />
     <Compile Include="Validators\Customer\ChangePasswordValidator.cs" />
-    <Compile Include="Validators\Customer\CustomerAttributeModel.cs" />
+    <Compile Include="Models\Customer\CustomerAttributeModel.cs" />
     <Compile Include="Validators\Customer\CustomerInfoValidator.cs" />
     <Compile Include="Validators\Customer\LoginValidator.cs" />
     <Compile Include="Validators\Customer\PasswordRecoveryConfirmValidator.cs" />
@@ -1803,6 +1803,9 @@
     <Content Include="Views\Customer\RegisterResult.cshtml" />
     <Content Include="Views\Customer\PasswordRecovery.cshtml" />
     <Content Include="Views\Customer\PasswordRecoveryConfirm.cshtml" />
+    <Content Include="Views\Customer\_CustomerAttributes.cshtml" />
+    <Content Include="Views\Customer\_CheckUsernameAvailability.cshtml" />
+    <Content Include="Views\Customer\AccountActivation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

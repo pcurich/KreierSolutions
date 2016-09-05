@@ -30,6 +30,38 @@
         });
     </script>
 }
+
+@if (Model.CountryEnabled && Model.StateProvinceEnabled && Model.CityEnabled)
+{
+    <script type="text/javascript">
+        $(function () {
+            $("#@Html.FieldIdFor(model => model.StateProvinceId)").change(function () {
+                var selectedItem = $(this).val();
+                var ddlCities = $("#@Html.FieldIdFor(model => model.CityId)");
+                var statesProgress = $("#cities-loading-progress");
+                statesProgress.show();
+                $.ajax({
+                    cache: false,
+                    type: "GET",
+                    url: "@(Url.RouteUrl("GetCitiesByStateId"))",
+                    data: { "StateProvinceId": selectedItem, "addSelectCityItem": "true" },
+                    success: function (data) {
+                        ddlCities.html('');
+                        $.each(data, function (id, option) {
+                            ddlCities.append($('<option></option>').val(option.id).html(option.name));
+                        });
+                        statesProgress.hide();
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert('Failed to retrieve states.');
+                        statesProgress.hide();
+                    }
+                });
+            });
+        });
+    </script>
+}
+
 @Html.HiddenFor(model => model.Id)
 <div class="edit-address">
     <div class="inputs">
@@ -87,7 +119,7 @@
         <div class="inputs">
             @Html.LabelFor(model => model.CityId, new { }, ":")
             @Html.DropDownListFor(model => model.CityId, Model.AvailableCities)
-            <span id="states-loading-progress" style="display: none;" class="please-wait">@T("Common.Wait...")</span>
+            <span id="cities-loading-progress" style="display: none;" class="please-wait">@T("Common.Wait...")</span>
             @Html.ValidationMessageFor(model => model.CityId)
         </div>
     }

@@ -336,6 +336,7 @@ namespace Ks.Services.Installation
                 PasswordFormat = PasswordFormat.Clear,
                 PasswordSalt = "",
                 Active = true,
+                IsSystemAccount = true,
                 CreatedOnUtc = DateTime.UtcNow,
                 LastActivityDateUtc = DateTime.UtcNow,
             };
@@ -352,7 +353,7 @@ namespace Ks.Services.Installation
                 Address2 = "",
                 City = _cityRepository.Table.FirstOrDefault(ct => ct.Name == "Cercado de Lima"),
                 StateProvince = _stateProvinceRepository.Table.FirstOrDefault(sp => sp.Name == "Lima"),
-                Country = _countryRepository.Table.FirstOrDefault(c => c.ThreeLetterIsoCode == "Perú"),
+                Country = _countryRepository.Table.FirstOrDefault(c => c.ThreeLetterIsoCode == "PER"),
                 ZipPostalCode = "LIMA01",
                 CreatedOnUtc = DateTime.UtcNow,
             };

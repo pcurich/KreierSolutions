@@ -86,7 +86,7 @@ namespace Ks.Web.Framework.Controllers
                 return 0;
 
 
-            var systemId = workContext.CurrentCustomer.GetAttribute<int>(SystemCustomerAttributeNames.AdminAreaStoreScopeConfiguration);
+            var systemId = workContext.CurrentCustomer.GetAttribute<int>(SystemCustomerAttributeNames.AdminAreaSystemScopeConfiguration);
             var store = ksSystemService.GetKsSystemById(systemId);
             return store != null ? store.Id : 0;
         }

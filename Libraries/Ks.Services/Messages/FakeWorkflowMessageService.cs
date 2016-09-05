@@ -33,5 +33,10 @@ namespace Ks.Services.Messages
         {
             return 0;
         }
+
+        public int SendTestEmail(int messageTemplateId, string sendToEmail, List<Token> tokens, int languageId)
+        {
+            return 0;
+        }
     }
 }

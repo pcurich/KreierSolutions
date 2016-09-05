@@ -124,6 +124,23 @@ namespace Ks.Services.Common
         }
 
         /// <summary>
+        /// Gets total number of addresses by city identifier
+        /// </summary>
+        /// <param name="cityId">City identifier</param>
+        /// <returns>Number of addresses</returns>
+        public virtual int GetAddressTotalByCityId(int cityId)
+        {
+            if (cityId == 0)
+                return 0;
+
+            var query = from a in _addressRepository.Table
+                        where a.CityId == cityId
+                        select a;
+
+            return query.Count();
+        }
+
+        /// <summary>
         /// Gets an address by address identifier
         /// </summary>
         /// <param name="addressId">Address identifier</param>
