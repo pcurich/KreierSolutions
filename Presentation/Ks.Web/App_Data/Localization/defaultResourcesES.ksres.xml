@@ -1145,15 +1145,14 @@
 	<LocaleResource Name="Admin.Configuration.Countries.States.City.AddCity.Values"><Value><![CDATA[Agregar/Editar valores para los [{0}] departamentos]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Countries.States.City.AddNew"><Value><![CDATA[Agregar nuevo distrito]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Countries.States.City.EditCity"><Value><![CDATA[Editar distrito]]></Value></LocaleResource>
-	<LocaleResource Name="Admin.Configuration.Countries.States.City.Fields.Abbreviation"><Value><![CDATA[Abreviación]]></Value></LocaleResource>
+	<LocaleResource Name="Admin.Configuration.Countries.States.City.Fields.Ubigeo"><Value><![CDATA[Abreviación]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Countries.States.City.Fields.DisplayOrder"><Value><![CDATA[Mostrar Orden]]></Value></LocaleResource>
-	<LocaleResource Name="Admin.Configuration.Countries.States.City.Fields.Latitude"><Value><![CDATA[Latitud]]></Value></LocaleResource>
-	<LocaleResource Name="Admin.Configuration.Countries.States.City.Fields.Longitude"><Value><![CDATA[Longitud]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Countries.States.City.Fields.Name"><Value><![CDATA[Nombre]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Countries.States.City.Fields.Name.Required"><Value><![CDATA[Por favor ingrese un nombre.]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Countries.States.City.Fields.Published"><Value><![CDATA[Publicado]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Countries.States.City.ValidationRules"><Value><![CDATA[Reglas de Validación]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Countries.States.City.Values.ViewLink"><Value><![CDATA[Distritos agregados (Total {0})]]></Value></LocaleResource>
+	<LocaleResource Name="Admin.Configuration.Countries.States.City.CantDeleteWithAddresses"><Value><![CDATA[El distrito no se puede eliminar. Tiene asociada direcciones.]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Countries.States.EditStateDetails"><Value><![CDATA[Editar departamento]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Countries.States.Fields.Abbreviation"><Value><![CDATA[Abreviatura]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Countries.States.Fields.Abbreviation.Hint"><Value><![CDATA[Abreviatura para este departamento.]]></Value></LocaleResource>

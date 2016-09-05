@@ -578,12 +578,12 @@ namespace Ks.Admin.Controllers
 
 
             // This action method gets called via an ajax request
-            if (String.IsNullOrEmpty(countryId))
-                throw new ArgumentNullException("countryId");
+            if (String.IsNullOrEmpty(stateProvinceId))
+                throw new ArgumentNullException("stateProvinceId");
 
-            var country = _countryService.GetCountryById(Convert.ToInt32(countryId));
-            var states = country != null ? _stateProvinceService.GetStateProvincesByCountryId(country.Id, showHidden: true).ToList() : new List<StateProvince>();
-            var result = (from s in states
+            var stateProvince = _stateProvinceService.GetStateProvinceById(Convert.ToInt32(stateProvinceId));
+            var cities = stateProvince != null ? _cityService.GetCitiesByStateProvinceId(stateProvince.Id, showHidden: true).ToList() : new List<City>();
+            var result = (from s in cities
                           select new { id = s.Id, name = s.Name }).ToList();
             if (addAsterisk.HasValue && addAsterisk.Value)
             {
@@ -592,12 +592,12 @@ namespace Ks.Admin.Controllers
             }
             else
             {
-                if (country == null)
+                if (stateProvince == null)
                 {
-                    //country is not selected ("choose country" item)
+                    //stateProvince is not selected ("choose stateProvince" item)
                     if (addSelectStateItem.HasValue && addSelectStateItem.Value)
                     {
-                        result.Insert(0, new { id = 0, name = _localizationService.GetResource("Admin.Address.SelectState") });
+                        result.Insert(0, new { id = 0, name = _localizationService.GetResource("Admin.Address.SelectCity") });
                     }
                     else
                     {
@@ -617,7 +617,7 @@ namespace Ks.Admin.Controllers
                         //country has some states
                         if (addSelectStateItem.HasValue && addSelectStateItem.Value)
                         {
-                            result.Insert(0, new { id = 0, name = _localizationService.GetResource("Admin.Address.SelectState") });
+                            result.Insert(0, new { id = 0, name = _localizationService.GetResource("Admin.Address.SelectCity") });
                         }
                     }
                 }
