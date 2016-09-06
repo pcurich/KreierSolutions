@@ -7,6 +7,7 @@ using Ks.Admin.Models.Localization;
 using Ks.Admin.Models.Logging;
 using Ks.Admin.Models.Messages;
 using Ks.Admin.Models.Settings;
+using Ks.Admin.Models.Systems;
 using Ks.Core.Domain.Catalog;
 using Ks.Core.Domain.Common;
 using Ks.Core.Domain.Customers;
@@ -14,6 +15,7 @@ using Ks.Core.Domain.Directory;
 using Ks.Core.Domain.Localization;
 using Ks.Core.Domain.Logging;
 using Ks.Core.Domain.Messages;
+using Ks.Core.Domain.System;
 using Ks.Services.Common;
 
 namespace Ks.Admin.Extensions
@@ -371,6 +373,25 @@ namespace Ks.Admin.Extensions
         }
 
         public static QueuedEmail ToEntity(this QueuedEmailModel model, QueuedEmail destination)
+        {
+            return model.MapTo(destination);
+        }
+
+        #endregion
+
+        #region Systems
+
+        public static KsSystemModel ToModel(this KsSystem entity)
+        {
+            return entity.MapTo<KsSystem, KsSystemModel>();
+        }
+
+        public static KsSystem ToEntity(this KsSystemModel model)
+        {
+            return model.MapTo<KsSystemModel, KsSystem>();
+        }
+
+        public static KsSystem ToEntity(this KsSystemModel model, KsSystem destination)
         {
             return model.MapTo(destination);
         }

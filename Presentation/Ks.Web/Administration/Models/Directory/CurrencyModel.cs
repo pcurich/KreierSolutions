@@ -11,11 +11,11 @@ using Ks.Web.Framework.Mvc;
 namespace Ks.Admin.Models.Directory
 {
     [Validator(typeof(CurrencyValidator))]
-    public partial class CurrencyModel : BaseKsEntityModel//, ILocalizedModel<CurrencyLocalizedModel>
+    public partial class CurrencyModel : BaseKsEntityModel, ILocalizedModel<CurrencyLocalizedModel>
     {
         public CurrencyModel()
         {
-           // Locales = new List<CurrencyLocalizedModel>();
+            Locales = new List<CurrencyLocalizedModel>();
         }
         [KsResourceDisplayName("Admin.Configuration.Currencies.Fields.Name")]
         [AllowHtml]
@@ -51,7 +51,7 @@ namespace Ks.Admin.Models.Directory
         //[KsResourceDisplayName("Admin.Configuration.Currencies.Fields.IsPrimaryStoreCurrency")]
         //public bool IsPrimaryStoreCurrency { get; set; }
 
-        //public IList<CurrencyLocalizedModel> Locales { get; set; }
+        public IList<CurrencyLocalizedModel> Locales { get; set; }
 
         //Store mapping
         //[KsResourceDisplayName("Admin.Configuration.Currencies.Fields.LimitedToStores")]

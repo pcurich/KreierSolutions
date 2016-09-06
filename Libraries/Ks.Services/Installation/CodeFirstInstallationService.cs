@@ -43,7 +43,7 @@ namespace Ks.Services.Installation
         private readonly IRepository<ActivityLogType> _activityLogTypeRepository;
         private readonly IRepository<ScheduleTask> _scheduleTaskRepository;
         private readonly IRepository<Address> _addressRepository;
-        
+
         private readonly IGenericAttributeService _genericAttributeService;
         private readonly IWebHelper _webHelper;
 
@@ -51,16 +51,16 @@ namespace Ks.Services.Installation
 
         #region Ctor
 
-        public CodeFirstInstallationService(IRepository<KsSystem> ksSystemRepository, 
+        public CodeFirstInstallationService(IRepository<KsSystem> ksSystemRepository,
             IRepository<MeasureDimension> measureDimensionRepository, IRepository<MeasureWeight> measureWeightRepository,
-            IRepository<Language> languageRepository, IRepository<Currency> currencyRepository, 
-            IRepository<Customer> customerRepository, IRepository<CustomerRole> customerRoleRepository, 
-            IRepository<SpecificationAttribute> specificationAttributeRepository, 
-            IRepository<EmailAccount> emailAccountRepository, 
-            IRepository<MessageTemplate> messageTemplateRepository, 
-            IRepository<Country> countryRepository, IRepository<StateProvince> stateProvinceRepository, 
+            IRepository<Language> languageRepository, IRepository<Currency> currencyRepository,
+            IRepository<Customer> customerRepository, IRepository<CustomerRole> customerRoleRepository,
+            IRepository<SpecificationAttribute> specificationAttributeRepository,
+            IRepository<EmailAccount> emailAccountRepository,
+            IRepository<MessageTemplate> messageTemplateRepository,
+            IRepository<Country> countryRepository, IRepository<StateProvince> stateProvinceRepository,
             IRepository<City> cityRepository, IRepository<ActivityLogType> activityLogTypeRepository,
-            IRepository<ScheduleTask> scheduleTaskRepository, IRepository<Address> addressRepository, 
+            IRepository<ScheduleTask> scheduleTaskRepository, IRepository<Address> addressRepository,
             IGenericAttributeService genericAttributeService, IWebHelper webHelper)
         {
             _ksSystemRepository = ksSystemRepository;
@@ -229,7 +229,11 @@ namespace Ks.Services.Installation
             cPer.StateProvinces.Add(new StateProvince { Name = "Ucayali", Abbreviation = "UCA", Published = true, DisplayOrder = 25 });
             cPer.StateProvinces.Add(new StateProvince
             {
-                Name = "Lima",Abbreviation = "LIM",Published = true,DisplayOrder = 15,Cities = new List<City>
+                Name = "Lima",
+                Abbreviation = "LIM",
+                Published = true,
+                DisplayOrder = 15,
+                Cities = new List<City>
                     {
                         new City{DisplayOrder=1,Name="Cercado de Lima",Published = true },
                         new City{DisplayOrder=2,Name="Ancón",Published = true },
@@ -273,9 +277,9 @@ namespace Ks.Services.Installation
                         new City{DisplayOrder=40,Name="Surquillo",Published = true },
                         new City{DisplayOrder=41,Name="Villa ElSalvador",Published = true },
                         new City{DisplayOrder=42,Name="Villa María del Triunfo",Published = true}}
-                    });
+            });
 
-            var countries = new List<Country>{cPer};
+            var countries = new List<Country> { cPer };
             _countryRepository.Insert(countries);
         }
 
@@ -283,30 +287,40 @@ namespace Ks.Services.Installation
         {
             var crAdministrators = new CustomerRole
             {
-                Name = "Administrador",Active = true,IsSystemRole = true,
+                Name = "Administrador",
+                Active = true,
+                IsSystemRole = true,
                 SystemName = SystemCustomerRoleNames.Administrators,
             };
 
             var crRegistered = new CustomerRole
             {
-                Name = "Registrado",Active = true,IsSystemRole = false,
+                Name = "Registrado",
+                Active = true,
+                IsSystemRole = false,
                 SystemName = SystemCustomerRoleNames.Registered
             };
 
             var crAuxAccountant = new CustomerRole
             {
-                Name = "Auxiliar Contable",Active = true,IsSystemRole = false,
+                Name = "Auxiliar Contable",
+                Active = true,
+                IsSystemRole = false,
                 SystemName = SystemCustomerRoleNames.Registered,
             };
 
             var crSecretary = new CustomerRole
             {
-                Name = "Secretaria",Active = true,IsSystemRole = false,
+                Name = "Secretaria",
+                Active = true,
+                IsSystemRole = false,
                 SystemName = SystemCustomerRoleNames.Registered
             };
             var crManager = new CustomerRole
             {
-                Name = "Gerente",Active = true,IsSystemRole = false,
+                Name = "Gerente",
+                Active = true,
+                IsSystemRole = false,
                 SystemName = SystemCustomerRoleNames.Registered
             };
             var crGuests = new CustomerRole
@@ -588,17 +602,123 @@ namespace Ks.Services.Installation
 
         protected virtual void InstallActivityLogTypes()
         {
-            var activityLogTypes = new List<ActivityLogType>
-                                      {
-                                          //admin area activities
-                                          new ActivityLogType
-                                              {
-                                                  SystemKeyword = "AddNewCategory",
-                                                  Enabled = true,
-                                                  Name = "Add a new category"
-                                              },
-                                      };
-            _activityLogTypeRepository.Insert(activityLogTypes);
+            var activityLogMilitaryPerson = new List<ActivityLogType>
+                {
+                    new ActivityLogType
+                    {SystemKeyword = "AddMilitaryPerson",Enabled = true,Name = "Registrar Personal Militar"},
+                    new ActivityLogType
+                    {SystemKeyword = "ViewMilitaryPerson",Enabled = true,Name = "Ver Personal Militar"},
+                    new ActivityLogType
+                    {SystemKeyword = "EditMilitaryPerson",Enabled = true,Name = "Editar Personal Militar"}
+                };
+
+            var activityLogMembership = new List<ActivityLogType>
+                {
+                    new ActivityLogType
+                    {SystemKeyword = "AddMembership",Enabled = true,Name = "Registrar Personal Militar"},
+                    new ActivityLogType
+                    {SystemKeyword = "ViewMembership",Enabled = true,Name = "Ver Personal Militar"},
+                    new ActivityLogType
+                    {SystemKeyword = "EditMembership",Enabled = true,Name = "Editar Personal Militar"}
+                };
+
+            var activityLogMaintenance = new List<ActivityLogType>
+                {
+                    new ActivityLogType
+                    {SystemKeyword = "AddMaintenance",Enabled = true,Name = "Registrar Mantenimiento"},
+                    new ActivityLogType
+                    {SystemKeyword = "ViewMaintenance",Enabled = true,Name = "Ver Mantenimiento"},
+                    new ActivityLogType
+                    {SystemKeyword = "EditMaintenance",Enabled = true,Name = "Editar Mantenimiento"}
+                };
+
+            var activityLogContributions = new List<ActivityLogType>
+                {
+                    new ActivityLogType
+                    {SystemKeyword = "AddContributions",Enabled = true,Name = "Registrar Aportaciones"},
+                    new ActivityLogType
+                    {SystemKeyword = "ViewContributions",Enabled = true,Name = "Ver Aportaciones"},
+                    new ActivityLogType
+                    {SystemKeyword = "EditContributions",Enabled = true,Name = "Editar Aportaciones"}
+                };
+
+            var activityLogReturns = new List<ActivityLogType>
+                {
+                    new ActivityLogType
+                    {SystemKeyword = "AddReturns",Enabled = true,Name = "Registrar Devoluciones"},
+                    new ActivityLogType
+                    {SystemKeyword = "ViewReturns",Enabled = true,Name = "Ver Devoluciones"},
+                    new ActivityLogType
+                    {SystemKeyword = "EditReturns",Enabled = true,Name = "Editar Devoluciones"}
+                };
+
+            var activityLogPaymentSocialSupport = new List<ActivityLogType>
+                {
+                    new ActivityLogType
+                    {SystemKeyword = "AddPaymentSocialSupport",Enabled = true,Name = "Registrar Pago Apoyo Social"},
+                    new ActivityLogType
+                    {SystemKeyword = "ViewPaymentSocialSupport",Enabled = true,Name = "Ver Pago Apoyo Social"},
+                    new ActivityLogType
+                    {SystemKeyword = "EditPaymentSocialSupport",Enabled = true,Name = "Editar Pago Apoyo Social"}
+                };
+            var activityLogTabulator = new List<ActivityLogType>
+                {
+                    new ActivityLogType
+                    {SystemKeyword = "AddTabulator",Enabled = true,Name = "Registrar Tabulador"},
+                    new ActivityLogType
+                    {SystemKeyword = "ViewTabulator",Enabled = true,Name = "Ver Tabulador"},
+                    new ActivityLogType
+                    {SystemKeyword = "EditTabulator",Enabled = true,Name = "Editar Tabulador"}
+                };
+
+            var activityLogScale = new List<ActivityLogType>
+                {
+                    new ActivityLogType
+                    {SystemKeyword = "AddScale",Enabled = true,Name = "Registrar Escala ASE"},
+                    new ActivityLogType
+                    {SystemKeyword = "ViewScale",Enabled = true,Name = "Ver Escala ASE"},
+                    new ActivityLogType
+                    {SystemKeyword = "EditScale",Enabled = true,Name = "Editar Escala ASE"}
+                };
+
+            var activityLogLog = new List<ActivityLogType>
+                {
+                    new ActivityLogType
+                    {SystemKeyword = "ViewLog",Enabled = true,Name = "Ver Log (auditoria)"} 
+                };
+
+            var activityLogSalaryScale = new List<ActivityLogType>
+                {
+                    new ActivityLogType
+                    {SystemKeyword = "AddSalaryScale",Enabled = true,Name = "Registrar Escala Sueldo"},
+                    new ActivityLogType
+                    {SystemKeyword = "ViewSalaryScale",Enabled = true,Name = "Ver Escala Sueldo"},
+                    new ActivityLogType
+                    {SystemKeyword = "EditSalaryScale",Enabled = true,Name = "Editar Escala Sueldo"}
+                };
+
+            var activityLogCurrentAccount = new List<ActivityLogType>
+                {
+                    new ActivityLogType
+                    {SystemKeyword = "AddCurrentAccount",Enabled = true,Name = "Registrar Cuenta Corriente"},
+                    new ActivityLogType
+                    {SystemKeyword = "ViewCurrentAccount",Enabled = true,Name = "Ver Cuenta Corriente"},
+                    new ActivityLogType
+                    {SystemKeyword = "EditCurrentAccount",Enabled = true,Name = "Editar Cuenta Corriente"}
+                };
+
+            _activityLogTypeRepository.Insert(activityLogMilitaryPerson);
+            _activityLogTypeRepository.Insert(activityLogMembership);
+            _activityLogTypeRepository.Insert(activityLogMaintenance);
+            _activityLogTypeRepository.Insert(activityLogContributions);
+            _activityLogTypeRepository.Insert(activityLogReturns);
+            _activityLogTypeRepository.Insert(activityLogPaymentSocialSupport);
+            _activityLogTypeRepository.Insert(activityLogTabulator);
+            _activityLogTypeRepository.Insert(activityLogScale);
+            _activityLogTypeRepository.Insert(activityLogLog);
+            _activityLogTypeRepository.Insert(activityLogSalaryScale);
+            _activityLogTypeRepository.Insert(activityLogCurrentAccount);
+
         }
 
         protected virtual void InstallScheduleTasks()
@@ -662,7 +782,7 @@ namespace Ks.Services.Installation
             InstallLanguages();
             InstallCurrencies();
             InstallCountriesAndStatesAndCities();
-            InstallCustomersAndUsers(defaultUserEmail,defaultUserPassword);
+            InstallCustomersAndUsers(defaultUserEmail, defaultUserPassword);
             InstallEmailAccounts();
             InstallMessageTemplates();
             InstallSettings();

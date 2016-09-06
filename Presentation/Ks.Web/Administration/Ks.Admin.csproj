@@ -229,6 +229,16 @@
     <Content Include="Views\Common\SystemInfo.cshtml" />
     <Content Include="Views\Common\SeNames.cshtml" />
     <Content Include="Views\Country\List.cshtml" />
+    <Content Include="Views\Country\Edit.cshtml" />
+    <Content Include="Views\Country\Create.cshtml" />
+    <Content Include="Views\Country\_CreateOrUpdate.cshtml" />
+    <Content Include="Views\Country\StateEditPopup.cshtml" />
+    <Content Include="Views\Country\StateCreatePopup.cshtml" />
+    <Content Include="Views\Country\_CreateOrUpdateState.cshtml" />
+    <Content Include="Views\KsSystem\List.cshtml" />
+    <Content Include="Views\KsSystem\Create.cshtml" />
+    <Content Include="Views\KsSystem\Edit.cshtml" />
+    <Content Include="Views\KsSystem\_CreateOrUpdate.cshtml" />
     <None Include="Views\Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -257,6 +267,7 @@
     <Compile Include="Controllers\CustomerRoleController.cs" />
     <Compile Include="Controllers\EmailAccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\KsSystemController.cs" />
     <Compile Include="Controllers\LanguageController.cs" />
     <Compile Include="Controllers\LogController.cs" />
     <Compile Include="Controllers\MessageTemplateController.cs" />

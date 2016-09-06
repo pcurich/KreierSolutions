@@ -232,8 +232,6 @@ namespace Ks.Admin.Infrastructure
 
             #endregion
 
-
-
             #region currencies
             Mapper.CreateMap<Currency, CurrencyModel>()
                 .ForMember(dest => dest.CreatedOn, mo => mo.Ignore())
