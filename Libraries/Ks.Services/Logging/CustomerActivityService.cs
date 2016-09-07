@@ -219,13 +219,15 @@ namespace Ks.Services.Logging
             comment = string.Format(comment, commentParams);
             comment = CommonHelper.EnsureMaximumLength(comment, 4000);
 
-            
 
-            var activity = new ActivityLog();
-            activity.ActivityLogTypeId = activityType.Id;
-            activity.Customer = customer;
-            activity.Comment = comment;
-            activity.CreatedOnUtc = DateTime.UtcNow;
+
+            var activity = new ActivityLog
+            {
+                ActivityLogTypeId = activityType.Id,
+                Customer = customer,
+                Comment = comment,
+                CreatedOnUtc = DateTime.UtcNow
+            };
 
             _activityLogRepository.Insert(activity);
 

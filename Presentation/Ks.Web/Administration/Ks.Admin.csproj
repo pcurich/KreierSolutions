@@ -197,6 +197,7 @@
     <Content Include="Views\Customer\Create.cshtml" />
     <Content Include="Views\Customer\Edit.cshtml" />
     <Content Include="Views\Customer\_CreateOrUpdate.cshtml" />
+    <None Include="Views\Customer\_CreateOrUpdate2.cshtml" />
     <Content Include="Views\Setting\CustomerUser.cshtml" />
     <Content Include="Views\Customer\_CreateOrUpdateAddress.cshtml" />
     <Content Include="Views\Customer\_CustomerAttributes.cshtml" />

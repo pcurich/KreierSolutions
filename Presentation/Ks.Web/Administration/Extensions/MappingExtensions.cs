@@ -72,7 +72,7 @@ namespace Ks.Admin.Extensions
 
         #region Customer roles
 
- 
+
         public static CustomerRoleModel ToModel(this CustomerRole entity)
         {
             return entity.MapTo<CustomerRole, CustomerRoleModel>();
@@ -260,9 +260,9 @@ namespace Ks.Admin.Extensions
             return entity.MapTo<ActivityLogType, ActivityLogTypeModel>();
         }
 
-        public static CustomerModel.ActivityLogModel ToModel(this ActivityLog entity)
+        public static ActivityLogModel ToModel(this ActivityLog entity)
         {
-            return entity.MapTo<ActivityLog, CustomerModel.ActivityLogModel>();
+            return entity.MapTo<ActivityLog, ActivityLogModel>();
         }
 
         #endregion

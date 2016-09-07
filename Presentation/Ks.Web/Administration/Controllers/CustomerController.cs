@@ -122,7 +122,7 @@ namespace Ks.Admin.Controllers
             )
         {
             this._customerService = customerService;
-            //this._genericAttributeService = genericAttributeService;
+            this._genericAttributeService = genericAttributeService;
             this._customerRegistrationService = customerRegistrationService;
             //this._customerReportService = customerReportService;
             this._dateTimeHelper = dateTimeHelper;
@@ -428,9 +428,9 @@ namespace Ks.Admin.Controllers
             }
 
             //newsletter subscriptions
-            model.AvailableNewsletterSubscriptionStores = allStores
-                .Select(s => new CustomerModel.StoreModel() { Id = s.Id, Name = s.Name })
-                .ToList();
+            //model.AvailableNewsletterSubscriptionStores = allStores
+            //    .Select(s => new CustomerModel.StoreModel() { Id = s.Id, Name = s.Name })
+            //    .ToList();
 
             //customer roles
             model.AvailableCustomerRoles = _customerService
@@ -539,6 +539,107 @@ namespace Ks.Admin.Controllers
             model.Address.PrepareCustomAddressAttributes(address, _addressAttributeService, _addressAttributeParser);
         }
 
+        [NonAction]
+        protected virtual string ValidateCustomerRoles(IList<CustomerRole> customerRoles)
+        {
+            if (customerRoles == null)
+                throw new ArgumentNullException("customerRoles");
+
+            //ensure a customer is not added to both 'Guests' and 'Registered' customer roles
+            //ensure that a customer is in at least one required role ('Guests' and 'Registered')
+            bool isInGuestsRole = customerRoles.FirstOrDefault(cr => cr.SystemName == SystemCustomerRoleNames.Guests) != null;
+            bool isInRegisteredRole = customerRoles.FirstOrDefault(cr => cr.SystemName == SystemCustomerRoleNames.Registered) != null;
+            if (isInGuestsRole && isInRegisteredRole)
+                return "The customer cannot be in both 'Guests' and 'Registered' customer roles";
+            if (!isInGuestsRole && !isInRegisteredRole)
+                return "Add the customer to 'Guests' or 'Registered' customer role";
+
+            //no errors
+            return "";
+        }
+
+        [NonAction]
+        protected virtual string ParseCustomCustomerAttributes(Customer customer, FormCollection form)
+        {
+            if (customer == null)
+                throw new ArgumentNullException("customer");
+
+            if (form == null)
+                throw new ArgumentNullException("form");
+
+            string attributesXml = "";
+            var customerAttributes = _customerAttributeService.GetAllCustomerAttributes();
+            foreach (var attribute in customerAttributes)
+            {
+                string controlId = string.Format("customer_attribute_{0}", attribute.Id);
+                switch (attribute.AttributeControlType)
+                {
+                    case AttributeControlType.DropdownList:
+                    case AttributeControlType.RadioList:
+                        {
+                            var ctrlAttributes = form[controlId];
+                            if (!String.IsNullOrEmpty(ctrlAttributes))
+                            {
+                                int selectedAttributeId = int.Parse(ctrlAttributes);
+                                if (selectedAttributeId > 0)
+                                    attributesXml = _customerAttributeParser.AddCustomerAttribute(attributesXml,
+                                        attribute, selectedAttributeId.ToString());
+                            }
+                        }
+                        break;
+                    case AttributeControlType.Checkboxes:
+                        {
+                            var cblAttributes = form[controlId];
+                            if (!String.IsNullOrEmpty(cblAttributes))
+                            {
+                                foreach (var item in cblAttributes.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                                {
+                                    int selectedAttributeId = int.Parse(item);
+                                    if (selectedAttributeId > 0)
+                                        attributesXml = _customerAttributeParser.AddCustomerAttribute(attributesXml,
+                                            attribute, selectedAttributeId.ToString());
+                                }
+                            }
+                        }
+                        break;
+                    case AttributeControlType.ReadonlyCheckboxes:
+                        {
+                            //load read-only (already server-side selected) values
+                            var attributeValues = _customerAttributeService.GetCustomerAttributeValues(attribute.Id);
+                            foreach (var selectedAttributeId in attributeValues
+                                .Where(v => v.IsPreSelected)
+                                .Select(v => v.Id)
+                                .ToList())
+                            {
+                                attributesXml = _customerAttributeParser.AddCustomerAttribute(attributesXml,
+                                            attribute, selectedAttributeId.ToString());
+                            }
+                        }
+                        break;
+                    case AttributeControlType.TextBox:
+                    case AttributeControlType.MultilineTextbox:
+                        {
+                            var ctrlAttributes = form[controlId];
+                            if (!String.IsNullOrEmpty(ctrlAttributes))
+                            {
+                                string enteredText = ctrlAttributes.Trim();
+                                attributesXml = _customerAttributeParser.AddCustomerAttribute(attributesXml,
+                                    attribute, enteredText);
+                            }
+                        }
+                        break;
+                    case AttributeControlType.Datepicker:
+                    case AttributeControlType.ColorSquares:
+                    case AttributeControlType.FileUpload:
+                    //not supported customer attributes
+                    default:
+                        break;
+                }
+            }
+
+            return attributesXml;
+        }
+
 
         #endregion
 
@@ -618,447 +719,447 @@ namespace Ks.Admin.Controllers
             return View(model);
         }
 
-        //[HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
-        //[FormValueRequired("save", "save-continue")]
-        //[ValidateInput(false)]
-        //public ActionResult Create(CustomerModel model, bool continueEditing, FormCollection form)
-        //{
-        //    if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
-        //        return AccessDeniedView();
+        [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
+        [FormValueRequired("save", "save-continue")]
+        [ValidateInput(false)]
+        public ActionResult Create(CustomerModel model, bool continueEditing, FormCollection form)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
+                return AccessDeniedView();
 
-        //    if (!String.IsNullOrWhiteSpace(model.Email))
-        //    {
-        //        var cust2 = _customerService.GetCustomerByEmail(model.Email);
-        //        if (cust2 != null)
-        //            ModelState.AddModelError("", "Email is already registered");
-        //    }
-        //    if (!String.IsNullOrWhiteSpace(model.Username) & _customerSettings.UsernamesEnabled)
-        //    {
-        //        var cust2 = _customerService.GetCustomerByUsername(model.Username);
-        //        if (cust2 != null)
-        //            ModelState.AddModelError("", "Username is already registered");
-        //    }
+            if (!String.IsNullOrWhiteSpace(model.Email))
+            {
+                var cust2 = _customerService.GetCustomerByEmail(model.Email);
+                if (cust2 != null)
+                    ModelState.AddModelError("", "Email is already registered");
+            }
+            if (!String.IsNullOrWhiteSpace(model.Username) & _customerSettings.UsernamesEnabled)
+            {
+                var cust2 = _customerService.GetCustomerByUsername(model.Username);
+                if (cust2 != null)
+                    ModelState.AddModelError("", "Username is already registered");
+            }
 
-        //    //validate customer roles
-        //    var allCustomerRoles = _customerService.GetAllCustomerRoles(true);
-        //    var newCustomerRoles = new List<CustomerRole>();
-        //    foreach (var customerRole in allCustomerRoles)
-        //        if (model.SelectedCustomerRoleIds != null && model.SelectedCustomerRoleIds.Contains(customerRole.Id))
-        //            newCustomerRoles.Add(customerRole);
-        //    var customerRolesError = ValidateCustomerRoles(newCustomerRoles);
-        //    if (!String.IsNullOrEmpty(customerRolesError))
-        //    {
-        //        ModelState.AddModelError("", customerRolesError);
-        //        ErrorNotification(customerRolesError, false);
-        //    }
+            //validate customer roles
+            var allCustomerRoles = _customerService.GetAllCustomerRoles(true);
+            var newCustomerRoles = new List<CustomerRole>();
+            foreach (var customerRole in allCustomerRoles)
+                if (model.SelectedCustomerRoleIds != null && model.SelectedCustomerRoleIds.Contains(customerRole.Id))
+                    newCustomerRoles.Add(customerRole);
+            var customerRolesError = ValidateCustomerRoles(newCustomerRoles);
+            if (!String.IsNullOrEmpty(customerRolesError))
+            {
+                ModelState.AddModelError("", customerRolesError);
+                ErrorNotification(customerRolesError, false);
+            }
 
-        //    if (ModelState.IsValid)
-        //    {
-        //        var customer = new Customer
-        //        {
-        //            CustomerGuid = Guid.NewGuid(),
-        //            Email = model.Email,
-        //            Username = model.Username,
-        //            VendorId = model.VendorId,
-        //            AdminComment = model.AdminComment,
-        //            IsTaxExempt = model.IsTaxExempt,
-        //            Active = model.Active,
-        //            CreatedOnUtc = DateTime.UtcNow,
-        //            LastActivityDateUtc = DateTime.UtcNow,
-        //        };
-        //        _customerService.InsertCustomer(customer);
+            if (ModelState.IsValid)
+            {
+                var customer = new Customer
+                {
+                    CustomerGuid = Guid.NewGuid(),
+                    Email = model.Email,
+                    Username = model.Username,
+                    //VendorId = model.VendorId,
+                    AdminComment = model.AdminComment,
+                    //IsTaxExempt = model.IsTaxExempt,
+                    Active = model.Active,
+                    CreatedOnUtc = DateTime.UtcNow,
+                    LastActivityDateUtc = DateTime.UtcNow,
+                };
+                _customerService.InsertCustomer(customer);
 
-        //        //form fields
-        //        if (_dateTimeSettings.AllowCustomersToSetTimeZone)
-        //            _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.TimeZoneId, model.TimeZoneId);
-        //        if (_customerSettings.GenderEnabled)
-        //            _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Gender, model.Gender);
-        //        _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.FirstName, model.FirstName);
-        //        _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.LastName, model.LastName);
-        //        if (_customerSettings.DateOfBirthEnabled)
-        //            _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.DateOfBirth, model.DateOfBirth);
-        //        if (_customerSettings.CompanyEnabled)
-        //            _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Company, model.Company);
-        //        if (_customerSettings.StreetAddressEnabled)
-        //            _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.StreetAddress, model.StreetAddress);
-        //        if (_customerSettings.StreetAddress2Enabled)
-        //            _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.StreetAddress2, model.StreetAddress2);
-        //        if (_customerSettings.ZipPostalCodeEnabled)
-        //            _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.ZipPostalCode, model.ZipPostalCode);
-        //        if (_customerSettings.CityEnabled)
-        //            _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.City, model.City);
-        //        if (_customerSettings.CountryEnabled)
-        //            _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.CountryId, model.CountryId);
-        //        if (_customerSettings.CountryEnabled && _customerSettings.StateProvinceEnabled)
-        //            _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.StateProvinceId, model.StateProvinceId);
-        //        if (_customerSettings.PhoneEnabled)
-        //            _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Phone, model.Phone);
-        //        if (_customerSettings.FaxEnabled)
-        //            _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Fax, model.Fax);
+                //form fields
+                if (_dateTimeSettings.AllowCustomersToSetTimeZone)
+                    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.TimeZoneId, model.TimeZoneId);
+                if (_customerSettings.GenderEnabled)
+                    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Gender, model.Gender);
+                _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.FirstName, model.FirstName);
+                _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.LastName, model.LastName);
+                if (_customerSettings.DateOfBirthEnabled)
+                    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.DateOfBirth, model.DateOfBirth);
+                if (_customerSettings.CompanyEnabled)
+                    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Company, model.Company);
+                if (_customerSettings.StreetAddressEnabled)
+                    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.StreetAddress, model.StreetAddress);
+                if (_customerSettings.StreetAddress2Enabled)
+                    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.StreetAddress2, model.StreetAddress2);
+                if (_customerSettings.ZipPostalCodeEnabled)
+                    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.ZipPostalCode, model.ZipPostalCode);
+                if (_customerSettings.CountryEnabled)
+                    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.CountryId, model.CountryId);
+                if (_customerSettings.CountryEnabled && _customerSettings.StateProvinceEnabled)
+                    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.StateProvinceId, model.StateProvinceId);
+                if (_customerSettings.CountryEnabled && _customerSettings.StateProvinceEnabled && _customerSettings.CityEnabled)
+                    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.CityId, model.CityId);
+                if (_customerSettings.PhoneEnabled)
+                    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Phone, model.Phone);
+                if (_customerSettings.FaxEnabled)
+                    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Fax, model.Fax);
 
-        //        //custom customer attributes
-        //        var customerAttributes = ParseCustomCustomerAttributes(customer, form);
-        //        _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.CustomCustomerAttributes, customerAttributes);
-
-
-        //        //newsletter subscriptions
-        //        if (!String.IsNullOrEmpty(customer.Email))
-        //        {
-        //            var allStores = _storeService.GetAllStores();
-        //            foreach (var store in allStores)
-        //            {
-        //                var newsletterSubscription = _newsLetterSubscriptionService
-        //                    .GetNewsLetterSubscriptionByEmailAndStoreId(customer.Email, store.Id);
-        //                if (model.SelectedNewsletterSubscriptionStoreIds != null &&
-        //                    model.SelectedNewsletterSubscriptionStoreIds.Contains(store.Id))
-        //                {
-        //                    //subscribed
-        //                    if (newsletterSubscription == null)
-        //                    {
-        //                        _newsLetterSubscriptionService.InsertNewsLetterSubscription(new NewsLetterSubscription
-        //                        {
-        //                            NewsLetterSubscriptionGuid = Guid.NewGuid(),
-        //                            Email = customer.Email,
-        //                            Active = true,
-        //                            StoreId = store.Id,
-        //                            CreatedOnUtc = DateTime.UtcNow
-        //                        });
-        //                    }
-        //                }
-        //                else
-        //                {
-        //                    //not subscribed
-        //                    if (newsletterSubscription != null)
-        //                    {
-        //                        _newsLetterSubscriptionService.DeleteNewsLetterSubscription(newsletterSubscription);
-        //                    }
-        //                }
-        //            }
-        //        }
-
-        //        //password
-        //        if (!String.IsNullOrWhiteSpace(model.Password))
-        //        {
-        //            var changePassRequest = new ChangePasswordRequest(model.Email, false, _customerSettings.DefaultPasswordFormat, model.Password);
-        //            var changePassResult = _customerRegistrationService.ChangePassword(changePassRequest);
-        //            if (!changePassResult.Success)
-        //            {
-        //                foreach (var changePassError in changePassResult.Errors)
-        //                    ErrorNotification(changePassError);
-        //            }
-        //        }
-
-        //        //customer roles
-        //        foreach (var customerRole in newCustomerRoles)
-        //        {
-        //            //ensure that the current customer cannot add to "Administrators" system role if he's not an admin himself
-        //            if (customerRole.SystemName == SystemCustomerRoleNames.Administrators &&
-        //                !_workContext.CurrentCustomer.IsAdmin())
-        //                continue;
-
-        //            customer.CustomerRoles.Add(customerRole);
-        //        }
-        //        _customerService.UpdateCustomer(customer);
+                //custom customer attributes
+                var customerAttributes = ParseCustomCustomerAttributes(customer, form);
+                _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.CustomCustomerAttributes, customerAttributes);
 
 
-        //        //ensure that a customer with a vendor associated is not in "Administrators" role
-        //        //otherwise, he won't be have access to the other functionality in admin area
-        //        if (customer.IsAdmin() && customer.VendorId > 0)
-        //        {
-        //            customer.VendorId = 0;
-        //            _customerService.UpdateCustomer(customer);
-        //            ErrorNotification(_localizationService.GetResource("Admin.Customers.Customers.AdminCouldNotbeVendor"));
-        //        }
+                //newsletter subscriptions
+                //if (!String.IsNullOrEmpty(customer.Email))
+                //{
+                //    var allKsSystems = _ksSystemService.GetAllKsSystems();
+                //    foreach (var ksSystem in allKsSystems)
+                //    {
+                //        var newsletterSubscription = _newsLetterSubscriptionService
+                //            .GetNewsLetterSubscriptionByEmailAndStoreId(customer.Email, ksSystem.Id);
+                //        if (model.SelectedNewsletterSubscriptionStoreIds != null &&
+                //            model.SelectedNewsletterSubscriptionStoreIds.Contains(ksSystem.Id))
+                //        {
+                //            //subscribed
+                //            if (newsletterSubscription == null)
+                //            {
+                //                _newsLetterSubscriptionService.InsertNewsLetterSubscription(new NewsLetterSubscription
+                //                {
+                //                    NewsLetterSubscriptionGuid = Guid.NewGuid(),
+                //                    Email = customer.Email,
+                //                    Active = true,
+                //                    StoreId = ksSystem.Id,
+                //                    CreatedOnUtc = DateTime.UtcNow
+                //                });
+                //            }
+                //        }
+                //        else
+                //        {
+                //            //not subscribed
+                //            if (newsletterSubscription != null)
+                //            {
+                //                _newsLetterSubscriptionService.DeleteNewsLetterSubscription(newsletterSubscription);
+                //            }
+                //        }
+                //    }
+                //}
 
-        //        //ensure that a customer in the Vendors role has a vendor account associated.
-        //        //otherwise, he will have access to ALL products
-        //        if (customer.IsVendor() && customer.VendorId == 0)
-        //        {
-        //            var vendorRole = customer
-        //                .CustomerRoles
-        //                .FirstOrDefault(x => x.SystemName == SystemCustomerRoleNames.Vendors);
-        //            customer.CustomerRoles.Remove(vendorRole);
-        //            _customerService.UpdateCustomer(customer);
-        //            ErrorNotification(_localizationService.GetResource("Admin.Customers.Customers.CannotBeInVendoRoleWithoutVendorAssociated"));
-        //        }
+                //password
+                if (!String.IsNullOrWhiteSpace(model.Password))
+                {
+                    var changePassRequest = new ChangePasswordRequest(model.Email, false, _customerSettings.DefaultPasswordFormat, model.Password);
+                    var changePassResult = _customerRegistrationService.ChangePassword(changePassRequest);
+                    if (!changePassResult.Success)
+                    {
+                        foreach (var changePassError in changePassResult.Errors)
+                            ErrorNotification(changePassError);
+                    }
+                }
 
-        //        //activity log
-        //        _customerActivityService.InsertActivity("AddNewCustomer", _localizationService.GetResource("ActivityLog.AddNewCustomer"), customer.Id);
+                //customer roles
+                foreach (var customerRole in newCustomerRoles)
+                {
+                    //ensure that the current customer cannot add to "Administrators" system role if he's not an admin himself
+                    if (customerRole.SystemName == SystemCustomerRoleNames.Administrators &&
+                        !_workContext.CurrentCustomer.IsAdmin())
+                        continue;
 
-        //        SuccessNotification(_localizationService.GetResource("Admin.Customers.Customers.Added"));
-        //        return continueEditing ? RedirectToAction("Edit", new { id = customer.Id }) : RedirectToAction("List");
-        //    }
-
-        //    //If we got this far, something failed, redisplay form
-        //    PrepareCustomerModel(model, null, true);
-        //    return System.Web.UI.WebControls.View(model);
-        //}
-
-        //public ActionResult Edit(int id)
-        //{
-        //    if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
-        //        return AccessDeniedView();
-
-        //    var customer = _customerService.GetCustomerById(id);
-        //    if (customer == null || customer.Deleted)
-        //        //No customer found with the specified id
-        //        return RedirectToAction("List");
-
-        //    var model = new CustomerModel();
-        //    PrepareCustomerModel(model, customer, false);
-        //    return System.Web.UI.WebControls.View(model);
-        //}
-
-        //[HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
-        //[FormValueRequired("save", "save-continue")]
-        //[ValidateInput(false)]
-        //public ActionResult Edit(CustomerModel model, bool continueEditing, FormCollection form)
-        //{
-        //    if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
-        //        return AccessDeniedView();
-
-        //    var customer = _customerService.GetCustomerById(model.Id);
-        //    if (customer == null || customer.Deleted)
-        //        //No customer found with the specified id
-        //        return RedirectToAction("List");
-
-        //    //validate customer roles
-        //    var allCustomerRoles = _customerService.GetAllCustomerRoles(true);
-        //    var newCustomerRoles = new List<CustomerRole>();
-        //    foreach (var customerRole in allCustomerRoles)
-        //        if (model.SelectedCustomerRoleIds != null && model.SelectedCustomerRoleIds.Contains(customerRole.Id))
-        //            newCustomerRoles.Add(customerRole);
-        //    var customerRolesError = ValidateCustomerRoles(newCustomerRoles);
-        //    if (!String.IsNullOrEmpty(customerRolesError))
-        //    {
-        //        ModelState.AddModelError("", customerRolesError);
-        //        ErrorNotification(customerRolesError, false);
-        //    }
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            customer.AdminComment = model.AdminComment;
-        //            customer.IsTaxExempt = model.IsTaxExempt;
-        //            customer.Active = model.Active;
-        //            //email
-        //            if (!String.IsNullOrWhiteSpace(model.Email))
-        //            {
-        //                _customerRegistrationService.SetEmail(customer, model.Email);
-        //            }
-        //            else
-        //            {
-        //                customer.Email = model.Email;
-        //            }
-
-        //            //username
-        //            if (_customerSettings.UsernamesEnabled && _customerSettings.AllowUsersToChangeUsernames)
-        //            {
-        //                if (!String.IsNullOrWhiteSpace(model.Username))
-        //                {
-        //                    _customerRegistrationService.SetUsername(customer, model.Username);
-        //                }
-        //                else
-        //                {
-        //                    customer.Username = model.Username;
-        //                }
-        //            }
-
-        //            //VAT number
-        //            if (_taxSettings.EuVatEnabled)
-        //            {
-        //                var prevVatNumber = customer.GetAttribute<string>(SystemCustomerAttributeNames.VatNumber);
-
-        //                _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.VatNumber, model.VatNumber);
-        //                //set VAT number status
-        //                if (!String.IsNullOrEmpty(model.VatNumber))
-        //                {
-        //                    if (!model.VatNumber.Equals(prevVatNumber, StringComparison.InvariantCultureIgnoreCase))
-        //                    {
-        //                        _genericAttributeService.SaveAttribute(customer,
-        //                            SystemCustomerAttributeNames.VatNumberStatusId,
-        //                            (int)_taxService.GetVatNumberStatus(model.VatNumber));
-        //                    }
-        //                }
-        //                else
-        //                {
-        //                    _genericAttributeService.SaveAttribute(customer,
-        //                        SystemCustomerAttributeNames.VatNumberStatusId,
-        //                        (int)VatNumberStatus.Empty);
-        //                }
-        //            }
-
-        //            //vendor
-        //            customer.VendorId = model.VendorId;
-
-        //            //form fields
-        //            if (_dateTimeSettings.AllowCustomersToSetTimeZone)
-        //                _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.TimeZoneId, model.TimeZoneId);
-        //            if (_customerSettings.GenderEnabled)
-        //                _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Gender, model.Gender);
-        //            _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.FirstName, model.FirstName);
-        //            _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.LastName, model.LastName);
-        //            if (_customerSettings.DateOfBirthEnabled)
-        //                _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.DateOfBirth, model.DateOfBirth);
-        //            if (_customerSettings.CompanyEnabled)
-        //                _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Company, model.Company);
-        //            if (_customerSettings.StreetAddressEnabled)
-        //                _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.StreetAddress, model.StreetAddress);
-        //            if (_customerSettings.StreetAddress2Enabled)
-        //                _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.StreetAddress2, model.StreetAddress2);
-        //            if (_customerSettings.ZipPostalCodeEnabled)
-        //                _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.ZipPostalCode, model.ZipPostalCode);
-        //            if (_customerSettings.CityEnabled)
-        //                _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.City, model.City);
-        //            if (_customerSettings.CountryEnabled)
-        //                _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.CountryId, model.CountryId);
-        //            if (_customerSettings.CountryEnabled && _customerSettings.StateProvinceEnabled)
-        //                _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.StateProvinceId, model.StateProvinceId);
-        //            if (_customerSettings.PhoneEnabled)
-        //                _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Phone, model.Phone);
-        //            if (_customerSettings.FaxEnabled)
-        //                _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Fax, model.Fax);
-
-        //            //custom customer attributes
-        //            var customerAttributes = ParseCustomCustomerAttributes(customer, form);
-        //            _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.CustomCustomerAttributes, customerAttributes);
-
-        //            //newsletter subscriptions
-        //            if (!String.IsNullOrEmpty(customer.Email))
-        //            {
-        //                var allStores = _storeService.GetAllStores();
-        //                foreach (var store in allStores)
-        //                {
-        //                    var newsletterSubscription = _newsLetterSubscriptionService
-        //                        .GetNewsLetterSubscriptionByEmailAndStoreId(customer.Email, store.Id);
-        //                    if (model.SelectedNewsletterSubscriptionStoreIds != null &&
-        //                        model.SelectedNewsletterSubscriptionStoreIds.Contains(store.Id))
-        //                    {
-        //                        //subscribed
-        //                        if (newsletterSubscription == null)
-        //                        {
-        //                            _newsLetterSubscriptionService.InsertNewsLetterSubscription(new NewsLetterSubscription
-        //                            {
-        //                                NewsLetterSubscriptionGuid = Guid.NewGuid(),
-        //                                Email = customer.Email,
-        //                                Active = true,
-        //                                StoreId = store.Id,
-        //                                CreatedOnUtc = DateTime.UtcNow
-        //                            });
-        //                        }
-        //                    }
-        //                    else
-        //                    {
-        //                        //not subscribed
-        //                        if (newsletterSubscription != null)
-        //                        {
-        //                            _newsLetterSubscriptionService.DeleteNewsLetterSubscription(newsletterSubscription);
-        //                        }
-        //                    }
-        //                }
-        //            }
+                    customer.CustomerRoles.Add(customerRole);
+                }
+                _customerService.UpdateCustomer(customer);
 
 
-        //            //customer roles
-        //            foreach (var customerRole in allCustomerRoles)
-        //            {
-        //                //ensure that the current customer cannot add/remove to/from "Administrators" system role
-        //                //if he's not an admin himself
-        //                if (customerRole.SystemName == SystemCustomerRoleNames.Administrators &&
-        //                    !_workContext.CurrentCustomer.IsAdmin())
-        //                    continue;
+                //ensure that a customer with a vendor associated is not in "Administrators" role
+                //otherwise, he won't be have access to the other functionality in admin area
+                //if (customer.IsAdmin() && customer.VendorId > 0)
+                //{
+                //    customer.VendorId = 0;
+                //    _customerService.UpdateCustomer(customer);
+                //    ErrorNotification(_localizationService.GetResource("Admin.Customers.Customers.AdminCouldNotbeVendor"));
+                //}
 
-        //                if (model.SelectedCustomerRoleIds != null &&
-        //                    model.SelectedCustomerRoleIds.Contains(customerRole.Id))
-        //                {
-        //                    //new role
-        //                    if (customer.CustomerRoles.Count(cr => cr.Id == customerRole.Id) == 0)
-        //                        customer.CustomerRoles.Add(customerRole);
-        //                }
-        //                else
-        //                {
-        //                    //remove role
-        //                    if (customer.CustomerRoles.Count(cr => cr.Id == customerRole.Id) > 0)
-        //                        customer.CustomerRoles.Remove(customerRole);
-        //                }
-        //            }
-        //            _customerService.UpdateCustomer(customer);
+                //ensure that a customer in the Vendors role has a vendor account associated.
+                //otherwise, he will have access to ALL products
+                //if (customer.IsVendor() && customer.VendorId == 0)
+                //{
+                //    var vendorRole = customer
+                //        .CustomerRoles
+                //        .FirstOrDefault(x => x.SystemName == SystemCustomerRoleNames.Vendors);
+                //    customer.CustomerRoles.Remove(vendorRole);
+                //    _customerService.UpdateCustomer(customer);
+                //    ErrorNotification(_localizationService.GetResource("Admin.Customers.Customers.CannotBeInVendoRoleWithoutVendorAssociated"));
+                //}
+
+                //activity log
+                _customerActivityService.InsertActivity("AddNewMilitaryPerson", _localizationService.GetResource("ActivityLog.AddNewMilitaryPerson"), customer.Id, customer.Username ?? customer.Email);
+
+                SuccessNotification(_localizationService.GetResource("Admin.Customers.Customers.Added"));
+                return continueEditing ? RedirectToAction("Edit", new { id = customer.Id }) : RedirectToAction("List");
+            }
+
+            //If we got this far, something failed, redisplay form
+            PrepareCustomerModel(model, null, true);
+            return  View(model);
+        }
+
+        public ActionResult Edit(int id)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
+                return AccessDeniedView();
+
+            var customer = _customerService.GetCustomerById(id);
+            if (customer == null || customer.Deleted)
+                //No customer found with the specified id
+                return RedirectToAction("List");
+
+            var model = new CustomerModel();
+            PrepareCustomerModel(model, customer, false);
+            return  View(model);
+        }
+
+        [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
+        [FormValueRequired("save", "save-continue")]
+        [ValidateInput(false)]
+        public ActionResult Edit(CustomerModel model, bool continueEditing, FormCollection form)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
+                return AccessDeniedView();
+
+            var customer = _customerService.GetCustomerById(model.Id);
+            if (customer == null || customer.Deleted)
+                //No customer found with the specified id
+                return RedirectToAction("List");
+
+            //validate customer roles
+            var allCustomerRoles = _customerService.GetAllCustomerRoles(true);
+            var newCustomerRoles = new List<CustomerRole>();
+            foreach (var customerRole in allCustomerRoles)
+                if (model.SelectedCustomerRoleIds != null && model.SelectedCustomerRoleIds.Contains(customerRole.Id))
+                    newCustomerRoles.Add(customerRole);
+            var customerRolesError = ValidateCustomerRoles(newCustomerRoles);
+            if (!String.IsNullOrEmpty(customerRolesError))
+            {
+                ModelState.AddModelError("", customerRolesError);
+                ErrorNotification(customerRolesError, false);
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    customer.AdminComment = model.AdminComment;
+                    //customer.IsTaxExempt = model.IsTaxExempt;
+                    customer.Active = model.Active;
+                    //email
+                    if (!String.IsNullOrWhiteSpace(model.Email))
+                    {
+                        _customerRegistrationService.SetEmail(customer, model.Email);
+                    }
+                    else
+                    {
+                        customer.Email = model.Email;
+                    }
+
+                    //username
+                    if (_customerSettings.UsernamesEnabled && _customerSettings.AllowUsersToChangeUsernames)
+                    {
+                        if (!String.IsNullOrWhiteSpace(model.Username))
+                        {
+                            _customerRegistrationService.SetUsername(customer, model.Username);
+                        }
+                        else
+                        {
+                            customer.Username = model.Username;
+                        }
+                    }
+
+                    //VAT number
+                    //if (_taxSettings.EuVatEnabled)
+                    //{
+                    //    var prevVatNumber = customer.GetAttribute<string>(SystemCustomerAttributeNames.VatNumber);
+
+                    //    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.VatNumber, model.VatNumber);
+                    //    //set VAT number status
+                    //    if (!String.IsNullOrEmpty(model.VatNumber))
+                    //    {
+                    //        if (!model.VatNumber.Equals(prevVatNumber, StringComparison.InvariantCultureIgnoreCase))
+                    //        {
+                    //            _genericAttributeService.SaveAttribute(customer,
+                    //                SystemCustomerAttributeNames.VatNumberStatusId,
+                    //                (int)_taxService.GetVatNumberStatus(model.VatNumber));
+                    //        }
+                    //    }
+                    //    else
+                    //    {
+                    //        _genericAttributeService.SaveAttribute(customer,
+                    //            SystemCustomerAttributeNames.VatNumberStatusId,
+                    //            (int)VatNumberStatus.Empty);
+                    //    }
+                    //}
+
+                    //vendor
+                    //customer.VendorId = model.VendorId;
+
+                    //form fields
+                    if (_dateTimeSettings.AllowCustomersToSetTimeZone)
+                        _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.TimeZoneId, model.TimeZoneId);
+                    if (_customerSettings.GenderEnabled)
+                        _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Gender, model.Gender);
+                    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.FirstName, model.FirstName);
+                    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.LastName, model.LastName);
+                    if (_customerSettings.DateOfBirthEnabled)
+                        _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.DateOfBirth, model.DateOfBirth);
+                    if (_customerSettings.CompanyEnabled)
+                        _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Company, model.Company);
+                    if (_customerSettings.StreetAddressEnabled)
+                        _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.StreetAddress, model.StreetAddress);
+                    if (_customerSettings.StreetAddress2Enabled)
+                        _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.StreetAddress2, model.StreetAddress2);
+                    if (_customerSettings.ZipPostalCodeEnabled)
+                        _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.ZipPostalCode, model.ZipPostalCode);
+                    if (_customerSettings.CountryEnabled)
+                        _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.CountryId, model.CountryId);
+                    if (_customerSettings.CountryEnabled && _customerSettings.StateProvinceEnabled)
+                        _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.StateProvinceId, model.StateProvinceId);
+                    if (_customerSettings.CountryEnabled && _customerSettings.StateProvinceEnabled && _customerSettings.CityEnabled)
+                        _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.CityId, model.CityId);
+                    if (_customerSettings.PhoneEnabled)
+                        _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Phone, model.Phone);
+                    if (_customerSettings.FaxEnabled)
+                        _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Fax, model.Fax);
+
+                    //custom customer attributes
+                    var customerAttributes = ParseCustomCustomerAttributes(customer, form);
+                    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.CustomCustomerAttributes, customerAttributes);
+
+                    //newsletter subscriptions
+                    //if (!String.IsNullOrEmpty(customer.Email))
+                    //{
+                    //    var allKsSystems = _ksSystemService.GetAllKsSystems();
+                    //    foreach (var ksSystem in allKsSystems)
+                    //    {
+                    //        var newsletterSubscription = _newsLetterSubscriptionService
+                    //            .GetNewsLetterSubscriptionByEmailAndStoreId(customer.Email, ksSystem.Id);
+                    //        if (model.SelectedNewsletterSubscriptionStoreIds != null &&
+                    //            model.SelectedNewsletterSubscriptionStoreIds.Contains(ksSystem.Id))
+                    //        {
+                    //            //subscribed
+                    //            if (newsletterSubscription == null)
+                    //            {
+                    //                _newsLetterSubscriptionService.InsertNewsLetterSubscription(new NewsLetterSubscription
+                    //                {
+                    //                    NewsLetterSubscriptionGuid = Guid.NewGuid(),
+                    //                    Email = customer.Email,
+                    //                    Active = true,
+                    //                    StoreId = ksSystem.Id,
+                    //                    CreatedOnUtc = DateTime.UtcNow
+                    //                });
+                    //            }
+                    //        }
+                    //        else
+                    //        {
+                    //            //not subscribed
+                    //            if (newsletterSubscription != null)
+                    //            {
+                    //                _newsLetterSubscriptionService.DeleteNewsLetterSubscription(newsletterSubscription);
+                    //            }
+                    //        }
+                    //    }
+                    //}
 
 
-        //            //ensure that a customer with a vendor associated is not in "Administrators" role
-        //            //otherwise, he won't have access to the other functionality in admin area
-        //            if (customer.IsAdmin() && customer.VendorId > 0)
-        //            {
-        //                customer.VendorId = 0;
-        //                _customerService.UpdateCustomer(customer);
-        //                ErrorNotification(_localizationService.GetResource("Admin.Customers.Customers.AdminCouldNotbeVendor"));
-        //            }
+                    //customer roles
+                    foreach (var customerRole in allCustomerRoles)
+                    {
+                        //ensure that the current customer cannot add/remove to/from "Administrators" system role
+                        //if he's not an admin himself
+                        if (customerRole.SystemName == SystemCustomerRoleNames.Administrators &&
+                            !_workContext.CurrentCustomer.IsAdmin())
+                            continue;
 
-        //            //ensure that a customer in the Vendors role has a vendor account associated.
-        //            //otherwise, he will have access to ALL products
-        //            if (customer.IsVendor() && customer.VendorId == 0)
-        //            {
-        //                var vendorRole = customer
-        //                    .CustomerRoles
-        //                    .FirstOrDefault(x => x.SystemName == SystemCustomerRoleNames.Vendors);
-        //                customer.CustomerRoles.Remove(vendorRole);
-        //                _customerService.UpdateCustomer(customer);
-        //                ErrorNotification(_localizationService.GetResource("Admin.Customers.Customers.CannotBeInVendoRoleWithoutVendorAssociated"));
-        //            }
-
-
-        //            //activity log
-        //            _customerActivityService.InsertActivity("EditCustomer", _localizationService.GetResource("ActivityLog.EditCustomer"), customer.Id);
-
-        //            SuccessNotification(_localizationService.GetResource("Admin.Customers.Customers.Updated"));
-        //            if (continueEditing)
-        //            {
-        //                //selected tab
-        //                SaveSelectedTabIndex();
-
-        //                return RedirectToAction("Edit", new { id = customer.Id });
-        //            }
-        //            return RedirectToAction("List");
-        //        }
-        //        catch (Exception exc)
-        //        {
-        //            ErrorNotification(exc.Message, false);
-        //        }
-        //    }
+                        if (model.SelectedCustomerRoleIds != null &&
+                            model.SelectedCustomerRoleIds.Contains(customerRole.Id))
+                        {
+                            //new role
+                            if (customer.CustomerRoles.Count(cr => cr.Id == customerRole.Id) == 0)
+                                customer.CustomerRoles.Add(customerRole);
+                        }
+                        else
+                        {
+                            //remove role
+                            if (customer.CustomerRoles.Count(cr => cr.Id == customerRole.Id) > 0)
+                                customer.CustomerRoles.Remove(customerRole);
+                        }
+                    }
+                    _customerService.UpdateCustomer(customer);
 
 
-        //    //If we got this far, something failed, redisplay form
-        //    PrepareCustomerModel(model, customer, true);
-        //    return System.Web.UI.WebControls.View(model);
-        //}
+                    //ensure that a customer with a vendor associated is not in "Administrators" role
+                    //otherwise, he won't have access to the other functionality in admin area
+                    //if (customer.IsAdmin() && customer.VendorId > 0)
+                    //{
+                    //    customer.VendorId = 0;
+                    //    _customerService.UpdateCustomer(customer);
+                    //    ErrorNotification(_localizationService.GetResource("Admin.Customers.Customers.AdminCouldNotbeVendor"));
+                    //}
 
-        //[HttpPost, ActionName("Edit")]
-        //[FormValueRequired("changepassword")]
-        //public ActionResult ChangePassword(CustomerModel model)
-        //{
-        //    if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
-        //        return AccessDeniedView();
+                    //ensure that a customer in the Vendors role has a vendor account associated.
+                    //otherwise, he will have access to ALL products
+                    //if (customer.IsVendor() && customer.VendorId == 0)
+                    //{
+                    //    var vendorRole = customer
+                    //        .CustomerRoles
+                    //        .FirstOrDefault(x => x.SystemName == SystemCustomerRoleNames.Vendors);
+                    //    customer.CustomerRoles.Remove(vendorRole);
+                    //    _customerService.UpdateCustomer(customer);
+                    //    ErrorNotification(_localizationService.GetResource("Admin.Customers.Customers.CannotBeInVendoRoleWithoutVendorAssociated"));
+                    //}
 
-        //    var customer = _customerService.GetCustomerById(model.Id);
-        //    if (customer == null)
-        //        //No customer found with the specified id
-        //        return RedirectToAction("List");
 
-        //    if (ModelState.IsValid)
-        //    {
-        //        var changePassRequest = new ChangePasswordRequest(model.Email,
-        //            false, _customerSettings.DefaultPasswordFormat, model.Password);
-        //        var changePassResult = _customerRegistrationService.ChangePassword(changePassRequest);
-        //        if (changePassResult.Success)
-        //            SuccessNotification(_localizationService.GetResource("Admin.Customers.Customers.PasswordChanged"));
-        //        else
-        //            foreach (var error in changePassResult.Errors)
-        //                ErrorNotification(error);
-        //    }
+                    //activity log
+                    _customerActivityService.InsertActivity("EditMilitaryPerson", _localizationService.GetResource("ActivityLog.EditMilitaryPerson"), customer.Id, customer.Username ?? customer.Email);
 
-        //    return RedirectToAction("Edit", new { id = customer.Id });
-        //}
+                    SuccessNotification(_localizationService.GetResource("Admin.Customers.Customers.Updated"));
+                    if (continueEditing)
+                    {
+                        //selected tab
+                        SaveSelectedTabIndex();
+
+                        return RedirectToAction("Edit", new { id = customer.Id });
+                    }
+                    return RedirectToAction("List");
+                }
+                catch (Exception exc)
+                {
+                    ErrorNotification(exc.Message, false);
+                }
+            }
+
+
+            //If we got this far, something failed, redisplay form
+            PrepareCustomerModel(model, customer, true);
+            return View(model);
+        }
+
+        [HttpPost, ActionName("Edit")]
+        [FormValueRequired("changepassword")]
+        public ActionResult ChangePassword(CustomerModel model)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
+                return AccessDeniedView();
+
+            var customer = _customerService.GetCustomerById(model.Id);
+            if (customer == null)
+                //No customer found with the specified id
+                return RedirectToAction("List");
+
+            if (ModelState.IsValid)
+            {
+                var changePassRequest = new ChangePasswordRequest(model.Email,
+                    false, _customerSettings.DefaultPasswordFormat, model.Password);
+                var changePassResult = _customerRegistrationService.ChangePassword(changePassRequest);
+                if (changePassResult.Success)
+                    SuccessNotification(_localizationService.GetResource("Admin.Customers.Customers.PasswordChanged"));
+                else
+                    foreach (var error in changePassResult.Errors)
+                        ErrorNotification(error);
+            }
+
+            return RedirectToAction("Edit", new { id = customer.Id });
+        }
 
         //[HttpPost, ActionName("Edit")]
         //[FormValueRequired("markVatNumberAsValid")]
@@ -1116,41 +1217,41 @@ namespace Ks.Admin.Controllers
         //    return RedirectToAction("Edit", new { id = customer.Id });
         //}
 
-        //[HttpPost]
-        //public ActionResult Delete(int id)
-        //{
-        //    if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
-        //        return AccessDeniedView();
+        [HttpPost]
+        public ActionResult Delete(int id)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
+                return AccessDeniedView();
 
-        //    var customer = _customerService.GetCustomerById(id);
-        //    if (customer == null)
-        //        //No customer found with the specified id
-        //        return RedirectToAction("List");
+            var customer = _customerService.GetCustomerById(id);
+            if (customer == null)
+                //No customer found with the specified id
+                return RedirectToAction("List");
 
-        //    try
-        //    {
-        //        _customerService.DeleteCustomer(customer);
+            try
+            {
+                _customerService.DeleteCustomer(customer);
 
-        //        //remove newsletter subscription (if exists)
-        //        foreach (var store in _storeService.GetAllStores())
-        //        {
-        //            var subscription = _newsLetterSubscriptionService.GetNewsLetterSubscriptionByEmailAndStoreId(customer.Email, store.Id);
-        //            if (subscription != null)
-        //                _newsLetterSubscriptionService.DeleteNewsLetterSubscription(subscription);
-        //        }
+                //remove newsletter subscription (if exists)
+                //foreach (var ksSystem in _ksSystemService.GetAllKsSystems())
+                //{
+                //    var subscription = _newsLetterSubscriptionService.GetNewsLetterSubscriptionByEmailAndStoreId(customer.Email, ksSystem.Id);
+                //    if (subscription != null)
+                //        _newsLetterSubscriptionService.DeleteNewsLetterSubscription(subscription);
+                //}
 
-        //        //activity log
-        //        _customerActivityService.InsertActivity("DeleteCustomer", _localizationService.GetResource("ActivityLog.DeleteCustomer"), customer.Id);
+                //activity log
+                _customerActivityService.InsertActivity("DeleteMilitaryPerson", _localizationService.GetResource("ActivityLog.DeleteMilitaryPerson"), customer.Id, customer.Username ?? customer.Email);
 
-        //        SuccessNotification(_localizationService.GetResource("Admin.Customers.Customers.Deleted"));
-        //        return RedirectToAction("List");
-        //    }
-        //    catch (Exception exc)
-        //    {
-        //        ErrorNotification(exc.Message);
-        //        return RedirectToAction("Edit", new { id = customer.Id });
-        //    }
-        //}
+                SuccessNotification(_localizationService.GetResource("Admin.Customers.Customers.Deleted"));
+                return RedirectToAction("List");
+            }
+            catch (Exception exc)
+            {
+                ErrorNotification(exc.Message);
+                return RedirectToAction("Edit", new { id = customer.Id });
+            }
+        }
 
         //[HttpPost, ActionName("Edit")]
         //[FormValueRequired("impersonate")]
@@ -1316,5 +1417,230 @@ namespace Ks.Admin.Controllers
         //}
 
         #endregion
+
+        #region Addresses
+
+        [HttpPost]
+        public ActionResult AddressesSelect(int customerId, DataSourceRequest command)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
+                return AccessDeniedView();
+
+            var customer = _customerService.GetCustomerById(customerId);
+            if (customer == null)
+                throw new ArgumentException("No customer found with the specified id", "customerId");
+
+            var addresses = customer.Addresses.OrderByDescending(a => a.CreatedOnUtc).ThenByDescending(a => a.Id).ToList();
+            var gridModel = new DataSourceResult
+            {
+                Data = addresses.Select(x =>
+                {
+                    var model = x.ToModel();
+                    var addressHtmlSb = new StringBuilder("<div>");
+                    if (_addressSettings.CompanyEnabled && !String.IsNullOrEmpty(model.Company))
+                        addressHtmlSb.AppendFormat("{0}<br />", Server.HtmlEncode(model.Company));
+                    if (_addressSettings.StreetAddressEnabled && !String.IsNullOrEmpty(model.Address1))
+                        addressHtmlSb.AppendFormat("{0}<br />", Server.HtmlEncode(model.Address1));
+                    if (_addressSettings.StreetAddress2Enabled && !String.IsNullOrEmpty(model.Address2))
+                        addressHtmlSb.AppendFormat("{0}<br />", Server.HtmlEncode(model.Address2));
+                    if (_addressSettings.CityEnabled && !String.IsNullOrEmpty(model.City))
+                        addressHtmlSb.AppendFormat("{0},", Server.HtmlEncode(model.City));
+                    if (_addressSettings.StateProvinceEnabled && !String.IsNullOrEmpty(model.StateProvinceName))
+                        addressHtmlSb.AppendFormat("{0},", Server.HtmlEncode(model.StateProvinceName));
+                    if (_addressSettings.ZipPostalCodeEnabled && !String.IsNullOrEmpty(model.ZipPostalCode))
+                        addressHtmlSb.AppendFormat("{0}<br />", Server.HtmlEncode(model.ZipPostalCode));
+                    if (_addressSettings.CountryEnabled && !String.IsNullOrEmpty(model.CountryName))
+                        addressHtmlSb.AppendFormat("{0}", Server.HtmlEncode(model.CountryName));
+                    var customAttributesFormatted = _addressAttributeFormatter.FormatAttributes(x.CustomAttributes);
+                    if (!String.IsNullOrEmpty(customAttributesFormatted))
+                    {
+                        //already encoded
+                        addressHtmlSb.AppendFormat("<br />{0}", customAttributesFormatted);
+                    }
+                    addressHtmlSb.Append("</div>");
+                    model.AddressHtml = addressHtmlSb.ToString();
+                    return model;
+                }),
+                Total = addresses.Count
+            };
+
+            return Json(gridModel);
+        }
+
+        [HttpPost]
+        public ActionResult AddressDelete(int id, int customerId)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
+                return AccessDeniedView();
+
+            var customer = _customerService.GetCustomerById(customerId);
+            if (customer == null)
+                throw new ArgumentException("No customer found with the specified id", "customerId");
+
+            var address = customer.Addresses.FirstOrDefault(a => a.Id == id);
+            if (address == null)
+                //No customer found with the specified id
+                return Content("No customer found with the specified id");
+            customer.RemoveAddress(address);
+            _customerService.UpdateCustomer(customer);
+            //now delete the address record
+            _addressService.DeleteAddress(address);
+
+            return new NullJsonResult();
+        }
+
+        public ActionResult AddressCreate(int customerId)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
+                return AccessDeniedView();
+
+            var customer = _customerService.GetCustomerById(customerId);
+            if (customer == null)
+                //No customer found with the specified id
+                return RedirectToAction("List");
+
+            var model = new CustomerAddressModel();
+            PrepareAddressModel(model, null, customer, false);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateInput(false)]
+        public ActionResult AddressCreate(CustomerAddressModel model, FormCollection form)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
+                return AccessDeniedView();
+
+            var customer = _customerService.GetCustomerById(model.CustomerId);
+            if (customer == null)
+                //No customer found with the specified id
+                return RedirectToAction("List");
+
+            //custom address attributes
+            var customAttributes = form.ParseCustomAddressAttributes(_addressAttributeParser, _addressAttributeService);
+            var customAttributeWarnings = _addressAttributeParser.GetAttributeWarnings(customAttributes);
+            foreach (var error in customAttributeWarnings)
+            {
+                ModelState.AddModelError("", error);
+            }
+
+            if (ModelState.IsValid)
+            {
+                var address = model.Address.ToEntity();
+                address.CustomAttributes = customAttributes;
+                address.CreatedOnUtc = DateTime.UtcNow;
+                //some validation
+                if (address.CountryId == 0)
+                    address.CountryId = null;
+                if (address.StateProvinceId == 0)
+                    address.StateProvinceId = null;
+                customer.Addresses.Add(address);
+                _customerService.UpdateCustomer(customer);
+
+                SuccessNotification(_localizationService.GetResource("Admin.Customers.Customers.Addresses.Added"));
+                return RedirectToAction("AddressEdit", new { addressId = address.Id, customerId = model.CustomerId });
+            }
+
+            //If we got this far, something failed, redisplay form
+            PrepareAddressModel(model, null, customer, true);
+            return View(model);
+        }
+
+        public ActionResult AddressEdit(int addressId, int customerId)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
+                return AccessDeniedView();
+
+            var customer = _customerService.GetCustomerById(customerId);
+            if (customer == null)
+                //No customer found with the specified id
+                return RedirectToAction("List");
+
+            var address = _addressService.GetAddressById(addressId);
+            if (address == null)
+                //No address found with the specified id
+                return RedirectToAction("Edit", new { id = customer.Id });
+
+            var model = new CustomerAddressModel();
+            PrepareAddressModel(model, address, customer, false);
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateInput(false)]
+        public ActionResult AddressEdit(CustomerAddressModel model, FormCollection form)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
+                return AccessDeniedView();
+
+            var customer = _customerService.GetCustomerById(model.CustomerId);
+            if (customer == null)
+                //No customer found with the specified id
+                return RedirectToAction("List");
+
+            var address = _addressService.GetAddressById(model.Address.Id);
+            if (address == null)
+                //No address found with the specified id
+                return RedirectToAction("Edit", new { id = customer.Id });
+
+            //custom address attributes
+            var customAttributes = form.ParseCustomAddressAttributes(_addressAttributeParser, _addressAttributeService);
+            var customAttributeWarnings = _addressAttributeParser.GetAttributeWarnings(customAttributes);
+            foreach (var error in customAttributeWarnings)
+            {
+                ModelState.AddModelError("", error);
+            }
+
+            if (ModelState.IsValid)
+            {
+                address = model.Address.ToEntity(address);
+                address.CustomAttributes = customAttributes;
+                _addressService.UpdateAddress(address);
+
+                SuccessNotification(_localizationService.GetResource("Admin.Customers.Customers.Addresses.Updated"));
+                return RedirectToAction("AddressEdit", new { addressId = model.Address.Id, customerId = model.CustomerId });
+            }
+
+            //If we got this far, something failed, redisplay form
+            PrepareAddressModel(model, address, customer, true);
+
+            return View(model);
+        }
+
+        #endregion
+
+        #region Activity log
+
+        [HttpPost]
+        public ActionResult ListActivityLog(DataSourceRequest command, int customerId)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
+                return Content("");
+
+            var activityLog = _customerActivityService.GetAllActivities(null, null, customerId, 0, command.Page - 1, command.PageSize);
+            var gridModel = new DataSourceResult
+            {
+                Data = activityLog.Select(x =>
+                {
+                    var m = new CustomerModel.ActivityLogModel
+                    {
+                        Id = x.Id,
+                        ActivityLogTypeName = x.ActivityLogType.Name,
+                        Comment = x.Comment,
+                        CreatedOn = _dateTimeHelper.ConvertToUserTime(x.CreatedOnUtc, DateTimeKind.Utc)
+                    };
+                    return m;
+
+                }),
+                Total = activityLog.TotalCount
+            };
+
+            return Json(gridModel);
+        }
+
+        #endregion
+
+
     }
 }

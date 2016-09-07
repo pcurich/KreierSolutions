@@ -196,7 +196,7 @@
 	<LocaleResource Name="Account.YourPersonalDetails"><Value><![CDATA[Datos personales]]></Value></LocaleResource>
 	<LocaleResource Name="ActivityLog.AddNewCategory"><Value><![CDATA[Se ha agregado una nueva categoría ('{0}')]]></Value></LocaleResource>
 	<LocaleResource Name="ActivityLog.AddNewCheckoutAttribute"><Value><![CDATA[Se ha agregado un nuevo atributo checkout ('{0}')]]></Value></LocaleResource>
-	<LocaleResource Name="ActivityLog.AddNewCustomer"><Value><![CDATA[Se ha agregado un nuevo cliente (ID = {0})]]></Value></LocaleResource>
+	<LocaleResource Name="ActivityLog.AddNewMilitaryPerson"><Value><![CDATA[Se ha ingresado un nuevo personal militar (ID = {0},Usuario = {1}) ]]></Value></LocaleResource>
 	<LocaleResource Name="ActivityLog.AddNewCustomerRole"><Value><![CDATA[Se ha agregado una nueva función del cliente ('{0}')]]></Value></LocaleResource>
 	<LocaleResource Name="ActivityLog.AddNewDiscount"><Value><![CDATA[Se ha agregado un nuevo descuento ('{0}')]]></Value></LocaleResource>
 	<LocaleResource Name="ActivityLog.AddNewGiftCard"><Value><![CDATA[Se ha agregado una nueva tarjeta de regalo ('{0}')]]></Value></LocaleResource>
@@ -208,7 +208,7 @@
 	<LocaleResource Name="ActivityLog.AddNewWidget"><Value><![CDATA[Se ha agregado un nuevo widget (ID = {0})]]></Value></LocaleResource>
 	<LocaleResource Name="ActivityLog.DeleteCategory"><Value><![CDATA[Eliminado de una categoría ('{0}')]]></Value></LocaleResource>
 	<LocaleResource Name="ActivityLog.DeleteCheckoutAttribute"><Value><![CDATA[Eliminado de un atributo de comprobación ('{0}')]]></Value></LocaleResource>
-	<LocaleResource Name="ActivityLog.DeleteCustomer"><Value><![CDATA[Eliminado de un cliente (ID = {0})]]></Value></LocaleResource>
+	<LocaleResource Name="ActivityLog.DeleteMilitaryPerson"><Value><![CDATA[Eliminado al personal militar (ID = {0},Usuario = {1}) ]]]></Value></LocaleResource>
 	<LocaleResource Name="ActivityLog.DeleteCustomerRole"><Value><![CDATA[Eliminado de un rol de cliente ('{0}')]]></Value></LocaleResource>
 	<LocaleResource Name="ActivityLog.DeleteDiscount"><Value><![CDATA[Eliminado de un descuento ('{0}')]]></Value></LocaleResource>
 	<LocaleResource Name="ActivityLog.DeleteGiftCard"><Value><![CDATA[Eliminado de una tarjeta de regalo ('{0}')]]></Value></LocaleResource>
@@ -221,7 +221,7 @@
 	<LocaleResource Name="ActivityLog.DeleteWidget"><Value><![CDATA[Eliminado de un widget (ID = {0})]]></Value></LocaleResource>
 	<LocaleResource Name="ActivityLog.EditCategory"><Value><![CDATA[Edición de una categoría ('{0}')]]></Value></LocaleResource>
 	<LocaleResource Name="ActivityLog.EditCheckoutAttribute"><Value><![CDATA[Edición de un atributo de comprobación ('{0}')]]></Value></LocaleResource>
-	<LocaleResource Name="ActivityLog.EditCustomer"><Value><![CDATA[Edición de un cliente (ID = {0})]]></Value></LocaleResource>
+	<LocaleResource Name="ActivityLog.EditMilitaryPerson"><Value><![CDATA[Edición del personal militar (ID = {0},Usuario = {1})]]></Value></LocaleResource>
 	<LocaleResource Name="ActivityLog.EditCustomerRole"><Value><![CDATA[Edición de un rol de cliente ('{0}')]]></Value></LocaleResource>
 	<LocaleResource Name="ActivityLog.EditDiscount"><Value><![CDATA[Edición de un descuento ('{0}')]]></Value></LocaleResource>
 	<LocaleResource Name="ActivityLog.EditGiftCard"><Value><![CDATA[Edición de una tarjeta de regalo ('{0}')]]></Value></LocaleResource>

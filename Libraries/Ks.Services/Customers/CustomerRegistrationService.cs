@@ -298,7 +298,6 @@ namespace Ks.Services.Customers
                 throw new KsException("Email cannot be null");
 
             newEmail = newEmail.Trim();
-            string oldEmail = customer.Email;
 
             if (!CommonHelper.IsValidEmail(newEmail))
                 throw new KsException("Nuevo correo no valido");

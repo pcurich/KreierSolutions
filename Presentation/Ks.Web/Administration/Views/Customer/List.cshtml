@@ -32,7 +32,7 @@
                 @foreach (var customerRole in Model.AvailableCustomerRoles)
                 {
                     <input type="checkbox" name="SearchCustomerRoleIds" value="@customerRole.Id"
-                           @if (Model.SearchCustomerRoleIds != null && Model.SearchCustomerRoleIds.Contains(customerRole.Id)) { <text> checked="checked" </text>  } />@customerRole.Name
+                           @if (Model.SearchCustomerRoleIds != null && Model.SearchCustomerRoleIds.Contains(customerRole.Id)) { <text> checked="checked" </text>   } />@customerRole.Name
                         <br />
                 }
             </td>
@@ -178,28 +178,28 @@
                             scrollable: false,
                             dataBound: onDataBound,
                             columns: [{
-                                    field: "Id",
-                                    headerTemplate: "<input id='mastercheckbox' type='checkbox'/>",
-                                    headerAttributes: { style: "text-align:center" },
-                                    attributes: { style: "text-align:center" },
-                                    template: "<input type='checkbox' value='#=Id#' class='checkboxGroups'/>",
-                                    width: 50
-                                }, {
-                                    field: "Id",
-                                    title: "ID",
-                                    width: 50
-                                }, {
-                                    field: "Email",
-                                    title: "@T("Admin.Customers.Customers.Fields.Email")",
-                                    width: 200
-                                },
+                                field: "Id",
+                                headerTemplate: "<input id='mastercheckbox' type='checkbox'/>",
+                                headerAttributes: { style: "text-align:center" },
+                                attributes: { style: "text-align:center" },
+                                template: "<input type='checkbox' value='#=Id#' class='checkboxGroups'/>",
+                                width: 50
+                            }, {
+                                field: "Id",
+                                title: "ID",
+                                width: 50
+                            }, {
+                                field: "Email",
+                                title: "@T("Admin.Customers.Customers.Fields.Email")",
+                                width: 200
+                            },
                                 @if (Model.UsernamesEnabled)
                                 {
                                     <text>{
-                field: "Username",
-                title: "@T("Admin.Customers.Customers.Fields.Username")",
-                width: 200
-            },</text>
+                                    field: "Username",
+                                    title: "@T("Admin.Customers.Customers.Fields.Username")",
+                                    width: 200
+                                },</text>
                                 }
                                 {
                                     field: "FullName",
@@ -214,28 +214,28 @@
                                 @if (Model.CompanyEnabled)
                                 {
                                     <text>{
-                field: "Company",
+                                    field: "Company",
                                     title: "@T("Admin.Customers.Customers.Fields.Company")",
-            width: 200
-        },</text>
+                                    width: 200
+                                },</text>
                                 }
 
                                 @if (Model.PhoneEnabled)
                                 {
                                     <text>{
-                field: "Phone",
-                    title: "@T("Admin.Customers.Customers.Fields.Phone")",
-            width: 200
-        },</text>
+                                    field: "Phone",
+                                    title: "@T("Admin.Customers.Customers.Fields.Phone")",
+                                    width: 200
+                                },</text>
                                 }
 
                                 @if (Model.ZipPostalCodeEnabled)
                                 {
                                     <text>{
-                field: "ZipPostalCode",
-                    title: "@T("Admin.Customers.Customers.Fields.ZipPostalCode")",
-            width: 200
-        },</text>
+                                    field: "ZipPostalCode",
+                                    title: "@T("Admin.Customers.Customers.Fields.ZipPostalCode")",
+                                    width: 200
+                                },</text>
                                 }
                             {
                                 field: "Active",

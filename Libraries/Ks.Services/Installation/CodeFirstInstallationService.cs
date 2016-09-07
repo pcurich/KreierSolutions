@@ -306,7 +306,7 @@ namespace Ks.Services.Installation
                 Name = "Auxiliar Contable",
                 Active = true,
                 IsSystemRole = false,
-                SystemName = SystemCustomerRoleNames.Registered,
+                SystemName = SystemCustomerRoleNames.AccountingAssistant,
             };
 
             var crSecretary = new CustomerRole
@@ -314,14 +314,14 @@ namespace Ks.Services.Installation
                 Name = "Secretaria",
                 Active = true,
                 IsSystemRole = false,
-                SystemName = SystemCustomerRoleNames.Registered
+                SystemName = SystemCustomerRoleNames.Secretary
             };
             var crManager = new CustomerRole
             {
                 Name = "Gerente",
                 Active = true,
                 IsSystemRole = false,
-                SystemName = SystemCustomerRoleNames.Registered
+                SystemName = SystemCustomerRoleNames.Manager
             };
             var crGuests = new CustomerRole
             {
@@ -605,11 +605,13 @@ namespace Ks.Services.Installation
             var activityLogMilitaryPerson = new List<ActivityLogType>
                 {
                     new ActivityLogType
-                    {SystemKeyword = "AddMilitaryPerson",Enabled = true,Name = "Registrar Personal Militar"},
+                    {SystemKeyword = "AddNewMilitaryPerson",Enabled = true,Name = "Registrar Nuevo Personal Militar"},
                     new ActivityLogType
                     {SystemKeyword = "ViewMilitaryPerson",Enabled = true,Name = "Ver Personal Militar"},
                     new ActivityLogType
-                    {SystemKeyword = "EditMilitaryPerson",Enabled = true,Name = "Editar Personal Militar"}
+                    {SystemKeyword = "EditMilitaryPerson",Enabled = true,Name = "Editar Personal Militar"},
+                    new ActivityLogType
+                    {SystemKeyword = "DeleteMilitaryPerson",Enabled = true,Name = "Eliminar Personal Militar"}
                 };
 
             var activityLogMembership = new List<ActivityLogType>
