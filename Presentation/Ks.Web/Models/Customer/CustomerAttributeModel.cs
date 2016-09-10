@@ -20,6 +20,10 @@ namespace Ks.Web.Models.Customer
         /// </summary>
         public string DefaultValue { get; set; }
 
+        public int? Day { get; set; }
+        public int? Month { get; set; }
+        public int? Year { get; set; }
+
         public AttributeControlType AttributeControlType { get; set; }
 
         public IList<CustomerAttributeValueModel> Values { get; set; }

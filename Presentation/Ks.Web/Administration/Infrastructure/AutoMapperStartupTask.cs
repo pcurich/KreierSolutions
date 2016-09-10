@@ -169,8 +169,8 @@ namespace Ks.Admin.Infrastructure
 
             #region customer attributes
             Mapper.CreateMap<CustomerAttribute, CustomerAttributeModel>()
-                //.ForMember(dest => dest.AttributeControlTypeName, mo => mo.Ignore())
-                //.ForMember(dest => dest.Locales, mo => mo.Ignore())
+                .ForMember(dest => dest.AttributeControlTypeName, mo => mo.Ignore())
+                .ForMember(dest => dest.Locales, mo => mo.Ignore())
                 .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
             Mapper.CreateMap<CustomerAttributeModel, CustomerAttribute>()
                 .ForMember(dest => dest.AttributeControlType, mo => mo.Ignore())

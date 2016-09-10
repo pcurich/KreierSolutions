@@ -483,6 +483,10 @@ namespace Ks.Web.Controllers
                         }
                         break;
                     case AttributeControlType.Datepicker:
+                        {
+                            
+                        }
+                        break;
                     case AttributeControlType.ColorSquares:
                     case AttributeControlType.FileUpload:
                     //not supported customer attributes

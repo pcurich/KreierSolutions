@@ -6,7 +6,12 @@
     string textPrompt = attribute.Name;
 
     <div class="inputs custom-attributes">
+        @{
+    if (AttributeControlType.Datepicker != attribute.AttributeControlType)
+    {
         <label>@textPrompt:</label>
+    }
+        }
 
         @switch (attribute.AttributeControlType)
         {
@@ -15,11 +20,11 @@
                     <select name="@(controlId)" id="@(controlId)">
                         @if (!attribute.IsRequired)
                         {
-                            <option value="0">---</option>
+                        <option value="0">---</option>
                         }
                         @foreach (var attributeValue in attribute.Values)
                         {
-                            <option selected="@attributeValue.IsPreSelected" value="@attributeValue.Id">@attributeValue.Name</option>
+                        <option selected="@attributeValue.IsPreSelected" value="@attributeValue.Id">@attributeValue.Name</option>
                         }
                     </select>
                 }
@@ -29,10 +34,10 @@
                     <ul class="option-list">
                         @foreach (var attributeValue in attribute.Values)
                         {
-                            <li>
-                                <input id="@(controlId)_@(attributeValue.Id)" type="radio" name="@(controlId)" value="@attributeValue.Id" checked="@attributeValue.IsPreSelected" />
-                                <label for="@(controlId)_@(attributeValue.Id)">@attributeValue.Name</label>
-                            </li>
+                        <li>
+                            <input id="@(controlId)_@(attributeValue.Id)" type="radio" name="@(controlId)" value="@attributeValue.Id" checked="@attributeValue.IsPreSelected" />
+                            <label for="@(controlId)_@(attributeValue.Id)">@attributeValue.Name</label>
+                        </li>
                         }
                     </ul>
                 }
@@ -43,10 +48,10 @@
                     <ul class="option-list">
                         @foreach (var attributeValue in attribute.Values)
                         {
-                            <li>
-                                <input id="@(controlId)_@(attributeValue.Id)" type="checkbox" name="@(controlId)" value="@attributeValue.Id" checked="@attributeValue.IsPreSelected" @(attribute.AttributeControlType == AttributeControlType.ReadonlyCheckboxes ? Html.Raw(" disabled=\"disabled\"") : null) />
-                                <label for="@(controlId)_@(attributeValue.Id)">@attributeValue.Name</label>
-                            </li>
+                        <li>
+                            <input id="@(controlId)_@(attributeValue.Id)" type="checkbox" name="@(controlId)" value="@attributeValue.Id" checked="@attributeValue.IsPreSelected" @(attribute.AttributeControlType == AttributeControlType.ReadonlyCheckboxes ? Html.Raw(" disabled=\"disabled\"") : null) />
+                            <label for="@(controlId)_@(attributeValue.Id)">@attributeValue.Name</label>
+                        </li>
                         }
                     </ul>
                 }
@@ -62,6 +67,33 @@
                 }
                 break;
             case AttributeControlType.Datepicker:
+                {
+                    <div class="inputs date-of-birth">
+                        <label>@textPrompt:</label>
+                        @Html.DatePickerDropDowns(
+                                        controlId + "Day",
+                                        controlId + "Month",
+                                        controlId + "Year",
+                                        DateTime.Now.Year - 110,
+                                        DateTime.Now.Year,
+                                        attribute.Day,
+                                        attribute.Month,
+                                        attribute.Year, true)
+                        @Html.Hidden(controlId)
+                    </div>
+                    <script>
+                        $(document).ready(function () {
+                            var ddlStates = $("#@Html.Field(model => model)");
+
+                            var day = $(controlId + "Day").val();
+                            var day = $(controlId + "Month").val();
+                            var day = $(controlId + "Year").val();
+                            $(controlId).val("fgg");
+                        });
+                    </script>
+
+                }
+                break;
             case AttributeControlType.FileUpload:
             case AttributeControlType.ColorSquares:
                 {

@@ -1600,6 +1600,10 @@
 	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.CustomerSettings"><Value><![CDATA[Configuración del cliente]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.DateOfBirthEnabled"><Value><![CDATA['Fecha de Nacimiento' habilitado]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.DateOfBirthEnabled.Hint"><Value><![CDATA[Establecer si 'Fecha de nacimiento' está activado.]]></Value></LocaleResource>
+	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.DateOfBirthRequired"><Value><![CDATA['Fecha de nacimiento' requerida]]></Value></LocaleResource>
+	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.DateOfBirthRequired.Hint"><Value><![CDATA[Establecer si la 'Fecha de nacimiento' es requerida.]]></Value></LocaleResource>
+	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.DateOfBirthMinimumAge"><Value><![CDATA[Año mínimo]]></Value></LocaleResource>
+	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.DateOfBirthMinimumAge.Hint"><Value><![CDATA[Establecer el 'Año Minimo de la Fecha de Nacimiento'.]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.DateTimeSettings"><Value><![CDATA[Configurar valores de Fecha Hora]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.DefaultAvatarEnabled"><Value><![CDATA[Avatar predeterminado habilitado]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.DefaultAvatarEnabled.Hint"><Value><![CDATA[Un valor que indica si se debe mostrar avatar de usuario predeterminado.]]></Value></LocaleResource>
