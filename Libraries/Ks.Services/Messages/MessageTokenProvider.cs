@@ -137,6 +137,8 @@ namespace Ks.Services.Messages
             tokens.Add(new Token("Customer.FullName", customer.GetFullName()));
             tokens.Add(new Token("Customer.FirstName", customer.GetAttribute<string>(SystemCustomerAttributeNames.FirstName)));
             tokens.Add(new Token("Customer.LastName", customer.GetAttribute<string>(SystemCustomerAttributeNames.LastName)));
+            tokens.Add(new Token("Customer.Dni", customer.GetAttribute<string>(SystemCustomerAttributeNames.Dni)));
+            tokens.Add(new Token("Customer.Cpi", customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode)));
             //tokens.Add(new Token("Customer.VatNumber", customer.GetAttribute<string>(SystemCustomerAttributeNames.VatNumber)));
             //tokens.Add(new Token("Customer.VatNumberStatus", ((VatNumberStatus)customer.GetAttribute<int>(SystemCustomerAttributeNames.VatNumberStatusId)).ToString()));
 
@@ -170,6 +172,8 @@ namespace Ks.Services.Messages
                 "%Customer.FullName%",
                 "%Customer.FirstName%",
                 "%Customer.LastName%",
+                "%Customer.Cpi%",
+                "%Customer.Dni%",
                 "%Customer.PasswordRecoveryURL%", 
                 "%Customer.AccountActivationURL%", 
                 

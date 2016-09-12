@@ -6,6 +6,10 @@
         public static string FirstName { get { return "FirstName"; } }
         public static string LastName { get { return "LastName"; } }
         public static string Gender { get { return "Gender"; } }
+
+        public static string AdmCode { get { return "AdmCode"; } }
+        public static string Dni { get { return "Dni"; } }
+
         public static string DateOfBirth { get { return "DateOfBirth"; } }
         public static string Company { get { return "Company"; } }
         public static string StreetAddress { get { return "StreetAddress"; } }

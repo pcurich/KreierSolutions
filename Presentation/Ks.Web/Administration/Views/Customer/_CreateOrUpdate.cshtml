@@ -184,6 +184,24 @@
                 @Html.ValidationMessageFor(model => model.LastName)
             </td>
         </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.AdmCode):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.AdmCode)
+                @Html.ValidationMessageFor(model => model.AdmCode)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.Dni):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.Dni)
+                @Html.ValidationMessageFor(model => model.Dni)
+            </td>
+        </tr>
         @if (Model.DateOfBirthEnabled)
         {
             <tr>

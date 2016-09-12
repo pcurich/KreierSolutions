@@ -33,6 +33,8 @@ namespace Ks.Services.Installation
         private readonly IRepository<Language> _languageRepository;
         private readonly IRepository<Currency> _currencyRepository;
         private readonly IRepository<Customer> _customerRepository;
+        private readonly IRepository<CustomerAttribute> _customerAttributeRepository;
+        private readonly IRepository<CustomerAttributeValue> _customerAttributeValueRepository;
         private readonly IRepository<CustomerRole> _customerRoleRepository;
         private readonly IRepository<SpecificationAttribute> _specificationAttributeRepository;
         private readonly IRepository<EmailAccount> _emailAccountRepository;
@@ -54,7 +56,10 @@ namespace Ks.Services.Installation
         public CodeFirstInstallationService(IRepository<KsSystem> ksSystemRepository,
             IRepository<MeasureDimension> measureDimensionRepository, IRepository<MeasureWeight> measureWeightRepository,
             IRepository<Language> languageRepository, IRepository<Currency> currencyRepository,
-            IRepository<Customer> customerRepository, IRepository<CustomerRole> customerRoleRepository,
+            IRepository<Customer> customerRepository,
+            IRepository<CustomerAttribute> customerAttributeRepository,
+            IRepository<CustomerAttributeValue> customerAttributeValueRepository,
+            IRepository<CustomerRole> customerRoleRepository,
             IRepository<SpecificationAttribute> specificationAttributeRepository,
             IRepository<EmailAccount> emailAccountRepository,
             IRepository<MessageTemplate> messageTemplateRepository,
@@ -69,6 +74,8 @@ namespace Ks.Services.Installation
             _languageRepository = languageRepository;
             _currencyRepository = currencyRepository;
             _customerRepository = customerRepository;
+            _customerAttributeRepository = customerAttributeRepository;
+            _customerAttributeValueRepository = customerAttributeValueRepository;
             _customerRoleRepository = customerRoleRepository;
             _specificationAttributeRepository = specificationAttributeRepository;
             _emailAccountRepository = emailAccountRepository;
@@ -378,6 +385,8 @@ namespace Ks.Services.Installation
             //set default customer name
             _genericAttributeService.SaveAttribute(adminUser, SystemCustomerAttributeNames.FirstName, "Pedro");
             _genericAttributeService.SaveAttribute(adminUser, SystemCustomerAttributeNames.LastName, "Curich");
+            _genericAttributeService.SaveAttribute(adminUser, SystemCustomerAttributeNames.AdmCode, "12345678910");
+            _genericAttributeService.SaveAttribute(adminUser, SystemCustomerAttributeNames.Dni, "43617372");
 
             //search engine (crawler) built-in user
             var searchEngineUser = new Customer
@@ -411,6 +420,54 @@ namespace Ks.Services.Installation
             };
             backgroundTaskUser.CustomerRoles.Add(crGuests);
             _customerRepository.Insert(backgroundTaskUser);
+        }
+
+        protected virtual void InstallCustomerAttribute()
+        {
+            var customerAttributes = new List<CustomerAttribute>
+            {
+                new CustomerAttribute {Name = "Fecha de Ingreso al ACMR", AttributeControlTypeId = 20},
+                new CustomerAttribute {Name = "Situacion Administrativa", AttributeControlTypeId = 1},
+                new CustomerAttribute {Name = "Codigo de Descuento", AttributeControlTypeId = 1},
+                new CustomerAttribute {Name = "Situación Militar", AttributeControlTypeId = 1},
+                new CustomerAttribute {Name = "Grado", AttributeControlTypeId = 1},
+                new CustomerAttribute {Name = "Fecha de egreso de la Escuela Militar", AttributeControlTypeId = 20},
+                new CustomerAttribute {Name = "Estado Civil", AttributeControlTypeId = 1},
+                new CustomerAttribute {Name = "Unidad", AttributeControlTypeId = 4},
+                new CustomerAttribute {Name = "Gran Unidad", AttributeControlTypeId = 4},
+                new CustomerAttribute {Name = "División Militar", AttributeControlTypeId = 4}
+            };
+
+            var customerAttributeValues = new List<CustomerAttributeValue>
+            {
+                new CustomerAttributeValue{Name = "CPMP",DisplayOrder = 1, CustomerAttributeId = 2},
+                new CustomerAttributeValue{Name = "PAGO PERSONAL",DisplayOrder = 2, CustomerAttributeId = 2},
+                new CustomerAttributeValue{Name = "OGECOE",DisplayOrder = 3, CustomerAttributeId = 2},
+
+                new CustomerAttributeValue{Name = "6008",DisplayOrder = 1, CustomerAttributeId = 3},
+                new CustomerAttributeValue{Name = "8001",DisplayOrder = 2, CustomerAttributeId = 3},
+
+                new CustomerAttributeValue{Name = "Retiro",DisplayOrder = 1, CustomerAttributeId =4},
+                new CustomerAttributeValue{Name = "Actividad",DisplayOrder = 1, CustomerAttributeId =4},
+
+                new CustomerAttributeValue{Name = "Teniente General",DisplayOrder = 1, CustomerAttributeId =5},
+                new CustomerAttributeValue{Name = "Teniente",DisplayOrder = 2, CustomerAttributeId =5},
+                new CustomerAttributeValue{Name = "Capitan",DisplayOrder = 3, CustomerAttributeId =5},
+                new CustomerAttributeValue{Name = "Mayor",DisplayOrder = 4, CustomerAttributeId =5},
+                new CustomerAttributeValue{Name = "Coronel",DisplayOrder = 5, CustomerAttributeId =5},
+                new CustomerAttributeValue{Name = "Alferez",DisplayOrder = 6, CustomerAttributeId =5},
+                new CustomerAttributeValue{Name = "Sargento",DisplayOrder = 7, CustomerAttributeId =5},
+                new CustomerAttributeValue{Name = "General de Brigada",DisplayOrder = 8, CustomerAttributeId =5},
+                new CustomerAttributeValue{Name = "Teniente",DisplayOrder = 9, CustomerAttributeId =5},
+
+                new CustomerAttributeValue{Name = "Casado(a)",DisplayOrder = 1, CustomerAttributeId =7},
+                new CustomerAttributeValue{Name = "Divorciado(a)",DisplayOrder = 2, CustomerAttributeId =7},
+                new CustomerAttributeValue{Name = "Soltero(a)",DisplayOrder = 3, CustomerAttributeId =7},
+                new CustomerAttributeValue{Name = "Viudo(a)",DisplayOrder = 4, CustomerAttributeId =7},
+
+            };
+            _customerAttributeRepository.Insert(customerAttributes);
+            _customerAttributeValueRepository.Insert(customerAttributeValues);
         }
 
         protected virtual void HashDefaultCustomerPassword(string defaultUserEmail, string defaultUserPassword)
@@ -785,6 +842,7 @@ namespace Ks.Services.Installation
             InstallCurrencies();
             InstallCountriesAndStatesAndCities();
             InstallCustomersAndUsers(defaultUserEmail, defaultUserPassword);
+            InstallCustomerAttribute();
             InstallEmailAccounts();
             InstallMessageTemplates();
             InstallSettings();

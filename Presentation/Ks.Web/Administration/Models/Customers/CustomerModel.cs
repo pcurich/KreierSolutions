@@ -56,6 +56,12 @@ namespace Ks.Admin.Models.Customers
         [KsResourceDisplayName("Admin.Customers.Customers.Fields.FirstName")]
         [AllowHtml]
         public string FirstName { get; set; }
+        [KsResourceDisplayName("Admin.Customers.Customers.Fields.AdmCode")]
+        [AllowHtml]
+        public string AdmCode  { get; set; }
+        [KsResourceDisplayName("Admin.Customers.Customers.Fields.Dni")]
+        [AllowHtml]
+        public string Dni { get; set; }
         [KsResourceDisplayName("Admin.Customers.Customers.Fields.LastName")]
         [AllowHtml]
         public string LastName { get; set; }

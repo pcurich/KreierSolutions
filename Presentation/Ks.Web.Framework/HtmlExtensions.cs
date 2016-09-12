@@ -187,6 +187,28 @@ namespace Ks.Web.Framework
             return MvcHtmlString.Create(result.ToString());
         }
 
+        public static MvcHtmlString KsLabel<TModel>(this HtmlHelper<TModel> helper, string expression, bool displayHint = true)
+        {
+            var result = new StringBuilder();
+            var metadata = ModelMetadata.FromStringExpression(expression, helper.ViewData);
+
+            var hintResource = string.Empty;
+            var value = new KsResourceDisplayName(expression);
+
+            var resourceDisplayName = value;
+            if (displayHint)
+            {
+                var langId = EngineContext.Current.Resolve<IWorkContext>().WorkingLanguage.Id;
+                hintResource = EngineContext.Current.Resolve<ILocalizationService>()
+                    .GetResource(resourceDisplayName.ResourceKey + ".Hint", langId);
+
+                result.Append(helper.Hint(hintResource).ToHtmlString());
+            }
+
+            result.Append(helper.Label(expression, new { title = hintResource }));
+            return MvcHtmlString.Create(result.ToString());
+        }
+
         public static MvcHtmlString OverrideStoreCheckboxFor<TModel, TValue>(this HtmlHelper<TModel> helper,
             Expression<Func<TModel, bool>> expression,
             Expression<Func<TModel, TValue>> forInputExpression,

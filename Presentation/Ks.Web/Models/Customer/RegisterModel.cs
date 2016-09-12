@@ -53,6 +53,12 @@ namespace Ks.Web.Models.Customer
         [KsResourceDisplayName("Account.Fields.LastName")]
         [AllowHtml]
         public string LastName { get; set; }
+        [KsResourceDisplayName("Account.Fields.Cpi")]
+        [AllowHtml]
+        public string Cpi { get; set; }
+        [KsResourceDisplayName("Account.Fields.Dni")]
+        [AllowHtml]
+        public string Dni { get; set; }
 
 
         public bool DateOfBirthEnabled { get; set; }

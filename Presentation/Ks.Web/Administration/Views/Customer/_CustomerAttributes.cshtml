@@ -6,7 +6,7 @@
     string textPrompt = attribute.Name;
     <tr>
         <td class="adminTitle">
-            @textPrompt:
+            @Html.KsLabel(textPrompt):
         </td>
         <td class="adminData">
 
@@ -64,6 +64,15 @@
                     }
                     break;
                 case AttributeControlType.Datepicker:
+                    {
+                        <input name="@(controlId)" type="datetime"  id="@(controlId)" value="@attribute.DefaultValue"/>
+                        <script>
+                            $(document).ready(function () {
+                                $("#@controlId").kendoDatePicker();
+                            });
+                        </script>
+                    }
+                    break;
                 case AttributeControlType.FileUpload:
                 case AttributeControlType.ColorSquares:
                     {
@@ -71,8 +80,8 @@
                     }
                     break;
             }
-        </td>
-    </tr>
+            </td>
+            </tr>
 }
 
 

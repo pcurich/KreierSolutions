@@ -25,9 +25,16 @@ namespace Ks.Admin.Models.Customers
         [KsResourceDisplayName("Admin.Customers.Customers.List.SearchFirstName")]
         [AllowHtml]
         public string SearchFirstName { get; set; }
-        [KsResourceDisplayName("Admin.Customers.Customers.List.SearchLastName")]
+        [KsResourceDisplayName  ("Admin.Customers.Customers.List.SearchLastName")]
         [AllowHtml]
         public string SearchLastName { get; set; }
+
+        [KsResourceDisplayName("Admin.Customers.Customers.List.SearchAdmCode")]
+        [AllowHtml]
+        public string SearchAdmCode { get; set; }
+        [KsResourceDisplayName("Admin.Customers.Customers.List.SearchDni")]
+        [AllowHtml]
+        public string SearchDni { get; set; }
 
 
         [KsResourceDisplayName("Admin.Customers.Customers.List.SearchDateOfBirth")]

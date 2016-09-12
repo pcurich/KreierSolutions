@@ -72,6 +72,22 @@
                 @Html.EditorFor(model => model.SearchLastName)
             </td>
         </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.SearchAdmCode):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.SearchAdmCode)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.SearchDni):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.SearchDni)
+            </td>
+        </tr>
         @if (Model.DateOfBirthEnabled)
         {
             <tr>

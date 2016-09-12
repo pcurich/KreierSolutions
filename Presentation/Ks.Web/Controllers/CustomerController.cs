@@ -166,6 +166,8 @@ namespace Ks.Web.Controllers
                 //model.VatNumber = customer.GetAttribute<string>(SystemCustomerAttributeNames.VatNumber);
                 model.FirstName = customer.GetAttribute<string>(SystemCustomerAttributeNames.FirstName);
                 model.LastName = customer.GetAttribute<string>(SystemCustomerAttributeNames.LastName);
+                model.Cpi = customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode);
+                model.Dni = customer.GetAttribute<string>(SystemCustomerAttributeNames.Dni);
                 model.Gender = customer.GetAttribute<string>(SystemCustomerAttributeNames.Gender);
                 var dateOfBirth = customer.GetAttribute<DateTime?>(SystemCustomerAttributeNames.DateOfBirth);
                 if (dateOfBirth.HasValue)
@@ -923,6 +925,10 @@ namespace Ks.Web.Controllers
                         model.FirstName);
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.LastName,
                         model.LastName);
+                    _genericAttributeService.SaveAttribute(customer,SystemCustomerAttributeNames.AdmCode, 
+                        model.Cpi);
+                    _genericAttributeService.SaveAttribute(customer,SystemCustomerAttributeNames.Dni, 
+                        model.Dni);
 
                     if (_customerSettings.DateOfBirthEnabled)
                     {
@@ -1238,6 +1244,8 @@ namespace Ks.Web.Controllers
                         _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Gender, model.Gender);
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.FirstName, model.FirstName);
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.LastName, model.LastName);
+                    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.AdmCode, model.Cpi);
+                    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Dni, model.Dni);
                     if (_customerSettings.DateOfBirthEnabled)
                     {
                         DateTime? dateOfBirth = model.ParseDateOfBirth();

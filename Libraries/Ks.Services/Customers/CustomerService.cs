@@ -101,6 +101,8 @@ namespace Ks.Services.Customers
         /// <param name="lastName">Last name; null to load all customers</param>
         /// <param name="dayOfBirth">Day of birth; 0 to load all customers</param>
         /// <param name="monthOfBirth">Month of birth; 0 to load all customers</param>
+        /// <param name="admCode">Code of Admin Code; 0 to all customer</param>
+        /// <param name="dni">Identity Document; 0 to all customer</param>
         /// <param name="company">Company; null to load all customers</param>
         /// <param name="phone">Phone; null to load all customers</param>
         /// <param name="zipPostalCode">Phone; null to load all customers</param>
@@ -110,7 +112,7 @@ namespace Ks.Services.Customers
         public virtual IPagedList<Customer> GetAllCustomers(DateTime? createdFromUtc = null,
             DateTime? createdToUtc = null,int[] customerRoleIds = null, string email = null, string username = null,
             string firstName = null, string lastName = null,
-            int dayOfBirth = 0, int monthOfBirth = 0,
+            int dayOfBirth = 0, int monthOfBirth = 0, string admCode = null, string dni = null,
             string company = null, string phone = null, string zipPostalCode = null,
             int pageIndex = 0, int pageSize = 2147483647)
         {
@@ -134,6 +136,24 @@ namespace Ks.Services.Customers
                     .Where((z => z.Attribute.KeyGroup == "Customer" &&
                         z.Attribute.Key == SystemCustomerAttributeNames.FirstName &&
                         z.Attribute.Value.Contains(firstName)))
+                    .Select(z => z.Customer);
+            }
+            if (!String.IsNullOrWhiteSpace(lastName))
+            {
+                query = query
+                    .Join(_gaRepository.Table, x => x.Id, y => y.EntityId, (x, y) => new { Customer = x, Attribute = y })
+                    .Where((z => z.Attribute.KeyGroup == "Customer" &&
+                        z.Attribute.Key == SystemCustomerAttributeNames.LastName &&
+                        z.Attribute.Value.Contains(lastName)))
+                    .Select(z => z.Customer);
+            }
+            if (!String.IsNullOrWhiteSpace(admCode))
+            {
+                query = query
+                    .Join(_gaRepository.Table, x => x.Id, y => y.EntityId, (x, y) => new { Customer = x, Attribute = y })
+                    .Where((z => z.Attribute.KeyGroup == "Customer" &&
+                        z.Attribute.Key == SystemCustomerAttributeNames.AdmCode &&
+                        z.Attribute.Value.Contains(admCode)))
                     .Select(z => z.Customer);
             }
             if (!String.IsNullOrWhiteSpace(lastName))

@@ -267,6 +267,7 @@ namespace Ks.Admin.Controllers
                             break;
                         case AttributeControlType.TextBox:
                         case AttributeControlType.MultilineTextbox:
+                        case AttributeControlType.Datepicker:
                             {
                                 if (!String.IsNullOrEmpty(selectedCustomerAttributes))
                                 {
@@ -277,7 +278,6 @@ namespace Ks.Admin.Controllers
                             }
                             break;
                         case AttributeControlType.ColorSquares:
-                        case AttributeControlType.Datepicker:
                         case AttributeControlType.FileUpload:
                         default:
                             //not supported attribute control types
@@ -341,6 +341,8 @@ namespace Ks.Admin.Controllers
                     //form fields
                     model.FirstName = customer.GetAttribute<string>(SystemCustomerAttributeNames.FirstName);
                     model.LastName = customer.GetAttribute<string>(SystemCustomerAttributeNames.LastName);
+                    model.AdmCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode);
+                    model.Dni= customer.GetAttribute<string>(SystemCustomerAttributeNames.Dni);
                     model.Gender = customer.GetAttribute<string>(SystemCustomerAttributeNames.Gender);
                     model.DateOfBirth = customer.GetAttribute<DateTime?>(SystemCustomerAttributeNames.DateOfBirth);
                     model.Company = customer.GetAttribute<string>(SystemCustomerAttributeNames.Company);
@@ -618,6 +620,7 @@ namespace Ks.Admin.Controllers
                         break;
                     case AttributeControlType.TextBox:
                     case AttributeControlType.MultilineTextbox:
+                    case AttributeControlType.Datepicker:
                         {
                             var ctrlAttributes = form[controlId];
                             if (!String.IsNullOrEmpty(ctrlAttributes))
@@ -628,7 +631,6 @@ namespace Ks.Admin.Controllers
                             }
                         }
                         break;
-                    case AttributeControlType.Datepicker:
                     case AttributeControlType.ColorSquares:
                     case AttributeControlType.FileUpload:
                     //not supported customer attributes
@@ -693,6 +695,8 @@ namespace Ks.Admin.Controllers
                 lastName: model.SearchLastName,
                 dayOfBirth: searchDayOfBirth,
                 monthOfBirth: searchMonthOfBirth,
+                admCode: model.SearchAdmCode,
+                dni: model.SearchDni,
                 company: model.SearchCompany,
                 phone: model.SearchPhone,
                 zipPostalCode: model.SearchZipPostalCode,
@@ -776,6 +780,8 @@ namespace Ks.Admin.Controllers
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Gender, model.Gender);
                 _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.FirstName, model.FirstName);
                 _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.LastName, model.LastName);
+                _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.AdmCode, model.AdmCode);
+                _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Dni, model.Dni);
                 if (_customerSettings.DateOfBirthEnabled)
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.DateOfBirth, model.DateOfBirth);
                 if (_customerSettings.CompanyEnabled)
@@ -1000,6 +1006,8 @@ namespace Ks.Admin.Controllers
                         _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Gender, model.Gender);
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.FirstName, model.FirstName);
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.LastName, model.LastName);
+                    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.AdmCode, model.AdmCode);
+                    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Dni, model.Dni);
                     if (_customerSettings.DateOfBirthEnabled)
                         _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.DateOfBirth, model.DateOfBirth);
                     if (_customerSettings.CompanyEnabled)
