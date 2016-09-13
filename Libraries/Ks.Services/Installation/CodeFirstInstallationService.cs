@@ -766,6 +766,14 @@ namespace Ks.Services.Installation
                     {SystemKeyword = "EditCurrentAccount",Enabled = true,Name = "Editar Cuenta Corriente"}
                 };
 
+            var activityLogSetting = new List<ActivityLogType>
+            {
+                new ActivityLogType{SystemKeyword = "EditSettings",Enabled = true,Name = "Edit setting(s)"},
+                new ActivityLogType{SystemKeyword = "EditSpecAttribute",Enabled = true,Name = "Edit a specification attribute"},
+                new ActivityLogType{SystemKeyword = "DeleteSetting",Enabled = true,Name = "Delete a setting"},
+                new ActivityLogType{SystemKeyword = "DeleteSpecAttribute",Enabled = true,Name = "Delete a specification attribute"},
+            };
+
             _activityLogTypeRepository.Insert(activityLogMilitaryPerson);
             _activityLogTypeRepository.Insert(activityLogMembership);
             _activityLogTypeRepository.Insert(activityLogMaintenance);
@@ -777,6 +785,8 @@ namespace Ks.Services.Installation
             _activityLogTypeRepository.Insert(activityLogLog);
             _activityLogTypeRepository.Insert(activityLogSalaryScale);
             _activityLogTypeRepository.Insert(activityLogCurrentAccount);
+
+            _activityLogTypeRepository.Insert(activityLogSetting);
 
         }
 

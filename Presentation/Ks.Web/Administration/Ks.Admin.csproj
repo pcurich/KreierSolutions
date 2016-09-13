@@ -197,6 +197,7 @@
     <Content Include="Views\Customer\Create.cshtml" />
     <Content Include="Views\Customer\Edit.cshtml" />
     <Content Include="Views\Customer\_CreateOrUpdate.cshtml" />
+    <Content Include="Views\Setting\AllSettings.cshtml" />
     <None Include="Views\Customer\_CreateOrUpdate2.cshtml" />
     <Content Include="Views\Setting\CustomerUser.cshtml" />
     <Content Include="Views\Customer\_CreateOrUpdateAddress.cshtml" />
@@ -240,6 +241,7 @@
     <Content Include="Views\KsSystem\Create.cshtml" />
     <Content Include="Views\KsSystem\Edit.cshtml" />
     <Content Include="Views\KsSystem\_CreateOrUpdate.cshtml" />
+    <Content Include="Views\OnlineCustomer\List.cshtml" />
     <None Include="Views\Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -272,6 +274,7 @@
     <Compile Include="Controllers\LanguageController.cs" />
     <Compile Include="Controllers\LogController.cs" />
     <Compile Include="Controllers\MessageTemplateController.cs" />
+    <Compile Include="Controllers\OnlineCustomerController.cs" />
     <Compile Include="Controllers\QueuedEmailController.cs" />
     <Compile Include="Controllers\ScheduleTaskController.cs" />
     <Compile Include="Controllers\SecurityController.cs" />
@@ -297,6 +300,7 @@
     <Compile Include="Models\Customers\CustomerListModel.cs" />
     <Compile Include="Models\Customers\CustomerModel.cs" />
     <Compile Include="Models\Customers\CustomerRoleModel.cs" />
+    <Compile Include="Models\Customers\OnlineCustomerModel.cs" />
     <Compile Include="Models\Directory\CityModel.cs" />
     <Compile Include="Models\Directory\CountryModel.cs" />
     <Compile Include="Models\Directory\CurrencyModel.cs" />
@@ -319,6 +323,7 @@
     <Compile Include="Models\Security\PermissionMappingModel.cs" />
     <Compile Include="Models\Security\PermissionRecordModel.cs" />
     <Compile Include="Models\Settings\CustomerUserSettingsModel.cs" />
+    <Compile Include="Models\Settings\SettingModel.cs" />
     <Compile Include="Models\Systems\KsSystemModel.cs" />
     <Compile Include="Models\Tasks\ScheduleTaskModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -341,6 +346,7 @@
     <Compile Include="Validators\Messages\MessageTemplateValidator.cs" />
     <Compile Include="Validators\Messages\QueuedEmailValidator.cs" />
     <Compile Include="Validators\Messages\TestMessageTemplateValidator.cs" />
+    <Compile Include="Validators\Settings\SettingValidator.cs" />
     <Compile Include="Validators\Systems\KsSystemValidator.cs" />
     <Compile Include="Validators\Tasks\ScheduleTaskValidator.cs" />
   </ItemGroup>

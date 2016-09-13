@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using Ks.Admin.Extensions;
 using Ks.Admin.Models.Settings;
@@ -15,6 +17,10 @@ using Ks.Services.Localization;
 using Ks.Services.Logging;
 using Ks.Services.Media;
 using Ks.Services.Security;
+using Ks.Web.Framework;
+using Ks.Web.Framework.Kendoui;
+using Ks.Web.Framework.Mvc;
+using Ks.Web.Framework.Security;
 using Ks.Web.Framework.Themes;
 
 namespace Ks.Admin.Controllers
@@ -154,7 +160,140 @@ namespace Ks.Admin.Controllers
 
         #endregion
 
-        
+        #region All Setting
+
+        //all settings
+        public ActionResult AllSettings()
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings))
+                return AccessDeniedView();
+
+            return View();
+        }
+        [HttpPost]
+        //do not validate request token (XSRF)
+        //for some reasons it does not work with "filtering" support
+        [AdminAntiForgery(true)]
+        public ActionResult AllSettings(DataSourceRequest command,
+            Ks.Web.Framework.Kendoui.Filter filter = null, IEnumerable<Sort> sort = null)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings))
+                return AccessDeniedView();
+
+            var settings = _settingService
+                .GetAllSettings()
+                .Select(x =>
+                {
+                    string ksSystemName;
+                    if (x.KsSystemId == 0)
+                    {
+                        ksSystemName = _localizationService.GetResource("Admin.Configuration.Settings.AllSettings.Fields.StoreName.AllStores");
+                    }
+                    else
+                    {
+                        var ksSystem = _ksSystemService.GetKsSystemById(x.KsSystemId);
+                        ksSystemName = ksSystem != null ? ksSystem.Name : "Unknown";
+                    }
+                    var settingModel = new SettingModel
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        Value = x.Value,
+                        KsSystem = ksSystemName,
+                        KsSystemId = x.KsSystemId
+                    };
+                    return settingModel;
+                })
+                .AsQueryable()
+                .Filter(filter)
+                .Sort(sort);
+
+            var gridModel = new DataSourceResult
+            {
+                Data = settings.PagedForCommand(command).ToList(),
+                Total = settings.Count()
+            };
+
+            return Json(gridModel);
+        }
+        [HttpPost]
+        public ActionResult SettingUpdate(SettingModel model)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings))
+                return AccessDeniedView();
+
+            if (model.Name != null)
+                model.Name = model.Name.Trim();
+            if (model.Value != null)
+                model.Value = model.Value.Trim();
+
+            if (!ModelState.IsValid)
+            {
+                return Json(new DataSourceResult { Errors = ModelState.SerializeErrors() });
+            }
+
+            var setting = _settingService.GetSettingById(model.Id);
+            if (setting == null)
+                return Content("No setting could be loaded with the specified ID");
+
+            var ksSystemId = model.KsSystemId;
+
+            if (!setting.Name.Equals(model.Name, StringComparison.InvariantCultureIgnoreCase) ||
+                setting.KsSystemId != ksSystemId)
+            {
+                //setting name or store has been changed
+                _settingService.DeleteSetting(setting);
+            }
+
+            _settingService.SetSetting(model.Name, model.Value, ksSystemId);
+
+            //activity log
+            _customerActivityService.InsertActivity("EditSettings", _localizationService.GetResource("ActivityLog.EditSettings"));
+
+            return new NullJsonResult();
+        }
+        [HttpPost]
+        public ActionResult SettingAdd([Bind(Exclude = "Id")] SettingModel model)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings))
+                return AccessDeniedView();
+
+            if (model.Name != null)
+                model.Name = model.Name.Trim();
+            if (model.Value != null)
+                model.Value = model.Value.Trim();
+
+            if (!ModelState.IsValid)
+            {
+                return Json(new DataSourceResult { Errors = ModelState.SerializeErrors() });
+            }
+            var ksSystemId = model.KsSystemId;
+            _settingService.SetSetting(model.Name, model.Value, ksSystemId);
+
+            //activity log
+            _customerActivityService.InsertActivity("AddNewSetting", _localizationService.GetResource("ActivityLog.AddNewSetting"), model.Name);
+
+            return new NullJsonResult();
+        }
+
+        [HttpPost]
+        public ActionResult SettingDelete(int id)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings))
+                return AccessDeniedView();
+
+            var setting = _settingService.GetSettingById(id);
+            if (setting == null)
+                throw new ArgumentException("No setting found with the specified id");
+            _settingService.DeleteSetting(setting);
+
+            //activity log
+            _customerActivityService.InsertActivity("DeleteSetting", _localizationService.GetResource("ActivityLog.DeleteSetting"), setting.Name);
+
+            return new NullJsonResult();
+        }
+
+        #endregion
 
         #endregion
     }
