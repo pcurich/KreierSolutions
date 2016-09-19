@@ -242,6 +242,8 @@
     <Content Include="Views\KsSystem\Edit.cshtml" />
     <Content Include="Views\KsSystem\_CreateOrUpdate.cshtml" />
     <Content Include="Views\OnlineCustomer\List.cshtml" />
+    <Content Include="Views\Setting\DeclaratoryLetter.cshtml" />
+    <Content Include="Views\Setting\Payments.cshtml" />
     <None Include="Views\Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -323,6 +325,8 @@
     <Compile Include="Models\Security\PermissionMappingModel.cs" />
     <Compile Include="Models\Security\PermissionRecordModel.cs" />
     <Compile Include="Models\Settings\CustomerUserSettingsModel.cs" />
+    <Compile Include="Models\Settings\LetterSettingsModel.cs" />
+    <Compile Include="Models\Settings\PaymentSettingsModel.cs" />
     <Compile Include="Models\Settings\SettingModel.cs" />
     <Compile Include="Models\Systems\KsSystemModel.cs" />
     <Compile Include="Models\Tasks\ScheduleTaskModel.cs" />
@@ -367,6 +371,10 @@
     <ProjectReference Include="..\..\Ks.Web.Framework\Ks.Web.Framework.csproj">
       <Project>{4AC80531-7AD1-4A34-A025-B1578EF1B895}</Project>
       <Name>Ks.Web.Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ks.Web.csproj">
+      <Project>{89811FA9-B7AE-4D21-94CB-48D343B383FB}</Project>
+      <Name>Ks.Web</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

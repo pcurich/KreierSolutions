@@ -6,6 +6,7 @@ using Ks.Admin.Extensions;
 using Ks.Admin.Models.Settings;
 using Ks.Core;
 using Ks.Core.Domain.Common;
+using Ks.Core.Domain.Contract;
 using Ks.Core.Domain.Customers;
 using Ks.Services.Common;
 using Ks.Services.Configuration;
@@ -156,6 +157,84 @@ namespace Ks.Admin.Controllers
             SaveSelectedTabIndex();
 
             return RedirectToAction("CustomerUser");
+        }
+
+        #endregion
+
+        #region DeclaratoryLetter
+
+        public ActionResult DeclaratoryLetter()
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings))
+                return AccessDeniedView();
+
+            var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
+            var letterSettings = _settingService.LoadSetting<LetterSettings>(storeScope);
+
+            var model = letterSettings.ToModel();
+            return  View(model);
+        }
+
+        [HttpPost]
+        public ActionResult DeclaratoryLetter(LetterSettingsModel model)
+        {
+            var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
+            var letterSettings = _settingService.LoadSetting<LetterSettings>(storeScope);
+
+            letterSettings = model.ToEntity(letterSettings);
+            _settingService.SaveSetting(letterSettings);
+
+            //now clear settings cache
+            _settingService.ClearCache();
+
+            //activity log
+            _customerActivityService.InsertActivity("EditSettings", _localizationService.GetResource("ActivityLog.EditSettings"));
+
+            SuccessNotification(_localizationService.GetResource("Admin.Configuration.Updated"));
+
+            //selected tab
+            SaveSelectedTabIndex();
+
+            return RedirectToAction("DeclaratoryLetter");
+        }
+
+        #endregion
+
+        #region Payments
+
+        public ActionResult Payments()
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings))
+                return AccessDeniedView();
+
+            var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
+            var letterSettings = _settingService.LoadSetting<PaymentSettings>(storeScope);
+
+            var model = letterSettings.ToModel();
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Payments(PaymentSettingsModel model)
+        {
+            var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
+            var paymentSettings = _settingService.LoadSetting<PaymentSettings>(storeScope);
+
+            paymentSettings = model.ToEntity(paymentSettings);
+            _settingService.SaveSetting(paymentSettings);
+
+            //now clear settings cache
+            _settingService.ClearCache();
+
+            //activity log
+            _customerActivityService.InsertActivity("EditSettings", _localizationService.GetResource("ActivityLog.EditSettings"));
+
+            SuccessNotification(_localizationService.GetResource("Admin.Configuration.Updated"));
+
+            //selected tab
+            SaveSelectedTabIndex();
+
+            return RedirectToAction("Payments");
         }
 
         #endregion

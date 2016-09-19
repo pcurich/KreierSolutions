@@ -6,6 +6,7 @@ using Ks.Core;
 using Ks.Core.Data;
 using Ks.Core.Domain.Catalog;
 using Ks.Core.Domain.Common;
+using Ks.Core.Domain.Contract;
 using Ks.Core.Domain.Customers;
 using Ks.Core.Domain.Directory;
 using Ks.Core.Domain.Localization;
@@ -655,6 +656,13 @@ namespace Ks.Services.Installation
                 AllowCustomersToSetTimeZone = false
             });
 
+            settingService.SaveSetting(new LetterSettings
+            {
+                FromNumber = 11670,
+                IsAutogenerate = true,
+                LastNumber = 11671,
+                StepNumber = 1
+            });
         }
 
         protected virtual void InstallActivityLogTypes()

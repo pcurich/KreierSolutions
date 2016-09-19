@@ -8,6 +8,7 @@ using Ks.Admin.Models.Messages;
 using Ks.Admin.Models.Settings;
 using Ks.Admin.Models.Systems;
 using Ks.Core.Domain.Common;
+using Ks.Core.Domain.Contract;
 using Ks.Core.Domain.Customers;
 using Ks.Core.Domain.Directory;
 using Ks.Core.Domain.Localization;
@@ -227,6 +228,20 @@ namespace Ks.Admin.Infrastructure
             Mapper.CreateMap<AddressSettings, CustomerUserSettingsModel.AddressSettingsModel>()
                 .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
             Mapper.CreateMap<CustomerUserSettingsModel.AddressSettingsModel, AddressSettings>();
+
+            #endregion
+
+            #region LetterSetting
+
+            Mapper.CreateMap<LetterSettings, LetterSettingsModel>()
+                   .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
+
+            #endregion
+
+            #region PaymentSetting
+
+            Mapper.CreateMap<PaymentSettings, PaymentSettingsModel>()
+                   .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
 
             #endregion
 

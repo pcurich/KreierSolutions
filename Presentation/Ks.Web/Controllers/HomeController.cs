@@ -3,6 +3,7 @@ using Ks.Web.Framework.Security;
 
 namespace Ks.Web.Controllers
 {
+    [Authorize]
     public class HomeController : BasePublicController
     {
         [KsHttpsRequirement(SslRequirement.No)]

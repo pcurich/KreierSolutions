@@ -27,6 +27,10 @@ using Ks.Services.Seo;
 using Ks.Web.Framework.Controllers;
 using Ks.Web.Framework.Kendoui;
 using Ks.Web.Framework.Security;
+using Ks.Core.Domain.Common;
+using Ks.Core.Domain.Customers;
+using Ks.Web.Models.Common;
+using LanguageSelectorModel = Ks.Admin.Models.Common.LanguageSelectorModel;
 
 namespace Ks.Admin.Controllers
 {
@@ -53,6 +57,7 @@ namespace Ks.Admin.Controllers
         private readonly ISearchTermService _searchTermService;
         private readonly ISettingService _settingService;
         private readonly IKsSystemService _ksSystemService;
+        private readonly CommonSettings _commonSettings;
         //private readonly CatalogSettings _catalogSettings;
         private readonly HttpContextBase _httpContext;
 
@@ -81,6 +86,7 @@ namespace Ks.Admin.Controllers
             ISettingService settingService,
             IKsSystemService ksSystemService,
             //CatalogSettings catalogSettings,
+             CommonSettings commonSettings,
             HttpContextBase httpContext)
         {
             //this._paymentService = paymentService;
@@ -104,6 +110,7 @@ namespace Ks.Admin.Controllers
             this._ksSystemService = ksSystemService;
             //this._catalogSettings = catalogSettings;
             this._httpContext = httpContext;
+            this._commonSettings = commonSettings;
         }
 
         #endregion
@@ -657,90 +664,6 @@ namespace Ks.Admin.Controllers
 
             return Json(new { Result = true });
         }
-
-
-        //[ChildActionOnly]
-        //public ActionResult PopularSearchTermsReport()
-        //{
-        //    if (!_permissionService.Authorize(StandardPermissionProvider.ManageProducts))
-        //        return Content("");
-
-        //    return PartialView();
-        //}
-
-        //[HttpPost]
-        //public ActionResult PopularSearchTermsReport(DataSourceRequest command)
-        //{
-        //    if (!_permissionService.Authorize(StandardPermissionProvider.ManageProducts))
-        //        return AccessDeniedView();
-
-        //    var searchTermRecordLines = _searchTermService.GetStats(command.Page - 1, command.PageSize);
-        //    var gridModel = new DataSourceResult
-        //    {
-        //        Data = searchTermRecordLines.Select(x => new SearchTermReportLineModel
-        //        {
-        //            Keyword = x.Keyword,
-        //            Count = x.Count,
-        //        }),
-        //        Total = searchTermRecordLines.TotalCount
-        //    };
-        //    return Json(gridModel);
-        //}
-
-
-        ////action displaying notification (warning) to a store owner that "limit per store" feature is ignored
-        //[ChildActionOnly]
-        //public ActionResult MultistoreDisabledWarning()
-        //{
-        //    //default setting
-        //    bool enabled = _catalogSettings.IgnoreStoreLimitations;
-        //    if (!enabled)
-        //    {
-        //        //overridden settings
-        //        var stores = _storeService.GetAllStores();
-        //        foreach (var store in stores)
-        //        {
-        //            if (!enabled)
-        //            {
-        //                var catalogSettings = _settingService.LoadSetting<CatalogSettings>(store.Id);
-        //                enabled = catalogSettings.IgnoreStoreLimitations;
-        //            }
-        //        }
-        //    }
-
-        //    //This setting is disabled. No warnings.
-        //    if (!enabled)
-        //        return Content("");
-
-        //    return PartialView();
-        //}
-        ////action displaying notification (warning) to a store owner that "ACL rules" feature is ignored
-        
-        //[ChildActionOnly]
-        //public ActionResult AclDisabledWarning()
-        //{
-        //    //default setting
-        //    bool enabled = _catalogSettings.IgnoreAcl;
-        //    if (!enabled)
-        //    {
-        //        //overridden settings
-        //        var stores = _storeService.GetAllStores();
-        //        foreach (var store in stores)
-        //        {
-        //            if (!enabled)
-        //            {
-        //                var catalogSettings = _settingService.LoadSetting<CatalogSettings>(store.Id);
-        //                enabled = catalogSettings.IgnoreAcl;
-        //            }
-        //        }
-        //    }
-
-        //    //This setting is disabled. No warnings.
-        //    if (!enabled)
-        //        return Content("");
-
-        //    return PartialView();
-        //}
 
         #endregion
     }

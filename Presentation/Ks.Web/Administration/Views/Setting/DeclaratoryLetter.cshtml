@@ -1,0 +1,93 @@
+﻿@model LetterSettingsModel
+@{
+    //page title
+    ViewBag.Title = T("Admin.Configuration.Settings.LetterSettings").Text;
+}
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="section-header">
+        <div class="title">
+            <img src="@Url.Content("~/Administration/Content/images/ico-configuration.png")" alt="" />
+            @T("Admin.Configuration.Settings.LetterSettings")
+        </div>
+        <div class="options">
+            <input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")" />
+        </div>
+    </div>
+
+    @Html.ValidationSummary(false)
+
+    <script>
+        $(document).ready(function () {
+            $("#declaratorylettersettings-edit").kendoTabStrip({
+                animation: {
+                    open: {
+                        effects: "fadeIn"
+                    }
+                },
+                select: tabstrip_on_tab_select
+            });
+        });
+    </script>
+    <div id="declaratorylettersettings-edit">
+        <ul>
+            <li @Html.RenderSelectedTabIndex(0, GetSelectedTabIndex())>
+                @T("Admin.Configuration.Settings.LetterSettings.Header")
+            </li>
+        </ul>
+        <div>
+            @TabDeclaratoryLetterSettings()
+        </div>
+    </div>
+
+    @helper TabDeclaratoryLetterSettings()
+{
+    <table class="adminContent">
+        <tr>
+            <td class="adminTitle">
+                @Html.OverrideStoreCheckboxFor(model => model.IsAutogenerate, model => model.IsAutogenerate, 0)
+                @Html.KsLabelFor(model => model.IsAutogenerate):
+            </td>
+
+            <td class="adminData">
+                @Html.EditorFor(model => model.IsAutogenerate)
+                @Html.ValidationMessageFor(model => model.IsAutogenerate)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.OverrideStoreCheckboxFor(model => model.IsAutogenerate, model => model.FromNumber, 0)
+                @Html.KsLabelFor(model => model.FromNumber):
+            </td>
+
+            <td class="adminData">
+                @Html.EditorFor(model => model.FromNumber)
+                @Html.ValidationMessageFor(model => model.FromNumber)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.OverrideStoreCheckboxFor(model => model.IsAutogenerate, model => model.LastNumber, 0)
+                @Html.KsLabelFor(model => model.LastNumber):
+            </td>
+
+            <td class="adminData">
+                @Html.EditorFor(model => model.LastNumber)
+                @Html.ValidationMessageFor(model => model.LastNumber)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.OverrideStoreCheckboxFor(model => model.IsAutogenerate, model => model.StepNumber, 0)
+                @Html.KsLabelFor(model => model.StepNumber):
+            </td>
+
+            <td class="adminData">
+                @Html.EditorFor(model => model.StepNumber)
+                @Html.ValidationMessageFor(model => model.StepNumber)
+            </td>
+        </tr>
+    </table>
+}
+}

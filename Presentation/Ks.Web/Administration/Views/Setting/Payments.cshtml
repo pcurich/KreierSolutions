@@ -1,0 +1,63 @@
+﻿@model PaymentSettingsModel
+@{
+    //page title
+    ViewBag.Title = T("Admin.Configuration.Settings.PaymentSettings").Text;
+}
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="section-header">
+        <div class="title">
+            <img src="@Url.Content("~/Administration/Content/images/ico-configuration.png")" alt="" />
+            @T("Admin.Configuration.Settings.PaymentSettings")
+        </div>
+        <div class="options">
+            <input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")" />
+        </div>
+    </div>
+
+    @Html.ValidationSummary(false)
+
+    <script>
+        $(document).ready(function () {
+            $("#paymentsettings-edit").kendoTabStrip({
+                animation: {
+                    open: {
+                        effects: "fadeIn"
+                    }
+                },
+                select: tabstrip_on_tab_select
+            });
+        });
+    </script>
+    <div id="paymentsettings-edit">
+        <ul>
+            <li @Html.RenderSelectedTabIndex(0, GetSelectedTabIndex())>
+                @T("Admin.Configuration.Settings.LetterSettings.Header")
+            </li>
+        </ul>
+        <div>
+            @TabDeclaratoryLetterSettings()
+        </div>
+    </div>
+
+    @helper TabDeclaratoryLetterSettings()
+{
+    <table class="adminContent">
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.Amount):
+                @Html.EditorFor(model => model.Amount)
+                @Html.ValidationMessageFor(model => model.Amount)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminData">
+                @Html.KsLabelFor(model => model.DayOfPayment):
+                @Html.EditorFor(model => model.DayOfPayment)
+                @Html.ValidationMessageFor(model => model.DayOfPayment)
+            </td>
+        </tr>
+    </table>
+}
+}

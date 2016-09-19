@@ -10,6 +10,7 @@ using Ks.Admin.Models.Settings;
 using Ks.Admin.Models.Systems;
 using Ks.Core.Domain.Catalog;
 using Ks.Core.Domain.Common;
+using Ks.Core.Domain.Contract;
 using Ks.Core.Domain.Customers;
 using Ks.Core.Domain.Directory;
 using Ks.Core.Domain.Localization;
@@ -284,6 +285,42 @@ namespace Ks.Admin.Extensions
             return entity.MapTo<AddressSettings, CustomerUserSettingsModel.AddressSettingsModel>();
         }
         public static AddressSettings ToEntity(this CustomerUserSettingsModel.AddressSettingsModel model, AddressSettings destination)
+        {
+            return model.MapTo(destination);
+        }
+
+        #endregion
+
+        #region LetterSetting
+
+        public static LetterSettingsModel ToModel(this LetterSettings entity)
+        {
+            return entity.MapTo<LetterSettings, LetterSettingsModel>();
+        }
+        public static LetterSettings ToEntity(this LetterSettingsModel model)
+        {
+            return model.MapTo<LetterSettingsModel, LetterSettings>();
+        }
+
+        public static LetterSettings ToEntity(this LetterSettingsModel model, LetterSettings destination)
+        {
+            return model.MapTo(destination);
+        }
+
+        #endregion
+
+        #region PaymentSetting
+
+        public static PaymentSettingsModel ToModel(this PaymentSettings entity)
+        {
+            return entity.MapTo<PaymentSettings, PaymentSettingsModel>();
+        }
+        public static PaymentSettings ToEntity(this PaymentSettingsModel model)
+        {
+            return model.MapTo<PaymentSettingsModel, PaymentSettings>();
+        }
+
+        public static PaymentSettings ToEntity(this PaymentSettingsModel model, PaymentSettings destination)
         {
             return model.MapTo(destination);
         }
