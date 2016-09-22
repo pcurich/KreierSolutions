@@ -161,6 +161,7 @@
     <Compile Include="Configuration\ISettingService.cs" />
     <Compile Include="Configuration\SettingExtensions.cs" />
     <Compile Include="Configuration\SettingService.cs" />
+    <Compile Include="Contract\ContributionService.cs" />
     <Compile Include="Customers\ChangePasswordRequest.cs" />
     <Compile Include="Customers\ChangePasswordResult.cs" />
     <Compile Include="Customers\CustomerAttributeExtensions.cs" />
@@ -176,6 +177,7 @@
     <Compile Include="Customers\ICustomerAttributeService.cs" />
     <Compile Include="Customers\ICustomerRegistrationService.cs" />
     <Compile Include="Customers\ICustomerService.cs" />
+    <Compile Include="Contract\IContributionService.cs" />
     <Compile Include="Directory\CityService.cs" />
     <Compile Include="Directory\CountryService.cs" />
     <Compile Include="Directory\CurrencyService.cs" />

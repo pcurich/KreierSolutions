@@ -25,6 +25,16 @@ namespace Ks.Services.Common
         /// {1} : key group
         /// </remarks>
         private const string GENERICATTRIBUTE_KEY = "Ks.genericattribute.{0}-{1}";
+
+        /// <summary>
+        /// Key for caching
+        /// </summary>
+        /// <remarks>
+        /// {0} : key
+        /// {1} : value
+        /// </remarks>
+        private const string GENERICATTRIBUTE_KEY_VALUE = "Ks.genericattribute.keyvalue.{0}-{1}";
+
         /// <summary>
         /// Key pattern to clear cache
         /// </summary>
@@ -143,6 +153,25 @@ namespace Ks.Services.Common
                             ga.KeyGroup == keyGroup
                             select ga;
                 var attributes = query.ToList();
+                return attributes;
+            });
+        }
+
+        /// <summary>
+        /// Gets the attribute for key and value.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
+        /// <returns></returns>
+        public virtual GenericAttribute GetAttributeForKeyValue(string key, string value)
+        {
+            string _key = string.Format(GENERICATTRIBUTE_KEY_VALUE, key, value);
+            return _cacheManager.Get(_key, () =>
+            {
+                var query = from ga in _genericAttributeRepository.Table
+                            where ga.Key == key && ga.Value == value
+                            select ga;
+                var attributes = query.FirstOrDefault();
                 return attributes;
             });
         }

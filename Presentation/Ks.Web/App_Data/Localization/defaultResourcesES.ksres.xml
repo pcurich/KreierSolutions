@@ -1030,6 +1030,8 @@
 	<LocaleResource Name="Admin.Catalog.ProductTags.Fields.Name.Hint"><Value><![CDATA[El nombre de la etiqueta del producto.]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Catalog.ProductTags.Fields.Name.Required"><Value><![CDATA[Por favor proporcione un nombre.]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Catalog.ProductTags.Fields.ProductCount"><Value><![CDATA[Productos etiquetados]]></Value></LocaleResource>
+	<LocaleResource Name="Admin.Contract.Contribution.Fields.LetterNumber.GreaterThanOrEqualTo1"><Value><![CDATA[Ingrese numero de carta declaratoria valido]]></Value></LocaleResource>
+	
 	<LocaleResource Name="Admin.Common.AddNew"><Value><![CDATA[Nuevo]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Common.AddNewRecord"><Value><![CDATA[Agregar registro]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Common.All"><Value><![CDATA[Todo]]></Value></LocaleResource>

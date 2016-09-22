@@ -41,6 +41,14 @@ namespace Ks.Services.Common
         /// <param name="keyGroup">Key group</param>
         /// <returns>Get attributes</returns>
         IList<GenericAttribute> GetAttributesForEntity(int entityId, string keyGroup);
+
+        /// <summary>
+        /// Gets the attribute for key and value.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
+        /// <returns></returns>
+        GenericAttribute GetAttributeForKeyValue(string key, string value);
         
         /// <summary>
         /// Save attribute value

@@ -19,6 +19,7 @@ namespace Ks.Services.Security
         public static readonly PermissionRecord ManageProductTags = new PermissionRecord { Name = "Admin area. Manage Product Tags", SystemName = "ManageProductTags", Category = "Catalog" };
         public static readonly PermissionRecord ManageAttributes = new PermissionRecord { Name = "Admin area. Manage Attributes", SystemName = "ManageAttributes", Category = "Catalog" };
         public static readonly PermissionRecord ManageCustomers = new PermissionRecord { Name = "Admin area. Manage Customers", SystemName = "ManageCustomers", Category = "Customers" };
+        public static readonly PermissionRecord ManageContributions = new PermissionRecord { Name = "Admin area. Manage Contributions", SystemName = "ManageContributions", Category = "Customers" };
         public static readonly PermissionRecord ManageVendors = new PermissionRecord { Name = "Admin area. Manage Vendors", SystemName = "ManageVendors", Category = "Customers" };
         public static readonly PermissionRecord ManageCurrentCarts = new PermissionRecord { Name = "Admin area. Manage Current Carts", SystemName = "ManageCurrentCarts", Category = "Orders" };
         public static readonly PermissionRecord ManageOrders = new PermissionRecord { Name = "Admin area. Manage Orders", SystemName = "ManageOrders", Category = "Orders" };
@@ -79,6 +80,7 @@ namespace Ks.Services.Security
                 ManageProductTags,
                 ManageAttributes,
                 ManageCustomers,
+                ManageContributions,
                 ManageVendors,
                 ManageCurrentCarts,
                 ManageOrders,
@@ -142,6 +144,7 @@ namespace Ks.Services.Security
                         ManageProductTags,
                         ManageAttributes,
                         ManageCustomers,
+                        ManageContributions,
                         ManageVendors,
                         ManageCurrentCarts,
                         ManageOrders,

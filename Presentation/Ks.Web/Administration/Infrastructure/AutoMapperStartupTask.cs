@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Ks.Admin.Models.Common;
+using Ks.Admin.Models.Contract;
 using Ks.Admin.Models.Customers;
 using Ks.Admin.Models.Directory;
 using Ks.Admin.Models.Localization;
@@ -257,6 +258,15 @@ namespace Ks.Admin.Infrastructure
                 //.ForMember(dest => dest.SelectedStoreIds, mo => mo.Ignore())
                 .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
             Mapper.CreateMap<CurrencyModel, Currency>()
+                .ForMember(dest => dest.CreatedOnUtc, mo => mo.Ignore())
+                .ForMember(dest => dest.UpdatedOnUtc, mo => mo.Ignore());
+            #endregion
+
+            #region contribution
+            Mapper.CreateMap<Contribution, ContributionModel>()
+                .ForMember(dest => dest.CreatedOn, mo => mo.Ignore())
+                .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
+            Mapper.CreateMap<ContributionModel, Contribution>()
                 .ForMember(dest => dest.CreatedOnUtc, mo => mo.Ignore())
                 .ForMember(dest => dest.UpdatedOnUtc, mo => mo.Ignore());
             #endregion

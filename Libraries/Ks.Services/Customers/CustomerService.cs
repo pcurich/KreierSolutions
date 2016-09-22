@@ -484,7 +484,6 @@ namespace Ks.Services.Customers
         /// </summary>
         /// <param name="createdFromUtc">Created date from (UTC); null to load all records</param>
         /// <param name="createdToUtc">Created date to (UTC); null to load all records</param>
-        /// <param name="onlyWithoutShoppingCart">A value indicating whether to delete customers only without shopping cart</param>
         /// <returns>Number of deleted customers</returns>
         public virtual int DeleteGuestCustomers(DateTime? createdFromUtc, DateTime? createdToUtc)
         {

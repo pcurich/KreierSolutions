@@ -75,6 +75,8 @@
     <Compile Include="Mapping\Common\GenericAttributeMap.cs" />
     <Compile Include="Mapping\Common\SearchTermMap.cs" />
     <Compile Include="Mapping\Configuration\SettingMap.cs" />
+    <Compile Include="Mapping\Contract\ContributionMap.cs" />
+    <Compile Include="Mapping\Contract\ContributionPaymentMap.cs" />
     <Compile Include="Mapping\Customers\CustomerAttributeMap.cs" />
     <Compile Include="Mapping\Customers\CustomerAttributeValueMap.cs" />
     <Compile Include="Mapping\Customers\CustomerMap.cs" />

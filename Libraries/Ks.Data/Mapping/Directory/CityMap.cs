@@ -2,7 +2,7 @@
 
 namespace Ks.Data.Mapping.Directory
 {
-    public class CityMap : KsEntityTypeConfiguration<City>
+    public partial class CityMap : KsEntityTypeConfiguration<City>
     {
         public CityMap()
         {

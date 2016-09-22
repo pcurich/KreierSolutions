@@ -1,6 +1,7 @@
 ﻿using System;
 using AutoMapper;
 using Ks.Admin.Models.Common;
+using Ks.Admin.Models.Contract;
 using Ks.Admin.Models.Customers;
 using Ks.Admin.Models.Directory;
 using Ks.Admin.Models.Localization;
@@ -233,6 +234,25 @@ namespace Ks.Admin.Extensions
         }
 
         public static AddressAttribute ToEntity(this AddressAttributeModel model, AddressAttribute destination)
+        {
+            return model.MapTo(destination);
+        }
+
+        #endregion
+
+        #region Contribution
+
+        public static ContributionModel ToModel(this Contribution entity)
+        {
+            return entity.MapTo<Contribution, ContributionModel>();
+        }
+
+        public static Contribution ToEntity(this ContributionModel model)
+        {
+            return model.MapTo<ContributionModel, Contribution>();
+        }
+
+        public static Contribution ToEntity(this ContributionModel model, Contribution destination)
         {
             return model.MapTo(destination);
         }

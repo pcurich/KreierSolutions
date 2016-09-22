@@ -18,6 +18,7 @@ using Ks.Data;
 using Ks.Services.Authentication;
 using Ks.Services.Common;
 using Ks.Services.Configuration;
+using Ks.Services.Contract;
 using Ks.Services.Customers;
 using Ks.Services.Directory;
 using Ks.Services.Events;
@@ -212,6 +213,7 @@ namespace Ks.Web.Framework
             builder.RegisterType<MessageTokenProvider>().As<IMessageTokenProvider>().InstancePerLifetimeScope();
             builder.RegisterType<Tokenizer>().As<ITokenizer>().InstancePerLifetimeScope();
             builder.RegisterType<EmailSender>().As<IEmailSender>().InstancePerLifetimeScope();
+            builder.RegisterType<ContributionService>().As<IContributionService>().InstancePerLifetimeScope();
 
             //builder.RegisterType<FakeWorkflowMessageService>().As<IWorkflowMessageService>().InstancePerLifetimeScope();
 
