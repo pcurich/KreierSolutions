@@ -98,24 +98,20 @@ namespace Ks.Admin.Controllers
                 contributions = _contributionService.SearchContibutionByCreatedOnUtc(dateFromUtc, dateToUtc, model.IsActive);
             }
             if (contributions == null)
-                contributions = new PagedList<Contribution>(new List<Contribution>
-                    {
-                        //new Contribution
-                        //{
-                        //    CustomerId = 1, LetterNumber = 20, CreatedOnUtc = DateTime.Now, UpdatedOnUtc =  DateTime.Now, AmountTotal = 44M
-                        //}
-                    }, 0, 10);
+                contributions = new PagedList<Contribution>(new List<Contribution>(), 0, 10);
 
-            var ss = contributions.Select(x => x.ToModel());
-
-            foreach (var s in ss)
+            var contributionsModel = contributions.Select(x =>
             {
-                var sa = s.CustomerModel;
-            }
+                var toModel = x.ToModel();
+                toModel.CustomerCompleteName = x.Customer.GetFullName();
+                toModel.CustomerDni = x.Customer.GetAttribute<string>(SystemCustomerAttributeNames.Dni);
+                toModel.CustomerAdmCode = x.Customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode);
+                return toModel;
+            });
 
             var gridModel = new DataSourceResult
             {
-                Data = contributions.Select(x => x.ToModel()),
+                Data = contributionsModel,
                 Total = contributions.TotalCount
             };
 

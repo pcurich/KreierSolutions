@@ -50,14 +50,6 @@
         </tr>
         <tr>
             <td class="adminTitle">
-                @Html.KsLabelFor(model => model.SearchDni):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.SearchDni)
-            </td>
-        </tr>
-        <tr>
-            <td class="adminTitle">
                 @Html.KsLabelFor(model => model.SearchDateCreatedFrom):
             </td>
             <td class="adminData">
@@ -140,7 +132,22 @@
                                 field: "LetterNumber",
                                 title:"LetterNumber",
                                 @*title: "@T("Admin.Customers.Customers.Fields.Email")",*@
-                                width: 200
+                                width: 50
+                            }, {
+                                field: "CustomerCompleteName",
+                                title:"CustomerCompleteName",
+                                @*title: "@T("Admin.Customers.Customers.Fields.Email")",*@
+                                width: 150
+                            }, {
+                                field: "CustomerDni",
+                                title:"CustomerDni",
+                                @*title: "@T("Admin.Customers.Customers.Fields.Email")",*@
+                                width: 50
+                            }, {
+                                field: "CustomerAdmCode",
+                                title:"CustomerAdmCode",
+                                @*title: "@T("Admin.Customers.Customers.Fields.Email")",*@
+                                width: 50
                             },{
                                 field: "AmountTotal",
                                 title:"AmountTotal",
