@@ -270,7 +270,8 @@
                             SearchAdmCode: $('#@Html.FieldIdFor(model => model.SearchAdmCode)').val(),
                             SearchDateCreatedFrom: $('#@Html.FieldIdFor(model => model.SearchDateCreatedFrom)').val(),
                             SearchDateCreatedTo: $('#@Html.FieldIdFor(model => model.SearchDateCreatedTo)').val(),
-                            SearchLetter: $('#@Html.FieldIdFor(model => model.SearchLetter)').val() 
+                            SearchLetter: $('#@Html.FieldIdFor(model => model.SearchLetter)').val(),
+                            IsActive: $('#@Html.FieldIdFor(model => model.IsActive)').val() 
                         };
                         addAntiForgeryToken(data);
                         return data;

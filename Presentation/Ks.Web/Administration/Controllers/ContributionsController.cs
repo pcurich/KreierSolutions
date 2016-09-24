@@ -61,7 +61,7 @@ namespace Ks.Admin.Controllers
                 SearchDni = "",
                 SearchDateCreatedFrom = DateTime.Today.AddMonths(-1),
                 SearchDateCreatedTo = DateTime.Today,
-                SearchLetter = 0,
+                SearchLetter =null,
                 IsActive = true
 
             };
@@ -86,8 +86,8 @@ namespace Ks.Admin.Controllers
                 contributions = _contributionService.SearchContributionByCustomerId(generic.EntityId, model.IsActive);
 
             //2) Find by letter Number
-            if (contributions == null && model.SearchLetter >= 0)
-                contributions = _contributionService.SearchContributionByLetterNumber(model.SearchLetter, model.IsActive);
+            if (contributions == null && model.SearchLetter.HasValue)
+                contributions = _contributionService.SearchContributionByLetterNumber(model.SearchLetter.Value, model.IsActive);
 
             //3) Find by createdTime
             if (contributions == null && model.SearchDateCreatedFrom.HasValue && model.SearchDateCreatedTo.HasValue &&

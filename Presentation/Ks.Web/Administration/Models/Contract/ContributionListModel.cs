@@ -4,7 +4,7 @@ namespace Ks.Admin.Models.Contract
 {
     public class ContributionListModel
     {
-        public int SearchLetter { get; set; }
+        public int? SearchLetter { get; set; }
         public string SearchDni { get; set; }
         public string SearchAdmCode { get; set; }
         public DateTime? SearchDateCreatedFrom { get; set; }
