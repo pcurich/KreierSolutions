@@ -2527,7 +2527,7 @@
 	<LocaleResource Name="Admin.Customers.Customers.Addresses.AddButton"><Value><![CDATA[Agregar nueva dirección]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Customers.Customers.Addresses.Added"><Value><![CDATA[La nueva dirección ha sido agregada con éxito.]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Customers.Customers.Addresses.AddNew"><Value><![CDATA[Agregar una nueva dirección]]></Value></LocaleResource>
-	<LocaleResource Name="Admin.Customers.Customers.Addresses.BackToCustomer"><Value><![CDATA[Volver a los detalles del cliente]]></Value></LocaleResource>
+	<LocaleResource Name="Admin.Customers.Customers.Addresses.BackToCustomer"><Value><![CDATA[Volver a los detalles del afiliado]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Customers.Customers.Addresses.EditAddress"><Value><![CDATA[Editar dirección]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Customers.Customers.Addresses.Updated"><Value><![CDATA[La dirección se ha actualizado correctamente.]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Customers.Customers.AdminCouldNotbeVendor"><Value><![CDATA[Un cliente con un vendedor asociado no puede tener rol de 'Administrador'.]]></Value></LocaleResource>
@@ -2545,6 +2545,7 @@
 	<LocaleResource Name="Admin.Customers.Customers.Contributions"><Value><![CDATA[Contribuciones]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Customers.Customers.Contributions.AddButton"><Value><![CDATA[Asignar una nueva contribucion]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Customers.Customers.Contributions.AddNew"><Value><![CDATA[Agregar nueva contribución]]></Value></LocaleResource>
+	<LocaleResource Name="Admin.Customers.Customers.Contributions.BackToCustomer"><Value><![CDATA[Volver a los detalles del afiliado]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Customers.Customers.Deleted"><Value><![CDATA[El cliente se ha eliminado correctamente.]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Customers.Customers.EditCustomerDetails"><Value><![CDATA[Editar detalles del cliente]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Customers.Customers.Fields.Active"><Value><![CDATA[Activo]]></Value></LocaleResource>
