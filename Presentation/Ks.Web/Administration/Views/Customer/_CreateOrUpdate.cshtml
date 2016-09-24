@@ -31,6 +31,12 @@
             <li @Html.RenderSelectedTabIndex(6, GetSelectedTabIndex())>
                 @T("Admin.Customers.Customers.ActivityLog")
             </li>
+            <li @Html.RenderSelectedTabIndex(7, GetSelectedTabIndex())>
+                @T("Admin.Customers.Customers.Contributions")
+            </li>
+            <li @Html.RenderSelectedTabIndex(8, GetSelectedTabIndex())>
+                @T("Admin.Customers.Customers.Loan")
+            </li>
         }
     </ul>
     <div>
@@ -46,6 +52,12 @@
         </div>
         <div>
             @TabActivityLog()
+        </div>
+        <div>
+            @TabContribution()
+        </div>
+        <div>
+            @TabLoan()
         </div>
     }
 
@@ -575,4 +587,22 @@
             </td>
         </tr>
     </table>
+}
+@helper TabContribution()
+{
+    if (Model.HasContributions)
+    {
+
+    }
+    else
+    {
+        <p>
+            <input type="button" class="k-button" onclick="location.href='@Url.Action("ContributionCreate", new { customerId = Model.Id })'" value='@T("Admin.Customers.Customers.Addresses.AddButton")' />
+        </p>
+    }
+}
+
+@helper TabLoan()
+{
+    <p>TODO</p>
 }

@@ -5,7 +5,8 @@ using System.Text;
 using System.Web.Mvc;
 using Ks.Admin.Extensions;
 using Ks.Admin.Models.Common;
-using Ks.Admin.Models.Customers;
+ using Ks.Admin.Models.Contract;
+ using Ks.Admin.Models.Customers;
 using Ks.Core;
 using Ks.Core.Domain.Catalog;
 using Ks.Core.Domain.Common;
@@ -1612,6 +1613,26 @@ namespace Ks.Admin.Controllers
 
             //If we got this far, something failed, redisplay form
             PrepareAddressModel(model, address, customer, true);
+
+            return View(model);
+        }
+
+        #endregion
+
+        #region Contributions
+
+        public ActionResult ContributionCreate(int customerId)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
+                return AccessDeniedView();
+
+            var customer = _customerService.GetCustomerById(customerId);
+            if (customer == null)
+                //No customer found with the specified id
+                return RedirectToAction("List");
+
+            var model = new ContributionModel();
+          //  PrepareAddressModel(model, null, customer, false);
 
             return View(model);
         }

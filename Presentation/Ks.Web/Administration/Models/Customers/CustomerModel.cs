@@ -27,6 +27,7 @@ namespace Ks.Admin.Models.Customers
             this.CustomerAttributes = new List<CustomerAttributeModel>();
             this.AvailableNewsletterSubscriptionStores = new List<StoreModel>();
             //this.RewardPointsAvailableStores = new List<SelectListItem>();
+            this.ContributionPayments= new List<ContributionPaymentsModel>();
         }
 
         public bool AllowUsersToChangeUsernames { get; set; }
@@ -124,7 +125,7 @@ namespace Ks.Admin.Models.Customers
 
         public List<CustomerAttributeModel> CustomerAttributes { get; set; }
 
-
+        public List<ContributionPaymentsModel> ContributionPayments { get; set; }
 
 
 
@@ -228,6 +229,11 @@ namespace Ks.Admin.Models.Customers
         [KsResourceDisplayName("Admin.Customers.Customers.AssociatedExternalAuth")]
         public IList<AssociatedExternalAuthModel> AssociatedExternalAuthRecords { get; set; }
 
+        public bool HasContributions { get; set; }
+
+
+
+        public bool HasLoans { get; set; }
 
         #region Nested classes
 

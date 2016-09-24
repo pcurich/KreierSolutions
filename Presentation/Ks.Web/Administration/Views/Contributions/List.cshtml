@@ -69,7 +69,7 @@
                 @Html.KsLabelFor(model => model.IsActive):
             </td>
             <td class="adminData">
-                @Html.CheckBoxFor(model => model.IsActive)
+                @Html.EditorFor(model => model.IsActive)
             </td>
         </tr>
         <tr>
@@ -84,7 +84,7 @@
                 <div id="contributions-grid"></div>
 
                 <script>
-                    $(document).ready(function () {
+                    $(document).ready(function() {
                         $("#contributions-grid").kendoGrid({
                             dataSource: {
                                 type: "json",
@@ -117,7 +117,8 @@
                             },
                             scrollable: false,
                             dataBound: onDataBound,
-                            columns: [{
+                            columns: [
+                            {
                                 field: "Id",
                                 headerTemplate: "<input id='mastercheckbox' type='checkbox'/>",
                                 headerAttributes: { style: "text-align:center" },
@@ -125,50 +126,41 @@
                                 template: "<input type='checkbox' value='#=Id#' class='checkboxGroups'/>",
                                 width: 50
                             }, {
-                                field: "Id",
-                                title: "ID",
-                                width: 50
-                            }, {
                                 field: "LetterNumber",
-                                title:"LetterNumber",
-                                @*title: "@T("Admin.Customers.Customers.Fields.Email")",*@
+                                title: "@T("Admin.Contract.Contribution.Fields.LetterNumber")",
                                 width: 50
                             }, {
                                 field: "CustomerCompleteName",
-                                title:"CustomerCompleteName",
-                                @*title: "@T("Admin.Customers.Customers.Fields.Email")",*@
+                                title: "@T("Admin.Contract.Contribution.Fields.CustomerCompleteName")",
                                 width: 150
                             }, {
                                 field: "CustomerDni",
-                                title:"CustomerDni",
-                                @*title: "@T("Admin.Customers.Customers.Fields.Email")",*@
+                                title: "@T("Admin.Contract.Contribution.Fields.CustomerDni")",
                                 width: 50
                             }, {
                                 field: "CustomerAdmCode",
-                                title:"CustomerAdmCode",
-                                @*title: "@T("Admin.Customers.Customers.Fields.Email")",*@
+                                title: "@T("Admin.Contract.Contribution.Fields.CustomerAdmCode")",
                                 width: 50
-                            },{
+                            }, {
                                 field: "AmountTotal",
-                                title:"AmountTotal",
-                                @*title: "@T("Admin.Customers.Customers.Fields.Email")",*@
+                                title: "@T("Admin.Contract.Contribution.Fields.AmountTotal")",
                                 width: 200
-                            } ,{
+                            }, {
                                 field: "Active",
-                                title: "@T("Admin.Customers.Customers.Fields.Active")",
+                                title: "@T("Admin.Contract.Contribution.Fields.Active")",
                                 width: 100,
                                 headerAttributes: { style: "text-align:center" },
                                 attributes: { style: "text-align:center" },
                                 template: '<img src="@Url.Content("~/Administration/Content/images/")active-#=Active#.gif" />'
                             }, {
                                 field: "CreatedOn",
-                                title: "@T("Admin.Customers.Customers.Fields.CreatedOn")",
+                                title: "@T("Admin.Contract.Contribution.Fields.CreatedOn")",
                                 width: 200,
                                 type: "date",
                                 format: "{0:G}"
                             }, {
                                 field: "UpdatedOn",
-                                title: "@T("Admin.Customers.Customers.Fields.UpdatedOn")",
+                                title: "@T("Admin.Contract.Contribution.Fields.UpdatedOn")",
                                 width: 200,
                                 type: "date",
                                 format: "{0:G}"
@@ -177,7 +169,8 @@
                                 title: "@T("Admin.Common.Edit")",
                                 width: 50,
                                 template: '<a href="Edit/#=Id#">@T("Admin.Common.Edit")</a>'
-                            }]
+                            }
+                            ]
                         });
                     });
                 </script>
@@ -217,7 +210,7 @@
                                 return false;
                             }
                         });
-                         
+
 
                         $('#mastercheckbox').click(function () {
                             $('.checkboxGroups').attr('checked', $(this).is(':checked')).change();
@@ -271,13 +264,14 @@
                             SearchDateCreatedFrom: $('#@Html.FieldIdFor(model => model.SearchDateCreatedFrom)').val(),
                             SearchDateCreatedTo: $('#@Html.FieldIdFor(model => model.SearchDateCreatedTo)').val(),
                             SearchLetter: $('#@Html.FieldIdFor(model => model.SearchLetter)').val(),
-                            IsActive: $('#@Html.FieldIdFor(model => model.IsActive)').val() 
+                            IsActive: $('#@Html.FieldIdFor(model => model.IsActive)').is(':checked')
                         };
                         addAntiForgeryToken(data);
                         return data;
                     }
                 </script>
             </td>
+
         </tr>
     </table>
 

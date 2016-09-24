@@ -1,0 +1,23 @@
+﻿@model Ks.Admin.Models.Contract.ContributionModel
+@{
+    //page title
+    ViewBag.Title = T("Admin.Contract.Contribution.AddNew").Text;
+}
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "Contribution-form" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="section-header">
+        <div class="title">
+            <img src="@Url.Content("~/Administration/Content/images/ico-catalog.png")" alt="" />
+            @T("Admin.Contract.Contribution.AddNew") @Html.ActionLink("(" + T("Admin.Contract.Contribution.BackToList") + ")", "List")
+        </div>
+        <div class="options">
+            <input type="submit" value="@T("Admin.Common.Preview")" onclick="javascript:OpenWindow('@Url.RouteUrl("Category", new { SeName = Model.SeName })', 800, 600, true); return false;" class="k-button" />
+            <input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")" />
+            <input type="submit" name="save-continue" class="k-button" value="@T("Admin.Common.SaveContinue")" />
+            <span id="contribution-delete" class="k-button">@T("Admin.Common.Delete")</span>
+        </div>
+    </div>
+    @Html.Partial("_CreateOrUpdate", Model)
+}
+@Html.DeleteConfirmation("contribution-delete")

@@ -13,7 +13,10 @@ using Ks.Services.Common;
 using Ks.Services.Contract;
 using Ks.Services.Customers;
 using Ks.Services.Helpers;
+using Ks.Services.Localization;
+using Ks.Services.Logging;
 using Ks.Services.Security;
+using Ks.Web.Framework.Controllers;
 using Ks.Web.Framework.Kendoui;
 
 namespace Ks.Admin.Controllers
@@ -27,18 +30,22 @@ namespace Ks.Admin.Controllers
         private readonly ICustomerService _customerService;
         private readonly IGenericAttributeService _genericAttributeService;
         private readonly IDateTimeHelper _dateTimeHelper;
+        private readonly ICustomerActivityService _customerActivityService;
+        private readonly ILocalizationService _localizationService;
 
         #endregion
 
         #region Constructors
 
-        public ContributionsController(IPermissionService permissionService, IContributionService contributionService, ICustomerService customerService, IGenericAttributeService genericAttributeService, IDateTimeHelper dateTimeHelper)
+        public ContributionsController(IPermissionService permissionService, IContributionService contributionService, ICustomerService customerService, IGenericAttributeService genericAttributeService, IDateTimeHelper dateTimeHelper, ICustomerActivityService customerActivityService, ILocalizationService localizationService)
         {
             _permissionService = permissionService;
             _contributionService = contributionService;
             _customerService = customerService;
             _genericAttributeService = genericAttributeService;
             _dateTimeHelper = dateTimeHelper;
+            _customerActivityService = customerActivityService;
+            _localizationService = localizationService;
         }
 
         #endregion
@@ -61,7 +68,7 @@ namespace Ks.Admin.Controllers
                 SearchDni = "",
                 SearchDateCreatedFrom = DateTime.Today.AddMonths(-1),
                 SearchDateCreatedTo = DateTime.Today,
-                SearchLetter =null,
+                SearchLetter = null,
                 IsActive = true
 
             };
@@ -118,6 +125,60 @@ namespace Ks.Admin.Controllers
             return Json(gridModel);
         }
 
+        public ActionResult Create()
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributions))
+                return AccessDeniedView();
+
+            var model = new ContributionModel();
+            return View(model);
+        }
+
+        [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
+        public ActionResult Create(ContributionModel model, bool continueEditing)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributions))
+                return AccessDeniedView();
+
+            return View(new ContributionModel());
+        }
+
+        [HttpPost, ActionName("Edit")]
+        [FormValueRequired("FindCustomer")]
+        public ActionResult FindCustomer(ContributionModel model)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributions))
+                return AccessDeniedView();
+            
+            return View();
+        }
+
+        public ActionResult Edit(int id)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributions))
+                return AccessDeniedView();
+
+            return View(new ContributionModel());
+        }
+
+        [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
+        public ActionResult Edit(ContributionModel model, bool continueEditing)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributions))
+                return AccessDeniedView();
+            
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Delete(int id)
+        {
+            //activity log
+            //_customerActivityService.InsertActivity("DeleteCategory", _localizationService.GetResource("ActivityLog.DeleteCategory"), category.Name);
+
+            SuccessNotification(_localizationService.GetResource("Admin.Catalog.Categories.Deleted"));
+            return RedirectToAction("List");
+        }
 
         #endregion
     }
