@@ -1,9 +1,16 @@
+@using System.Globalization
+@using Ks.Core
 @model Decimal?
+@{
+    var workContext = EngineContext.Current.Resolve<IWorkContext>();
+    var culture = new CultureInfo(workContext.WorkingLanguage.LanguageCulture);
+}
 @Html.TextBoxFor(model => model)
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         $("#@ViewData.TemplateInfo.GetFullHtmlFieldId(string.Empty)").kendoNumericTextBox({
-            format: "#.0000",
+            culture: '@culture.ToString()',
+            format: "c",
             decimals: 4 //always display 4 digits
         });
     });

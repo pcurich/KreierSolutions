@@ -236,13 +236,14 @@ namespace Ks.Admin.Infrastructure
 
             Mapper.CreateMap<LetterSettings, LetterSettingsModel>()
                    .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
-
+            Mapper.CreateMap<LetterSettingsModel, LetterSettings>();
             #endregion
 
             #region PaymentSetting
 
             Mapper.CreateMap<PaymentSettings, PaymentSettingsModel>()
                    .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
+            Mapper.CreateMap<PaymentSettingsModel, PaymentSettings>();
 
             #endregion
 

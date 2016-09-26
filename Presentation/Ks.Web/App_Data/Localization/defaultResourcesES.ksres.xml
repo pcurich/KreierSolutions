@@ -194,6 +194,7 @@
 	<LocaleResource Name="Account.YourContactInformation"><Value><![CDATA[Información de contacto]]></Value></LocaleResource>
 	<LocaleResource Name="Account.YourPassword"><Value><![CDATA[Contraseña]]></Value></LocaleResource>
 	<LocaleResource Name="Account.YourPersonalDetails"><Value><![CDATA[Datos personales]]></Value></LocaleResource>
+	<LocaleResource Name="ActivityLog.AddContribution"><Value><![CDATA[Se ha agregado una nueva contribucion al personal militar ('{0}' - '{1}')]]></Value></LocaleResource>
 	<LocaleResource Name="ActivityLog.AddNewCategory"><Value><![CDATA[Se ha agregado una nueva categoría ('{0}')]]></Value></LocaleResource>
 	<LocaleResource Name="ActivityLog.AddNewCheckoutAttribute"><Value><![CDATA[Se ha agregado un nuevo atributo checkout ('{0}')]]></Value></LocaleResource>
 	<LocaleResource Name="ActivityLog.AddNewMilitaryPerson"><Value><![CDATA[Se ha ingresado un nuevo personal militar (ID = {0},Usuario = {1}) ]]></Value></LocaleResource>
@@ -1037,6 +1038,8 @@
 	<LocaleResource Name="Admin.Contract.Contribution.Fields.UpdatedOn"><Value><![CDATA[Fecha de Modificación]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Contract.Contribution.Fields.AmountTotal"><Value><![CDATA[Total Aportado]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Contract.Contribution.Fields.AmountTotal.Hint"><Value><![CDATA[Representa el Total Aportado por el Personal Militar]]></Value></LocaleResource>
+	<LocaleResource Name="Admin.Contract.Contribution.Fields.TotalCycle"><Value><![CDATA[Total de Ciclos]]></Value></LocaleResource>
+	<LocaleResource Name="Admin.Contract.Contribution.Fields.TotalCycle.Hint"><Value><![CDATA[Total de Ciclos de cobros]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Contract.Contribution.Fields.CustomerDni"><Value><![CDATA[N° Dni]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Contract.Contribution.Fields.CustomerDni.Hint"><Value><![CDATA[N° Dni del personal militar]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Contract.Contribution.Fields.CustomerAdmCode"><Value><![CDATA[N° Administrativo]]></Value></LocaleResource>
@@ -1045,6 +1048,12 @@
 	<LocaleResource Name="Admin.Contract.Contribution.Fields.CustomerCompleteName.Hint"><Value><![CDATA[Nombre Completo del personal militar]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Contract.Contribution.Fields.CreatedOn"><Value><![CDATA[Fecha de creación]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Contract.Contribution.Fields.CreatedOn.Hint"><Value><![CDATA[Fecha de la asignacion del personal militar a la contribucion]]></Value></LocaleResource>
+	<LocaleResource Name="Admin.Contract.Contribution.Fields.DayOfPayment"><Value><![CDATA[Dia de cobros]]></Value></LocaleResource>
+	<LocaleResource Name="Admin.Contract.Contribution.Fields.DayOfPayment.Hint"><Value><![CDATA[Dia de cada mes en que se realizan los cobros]]></Value></LocaleResource>
+	<LocaleResource Name="Admin.Contract.Contribution.Fields.MonthId"><Value><![CDATA[Mes de inicio de los cobros]]></Value></LocaleResource>
+	<LocaleResource Name="Admin.Contract.Contribution.Fields.MonthId.Hint"><Value><![CDATA[Define el mes desde cuando se realizaran los cobros]]></Value></LocaleResource>
+	<LocaleResource Name="Admin.Contract.Contribution.Fields.YearId"><Value><![CDATA[Año de inicio de los cobros]]></Value></LocaleResource>
+	<LocaleResource Name="Admin.Contract.Contribution.Fields.YearId.Hint"><Value><![CDATA[Define el año desde el cual se realizaran los cobros]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Contract.Contribution.Fields.UpdatedOn"><Value><![CDATA[Última Modificación]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Contract.Contribution.Fields.UpdatedOn.Hint"><Value><![CDATA[Fecha de la ultima actualizacion del cobro]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Contract.Contribution.Fields.LetterNumber"><Value><![CDATA[N° Carta Declaratoria]]></Value></LocaleResource>
@@ -1062,6 +1071,15 @@
 	<LocaleResource Name="Admin.Contract.Contribution.Fields.SearchLetter"><Value><![CDATA[N° de Carta Declaratoria]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Contract.Contribution.Fields.SearchLetter.Hint"><Value><![CDATA[Buscar por el N° de carta declaratoria]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Contract.Contribution.Fields.LetterNumber.GreaterThanOrEqualTo1"><Value><![CDATA[Ingrese numero de carta declaratoria valido]]></Value></LocaleResource>
+	<LocaleResource Name="Admin.Contract.Contribution.Fields.MonthId.GreaterThanOrEqualTo1"><Value><![CDATA[Seleccione un mes de inicio de cobro]]></Value></LocaleResource>
+	<LocaleResource Name="Admin.Contract.Contribution.Fields.YearId.GreaterThanOrEqualTo1"><Value><![CDATA[Seleccione un año de inicio de cobro]]></Value></LocaleResource>
+	<LocaleResource Name="Admin.Contract.Contribution.Fields.DayOfPayment.AfterNow"><Value><![CDATA[La fecha ingresa debe ser posterior al dia de hoy ({0})]]></Value></LocaleResource>
+	<LocaleResource Name="Admin.Contract.Contribution.Fields.ExistsContribution"><Value><![CDATA[Ya se encuenta una contribucion activa]]></Value></LocaleResource>
+	<LocaleResource Name="Admin.Contract.Contribution.Updated"><Value><![CDATA[La contribucion se ha actualizado satisfactoriamente.]]></Value></LocaleResource>
+	<LocaleResource Name="Admin.Contract.ContributionPayments.Fields.Amount"><Value><![CDATA[Monto Cobrado]]></Value></LocaleResource>
+	<LocaleResource Name="Admin.Contract.ContributionPayments.Fields.ScheduledDateOnUtc"><Value><![CDATA[Fecha de Cobro programado.]]></Value></LocaleResource>
+	<LocaleResource Name="Admin.Contract.ContributionPayments.Fields.ProcessedDateOnUtc"><Value><![CDATA[Fecha de cobro procesada.]]></Value></LocaleResource>
+	<LocaleResource Name="Admin.Contract.ContributionPayments.Fields.State"><Value><![CDATA[Estado.]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Common.AddNew"><Value><![CDATA[Nuevo]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Common.AddNewRecord"><Value><![CDATA[Agregar registro]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Common.All"><Value><![CDATA[Todo]]></Value></LocaleResource>
@@ -1854,7 +1872,7 @@
 	<LocaleResource Name="Admin.Configuration.Settings.GeneralCommon.YoutubeLink"><Value><![CDATA[Link para Youtube]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.GeneralCommon.YoutubeLink.Hint"><Value><![CDATA[Especifique la URL de su canal de YouTube. Dejar en blanco si no tiene esa página.]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.LetterSettings"><Value><![CDATA[Configuración de las cartas declaratorias]]></Value></LocaleResource>
-	<LocaleResource Name="Admin.Configuration.Settings.LetterSettings.Header"><Value><![CDATA[Configuración de cartas]]></Value></LocaleResource>
+	<LocaleResource Name="Admin.Configuration.Settings.LetterSettings.Header"><Value><![CDATA[Configuración de carta declaratoria]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.LetterSettings.IsAutogenerate"><Value><![CDATA[Es Autogenerado?]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.LetterSettings.IsAutogenerate.Hint"><Value><![CDATA[Establece si el sistema generará de manera automatica los numero de la carta declaratoria]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.LetterSettings.FromNumber"><Value><![CDATA[Número inicial]]></Value></LocaleResource>
@@ -1955,7 +1973,7 @@
 	<LocaleResource Name="Admin.Configuration.Settings.Order.TermsOfServiceOnShoppingCartPage"><Value><![CDATA[Términos de servicio (página del carrito)]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.Order.TermsOfServiceOnShoppingCartPage.Hint"><Value><![CDATA[Exigir a los clientes aceptar o rechazar los términos de servicio antes de procesar el pedido (en la página del carrito).]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.PaymentSettings"><Value><![CDATA[Configuracion de los cobros programados]]></Value></LocaleResource>
-	<LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.Header"><Value><![CDATA[Configuracion de los cobros]]></Value></LocaleResource>
+	<LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.Header"><Value><![CDATA[Configuracion de ficha de inscripcion]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.Amount"><Value><![CDATA[Valor de la couta]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.Amount.Hint"><Value><![CDATA[Valor de la couta a descontarse de forma periodica]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.DayOfPayment"><Value><![CDATA[Dia de cobros]]></Value></LocaleResource>
@@ -2542,7 +2560,7 @@
 	<LocaleResource Name="Admin.Customers.Customers.CurrentWishlist"><Value><![CDATA[Lista de deseos actual.]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Customers.Customers.CustomerRoles"><Value><![CDATA[Roles Cliente]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Customers.Customers.CustomerRoles.NoRoles"><Value><![CDATA[No hay roles de los clientes disponibles. Crear al menos un rol de cliente antes de mapeo.]]></Value></LocaleResource>
-	<LocaleResource Name="Admin.Customers.Customers.Contributions"><Value><![CDATA[Contribuciones]]></Value></LocaleResource>
+	<LocaleResource Name="Admin.Customers.Customers.Contributions"><Value><![CDATA[Aportaciones]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Customers.Customers.Contributions.AddButton"><Value><![CDATA[Asignar una nueva contribucion]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Customers.Customers.Contributions.AddNew"><Value><![CDATA[Agregar nueva contribución]]></Value></LocaleResource>
 	<LocaleResource Name="Admin.Customers.Customers.Contributions.BackToCustomer"><Value><![CDATA[Volver a los detalles del afiliado]]></Value></LocaleResource>

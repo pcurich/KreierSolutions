@@ -20,16 +20,6 @@ namespace Ks.Core.Domain.Contract
         public int LetterNumber { get; set; }
 
         /// <summary>
-        ///     Gets or sets the date and time of instance creation
-        /// </summary>
-        public DateTime CreatedOnUtc { get; set; }
-
-        /// <summary>
-        /// Gets or sets the updated on UTC.
-        /// </summary>
-        public DateTime UpdatedOnUtc { get; set; }
-
-        /// <summary>
         /// Gets or sets the amount total.
         /// </summary>
         public decimal AmountTotal { get; set; }
@@ -38,6 +28,16 @@ namespace Ks.Core.Domain.Contract
         /// Gets or sets a value indicating whether this <see cref="Contribution"/> is active.
         /// </summary>
         public bool Active { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the date and time of instance creation
+        /// </summary>
+        public DateTime CreatedOnUtc { get; set; }
+
+        /// <summary>
+        /// Gets or sets the updated on UTC.
+        /// </summary>
+        public DateTime? UpdatedOnUtc { get; set; }
 
         public virtual Customer Customer { get; set; }
 

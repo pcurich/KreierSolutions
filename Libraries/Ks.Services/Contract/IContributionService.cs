@@ -8,6 +8,12 @@ namespace Ks.Services.Contract
     public interface IContributionService
     {
         /// <summary>
+        /// Deletes the contribution.
+        /// </summary>
+        /// <param name="contribution">The contribution.</param>
+        void DeleteContribution(Contribution contribution);
+
+        /// <summary>
         /// Gets the contribution by customer identifier.
         /// Only with Dni or AdmCode
         /// </summary>
@@ -35,5 +41,38 @@ namespace Ks.Services.Contract
         /// <param name="pageIndex">Page index</param>
         /// <param name="pageSize">Page size</param>
         IPagedList<Contribution> SearchContibutionByCreatedOnUtc(DateTime? dateFrom = null, DateTime? dateTo = null, bool isActive = false, int pageIndex = 0, int pageSize = int.MaxValue);
+
+        /// <summary>
+        /// Gets the contribution by identifier.
+        /// </summary>
+        /// <param name="contributionId">The contribution identifier.</param>
+        /// <param name="customerId">The customer identifier.</param>
+        /// <param name="active">if set to <c>true</c> [active].</param>
+        /// <returns></returns>
+        Contribution GetContributionById(int contributionId=0, int customerId=0, bool active = true);
+
+        /// <summary>
+        /// Gets all payments.
+        /// </summary>
+        /// <param name="contributionId">The contribution identifier.</param>
+        /// <param name="customerId">The customer identifier.</param>
+        /// <param name="active">if set to <c>true</c> [active].</param>
+        /// <param name="pageIndex">Index of the page.</param>
+        /// <param name="pageSize">Size of the page.</param>
+        /// <returns></returns>
+        IPagedList<ContributionPayment> GetAllPayments(int contributionId = 0, int customerId = 0, bool active = true,
+            int pageIndex = 0, int pageSize = int.MaxValue);
+
+        /// <summary>
+        /// Inserts the contribution.
+        /// </summary>
+        /// <param name="contribution">The contribution.</param>
+        void InsertContribution(Contribution contribution);
+
+        /// <summary>
+        /// Updates the contribution.
+        /// </summary>
+        /// <param name="contribution">The contribution.</param>
+        void UpdateContribution(Contribution contribution);
     }
 }

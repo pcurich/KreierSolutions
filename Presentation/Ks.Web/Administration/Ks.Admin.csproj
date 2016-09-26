@@ -203,6 +203,7 @@
     <Content Include="Views\Contributions\Edit.cshtml" />
     <Content Include="Views\Contributions\_CreateOrUpdate.cshtml" />
     <Content Include="Views\Customer\ContributionCreate.cshtml" />
+    <None Include="Properties\PublishProfiles\Admin.pubxml" />
     <None Include="Views\Customer\_CreateOrUpdate2.cshtml" />
     <Content Include="Views\Setting\CustomerUser.cshtml" />
     <Content Include="Views\Customer\_CreateOrUpdateAddress.cshtml" />

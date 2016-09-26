@@ -590,9 +590,82 @@
 }
 @helper TabContribution()
 {
+    var defaultGridPageSize = EngineContext.Current.Resolve<Ks.Core.Domain.Common.AdminAreaSettings>().DefaultGridPageSize;
+    var gridPageSizes = EngineContext.Current.Resolve<Ks.Core.Domain.Common.AdminAreaSettings>().GridPageSizes;
+
     if (Model.HasContributions)
     {
+        <table class="adminContent">
+            <tr>
+                <td>
+                    <div id="contributions-grid"></div>
 
+                    <script>
+                        $(document).ready(function () {
+                            $("#contributions-grid").kendoGrid({
+                                dataSource: {
+                                    type: "json",
+                                    transport: {
+                                        read: {
+                                            url: "@Html.Raw(Url.Action("ListContributions", "Customer", new { customerId = Model.Id }))",
+                                            type: "POST",
+                                            dataType: "json",
+                                            data: addAntiForgeryToken
+                                        }
+                                    },
+                                    schema: {
+                                        data: "Data",
+                                        total: "Total",
+                                        errors: "Errors"
+                                    },
+                                    error: function(e) {
+                                        display_kendoui_grid_error(e);
+                                        // Cancel the changes
+                                        this.cancelChanges();
+                                    },
+                                    pageSize: @(defaultGridPageSize),
+                                    serverPaging: true,
+                                    serverFiltering: true,
+                                    serverSorting: true
+                                },
+                                pageable: {
+                                    refresh: true,
+                                    pageSizes: [@(gridPageSizes)]
+                                },
+                                editable: {
+                                    confirmation: false,
+                                    mode: "inline"
+                                },
+                                scrollable: false,
+                                columns: [{
+                                    field: "Amount",
+                                    title: "@T("Admin.Contract.ContributionPayments.Fields.Amount")",
+                                    width: 100,
+                                    template:'#= kendo.toString(Amount,"c","es-PE") #',
+                                    format:"{0:c2}"
+                                }, {
+                                    field: "ScheduledDateOnUtc",
+                                    title:"@T("Admin.Contract.ContributionPayments.Fields.ScheduledDateOnUtc")",
+                                    width: 100,
+                                    type: "date",
+                                    format: "{0:G}"
+                                }, {
+                                    field: "ProcessedDateOnUtc",
+                                    title:"@T("Admin.Contract.ContributionPayments.Fields.ProcessedDateOnUtc")",
+                                    width: 100,
+                                    type: "date",
+                                    format: "{0:G}"
+                                },{
+                                    field: "State",
+                                    title: "@T("Admin.Contract.ContributionPayments.Fields.Active")",
+                                    width: 100
+                                }]
+                            });
+                        });
+                    </script>
+                </td>
+            </tr>
+        </table>
     }
     else
     {

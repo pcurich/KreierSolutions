@@ -1,15 +1,17 @@
-﻿ using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
 using Ks.Admin.Extensions;
 using Ks.Admin.Models.Common;
- using Ks.Admin.Models.Contract;
- using Ks.Admin.Models.Customers;
+using Ks.Admin.Models.Contract;
+using Ks.Admin.Models.Customers;
 using Ks.Core;
 using Ks.Core.Domain.Catalog;
 using Ks.Core.Domain.Common;
+using Ks.Core.Domain.Contract;
 using Ks.Core.Domain.Customers;
 using Ks.Core.Domain.Directory;
 using Ks.Core.Domain.Messages;
@@ -21,11 +23,13 @@ using Ks.Services.Helpers;
 using Ks.Services.KsSystems;
 using Ks.Services.Localization;
 using Ks.Services.Logging;
- using Ks.Services.Messages;
- using Ks.Services.Security;
+using Ks.Services.Messages;
+using Ks.Services.Security;
 using Ks.Web.Framework.Controllers;
 using Ks.Web.Framework.Kendoui;
 using Ks.Web.Framework.Mvc;
+using Ks.Services.Configuration;
+using Ks.Services.Contract;
 
 namespace Ks.Admin.Controllers
 {
@@ -33,6 +37,7 @@ namespace Ks.Admin.Controllers
     {
         #region Fields
 
+        private readonly ISettingService _settingService;
         private readonly ICustomerService _customerService;
         //private readonly INewsLetterSubscriptionService _newsLetterSubscriptionService;
         private readonly IGenericAttributeService _genericAttributeService;
@@ -54,6 +59,7 @@ namespace Ks.Admin.Controllers
         //private readonly IOrderService _orderService;
         private readonly IExportManager _exportManager;
         private readonly ICustomerActivityService _customerActivityService;
+        private readonly IContributionService _contributionService;
         //private readonly IBackInStockSubscriptionService _backInStockSubscriptionService;
         //private readonly IPriceCalculationService _priceCalculationService;
         //private readonly IProductAttributeFormatter _productAttributeFormatter;
@@ -71,6 +77,8 @@ namespace Ks.Admin.Controllers
         private readonly IAddressAttributeParser _addressAttributeParser;
         private readonly IAddressAttributeService _addressAttributeService;
         private readonly IAddressAttributeFormatter _addressAttributeFormatter;
+        private readonly PaymentSettings _paymentSettings;
+        private readonly LetterSettings _letterSettings;
         //private readonly IAffiliateService _affiliateService;
         //private readonly IWorkflowMessageService _workflowMessageService;
         //private readonly IRewardPointService _rewardPointService;
@@ -79,7 +87,8 @@ namespace Ks.Admin.Controllers
 
         #region Constructors
 
-        public CustomerController(ICustomerService customerService,
+        public CustomerController(ISettingService settingService,
+            ICustomerService customerService,
             IGenericAttributeService genericAttributeService,
             ICustomerRegistrationService customerRegistrationService,
             //ICustomerReportService customerReportService,
@@ -100,6 +109,7 @@ namespace Ks.Admin.Controllers
             //IOrderService orderService,
             IExportManager exportManager,
             ICustomerActivityService customerActivityService,
+            IContributionService contributionService,
             //IBackInStockSubscriptionService backInStockSubscriptionService,
             //IPriceCalculationService priceCalculationService,
             //IProductAttributeFormatter productAttributeFormatter,
@@ -116,12 +126,15 @@ namespace Ks.Admin.Controllers
             ICustomerAttributeService customerAttributeService,
             IAddressAttributeParser addressAttributeParser,
             IAddressAttributeService addressAttributeService,
-            IAddressAttributeFormatter addressAttributeFormatter
+            IAddressAttributeFormatter addressAttributeFormatter,
+            PaymentSettings paymentSettings,
+            LetterSettings letterSettings
             //IAffiliateService affiliateService,
             //IWorkflowMessageService workflowMessageService,
             //IRewardPointService rewardPointService
             )
         {
+            this._settingService = settingService;
             this._customerService = customerService;
             this._genericAttributeService = genericAttributeService;
             this._customerRegistrationService = customerRegistrationService;
@@ -143,6 +156,7 @@ namespace Ks.Admin.Controllers
             //this._orderService = orderService;
             this._exportManager = exportManager;
             this._customerActivityService = customerActivityService;
+            this._contributionService = contributionService;
             //this._backInStockSubscriptionService = backInStockSubscriptionService;
             //this._priceCalculationService = priceCalculationService;
             //this._productAttributeFormatter = productAttributeFormatter;
@@ -160,6 +174,8 @@ namespace Ks.Admin.Controllers
             this._addressAttributeParser = addressAttributeParser;
             this._addressAttributeService = addressAttributeService;
             this._addressAttributeFormatter = addressAttributeFormatter;
+            this._paymentSettings = paymentSettings;
+            this._letterSettings = letterSettings;
             //this._affiliateService = affiliateService;
             //this._workflowMessageService = workflowMessageService;
             //this._rewardPointService = rewardPointService;
@@ -184,7 +200,7 @@ namespace Ks.Admin.Controllers
             }
             return sb.ToString();
         }
-        
+
         [NonAction]
         protected virtual CustomerModel PrepareCustomerModelForList(Customer customer)
         {
@@ -298,13 +314,16 @@ namespace Ks.Admin.Controllers
             if (customer != null)
             {
                 model.Id = customer.Id;
+                var contribution = _contributionService.GetContributionById(customerId: model.Id);
+                model.HasContributions = contribution != null;
+
                 if (!excludeProperties)
                 {
                     model.Email = customer.Email;
                     model.Username = customer.Username;
                     //model.VendorId = customer.VendorId;
                     model.AdminComment = customer.AdminComment;
-                   // model.IsTaxExempt = customer.IsTaxExempt;
+                    // model.IsTaxExempt = customer.IsTaxExempt;
                     model.Active = customer.Active;
 
                     //var affiliate = _affiliateService.GetAffiliateById(customer.AffiliateId);
@@ -343,7 +362,7 @@ namespace Ks.Admin.Controllers
                     model.FirstName = customer.GetAttribute<string>(SystemCustomerAttributeNames.FirstName);
                     model.LastName = customer.GetAttribute<string>(SystemCustomerAttributeNames.LastName);
                     model.AdmCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode);
-                    model.Dni= customer.GetAttribute<string>(SystemCustomerAttributeNames.Dni);
+                    model.Dni = customer.GetAttribute<string>(SystemCustomerAttributeNames.Dni);
                     model.Gender = customer.GetAttribute<string>(SystemCustomerAttributeNames.Gender);
                     model.DateOfBirth = customer.GetAttribute<DateTime?>(SystemCustomerAttributeNames.DateOfBirth);
                     model.Company = customer.GetAttribute<string>(SystemCustomerAttributeNames.Company);
@@ -643,7 +662,36 @@ namespace Ks.Admin.Controllers
             return attributesXml;
         }
 
+        [NonAction]
+        protected virtual List<SelectListItem> PrepareMonthsList()
+        {
+            var listOfMonth = (from i in Enumerable.Range(0, 12)
+                               let now = DateTime.UtcNow.AddMonths(i)
+                               select new SelectListItem
+                               {
+                                   Text = now.ToString("MMMM"),
+                                   Value = now.Month.ToString()
+                               }).OrderBy(x => int.Parse(x.Value)).ToList();
 
+            listOfMonth.Insert(0, new SelectListItem { Value = "0", Text = _localizationService.GetResource("Common.Month") });
+
+            return listOfMonth;
+        }
+
+        [NonAction]
+        protected virtual List<SelectListItem> PrepareYearsList()
+        {
+            var listOfYear = (from i in Enumerable.Range(0, 10)
+                              let now = DateTime.UtcNow.AddYears(i)
+                              select new SelectListItem
+                              {
+                                  Text = now.Year.ToString(),
+                                  Value = now.Year.ToString()
+                              }).OrderBy(x => int.Parse(x.Value)).ToList();
+
+            listOfYear.Insert(0, new SelectListItem { Value = "0", Text = _localizationService.GetResource("Common.Year") });
+            return listOfYear;
+        }
         #endregion
 
         #region Customers
@@ -670,7 +718,7 @@ namespace Ks.Admin.Controllers
                 AvailableCustomerRoles = _customerService.GetAllCustomerRoles(true).Select(cr => cr.ToModel()).ToList(),
                 SearchCustomerRoleIds = defaultRoleIds,
             };
-            return  View(model);
+            return View(model);
         }
 
         [HttpPost]
@@ -899,7 +947,7 @@ namespace Ks.Admin.Controllers
 
             //If we got this far, something failed, redisplay form
             PrepareCustomerModel(model, null, true);
-            return  View(model);
+            return View(model);
         }
 
         public ActionResult Edit(int id)
@@ -914,7 +962,7 @@ namespace Ks.Admin.Controllers
 
             var model = new CustomerModel();
             PrepareCustomerModel(model, customer, false);
-            return  View(model);
+            return View(model);
         }
 
         [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
@@ -1631,10 +1679,125 @@ namespace Ks.Admin.Controllers
                 //No customer found with the specified id
                 return RedirectToAction("List");
 
-            var model = new ContributionModel();
-          //  PrepareAddressModel(model, null, customer, false);
+
+            var model = new ContributionModel
+            {
+                CustomerId = customer.Id,
+                CustomerDni = customer.GetAttribute<string>(SystemCustomerAttributeNames.Dni),
+                CustomerAdmCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode),
+                CustomerCompleteName = customer.GetFullName(),
+                TotalCycle = _paymentSettings.TotalCycle,
+                AmountTotal = _paymentSettings.Amount,
+                CreatedOn = DateTime.Now,
+                LetterNumber = _letterSettings.LastNumber,
+                DayOfPayment = _paymentSettings.DayOfPayment,
+                MonthsList = PrepareMonthsList(),
+                YearsList = PrepareYearsList()
+            };
 
             return View(model);
+        }
+
+        [HttpPost]
+        [ValidateInput(false)]
+        public ActionResult ContributionCreate(ContributionModel model)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
+                return AccessDeniedView();
+
+            var customer = _customerService.GetCustomerById(model.CustomerId);
+            if (customer == null)
+                //No customer found with the specified id
+                return RedirectToAction("List");
+
+            model.MonthsList = PrepareMonthsList();
+            model.YearsList = PrepareYearsList();
+
+            #region Only one record ant the time
+            var oldContributionActive = _contributionService.GetContributionById(customerId: model.CustomerId);
+
+            if (oldContributionActive != null)
+                ErrorNotification(_localizationService.GetResource("Admin.Contract.Contribution.Fields.ExistsContribution"));
+            #endregion
+
+            #region Different of time
+            var estimated = new DateTime(model.YearId, model.MonthId, model.DayOfPayment);
+            var today = DateTime.Now;
+
+            if (estimated <= today)
+                ErrorNotification(string.Format(_localizationService.GetResource("Admin.Contract.Contribution.Fields.DayOfPayment.AfterNow"), DateTime.Now));
+
+            #endregion
+
+            if (ModelState.IsValid)
+            {
+                var contribution = new Contribution
+                    {
+                        CustomerId = model.CustomerId,
+                        LetterNumber = _letterSettings.LastNumber,
+                        AmountTotal = 0,
+                        Active = true,
+                        CreatedOnUtc = DateTime.UtcNow,
+                        UpdatedOnUtc = null,
+                        ContributionPayments = new List<ContributionPayment>(model.TotalCycle)
+                    };
+
+                for (var cycle = 0; cycle < model.TotalCycle; cycle++)
+                {
+                    contribution.ContributionPayments.Add(new ContributionPayment
+                    {
+                        Amount = _paymentSettings.Amount,
+                        ScheduledDateOnUtc = _dateTimeHelper.ConvertToUtcTime(estimated.AddMonths(cycle)),
+                        ProcessedDateOnUtc = null
+                    });
+                }
+
+                _contributionService.InsertContribution(contribution);
+
+                var storeScope = GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
+                var letterSettings = _settingService.LoadSetting<LetterSettings>(storeScope);
+
+                letterSettings.LastNumber = _letterSettings.LastNumber + _letterSettings.StepNumber;
+                _settingService.SaveSetting(letterSettings);
+                //now clear settings cache
+                _settingService.ClearCache();
+
+                //activity log
+                _customerActivityService.InsertActivity("AddContribution", string.Format(_localizationService.GetResource("ActivityLog.AddContribution"), model.CustomerCompleteName, model.CustomerId));
+                SuccessNotification(_localizationService.GetResource("Admin.Contract.Contribution.Updated"));
+
+                return View(model);
+
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult ListContributions(DataSourceRequest command, int customerId)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
+                return Content("");
+
+            var contributionPayments = _contributionService.GetAllPayments(customerId: customerId, pageIndex: command.Page - 1, pageSize: command.PageSize);
+            var gridModel = new DataSourceResult
+            {
+                Data = contributionPayments.Select(x =>
+                {
+                    var m = new ContributionPaymentsModel
+                    {
+                        Amount = x.Amount,
+                        ScheduledDateOnUtc = x.ScheduledDateOnUtc,
+                        ProcessedDateOnUtc = x.ProcessedDateOnUtc,
+                        State = x.Active ? "Completado" : "Pendiente"
+                    };
+                    return m;
+
+                }),
+                Total = contributionPayments.TotalCount
+            };
+
+            return Json(gridModel);
         }
 
         #endregion

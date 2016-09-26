@@ -663,6 +663,13 @@ namespace Ks.Services.Installation
                 LastNumber = 11671,
                 StepNumber = 1
             });
+
+            settingService.SaveSetting(new PaymentSettings
+            {
+                Amount = 35M,
+                TotalCycle = 12*35,
+                DayOfPayment = 20
+            });
         }
 
         protected virtual void InstallActivityLogTypes()
