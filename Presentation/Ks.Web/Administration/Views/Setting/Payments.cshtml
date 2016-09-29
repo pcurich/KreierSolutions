@@ -46,9 +46,8 @@
     <table class="adminContent">
         <tr>
             <td class="adminTitle">
-                @Html.KsLabelFor(model => model.Amount):
-                @Html.EditorFor(model => model.Amount)
-                @Html.ValidationMessageFor(model => model.Amount)
+                @Html.KsLabelFor(model => model.TotalCycle):
+                @Html.EditorFor(model => model.TotalCycle)
             </td>
         </tr>
         <tr>
@@ -56,6 +55,63 @@
                 @Html.KsLabelFor(model => model.DayOfPayment):
                 @Html.EditorFor(model => model.DayOfPayment)
                 @Html.ValidationMessageFor(model => model.DayOfPayment)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.IsActiveAmount1):
+                @Html.EditorFor(model => model.IsActiveAmount1)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.NameAmount1):
+                @Html.EditorFor(model => model.NameAmount1)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.Amount1):
+                @Html.EditorFor(model => model.Amount1)
+                @Html.ValidationMessageFor(model => model.Amount1)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.IsActiveAmount2):
+                @Html.EditorFor(model => model.IsActiveAmount2)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.NameAmount2):
+                @Html.EditorFor(model => model.NameAmount2)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.Amount2):
+                @Html.EditorFor(model => model.Amount2)
+                @Html.ValidationMessageFor(model => model.Amount2)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.IsActiveAmount3):
+                @Html.EditorFor(model => model.IsActiveAmount3)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.NameAmount3):
+                @Html.EditorFor(model => model.NameAmount3)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.Amount3):
+                @Html.EditorFor(model => model.Amount3)
+                @Html.ValidationMessageFor(model => model.Amount3)
             </td>
         </tr>
     </table>

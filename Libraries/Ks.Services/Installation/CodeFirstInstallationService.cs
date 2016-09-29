@@ -666,7 +666,9 @@ namespace Ks.Services.Installation
 
             settingService.SaveSetting(new PaymentSettings
             {
-                Amount = 35M,
+                IsActiveAmount1 = true,
+                NameAmount1 = "Cobro de afiliado",
+                Amount1 = 35M,
                 TotalCycle = 12*35,
                 DayOfPayment = 20
             });

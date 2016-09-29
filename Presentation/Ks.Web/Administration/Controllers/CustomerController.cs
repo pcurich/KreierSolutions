@@ -1687,7 +1687,7 @@ namespace Ks.Admin.Controllers
                 CustomerAdmCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode),
                 CustomerCompleteName = customer.GetFullName(),
                 TotalCycle = _paymentSettings.TotalCycle,
-                AmountTotal = _paymentSettings.Amount,
+                AmountTotal = _paymentSettings.Amount1+_paymentSettings.Amount2+_paymentSettings.Amount3,
                 CreatedOn = DateTime.Now,
                 LetterNumber = _letterSettings.LastNumber,
                 DayOfPayment = _paymentSettings.DayOfPayment,
@@ -1746,7 +1746,7 @@ namespace Ks.Admin.Controllers
                 {
                     contribution.ContributionPayments.Add(new ContributionPayment
                     {
-                        Amount = _paymentSettings.Amount,
+                        Amount = _paymentSettings.Amount1 + _paymentSettings.Amount2 + _paymentSettings.Amount3,
                         ScheduledDateOnUtc = _dateTimeHelper.ConvertToUtcTime(estimated.AddMonths(cycle)),
                         ProcessedDateOnUtc = null
                     });

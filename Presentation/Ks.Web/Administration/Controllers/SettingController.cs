@@ -208,9 +208,9 @@ namespace Ks.Admin.Controllers
                 return AccessDeniedView();
 
             var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
-            var letterSettings = _settingService.LoadSetting<PaymentSettings>(storeScope);
+            var paymentSettings = _settingService.LoadSetting<PaymentSettings>(storeScope);
 
-            var model = letterSettings.ToModel();
+            var model = paymentSettings.ToModel();
             return View(model);
         }
 
