@@ -1,8 +1,11 @@
-﻿using Ks.Web.Framework;
+﻿using FluentValidation.Attributes;
+using Ks.Admin.Validators.Settings;
+using Ks.Web.Framework;
 using Ks.Web.Framework.Mvc;
 
 namespace Ks.Admin.Models.Settings
 {
+    [Validator(typeof(PaymentSettingsModelValidator))]
     public class PaymentSettingsModel : BaseKsModel
     {
         [KsResourceDisplayName("Admin.Configuration.Settings.PaymentSettings.TotalCycle")]

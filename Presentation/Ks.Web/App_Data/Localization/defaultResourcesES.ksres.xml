@@ -5019,7 +5019,7 @@
 	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.ShowCustomersJoinDate.Hint">
 		<Value>Un valor que indica si se muestra la fecha de unión de los clientes.</Value>
 	</LocaleResource>
-	<LocaleResource Name="admin.configuration.settings.customeruser.showcustomerslocation">
+	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.ShowCustomersLocation">
 		<Value>Mostrar localización de los usuarios/afiliados</Value>
 	</LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.ShowCustomersLocation.Hint">
@@ -5874,11 +5874,17 @@
 	<LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.Amount1.Hint">
 		<Value>Valor del primer monto a descontarse de forma periodica</Value>
 	</LocaleResource>
+	<LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.Fields.Amount1.GreaterThanZero">
+		<Value>El valor del primer monto debe debe ser mayor a cero</Value>
+	</LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.NameAmount1">
 		<Value>Concepto del primer monto</Value>
 	</LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.NameAmount1.Hint">
 		<Value>Concepto del primer monto, es la cabecera de los resportes</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.Fields.NameAmount1.Required">
+		<Value>El nombre del primer monto es obligatorio</Value>
 	</LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.IsActiveAmount1">
 		<Value>Primer monto activo?</Value>
@@ -5892,11 +5898,17 @@
 	<LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.Amount2.Hint">
 		<Value>Valor del segundo monto a descontarse de forma periodica</Value>
 	</LocaleResource>
+	<LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.Fields.Amount2.GreaterThanZero">
+		<Value>El valor del segundo monto debe debe ser mayor a cero</Value>
+	</LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.NameAmount2">
 		<Value>Concepto del segundo monto</Value>
 	</LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.NameAmount2.Hint">
 		<Value>Concepto del segundo monto, es la cabecera de los resportes</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.Fields.NameAmount2.Required">
+		<Value>El nombre del segundo monto es obligatorio</Value>
 	</LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.IsActiveAmount2">
 		<Value>Segundo monto activo?</Value>
@@ -5910,19 +5922,24 @@
 	<LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.Amount3.Hint">
 		<Value>Valor del tercer monto a descontarse de forma periodica</Value>
 	</LocaleResource>
+	<LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.Fields.Amount3.GreaterThanZero">
+		<Value>El valor del tercer monto debe debe ser mayor a cero</Value>
+	</LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.NameAmount3">
 		<Value>Concepto del tercer monto</Value>
 	</LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.NameAmount3.Hint">
 		<Value>Concepto del tercer monto, es la cabecera de los resportes</Value>
 	</LocaleResource>
+	<LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.Fields.NameAmount3.Required">
+		<Value>El nombre del tercer monto es obligatorio</Value>
+	</LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.IsActiveAmount3">
 		<Value>Tercer monto activo?</Value>
 	</LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.IsActiveAmount3.Hint">
 		<Value>Establece si el concepto del tercer cobro debe considerarse</Value>
-	</LocaleResource>
-	
+	</LocaleResource>	
 	<LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.DayOfPayment">
 		<Value>Dia de cobros</Value>
 	</LocaleResource>

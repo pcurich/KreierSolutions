@@ -362,6 +362,7 @@
     <Compile Include="Validators\Messages\MessageTemplateValidator.cs" />
     <Compile Include="Validators\Messages\QueuedEmailValidator.cs" />
     <Compile Include="Validators\Messages\TestMessageTemplateValidator.cs" />
+    <Compile Include="Validators\Settings\PaymentSettingsModelValidator.cs" />
     <Compile Include="Validators\Settings\SettingValidator.cs" />
     <Compile Include="Validators\Systems\KsSystemValidator.cs" />
     <Compile Include="Validators\Tasks\ScheduleTaskValidator.cs" />

@@ -120,7 +120,7 @@ namespace Ks.Admin.Controllers
 
             model.ExternalAuthenticationSettings.AutoRegisterEnabled = externalAuthenticationSettings.AutoRegisterEnabled;
 
-            return  View(model);
+            return View(model);
         }
         [HttpPost]
         public ActionResult CustomerUser(CustomerUserSettingsModel model)
@@ -172,7 +172,7 @@ namespace Ks.Admin.Controllers
             var letterSettings = _settingService.LoadSetting<LetterSettings>(storeScope);
 
             var model = letterSettings.ToModel();
-            return  View(model);
+            return View(model);
         }
 
         [HttpPost]
@@ -220,21 +220,28 @@ namespace Ks.Admin.Controllers
             var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
             var paymentSettings = _settingService.LoadSetting<PaymentSettings>(storeScope);
 
-            paymentSettings = model.ToEntity(paymentSettings);
-            _settingService.SaveSetting(paymentSettings);
+            if (ModelState.IsValid)
+            {
+                paymentSettings = model.ToEntity(paymentSettings);
+                _settingService.SaveSetting(paymentSettings);
 
-            //now clear settings cache
-            _settingService.ClearCache();
+                //now clear settings cache
+                _settingService.ClearCache();
 
-            //activity log
-            _customerActivityService.InsertActivity("EditSettings", _localizationService.GetResource("ActivityLog.EditSettings"));
+                //activity log
+                _customerActivityService.InsertActivity("EditSettings", _localizationService.GetResource("ActivityLog.EditSettings"));
 
-            SuccessNotification(_localizationService.GetResource("Admin.Configuration.Updated"));
+                SuccessNotification(_localizationService.GetResource("Admin.Configuration.Updated"));
 
-            //selected tab
-            SaveSelectedTabIndex();
+                //selected tab
+                SaveSelectedTabIndex();
 
-            return RedirectToAction("Payments");
+                return RedirectToAction("Payments");
+            }
+            else
+            {
+                return View(model);
+            }
         }
 
         #endregion
