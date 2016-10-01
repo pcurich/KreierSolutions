@@ -240,6 +240,7 @@ namespace Ks.Admin.Controllers
             }
             else
             {
+                ErrorNotification(_localizationService.GetResource("Admin.Configuration.Updated"));
                 return View(model);
             }
         }
