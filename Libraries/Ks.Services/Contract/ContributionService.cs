@@ -7,6 +7,7 @@ using Ks.Core.Data;
 using Ks.Core.Domain.Contract;
 using Ks.Core.Domain.Customers;
 using Ks.Services.Events;
+using MaxMind.GeoIP2.Model;
 
 namespace Ks.Services.Contract
 {
@@ -32,6 +33,26 @@ namespace Ks.Services.Contract
 
             contribution.Active = false;
             UpdateContribution(contribution);
+        }
+
+        public virtual List<Contribution> GetContributionGroupByDelay()
+        {
+            var query = from c in _contributionRepository.Table
+                where c.IsDelay 
+                group c by new { c.CycleOfDelay } into temp
+                select new  
+                {
+                    CycleOfDelay = temp.Key,
+                    AmountTotal = temp.Count()
+                };
+
+            var contributions = query.ToList();
+
+            return contributions.Select(contribution => new Contribution
+            {
+                CycleOfDelay = Convert.ToInt32(contribution.CycleOfDelay), 
+                AmountTotal = Convert.ToInt32(contribution.AmountTotal)
+            }).ToList();
         }
 
         public virtual IPagedList<Contribution> SearchContributionByCustomerId(int customerId, bool isActive = false,

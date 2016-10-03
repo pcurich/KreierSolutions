@@ -14,6 +14,12 @@ namespace Ks.Services.Contract
         void DeleteContribution(Contribution contribution);
 
         /// <summary>
+        /// Gets the contribution group by delay.
+        /// </summary>
+        /// <returns></returns>
+        List<Contribution> GetContributionGroupByDelay();
+
+        /// <summary>
         /// Gets the contribution by customer identifier.
         /// Only with Dni or AdmCode
         /// </summary>

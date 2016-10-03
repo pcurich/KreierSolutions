@@ -10,6 +10,7 @@ using Ks.Core.Domain.Contract;
 using Ks.Core.Domain.Customers;
 using Ks.Services.Common;
 using Ks.Services.Configuration;
+using Ks.Services.Contract;
 using Ks.Services.Customers;
 using Ks.Services.Directory;
 using Ks.Services.Helpers;
@@ -19,6 +20,7 @@ using Ks.Services.Logging;
 using Ks.Services.Media;
 using Ks.Services.Security;
 using Ks.Web.Framework;
+using Ks.Web.Framework.Controllers;
 using Ks.Web.Framework.Kendoui;
 using Ks.Web.Framework.Mvc;
 using Ks.Web.Framework.Security;
@@ -50,12 +52,20 @@ namespace Ks.Admin.Controllers
         private readonly IGenericAttributeService _genericAttributeService;
         private readonly ILanguageService _languageService;
         private readonly ILocalizedEntityService _localizedEntityService;
+        private readonly IContributionService _contributionService;
 
         #endregion
 
         #region Constructors
 
-        public SettingController(ISettingService settingService, ICountryService countryService, IStateProvinceService stateProvinceService, IAddressService addressService, ICurrencyService currencyService, IPictureService pictureService, ILocalizationService localizationService, IDateTimeHelper dateTimeHelper, IEncryptionService encryptionService, IThemeProvider themeProvider, ICustomerService customerService, ICustomerActivityService customerActivityService, IPermissionService permissionService, IFulltextService fulltextService, IMaintenanceService maintenanceService, IKsSystemService ksSystemService, IWorkContext workContext, IGenericAttributeService genericAttributeService, ILanguageService languageService, ILocalizedEntityService localizedEntityService)
+        public SettingController(ISettingService settingService, ICountryService countryService,
+            IStateProvinceService stateProvinceService, IAddressService addressService, ICurrencyService currencyService,
+            IPictureService pictureService, ILocalizationService localizationService, IDateTimeHelper dateTimeHelper,
+            IEncryptionService encryptionService, IThemeProvider themeProvider, ICustomerService customerService,
+            ICustomerActivityService customerActivityService, IPermissionService permissionService,
+            IFulltextService fulltextService, IMaintenanceService maintenanceService, IKsSystemService ksSystemService,
+            IWorkContext workContext, IGenericAttributeService genericAttributeService, ILanguageService languageService,
+            ILocalizedEntityService localizedEntityService, IContributionService contributionService)
         {
             _settingService = settingService;
             _countryService = countryService;
@@ -77,6 +87,7 @@ namespace Ks.Admin.Controllers
             _genericAttributeService = genericAttributeService;
             _languageService = languageService;
             _localizedEntityService = localizedEntityService;
+            _contributionService = contributionService;
         }
 
         #endregion
@@ -214,7 +225,8 @@ namespace Ks.Admin.Controllers
             return View(model);
         }
 
-        [HttpPost]
+        [HttpPost, ActionName("Payments")]
+        [FormValueRequired("save")]
         public ActionResult Payments(PaymentSettingsModel model)
         {
             var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
@@ -238,11 +250,49 @@ namespace Ks.Admin.Controllers
 
                 return RedirectToAction("Payments");
             }
-            else
+
+            return View(model);
+
+        }
+
+        [HttpPost, ActionName("Payments")]
+        [FormValueRequired("viewresultpopup")]
+        public ActionResult ViewResultPopup(PaymentSettingsModel model)
+        {
+            var contributionsDelays= _contributionService.GetContributionGroupByDelay();
+            model.CustumerToChange= new List<CustumerToChange>();
+            foreach (var contributionsDelay in contributionsDelays)
             {
-                ErrorNotification(_localizationService.GetResource("Admin.Configuration.Updated"));
-                return View(model);
+                model.CustumerToChange.Add(new CustumerToChange
+                {
+                    Delay = contributionsDelay.CycleOfDelay,
+                    Size = Convert.ToInt32(contributionsDelay.AmountTotal)
+                });
             }
+
+            #region Borrar
+            contributionsDelays= new List<Contribution>
+            {
+                new Contribution{CycleOfDelay = 1, AmountTotal = 1236},
+                new Contribution{CycleOfDelay = 2, AmountTotal = 1013},
+                new Contribution{CycleOfDelay = 3, AmountTotal = 892},
+                new Contribution{CycleOfDelay = 4, AmountTotal = 400},
+                new Contribution{CycleOfDelay = 5, AmountTotal = 120},
+                new Contribution{CycleOfDelay = 6, AmountTotal = 12},
+            };
+            foreach (var contributionsDelay in contributionsDelays)
+            {
+                model.CustumerToChange.Add(new CustumerToChange
+                {
+                    Delay = contributionsDelay.CycleOfDelay,
+                    Size = Convert.ToInt32(contributionsDelay.AmountTotal)
+                });
+            }
+
+            #endregion
+
+            return View(model);
+            
         }
 
         #endregion

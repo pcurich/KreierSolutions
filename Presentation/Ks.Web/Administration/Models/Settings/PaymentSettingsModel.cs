@@ -1,4 +1,5 @@
-﻿using FluentValidation.Attributes;
+﻿using System.Collections.Generic;
+using FluentValidation.Attributes;
 using Ks.Admin.Validators.Settings;
 using Ks.Web.Framework;
 using Ks.Web.Framework.Mvc;
@@ -13,6 +14,9 @@ namespace Ks.Admin.Models.Settings
 
         [KsResourceDisplayName("Admin.Configuration.Settings.PaymentSettings.DayOfPayment")]
         public int DayOfPayment { get; set; }
+
+        [KsResourceDisplayName("Admin.Configuration.Settings.PaymentSettings.CycleOfDelay")]
+        public int CycleOfDelay { get; set; }
 
         [KsResourceDisplayName("Admin.Configuration.Settings.PaymentSettings.NameAmount1")]
         public string NameAmount1 { get; set; }
@@ -33,6 +37,12 @@ namespace Ks.Admin.Models.Settings
         [KsResourceDisplayName("Admin.Configuration.Settings.PaymentSettings.Amount3")]
         public decimal Amount3 { get; set; }
 
-        
+        public List<CustumerToChange> CustumerToChange { get; set; }
+    }
+
+    public class CustumerToChange
+    {
+        public int Delay { get; set; }
+        public int Size { get; set; }
     }
 }

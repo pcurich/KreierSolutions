@@ -1,2 +1,2 @@
 DataProvider: sqlserver
-DataConnectionString: Data Source=DESKTOP-IEJA4DV;Initial Catalog=ACMR;Integrated Security=True;Persist Security Info=False
+DataConnectionString: Data Source=IDEA-PC\MSSQLSERVER2014;Initial Catalog=ACMR;Integrated Security=True;Persist Security Info=False

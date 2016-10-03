@@ -522,7 +522,7 @@
 	<LocaleResource Name="Account.Register.Button">
 		<Value>Registrar</Value>
 	</LocaleResource>
-	<LocaleResource Name="account.register.errors.alreadyregistered">
+	<LocaleResource Name="Account.Register.Errors.AlreadyRegistered">
 		<Value>El asociado actual ya esta registrado</Value>
 	</LocaleResource>
 	<LocaleResource Name="Account.Register.Errors.EmailAlreadyExists">
@@ -5940,6 +5940,12 @@
 	<LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.IsActiveAmount3.Hint">
 		<Value>Establece si el concepto del tercer cobro debe considerarse</Value>
 	</LocaleResource>	
+	<LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.CycleOfDelay">
+		<Value>Ciclos de espera</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.CycleOfDelay.Hint">
+		<Value>Cantidad de ciclos que se debe acumular antes de dar de baja a un afiliado</Value>
+	</LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.DayOfPayment">
 		<Value>Dia de cobros</Value>
 	</LocaleResource>
@@ -11292,379 +11298,379 @@
 	<LocaleResource Name="DownloadableProducts.UserAgreement">
 		<Value>Condiciones de uso</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.AttributeControlType.Checkboxes">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.AttributeControlType.Checkboxes">
 		<Value>Casillas de verificación</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.AttributeControlType.ColorSquares">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.AttributeControlType.ColorSquares">
 		<Value>Cuadrados del color</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.AttributeControlType.Datepicker">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.AttributeControlType.Datepicker">
 		<Value>Selector de fecha</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.AttributeControlType.DropdownList">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.AttributeControlType.DropdownList">
 		<Value>Lista desplegable</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.AttributeControlType.FileUpload">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.AttributeControlType.FileUpload">
 		<Value>La carga de archivos</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.AttributeControlType.MultilineTextbox">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.AttributeControlType.MultilineTextbox">
 		<Value>Cuadro de texto de líneas múltiples</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.AttributeControlType.RadioList">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.AttributeControlType.RadioList">
 		<Value>Lista de botones de radio</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.AttributeControlType.ReadonlyCheckboxes">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.AttributeControlType.ReadonlyCheckboxes">
 		<Value>solo lectura checkboxes</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.AttributeControlType.TextBox">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.AttributeControlType.TextBox">
 		<Value>Cuadro de texto</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.AttributeValueType.AssociatedToProduct">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.AttributeValueType.AssociatedToProduct">
 		<Value>Asociado al producto</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.AttributeValueType.Simple">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.AttributeValueType.Simple">
 		<Value>Simple</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.BackorderMode.AllowQtyBelow0">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.BackorderMode.AllowQtyBelow0">
 		<Value>Permitir Cantidad inferior a 0</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.BackorderMode.AllowQtyBelow0AndNotifyCustomer">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.BackorderMode.AllowQtyBelow0AndNotifyCustomer">
 		<Value>Permitir Cantidad por debajo de 0 y notificar al cliente</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.BackorderMode.NoBackorders">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.BackorderMode.NoBackorders">
 		<Value>No hay pedidos pendientes</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.DownloadActivationType.Manually">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.DownloadActivationType.Manually">
 		<Value>Manual</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.DownloadActivationType.WhenOrderIsPaid">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.DownloadActivationType.WhenOrderIsPaid">
 		<Value>Cuando la orden es pagada</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.GiftCardType.Physical">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.GiftCardType.Physical">
 		<Value>Físico</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.GiftCardType.Virtual">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.GiftCardType.Virtual">
 		<Value>Virtual</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.LowStockActivity.DisableBuyButton">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.LowStockActivity.DisableBuyButton">
 		<Value>Desactivar el botón comprar</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.LowStockActivity.Nothing">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.LowStockActivity.Nothing">
 		<Value>Nada</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.LowStockActivity.Unpublish">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.LowStockActivity.Unpublish">
 		<Value>No Publicar</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.ManageInventoryMethod.DontManageStock">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.ManageInventoryMethod.DontManageStock">
 		<Value>No seguimiento del inventario</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.ManageInventoryMethod.ManageStock">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.ManageInventoryMethod.ManageStock">
 		<Value>Seguimiento de inventario</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.ManageInventoryMethod.ManageStockByAttributes">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.ManageInventoryMethod.ManageStockByAttributes">
 		<Value>Seguimiento de inventario por atributos de producto</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.ProductSortingEnum.CreatedOn">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.ProductSortingEnum.CreatedOn">
 		<Value>Fecha de Creación</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.ProductSortingEnum.NameAsc">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.ProductSortingEnum.NameAsc">
 		<Value>Nombre: A a la Z</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.ProductSortingEnum.NameDesc">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.ProductSortingEnum.NameDesc">
 		<Value>Nombre: Z a la A</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.ProductSortingEnum.Position">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.ProductSortingEnum.Position">
 		<Value>Posición</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.ProductSortingEnum.PriceAsc">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.ProductSortingEnum.PriceAsc">
 		<Value>Precio: De menor a mayor</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.ProductSortingEnum.PriceDesc">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.ProductSortingEnum.PriceDesc">
 		<Value>Precio: De mayor a menor</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.ProductType.GroupedProduct">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.ProductType.GroupedProduct">
 		<Value>Productos agrupados</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.ProductType.SimpleProduct">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.ProductType.SimpleProduct">
 		<Value>Producto simple</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.RecurringProductCyclePeriod.Days">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.RecurringProductCyclePeriod.Days">
 		<Value>Días</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.RecurringProductCyclePeriod.Months">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.RecurringProductCyclePeriod.Months">
 		<Value>Meses</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.RecurringProductCyclePeriod.Weeks">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.RecurringProductCyclePeriod.Weeks">
 		<Value>Semanas</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.RecurringProductCyclePeriod.Years">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.RecurringProductCyclePeriod.Years">
 		<Value>Años</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.RentalPricePeriod.Days">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.RentalPricePeriod.Days">
 		<Value>Dias</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.RentalPricePeriod.Months">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.RentalPricePeriod.Months">
 		<Value>Meses</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.RentalPricePeriod.Weeks">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.RentalPricePeriod.Weeks">
 		<Value>Semanas</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.RentalPricePeriod.Years">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.RentalPricePeriod.Years">
 		<Value>Años</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.SpecificationAttributeType.CustomHtmlText">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.SpecificationAttributeType.CustomHtmlText">
 		<Value>Texto personalizado HTML</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.SpecificationAttributeType.CustomText">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.SpecificationAttributeType.CustomText">
 		<Value>Texto personalizado</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.SpecificationAttributeType.Hyperlink">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.SpecificationAttributeType.Hyperlink">
 		<Value>Hyperlink</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Catalog.SpecificationAttributeType.Option">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Catalog.SpecificationAttributeType.Option">
 		<Value>Opciones</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Common.FulltextSearchMode.And">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Common.FulltextSearchMode.And">
 		<Value>Usando CONTIENE y AND con prefix_term</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Common.FulltextSearchMode.ExactMatch">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Common.FulltextSearchMode.ExactMatch">
 		<Value>Coincidencia exacta (usando CONTIENE con prefix_term)</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Common.FulltextSearchMode.Or">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Common.FulltextSearchMode.Or">
 		<Value>Usando CONTIENE y OR con prefix_term</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Customers.CustomerNameFormat.ShowEmails">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Customers.CustomerNameFormat.ShowEmails">
 		<Value>Mostrar los emails</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Customers.CustomerNameFormat.ShowFirstName">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Customers.CustomerNameFormat.ShowFirstName">
 		<Value>Mostrar nombre</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Customers.CustomerNameFormat.ShowFullNames">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Customers.CustomerNameFormat.ShowFullNames">
 		<Value>Mostrar nombres completos</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Customers.CustomerNameFormat.ShowUsernames">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Customers.CustomerNameFormat.ShowUsernames">
 		<Value>Mostrar nombres de usuario</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Customers.PasswordFormat.Clear">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Customers.PasswordFormat.Clear">
 		<Value>Borrar</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Customers.PasswordFormat.Encrypted">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Customers.PasswordFormat.Encrypted">
 		<Value>Cifrado</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Customers.PasswordFormat.Hashed">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Customers.PasswordFormat.Hashed">
 		<Value>Hashed</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Discounts.DiscountLimitationType.NTimesOnly">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Discounts.DiscountLimitationType.NTimesOnly">
 		<Value>N veces solo</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Discounts.DiscountLimitationType.NTimesPerCustomer">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Discounts.DiscountLimitationType.NTimesPerCustomer">
 		<Value>N veces por cliente</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Discounts.DiscountLimitationType.Unlimited">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Discounts.DiscountLimitationType.Unlimited">
 		<Value>Ilimitado</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Discounts.DiscountType.AssignedToCategories">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Discounts.DiscountType.AssignedToCategories">
 		<Value>Asignados a categorías</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Discounts.DiscountType.AssignedToOrderSubTotal">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Discounts.DiscountType.AssignedToOrderSubTotal">
 		<Value>Asignado a ordenar subtotal</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Discounts.DiscountType.AssignedToOrderTotal">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Discounts.DiscountType.AssignedToOrderTotal">
 		<Value>Asignados al total de la orden</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Discounts.DiscountType.AssignedToShipping">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Discounts.DiscountType.AssignedToShipping">
 		<Value>Asignado a la navegación</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Discounts.DiscountType.AssignedToSkus">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Discounts.DiscountType.AssignedToSkus">
 		<Value>Asignado a los productos</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Forums.EditorType.BBCodeEditor">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Forums.EditorType.BBCodeEditor">
 		<Value>Editor de BBCode</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Forums.EditorType.HtmlEditor">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Forums.EditorType.HtmlEditor">
 		<Value>Editor HTML</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Forums.EditorType.SimpleTextBox">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Forums.EditorType.SimpleTextBox">
 		<Value>Cuadro de texto simple</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Forums.ForumSearchType.All">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Forums.ForumSearchType.All">
 		<Value>Los títulos de temas y textos mensaje</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Forums.ForumSearchType.PostTextOnly">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Forums.ForumSearchType.PostTextOnly">
 		<Value>Publique solo texto</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Forums.ForumSearchType.TopicTitlesOnly">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Forums.ForumSearchType.TopicTitlesOnly">
 		<Value>Solamente los títulos de temas</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Forums.ForumTopicType.Announcement">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Forums.ForumTopicType.Announcement">
 		<Value>Anuncio</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Forums.ForumTopicType.Normal">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Forums.ForumTopicType.Normal">
 		<Value>Normal</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Forums.ForumTopicType.Sticky">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Forums.ForumTopicType.Sticky">
 		<Value>Adhesivo</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Logging.LogLevel.Debug">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Logging.LogLevel.Debug">
 		<Value>Depurar</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Logging.LogLevel.Error">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Logging.LogLevel.Error">
 		<Value>Error</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Logging.LogLevel.Fatal">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Logging.LogLevel.Fatal">
 		<Value>Fatal</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Logging.LogLevel.Information">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Logging.LogLevel.Information">
 		<Value>Información</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Logging.LogLevel.Warning">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Logging.LogLevel.Warning">
 		<Value>Advertencia</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Orders.OrderStatus.Cancelled">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Orders.OrderStatus.Cancelled">
 		<Value>Cancelado</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Orders.OrderStatus.Complete">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Orders.OrderStatus.Complete">
 		<Value>Completado</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Orders.OrderStatus.Pending">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Orders.OrderStatus.Pending">
 		<Value>Pendiente</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Orders.OrderStatus.Processing">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Orders.OrderStatus.Processing">
 		<Value>Procesando</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Orders.ReturnRequestStatus.Cancelled">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Orders.ReturnRequestStatus.Cancelled">
 		<Value>Cancelado</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Orders.ReturnRequestStatus.ItemsRefunded">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Orders.ReturnRequestStatus.ItemsRefunded">
 		<Value>Artículo(s) reembolsado(s)</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Orders.ReturnRequestStatus.ItemsRepaired">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Orders.ReturnRequestStatus.ItemsRepaired">
 		<Value>Artículo(s) reparado(s)</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Orders.ReturnRequestStatus.Pending">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Orders.ReturnRequestStatus.Pending">
 		<Value>Pendiente</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Orders.ReturnRequestStatus.Received">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Orders.ReturnRequestStatus.Received">
 		<Value>Recibido</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Orders.ReturnRequestStatus.RequestRejected">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Orders.ReturnRequestStatus.RequestRejected">
 		<Value>Solicitud rechazada</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Orders.ReturnRequestStatus.ReturnAuthorized">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Orders.ReturnRequestStatus.ReturnAuthorized">
 		<Value>Retorno autorizado</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Payments.PaymentStatus.Authorized">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Payments.PaymentStatus.Authorized">
 		<Value>Autorizado</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Payments.PaymentStatus.Paid">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Payments.PaymentStatus.Paid">
 		<Value>Pagado</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Payments.PaymentStatus.PartiallyRefunded">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Payments.PaymentStatus.PartiallyRefunded">
 		<Value>Parcialmente reembolsado</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Payments.PaymentStatus.Pending">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Payments.PaymentStatus.Pending">
 		<Value>Pendiente</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Payments.PaymentStatus.Refunded">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Payments.PaymentStatus.Refunded">
 		<Value>Devuelto</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Payments.PaymentStatus.Voided">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Payments.PaymentStatus.Voided">
 		<Value>Anulado</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Security.PasswordFormat.Clear">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Security.PasswordFormat.Clear">
 		<Value>Borrar</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Security.PasswordFormat.Encrypted">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Security.PasswordFormat.Encrypted">
 		<Value>Cifrado</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Security.PasswordFormat.Hashed">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Security.PasswordFormat.Hashed">
 		<Value>Hashed</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Security.UserRegistrationType.AdminApproval">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Security.UserRegistrationType.AdminApproval">
 		<Value>Un cliente debe ser aprobado por el administrador</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Security.UserRegistrationType.Disabled">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Security.UserRegistrationType.Disabled">
 		<Value>El registro está desactivado</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Security.UserRegistrationType.EmailValidation">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Security.UserRegistrationType.EmailValidation">
 		<Value>Se requiere validación después de Registrarse</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Security.UserRegistrationType.Standard">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Security.UserRegistrationType.Standard">
 		<Value>Creación de la cuenta estándar</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Seo.PageTitleSeoAdjustment.PagenameAfterStorename">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Seo.PageTitleSeoAdjustment.PagenameAfterStorename">
 		<Value>Nombre de la página viene después del nombre del almacén</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Seo.PageTitleSeoAdjustment.StorenameAfterPagename">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Seo.PageTitleSeoAdjustment.StorenameAfterPagename">
 		<Value>Nombre de la tienda viene después del nombre de la página</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Seo.WwwRequirement.NoMatter">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Seo.WwwRequirement.NoMatter">
 		<Value>No importa</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Seo.WwwRequirement.WithoutWww">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Seo.WwwRequirement.WithoutWww">
 		<Value>Las páginas no deben tener el prefijo WWW</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Seo.WwwRequirement.WithWww">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Seo.WwwRequirement.WithWww">
 		<Value>Las páginas deben tener el prefijo WWW</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Shipping.ShippingStatus.Delivered">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Shipping.ShippingStatus.Delivered">
 		<Value>Entregado</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Shipping.ShippingStatus.NotYetShipped">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Shipping.ShippingStatus.NotYetShipped">
 		<Value>Todavia no se ha enviado</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Shipping.ShippingStatus.PartiallyShipped">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Shipping.ShippingStatus.PartiallyShipped">
 		<Value>Parcialmente enviado</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Shipping.ShippingStatus.Shipped">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Shipping.ShippingStatus.Shipped">
 		<Value>Transportado</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Shipping.ShippingStatus.ShippingNotRequired">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Shipping.ShippingStatus.ShippingNotRequired">
 		<Value>Envío no es necesario</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Tax.TaxBasedOn.BillingAddress">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Tax.TaxBasedOn.BillingAddress">
 		<Value>Direccion de facturacion</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Tax.TaxBasedOn.DefaultAddress">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Tax.TaxBasedOn.DefaultAddress">
 		<Value>Dirección por defecto</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Tax.TaxBasedOn.ShippingAddress">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Tax.TaxBasedOn.ShippingAddress">
 		<Value>Dirección de envío</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Tax.TaxDisplayType.ExcludingTax">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Tax.TaxDisplayType.ExcludingTax">
 		<Value>Excluyendo impuestos</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Tax.TaxDisplayType.IncludingTax">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Tax.TaxDisplayType.IncludingTax">
 		<Value>Incluído impuestos</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Tax.VatNumberStatus.Empty">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Tax.VatNumberStatus.Empty">
 		<Value>Vacío</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Tax.VatNumberStatus.Invalid">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Tax.VatNumberStatus.Invalid">
 		<Value>Inválido</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Tax.VatNumberStatus.Unknown">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Tax.VatNumberStatus.Unknown">
 		<Value>Desconocido</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Domain.Tax.VatNumberStatus.Valid">
+	<LocaleResource Name="Enums.Ks.Core.Domain.Tax.VatNumberStatus.Valid">
 		<Value>Válido</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Plugins.LoadPluginsMode.All">
+	<LocaleResource Name="Enums.Ks.Core.Plugins.LoadPluginsMode.All">
 		<Value>Todos</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Plugins.LoadPluginsMode.InstalledOnly">
+	<LocaleResource Name="Enums.Ks.Core.Plugins.LoadPluginsMode.InstalledOnly">
 		<Value>Instalados</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Core.Plugins.LoadPluginsMode.NotInstalledOnly">
+	<LocaleResource Name="Enums.Ks.Core.Plugins.LoadPluginsMode.NotInstalledOnly">
 		<Value>No Instalados</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Services.Payments.RecurringPaymentType.Automatic">
+	<LocaleResource Name="Enums.Ks.Services.Payments.RecurringPaymentType.Automatic">
 		<Value>Automático</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Services.Payments.RecurringPaymentType.Manual">
+	<LocaleResource Name="Enums.Ks.Services.Payments.RecurringPaymentType.Manual">
 		<Value>Manual</Value>
 	</LocaleResource>
-	<LocaleResource Name="Enums.Soft.Services.Payments.RecurringPaymentType.NotSupported">
+	<LocaleResource Name="Enums.Ks.Services.Payments.RecurringPaymentType.NotSupported">
 		<Value>No compatible</Value>
 	</LocaleResource>
 	<LocaleResource Name="EUCookieLaw.CannotBrowse">

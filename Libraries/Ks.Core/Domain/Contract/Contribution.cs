@@ -25,6 +25,16 @@ namespace Ks.Core.Domain.Contract
         public decimal AmountTotal { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether this instance is delay.
+        /// </summary>
+        public bool IsDelay { get; set; }
+
+        /// <summary>
+        /// Gets or sets the cycle of delay.
+        /// </summary>
+        public int CycleOfDelay { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether this <see cref="Contribution"/> is active.
         /// </summary>
         public bool Active { get; set; }

@@ -186,6 +186,16 @@ namespace Ks.Admin.Controllers
         #region Utilities
 
         [NonAction]
+        protected virtual void PrepareSettingPaymentAmount(CustomerModel model)
+        {
+            model.IsActiveAmount1 = _paymentSettings.IsActiveAmount1;
+            model.NameAmount1 = _paymentSettings.NameAmount1;
+            model.IsActiveAmount2 = _paymentSettings.IsActiveAmount2;
+            model.NameAmount2 = _paymentSettings.NameAmount2;
+            model.IsActiveAmount3 = _paymentSettings.IsActiveAmount3;
+            model.NameAmount3 = _paymentSettings.NameAmount3;
+        }
+        [NonAction]
         protected virtual string GetCustomerRolesNames(IList<CustomerRole> customerRoles, string separator = ",")
         {
             var sb = new StringBuilder();
@@ -916,7 +926,6 @@ namespace Ks.Admin.Controllers
                 }
                 _customerService.UpdateCustomer(customer);
 
-
                 //ensure that a customer with a vendor associated is not in "Administrators" role
                 //otherwise, he won't be have access to the other functionality in admin area
                 //if (customer.IsAdmin() && customer.VendorId > 0)
@@ -962,6 +971,7 @@ namespace Ks.Admin.Controllers
 
             var model = new CustomerModel();
             PrepareCustomerModel(model, customer, false);
+            PrepareSettingPaymentAmount(model);
             return View(model);
         }
 
@@ -1142,7 +1152,7 @@ namespace Ks.Admin.Controllers
                         }
                     }
                     _customerService.UpdateCustomer(customer);
-
+                    PrepareSettingPaymentAmount(model);
 
                     //ensure that a customer with a vendor associated is not in "Administrators" role
                     //otherwise, he won't have access to the other functionality in admin area
@@ -1188,6 +1198,7 @@ namespace Ks.Admin.Controllers
 
             //If we got this far, something failed, redisplay form
             PrepareCustomerModel(model, customer, true);
+            PrepareSettingPaymentAmount(model);
             return View(model);
         }
 

@@ -2,10 +2,6 @@
 using Ks.Admin.Models.Settings;
 using Ks.Services.Localization;
 using Ks.Web.Framework.Validators;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace Ks.Admin.Validators.Settings
 {
@@ -22,6 +18,7 @@ namespace Ks.Admin.Validators.Settings
                     if (x.Amount1 <= 0)
                         return new ValidationFailure("Amount1", localizationService.GetResource("Admin.Configuration.Settings.PaymentSettings.Fields.Amount1.GreaterThanZero"));
                 }
+
                 if (x.IsActiveAmount2)
                 {
                     if (string.IsNullOrWhiteSpace(x.NameAmount2))
@@ -29,7 +26,8 @@ namespace Ks.Admin.Validators.Settings
                     if (x.Amount2 <= 0)
                         return new ValidationFailure("Amount2", localizationService.GetResource("Admin.Configuration.Settings.PaymentSettings.Fields.Amount2.GreaterThanZero"));
                 }
-                if (x.IsActiveAmount1)
+
+                if (x.IsActiveAmount3)
                 {
                     if (string.IsNullOrWhiteSpace(x.NameAmount3))
                         return new ValidationFailure("NameAmount3", localizationService.GetResource("Admin.Configuration.Settings.PaymentSettings.Fields.NameAmount3.Required"));

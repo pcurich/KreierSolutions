@@ -14,6 +14,11 @@ namespace Ks.Core.Domain.Contract
         public int DayOfPayment { get; set; }
 
         /// <summary>
+        /// Gets or sets the cycle of delay.
+        /// </summary>
+        public int CycleOfDelay { get; set; }
+
+        /// <summary>
         /// Gets or sets the name amount1.
         /// </summary>
         public string NameAmount1 { get; set; }

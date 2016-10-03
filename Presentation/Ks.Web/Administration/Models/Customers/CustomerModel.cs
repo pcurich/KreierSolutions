@@ -230,7 +230,12 @@ namespace Ks.Admin.Models.Customers
         public IList<AssociatedExternalAuthModel> AssociatedExternalAuthRecords { get; set; }
 
         public bool HasContributions { get; set; }
-
+        public string NameAmount1 { get; set; }
+        public bool IsActiveAmount1 { set; get; }
+        public string NameAmount2 { get; set; }
+        public bool IsActiveAmount2 { set; get; }
+        public string NameAmount3 { get; set; }
+        public bool IsActiveAmount3 { set; get; }
 
 
         public bool HasLoans { get; set; }

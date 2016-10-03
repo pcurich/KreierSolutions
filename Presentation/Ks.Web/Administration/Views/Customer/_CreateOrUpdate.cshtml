@@ -94,7 +94,7 @@
                     $.ajax({
                         cache: false,
                         type: "GET",
-                        url: "@(Url.Action("GetStatesByCountryId", "Country"))",
+                        url: "@Url.Action("GetStatesByCountryId", "Country")",
                         data: postData,
                         success: function(data) {
                             ddlStates.html('');
@@ -637,33 +637,67 @@
                                     mode: "inline"
                                 },
                                 scrollable: false,
-                                columns: [{
-                                    field: "Amount",
-                                    title: "@T("Admin.Contract.ContributionPayments.Fields.Amount")",
-                                    width: 100,
-                                    template:'#= kendo.toString(Amount,"c","es-PE") #',
-                                    format:"{0:c2}"
-                                }, {
-                                    field: "ScheduledDateOnUtc",
-                                    title:"@T("Admin.Contract.ContributionPayments.Fields.ScheduledDateOnUtc")",
-                                    width: 100,
-                                    type: "date",
-                                    format: "{0:G}"
-                                }, {
-                                    field: "ProcessedDateOnUtc",
-                                    title:"@T("Admin.Contract.ContributionPayments.Fields.ProcessedDateOnUtc")",
-                                    width: 100,
-                                    type: "date",
-                                    format: "{0:G}"
-                                },{
-                                    field: "State",
-                                    title: "@T("Admin.Contract.ContributionPayments.Fields.Active")",
-                                    width: 100
-                                }]
+                                columns: [
+                                    @if (Model.IsActiveAmount1)
+                                    {
+                                        <text>
+                                            {
+                                                field: "Amount1",
+                                                title: "@Model.NameAmount1",
+                                                width: 50,
+                                                template:'#= kendo.toString(Amount1,"c","es-PE") #',
+                                                format:"{0:c2}"
+                                            },
+                                        </text>
+                                    }
+                                    @if (Model.IsActiveAmount2)
+                                    {
+                                        <text>
+                                            {
+                                                field: "Amount2",
+                                                title: "@Model.NameAmount2",
+                                                width: 50,
+                                                template:'#= kendo.toString(Amount2,"c","es-PE") #',
+                                                format:"{0:c2}"
+                                            },
+                                        </text>
+                                    }
+                                    @if (Model.IsActiveAmount3)
+                                    {
+                                        <text>
+                                            {
+                                                field: "Amount3",
+                                                title: "@Model.NameAmount3",
+                                                width: 50,
+                                                template:'#= kendo.toString(Amount3,"c","es-PE") #',
+                                                format:"{0:c2}"
+                                            },
+                                        </text>
+                                    }
+                                    {
+                                        field: "ScheduledDateOnUtc",
+                                        title:"@T("Admin.Contract.ContributionPayments.Fields.ScheduledDateOnUtc")",
+                                        width: 100,
+                                        type: "date",
+                                        format: "{0:G}"
+                                    }, {
+                                        field: "ProcessedDateOnUtc",
+                                        title:"@T("Admin.Contract.ContributionPayments.Fields.ProcessedDateOnUtc")",
+                                        width: 100,
+                                        type: "date",
+                                        format: "{0:G}"
+                                    },{
+                                        field: "State",
+                                        title: "@T("Admin.Contract.ContributionPayments.Fields.Active")",
+                                        width: 100
+                                    }]
                             });
                         });
                     </script>
                 </td>
+
+
+
             </tr>
         </table>
     }
