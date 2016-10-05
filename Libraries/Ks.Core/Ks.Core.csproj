@@ -121,6 +121,7 @@
     <Compile Include="Domain\Contract\ContributionPayment.cs" />
     <Compile Include="Domain\Contract\LetterSettings.cs" />
     <Compile Include="Domain\Contract\PaymentSettings.cs" />
+    <Compile Include="Domain\Contract\StateActivitySettings.cs" />
     <Compile Include="Domain\Customers\Customer.cs" />
     <Compile Include="Domain\Customers\CustomerAttribute.cs" />
     <Compile Include="Domain\Customers\CustomerAttributeValue.cs" />

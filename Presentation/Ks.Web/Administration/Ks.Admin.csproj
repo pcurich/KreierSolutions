@@ -252,6 +252,7 @@
     <Content Include="Views\Setting\Payments.cshtml" />
     <Content Include="Views\Customer\_CreateOrUpdateContributions.cshtml" />
     <Content Include="Views\Setting\ViewResultPopup.cshtml" />
+    <Content Include="Views\Setting\StateActivity.cshtml" />
     <None Include="Views\Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -340,6 +341,7 @@
     <Compile Include="Models\Settings\LetterSettingsModel.cs" />
     <Compile Include="Models\Settings\PaymentSettingsModel.cs" />
     <Compile Include="Models\Settings\SettingModel.cs" />
+    <Compile Include="Models\Settings\StateActivitySettingsModel.cs" />
     <Compile Include="Models\Systems\KsSystemModel.cs" />
     <Compile Include="Models\Tasks\ScheduleTaskModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

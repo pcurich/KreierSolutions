@@ -1757,7 +1757,9 @@ namespace Ks.Admin.Controllers
                 {
                     contribution.ContributionPayments.Add(new ContributionPayment
                     {
-                        Amount = _paymentSettings.Amount1 + _paymentSettings.Amount2 + _paymentSettings.Amount3,
+                        Amount1 = _paymentSettings.Amount1,
+                        Amount2 = _paymentSettings.Amount2,
+                        Amount3 = _paymentSettings.Amount3,
                         ScheduledDateOnUtc = _dateTimeHelper.ConvertToUtcTime(estimated.AddMonths(cycle)),
                         ProcessedDateOnUtc = null
                     });
@@ -1797,7 +1799,9 @@ namespace Ks.Admin.Controllers
                 {
                     var m = new ContributionPaymentsModel
                     {
-                        Amount = x.Amount,
+                        Amount1 = x.Amount1,
+                        Amount2 = x.Amount2,
+                        Amount3 = x.Amount3,
                         ScheduledDateOnUtc = x.ScheduledDateOnUtc,
                         ProcessedDateOnUtc = x.ProcessedDateOnUtc,
                         State = x.Active ? "Completado" : "Pendiente"

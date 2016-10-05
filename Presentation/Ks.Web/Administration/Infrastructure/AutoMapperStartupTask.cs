@@ -247,6 +247,14 @@ namespace Ks.Admin.Infrastructure
 
             #endregion
 
+            #region StateActivitySettings
+
+            Mapper.CreateMap<StateActivitySettings, StateActivitySettingsModel>()
+                   .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
+            Mapper.CreateMap<StateActivitySettingsModel, StateActivitySettings>();
+
+            #endregion
+
             #endregion
 
             #region currencies

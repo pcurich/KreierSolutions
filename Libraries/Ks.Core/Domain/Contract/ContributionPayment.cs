@@ -6,9 +6,17 @@ namespace Ks.Core.Domain.Contract
     {
         public int ContributionId { get; set; }
         /// <summary>
-        /// Gets or sets the amount.
+        /// Gets or sets the amount1.
         /// </summary>
-        public decimal Amount { get; set; }
+        public decimal Amount1 { get; set; }
+        /// <summary>
+        /// Gets or sets the amount2.
+        /// </summary>
+        public decimal Amount2 { get; set; }
+        /// <summary>
+        /// Gets or sets the amount3.
+        /// </summary>
+        public decimal Amount3 { get; set; }
         /// <summary>
         /// Gets or sets the scheduled date on UTC.
         /// </summary>

@@ -1,0 +1,94 @@
+﻿@model StateActivitySettingsModel
+@Html.ValidationSummary(false)
+
+<script>
+    $(document).ready(function () {
+        $("#setting-edit").kendoTabStrip({
+            animation: {
+                open: {
+                    effects: "fadeIn"
+                }
+            },
+            select: tabstrip_on_tab_select
+        });
+    });
+</script>
+
+<div id="setting-edit">
+    <ul>
+        <li @Html.RenderSelectedTabIndex(0, GetSelectedTabIndex())>
+            @Model.StateName1
+        </li>
+        <li @Html.RenderSelectedTabIndex(1, GetSelectedTabIndex())>
+            @Model.StateName2
+        </li>
+        <li @Html.RenderSelectedTabIndex(2, GetSelectedTabIndex())>
+            @Model.StateName3
+        </li>
+        <li @Html.RenderSelectedTabIndex(3, GetSelectedTabIndex())>
+            @Model.StateName4
+        </li>
+        <li @Html.RenderSelectedTabIndex(4, GetSelectedTabIndex())>
+            @Model.StateName5
+        </li>
+    </ul>
+    <div>
+        @State1()
+    </div>
+    <div>
+        @State2()
+    </div>
+    <div>
+        @State3()
+    </div>
+    <div>
+        @State4()
+    </div>
+    <div>
+        @State5()
+    </div>
+</div>
+
+@{
+    //custom tabs
+    var eventMessage = new AdminTabStripCreated(this.Html, "setting-edit");
+    EngineContext.Current.Resolve<IEventPublisher>().Publish(eventMessage);
+    foreach (var eventBlock in eventMessage.BlocksToRender)
+    {
+        @eventBlock
+    }
+}
+
+@*save selected tab index*@
+<input type="hidden" id="selected-tab-index" name="selected-tab-index" value="@(GetSelectedTabIndex())">
+
+@helper State1()
+{
+    <table class="adminContent customer-info-tab">
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.MinClycle1):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.MinClycle1)
+                @Html.ValidationMessageFor(model => model.MinClycle1)
+            </td>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.MaxClycle1):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.MaxClycle1)
+                @Html.ValidationMessageFor(model => model.MaxClycle1)
+            </td>
+        </tr>
+
+    </table>
+}
+@helper State2()
+{}
+@helper State3()
+{}
+@helper State4()
+{}
+@helper State5()
+{}

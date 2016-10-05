@@ -7,8 +7,9 @@ namespace Ks.Admin.Models.Customers
     public partial class ContributionPaymentsModel : BaseKsEntityModel
     {
         public int CustomerId { get; set; }
-        [KsResourceDisplayName("Admin.Contract.ContributionPayments.Fields.Amount")]
-        public decimal Amount { get; set; }
+        public decimal Amount1 { get; set; }
+        public decimal Amount2 { get; set; }
+        public decimal Amount3 { get; set; }
         [KsResourceDisplayName("Admin.Contract.ContributionPayments.Fields.ScheduledDateOnUtc")]
         public DateTime ScheduledDateOnUtc { get; set; }
         [KsResourceDisplayName("Admin.Contract.ContributionPayments.Fields.ProcessedDateOnUtc")]

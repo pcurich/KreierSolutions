@@ -674,6 +674,27 @@ namespace Ks.Services.Installation
                 NameAmount1 = "Cobro de afiliado",
                 Amount1 = 35M,
             });
+
+            settingService.SaveSetting(new StateActivitySettings
+            {
+                StateName1 = "A",MinClycle1 = 0, MaxClycle1 = 15, 
+                HasOnlySignature1 = true, MinAmountWithSignature1 = 500M, MaxAmountWithSignature1 = 5000M,
+                HasWarranty1 = true,MinAmountWithWarranty1 = 5500M,MaxAmountWithWarranty1 = 12000M,
+
+                StateName2 = "B",MinClycle2 = 15, MaxClycle2 = 20, 
+                HasOnlySignature2 = true, MinAmountWithSignature2 = 500M, MaxAmountWithSignature2 = 6000M,
+                HasWarranty2 = true,MinAmountWithWarranty2 = 6500M,MaxAmountWithWarranty2 = 12000M,
+
+                StateName3 = "C",MinClycle3 = 20,MaxClycle3 = 35,
+                HasOnlySignature3 = true,MinAmountWithSignature3 = 500M,MaxAmountWithSignature3 = 12000M,
+                HasWarranty3 = false ,MinAmountWithWarranty3 = 0M,MaxAmountWithWarranty3 = 0M,
+
+                StateName4 = "D",MinClycle4 = 20,MaxClycle4 = 35,
+                HasOnlySignature4 = true,MinAmountWithSignature4= 500M,MaxAmountWithSignature4 = 6000M,
+                HasWarranty4 = false,MinAmountWithWarranty4 = 6500M,MaxAmountWithWarranty4 = 12000M,
+
+                StateName5 = "E",
+            });
         }
 
         protected virtual void InstallActivityLogTypes()

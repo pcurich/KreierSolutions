@@ -297,6 +297,23 @@ namespace Ks.Admin.Controllers
 
         #endregion
 
+        #region StateActivity
+
+        public ActionResult StateActivity()
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings))
+                return AccessDeniedView();
+
+            var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
+            var stateActivitySettings = _settingService.LoadSetting<StateActivitySettings>(storeScope);
+
+            var model = stateActivitySettings.ToModel();
+            return View(model);
+        }
+
+
+        #endregion
+
         #region All Setting
 
         //all settings

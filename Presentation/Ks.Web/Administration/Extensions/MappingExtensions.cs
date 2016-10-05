@@ -348,6 +348,24 @@ namespace Ks.Admin.Extensions
 
         #endregion
 
+        #region StateActivitySettings
+
+        public static StateActivitySettingsModel ToModel(this StateActivitySettings entity)
+        {
+            return entity.MapTo<StateActivitySettings, StateActivitySettingsModel>();
+        }
+        public static StateActivitySettings ToEntity(this StateActivitySettingsModel model)
+        {
+            return model.MapTo<StateActivitySettingsModel, StateActivitySettings>();
+        }
+
+        public static StateActivitySettings ToEntity(this StateActivitySettingsModel model, StateActivitySettings destination)
+        {
+            return model.MapTo(destination);
+        }
+
+        #endregion
+
         #endregion
 
         #region Countries / states / cities
