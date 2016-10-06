@@ -5,6 +5,13 @@ namespace Ks.Admin.Models.Settings
 {
     public class StateActivitySettingsModel:  BaseKsModel
     {
+        [KsResourceDisplayName("Admin.Configuration.Settings.StateActivitySettings.Periods")]
+        public string Periods { get; set; }
+        [KsResourceDisplayName("Admin.Configuration.Settings.StateActivitySettings.Tea")]
+        public double Tea { get; set; }
+        [KsResourceDisplayName("Admin.Configuration.Settings.StateActivitySettings.Safe")]
+        public double Safe { get; set; }
+
         #region Clase A
 
         [KsResourceDisplayName("Admin.Configuration.Settings.StateActivitySettings.IsEnable")]
@@ -129,6 +136,8 @@ namespace Ks.Admin.Models.Settings
         public decimal MaxAmountWithWarranty5 { get; set; }
 
         #endregion
+
+        public string CashFlow { get; set; }
     }
 
    

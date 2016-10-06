@@ -5928,69 +5928,6 @@
   <LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.TotalCycle.Hint">
     <Value>Numero de meses que se va a realizar los descuentos</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings">
-	<Value>Situacion Militar</Value>
-  </LocaleResource> 
-  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.IsEnable">
-    <Value>Activo?</Value>
-  </LocaleResource>  
-  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.IsEnable.Hint">
-    <Value>Establece si se va a considerar dicho valor</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.StateName">
-    <Value>Nombre de la situacion militar en actividad</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.StateName.Hint">
-    <Value>Nombre de la situacion militar en actividad que determina las condiciones del prestamo</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.MinClycle">
-    <Value>Desde</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.MinClycle.Hint">
-    <Value>Periodo minimo de aportación</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.MaxClycle">
-    <Value>Hasta</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.MaxClycle.Hint">
-    <Value>Periodo máximo de aportación</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.HasOnlySignature">
-    <Value>Con sola firma?</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.HasOnlySignature.Hint">
-    <Value>Establece si solo se require una sola firma</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.MinAmountWithSignature">
-    <Value>Desde</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.MinAmountWithSignature.Hint">
-    <Value>Monto mínimo</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.MaxAmountWithSignature">
-    <Value>Hasta</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.MaxAmountWithSignature.Hint">
-    <Value>Monto máximo</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.HasWarranty">
-    <Value>Con garante?</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.HasWarranty.Hint">
-    <Value>Establece si solo se require un garante en actividad</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.MinAmountWithWarranty">
-    <Value>Desde</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.MinAmountWithWarranty.Hint">
-    <Value>Monto mínimo</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.MaxAmountWithWarranty">
-    <Value>Hasta</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.MaxAmountWithWarranty.Hint">
-    <Value>Monto máximo</Value>
-  </LocaleResource>  
   <LocaleResource Name="Admin.Configuration.Settings.RewardPoints">
     <Value>Puntos de recompensa</Value>
   </LocaleResource>
@@ -6239,6 +6176,96 @@
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.ShoppingCart.ShowProductImagesOnWishList.Hint">
     <Value>Determina si las imágenes de los productos se deben mostrar en la lista de deseos de los clientes.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings">
+    <Value>Situacion Militar</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.Added">
+    <Value>Nuevo limite de liquidez creado correctamente</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.AddNew">
+    <Value>Nuevo limite de liquidez</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.Periods">
+    <Value>Plazos</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.Periods.Hint">
+    <Value>Plazos para el prestamo, separados por comas</Value>
+  </LocaleResource>
+   <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.Tea">
+    <Value>T.E.A</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.Tea.Hint">
+    <Value>tasa de interés efectiva anual</Value>
+  </LocaleResource>
+   <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.Safe">
+    <Value>SEG. Desgravamen</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.Safe.Hint">
+    <Value>Seguro de desgravamen</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.HasOnlySignature">
+    <Value>Con sola firma?</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.HasOnlySignature.Hint">
+    <Value>Establece si solo se require una sola firma</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.HasWarranty">
+    <Value>Con garante?</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.HasWarranty.Hint">
+    <Value>Establece si solo se require un garante en actividad</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.IsEnable">
+    <Value>Activo?</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.IsEnable.Hint">
+    <Value>Establece si se va a considerar dicho valor</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.MaxAmountWithSignature">
+    <Value>Hasta</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.MaxAmountWithSignature.Hint">
+    <Value>Monto máximo</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.MaxAmountWithWarranty">
+    <Value>Hasta</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.MaxAmountWithWarranty.Hint">
+    <Value>Monto máximo</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.MaxClycle">
+    <Value>Hasta</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.MaxClycle.Hint">
+    <Value>Periodo máximo de aportación</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.MinAmountWithSignature">
+    <Value>Desde</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.MinAmountWithSignature.Hint">
+    <Value>Monto mínimo</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.MinAmountWithWarranty">
+    <Value>Desde</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.MinAmountWithWarranty.Hint">
+    <Value>Monto mínimo</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.MinClycle">
+    <Value>Desde</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.MinClycle.Hint">
+    <Value>Periodo minimo de aportación</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.NewCashFlow">
+    <Value>Nueva Liquidez</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.StateName">
+    <Value>Nombre de la situacion militar en actividad</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.StateName.Hint">
+    <Value>Nombre de la situacion militar en actividad que determina las condiciones del prestamo</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.StoreScope">
     <Value>Configuración Multi-tienda</Value>

@@ -2,11 +2,11 @@
     Layout = "~/Administration/Views/Shared/_AdminPopupLayout.cshtml";
 }
 
-@model int
+@model CashFlowModel
 
 @{
     //page title
-    ViewBag.Title = T("Admin.Customers.CustomerAttributes.Values.AddNew").Text;
+    ViewBag.Title = T("Admin.Configuration.Settings.StateActivitySettings.AddNew").Text;
 }
 @using (Html.BeginForm())
 {
@@ -14,13 +14,12 @@
     <div class="section-header">
         <div class="title">
             <img src="@Url.Content("~/Administration/Content/images/ico-configuration.png")" alt="" />
-            @T("Admin.Customers.CustomerAttributes.Values.AddNew")
+            @T("Admin.Configuration.Settings.StateActivitySettings.AddNew")
         </div>
         <div class="options">
             <input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")" />
         </div>
     </div>
-    @*@Html.Partial("_CreateOrUpdateValue", Model)*@
-    <p>@Model.ToString();</p>
-
+    @Html.Partial("_CreateOrUpdateCashFlow", Model)
 }
+

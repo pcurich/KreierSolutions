@@ -259,8 +259,8 @@ namespace Ks.Admin.Controllers
         [FormValueRequired("viewresultpopup")]
         public ActionResult ViewResultPopup(PaymentSettingsModel model)
         {
-            var contributionsDelays= _contributionService.GetContributionGroupByDelay();
-            model.CustumerToChange= new List<CustumerToChange>();
+            var contributionsDelays = _contributionService.GetContributionGroupByDelay();
+            model.CustumerToChange = new List<CustumerToChange>();
             foreach (var contributionsDelay in contributionsDelays)
             {
                 model.CustumerToChange.Add(new CustumerToChange
@@ -271,7 +271,7 @@ namespace Ks.Admin.Controllers
             }
 
             #region Borrar
-            contributionsDelays= new List<Contribution>
+            contributionsDelays = new List<Contribution>
             {
                 new Contribution{CycleOfDelay = 1, AmountTotal = 1236},
                 new Contribution{CycleOfDelay = 2, AmountTotal = 1013},
@@ -292,7 +292,7 @@ namespace Ks.Admin.Controllers
             #endregion
 
             return View(model);
-            
+
         }
 
         #endregion
@@ -311,6 +311,104 @@ namespace Ks.Admin.Controllers
             return View(model);
         }
 
+        public ActionResult CashFlowCreatePopup()
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings))
+                return AccessDeniedView();
+
+            return View(new CashFlowModel());
+        }
+
+        [HttpPost]
+        public ActionResult CashFlowSelect(DataSourceRequest command)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings))
+                return AccessDeniedView();
+
+            var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
+            var stateActivitySettings = _settingService.LoadSetting<StateActivitySettings>(storeScope);
+
+            try
+            {
+                List<CashFlowModel> model3 = XmlHelper.Deserialize<List<CashFlowModel>>(stateActivitySettings.CashFlow);
+                var xx = model3;
+            }
+            catch (Exception e)
+            {
+                var msg = e.Message;
+            }
+
+            try
+            {
+                List<CashFlowModel> model2 = new List<CashFlowModel>{
+                new CashFlowModel {Id=1, Since = 500M, To = 3500m, Amount = 1300 },
+                new CashFlowModel {Id=2, Since = 4000M, To = 6500m, Amount = 2000 },
+                new CashFlowModel {Id=3, Since = 7000M, To = 9500m, Amount = 3000 },
+                new CashFlowModel {Id=4, Since = 1000M, To = 12000m, Amount = 4000 }
+                };
+
+                var x = XmlHelper.Serialize2String(model2);
+                var xx = x;
+
+            }
+            catch (Exception e)
+            {
+                var msg = e.Message;
+            }
+
+
+            var model = XmlHelper.Deserialize<List<CashFlowModel>>(stateActivitySettings.CashFlow);
+            
+            
+
+            //if (Session["model"] == null)
+            //{
+            //    Session["model"] = model;
+            //}
+            //else
+            //{
+            //    model = (List<CashFlowModel>)Session["model"];
+            //}
+
+            var gridModel = new DataSourceResult
+            {
+                Data = model,
+                Total = model.Count
+            };
+           
+            return Json(gridModel);
+        }
+
+        [HttpPost]
+        [ValidateInput(false)]
+        public ActionResult CashFlowCreatePopup(string btnId, string formId, CashFlowModel model)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings))
+                return AccessDeniedView();
+
+            if (Session["model"] == null)
+            {
+                Session["model"] = model;
+            }
+            else
+            {
+                var models = (List<CashFlowModel>)Session["model"];
+                models.Add(model);
+            }
+            ViewBag.RefreshPage = true;
+            ViewBag.btnId = btnId;
+            ViewBag.formId = formId;
+
+            SuccessNotification(_localizationService.GetResource("Admin.Configuration.Settings.StateActivitySettings.Added"));
+            return View(model);
+            
+        }
+
+        [HttpPost]
+        public ActionResult CashFlowDelete(int id)
+        {
+            return new NullJsonResult();
+        }
 
         #endregion
 

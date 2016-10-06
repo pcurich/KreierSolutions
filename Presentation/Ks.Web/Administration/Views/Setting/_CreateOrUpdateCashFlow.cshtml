@@ -1,0 +1,41 @@
+﻿@model CashFlowModel
+@Html.ValidationSummary(false)
+
+@if (ViewBag.RefreshPage == true)
+{
+    <script type="text/javascript">
+        try {window.opener.document.forms['@(ViewBag.formId)'].@(ViewBag.btnId).click();}
+        catch (e){}
+        window.close();
+    </script>
+}
+<table class="adminContent">
+    <tr>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.Since):
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.Since)
+            @Html.ValidationMessageFor(model => model.Since)
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.To):
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.To)
+            @Html.ValidationMessageFor(model => model.To)
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.Amount):
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.Amount)
+            @Html.ValidationMessageFor(model => model.Amount)
+        </td>
+    </tr>
+
+</table>

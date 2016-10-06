@@ -251,9 +251,9 @@
     <Content Include="Views\Setting\DeclaratoryLetter.cshtml" />
     <Content Include="Views\Setting\Payments.cshtml" />
     <Content Include="Views\Customer\_CreateOrUpdateContributions.cshtml" />
-    <Content Include="Views\Setting\ViewResultPopup.cshtml" />
+    <Content Include="Views\Setting\_CreateOrUpdateCashFlow.cshtml" />
     <Content Include="Views\Setting\StateActivity.cshtml" />
-    <Content Include="Views\Setting\_StateActivityCashFlow.cshtml" />
+    <Content Include="Views\Setting\CashFlowCreatePopup.cshtml" />
     <None Include="Views\Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -338,6 +338,7 @@
     <Compile Include="Models\Messages\TestMessageTemplateModel.cs" />
     <Compile Include="Models\Security\PermissionMappingModel.cs" />
     <Compile Include="Models\Security\PermissionRecordModel.cs" />
+    <Compile Include="Models\Settings\CashFlowModel.cs" />
     <Compile Include="Models\Settings\CustomerUserSettingsModel.cs" />
     <Compile Include="Models\Settings\LetterSettingsModel.cs" />
     <Compile Include="Models\Settings\PaymentSettingsModel.cs" />

@@ -109,6 +109,46 @@ namespace Ks.Core
             }
         }
 
+        public static void Serialize<T>(T o, string file, bool nameSpace = false) where T : class
+        {
+            var xmlSerializer = new XmlSerializer(typeof(T));
+            Stream stream = new FileStream(file, FileMode.Append);
+            var ns = new XmlSerializerNamespaces();
+            ns.Add("", "");
+
+            if (nameSpace)
+                xmlSerializer.Serialize(stream, o, ns);
+
+            xmlSerializer.Serialize(stream, o);
+            stream.Close();
+            stream.Dispose();
+        }
+
+        public static string Serialize2String<T>(T o, bool nameSpace = false) where T : class
+        {
+            var xmlSerializer = new XmlSerializer(typeof(T));
+            var stream = new MemoryStream();
+
+            var ns = new XmlSerializerNamespaces();
+            ns.Add("", "");
+
+            if (nameSpace)
+                xmlSerializer.Serialize(stream, o, ns);
+
+            stream.Position = 0;
+            return new StreamReader(stream).ReadToEnd();
+        }
+
+        public static T Deserialize<T>(string file) where T : class
+        {
+            var xmlSerializer = new XmlSerializer(typeof(T));
+            Stream stream = new FileStream(file, FileMode.Open);
+            var result = xmlSerializer.Deserialize(stream) as T;
+            stream.Close();
+            stream.Dispose();
+            return result;
+        }
+
         #endregion
     }
 }

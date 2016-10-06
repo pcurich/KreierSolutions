@@ -4,6 +4,10 @@ namespace Ks.Core.Domain.Contract
 {
     public class StateActivitySettings : ISettings
     {
+        public string Periods { get; set; }
+        public double Tea { get; set; }
+        public double Safe { get; set; }
+
         #region Clase A
 
         public bool IsEnable1 { get; set; }
@@ -79,5 +83,6 @@ namespace Ks.Core.Domain.Contract
 
         #endregion
 
+        public string CashFlow { get; set; }
     }
 }
