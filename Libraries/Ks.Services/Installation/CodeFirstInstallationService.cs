@@ -677,7 +677,7 @@ namespace Ks.Services.Installation
 
             settingService.SaveSetting(new StateActivitySettings
             {
-                StateName1 = "A",MinClycle1 = 0, MaxClycle1 = 15, 
+                IsEnable1=true, StateName1 = "A",MinClycle1 = 0, MaxClycle1 = 15, 
                 HasOnlySignature1 = true, MinAmountWithSignature1 = 500M, MaxAmountWithSignature1 = 5000M,
                 HasWarranty1 = true,MinAmountWithWarranty1 = 5500M,MaxAmountWithWarranty1 = 12000M,
 

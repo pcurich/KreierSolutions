@@ -6,6 +6,7 @@ namespace Ks.Core.Domain.Contract
     {
         #region Clase A
 
+        public bool IsEnable1 { get; set; }
         public string StateName1 { get; set; }
         public int MinClycle1 { get; set; }
         public int MaxClycle1 { get; set; }
@@ -20,6 +21,7 @@ namespace Ks.Core.Domain.Contract
 
         #region Clase B
 
+        public bool IsEnable2 { get; set; }
         public string StateName2 { get; set; }
         public int MinClycle2 { get; set; }
         public int MaxClycle2 { get; set; }
@@ -34,6 +36,7 @@ namespace Ks.Core.Domain.Contract
 
         #region Clase C
 
+        public bool IsEnable3 { get; set; }
         public string StateName3 { get; set; }
         public int MinClycle3 { get; set; }
         public int MaxClycle3 { get; set; }
@@ -48,6 +51,7 @@ namespace Ks.Core.Domain.Contract
 
         #region Clase D
 
+        public bool IsEnable4 { get; set; }
         public string StateName4 { get; set; }
         public int MinClycle4 { get; set; }
         public int MaxClycle4 { get; set; }
@@ -62,7 +66,8 @@ namespace Ks.Core.Domain.Contract
 
         #region Clase E
 
-        public string StateName5{ get; set; }
+        public bool IsEnable5 { get; set; }
+        public string StateName5 { get; set; }
         public int MinClycle5 { get; set; }
         public int MaxClycle5 { get; set; }
         public bool HasOnlySignature5 { get; set; }
@@ -73,5 +78,6 @@ namespace Ks.Core.Domain.Contract
         public decimal MaxAmountWithWarranty5 { get; set; }
 
         #endregion
+
     }
 }

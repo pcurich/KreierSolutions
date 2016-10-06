@@ -253,6 +253,7 @@
     <Content Include="Views\Customer\_CreateOrUpdateContributions.cshtml" />
     <Content Include="Views\Setting\ViewResultPopup.cshtml" />
     <Content Include="Views\Setting\StateActivity.cshtml" />
+    <Content Include="Views\Setting\_StateActivityCashFlow.cshtml" />
     <None Include="Views\Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
