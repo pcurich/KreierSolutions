@@ -677,6 +677,8 @@ namespace Ks.Services.Installation
 
             settingService.SaveSetting(new StateActivitySettings
             {
+                Periods="12,18,24,36",Tea=.08,Safe=.01,
+
                 IsEnable1=true, StateName1 = "A",MinClycle1 = 0, MaxClycle1 = 15, 
                 HasOnlySignature1 = true, MinAmountWithSignature1 = 500M, MaxAmountWithSignature1 = 5000M,
                 HasWarranty1 = true,MinAmountWithWarranty1 = 5500M,MaxAmountWithWarranty1 = 12000M,
@@ -694,6 +696,8 @@ namespace Ks.Services.Installation
                 HasWarranty4 = false,MinAmountWithWarranty4 = 6500M,MaxAmountWithWarranty4 = 12000M,
 
                 StateName5 = "E",
+
+                CashFlow = "<?xml version=\"1.0\"?>\r\n<ArrayOfCashFlowModel xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <CashFlowModel>\r\n    <Id>1</Id>\r\n    <Since>500</Since>\r\n    <To>3500</To>\r\n    <Amount>1300</Amount>\r\n  </CashFlowModel>\r\n  <CashFlowModel>\r\n    <Id>2</Id>\r\n    <Since>4000</Since>\r\n    <To>6500</To>\r\n    <Amount>2000</Amount>\r\n  </CashFlowModel>\r\n  <CashFlowModel>\r\n    <Id>3</Id>\r\n    <Since>7000</Since>\r\n    <To>9500</To>\r\n    <Amount>3000</Amount>\r\n  </CashFlowModel>\r\n  <CashFlowModel>\r\n    <Id>4</Id>\r\n    <Since>1000</Since>\r\n    <To>12000</To>\r\n    <Amount>4000</Amount>\r\n  </CashFlowModel>\r\n</ArrayOfCashFlowModel>"
             });
         }
 

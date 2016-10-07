@@ -328,47 +328,11 @@ namespace Ks.Admin.Controllers
             var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
             var stateActivitySettings = _settingService.LoadSetting<StateActivitySettings>(storeScope);
 
-            try
-            {
-                List<CashFlowModel> model3 = XmlHelper.Deserialize<List<CashFlowModel>>(stateActivitySettings.CashFlow);
-                var xx = model3;
-            }
-            catch (Exception e)
-            {
-                var msg = e.Message;
-            }
+            List<CashFlowModel> model = new List<CashFlowModel>();
 
-            try
-            {
-                List<CashFlowModel> model2 = new List<CashFlowModel>{
-                new CashFlowModel {Id=1, Since = 500M, To = 3500m, Amount = 1300 },
-                new CashFlowModel {Id=2, Since = 4000M, To = 6500m, Amount = 2000 },
-                new CashFlowModel {Id=3, Since = 7000M, To = 9500m, Amount = 3000 },
-                new CashFlowModel {Id=4, Since = 1000M, To = 12000m, Amount = 4000 }
-                };
-
-                var x = XmlHelper.Serialize2String(model2);
-                var xx = x;
-
-            }
-            catch (Exception e)
-            {
-                var msg = e.Message;
-            }
-
-
-            var model = XmlHelper.Deserialize<List<CashFlowModel>>(stateActivitySettings.CashFlow);
+            if(!string.IsNullOrEmpty(stateActivitySettings.CashFlow)))
+                model=XmlHelper.Deserialize<List<CashFlowModel>>(stateActivitySettings.CashFlow);
             
-            
-
-            //if (Session["model"] == null)
-            //{
-            //    Session["model"] = model;
-            //}
-            //else
-            //{
-            //    model = (List<CashFlowModel>)Session["model"];
-            //}
 
             var gridModel = new DataSourceResult
             {

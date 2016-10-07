@@ -135,6 +135,7 @@ namespace Ks.Core
             if (nameSpace)
                 xmlSerializer.Serialize(stream, o, ns);
 
+            xmlSerializer.Serialize(stream, o);
             stream.Position = 0;
             return new StreamReader(stream).ReadToEnd();
         }
