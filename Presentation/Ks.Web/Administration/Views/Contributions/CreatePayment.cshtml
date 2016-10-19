@@ -1,4 +1,4 @@
-﻿@model Ks.Admin.Models.Contract.ContributionModel
+﻿@model ContributionPaymentsModel
 @{
     //page title
     ViewBag.Title = T("Admin.Contract.Contribution.AddNew").Text;
@@ -13,9 +13,8 @@
         </div>
         <div class="options">
             <input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")" />
-            <input type="submit" name="save-continue" class="k-button" value="@T("Admin.Common.SaveContinue")" />
         </div>
     </div>
-    @Html.Partial("_CreateOrUpdate", Model)
+    @Html.Partial("_CreateOrUpdatePayment", Model)
 }
 

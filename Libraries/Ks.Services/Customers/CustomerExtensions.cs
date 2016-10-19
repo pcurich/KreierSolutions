@@ -35,6 +35,22 @@ namespace Ks.Services.Customers
             }
             return fullName;
         }
+
+        /// <summary>
+        /// Gets the generic attribute.
+        /// </summary>
+        /// <param name="customer">The customer.</param>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
+        public static string GetGenericAttribute(this Customer customer, string key)
+        {
+            if (customer == null)
+                throw new ArgumentNullException("customer");
+            var value = customer.GetAttribute<string>(key);
+
+            return value ?? string.Empty;
+        }
+
         /// <summary>
         /// Formats the customer name
         /// </summary>

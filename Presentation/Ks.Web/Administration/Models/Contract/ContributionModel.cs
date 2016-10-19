@@ -10,11 +10,13 @@ using Ks.Web.Framework.Mvc;
 namespace Ks.Admin.Models.Contract
 {
     [Validator(typeof(ContributionValidator))]
-    public class ContributionModel : BaseKsModel
+    public class ContributionModel : BaseKsEntityModel
     {
         public ContributionModel()
         {
             MonthsList = new List<SelectListItem>();
+            YearsList = new List<SelectListItem>();
+            Banks = new List<SelectListItem>();
         }
 
         public int CustomerId { get; set; }
@@ -31,8 +33,8 @@ namespace Ks.Admin.Models.Contract
         [AllowHtml]
         public string CustomerAdmCode { get; set; }
 
-        [KsResourceDisplayName("Admin.Contract.Contribution.Fields.LetterNumber")]
-        public int LetterNumber { get; set; }
+        [KsResourceDisplayName("Admin.Contract.Contribution.Fields.AuthorizeDiscount")]
+        public int AuthorizeDiscount { get; set; }
 
         [KsResourceDisplayName("Admin.Contract.Contribution.Fields.DayOfPayment")]
         public int DayOfPayment { get; set; }
@@ -59,6 +61,16 @@ namespace Ks.Admin.Models.Contract
         public int YearId { get; set; }
         public List<SelectListItem> MonthsList { get; set; }
         public List<SelectListItem> YearsList { get; set; }
+
+        
+        public string NameAmount1 { get; set; }
+        public bool IsActiveAmount1 { set; get; }
+        public string NameAmount2 { get; set; }
+        public bool IsActiveAmount2 { set; get; }
+        public string NameAmount3 { get; set; }
+        public bool IsActiveAmount3 { set; get; }
+
+        public List<SelectListItem> Banks { get; set; }
 
     }
 }

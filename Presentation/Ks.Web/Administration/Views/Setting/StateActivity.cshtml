@@ -33,24 +33,30 @@
     <div id="setting-edit">
         <ul>
             <li @Html.RenderSelectedTabIndex(0, GetSelectedTabIndex())>
-                @Model.StateName1
+                @T("Admin.Configuration.Settings.StateActivitySettings.Loan")
             </li>
             <li @Html.RenderSelectedTabIndex(1, GetSelectedTabIndex())>
-                @Model.StateName2
+                @Model.StateName1
             </li>
             <li @Html.RenderSelectedTabIndex(2, GetSelectedTabIndex())>
-                @Model.StateName3
+                @Model.StateName2
             </li>
             <li @Html.RenderSelectedTabIndex(3, GetSelectedTabIndex())>
-                @Model.StateName4
+                @Model.StateName3
             </li>
             <li @Html.RenderSelectedTabIndex(4, GetSelectedTabIndex())>
+                @Model.StateName4
+            </li>
+            <li @Html.RenderSelectedTabIndex(5, GetSelectedTabIndex())>
                 @Model.StateName5
             </li>
             <li @Html.RenderSelectedTabIndex(5, GetSelectedTabIndex())>
-                @T("Liquidez")
+                @T("Admin.Configuration.Settings.StateActivitySettings.CashFlow")
             </li>
         </ul>
+        <div>
+            @Loan()
+        </div>
         <div>
             @State1()
         </div>
@@ -84,507 +90,550 @@
     @*save selected tab index*@
     <input type="hidden" id="selected-tab-index" name="selected-tab-index" value="@(GetSelectedTabIndex())">
 
-    @helper State1()
+    @helper Loan()
     {
         <table class="adminContent ">
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.Periods):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.Periods)
+                @Html.ValidationMessageFor(model => model.Periods)
+            </td>
+        </tr>
             <tr>
                 <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.IsEnable1):
+                    @Html.KsLabelFor(model => model.Tea):
                 </td>
                 <td class="adminData">
-                    @Html.EditorFor(model => model.IsEnable1)
+                    @Html.EditorFor(model => model.Tea)
+                    @Html.ValidationMessageFor(model => model.Tea)
+                    <script>
+                        $(document).ready(function() {
+                            $('#@Html.FieldIdFor(model => model.Tea)').kendoNumericTextBox({
+                                format: "##.00 %",
+                                decimals:3
+                            });
+                        });
+                    </script>
                 </td>
                 <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.StateName1):
+                    @Html.KsLabelFor(model => model.Safe):
                 </td>
                 <td class="adminData">
-                    @Html.EditorFor(model => model.StateName1)
-                    @Html.ValidationMessageFor(model => model.StateName1)
-                </td>
-            </tr>
-            <tr>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.MinClycle1):
-                </td>
-                <td class="adminData">
-                    @Html.EditorFor(model => model.MinClycle1)
-                    @Html.ValidationMessageFor(model => model.MinClycle1)
-                </td>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.MaxClycle1):
-                </td>
-                <td class="adminData">
-                    @Html.EditorFor(model => model.MaxClycle1)
-                    @Html.ValidationMessageFor(model => model.MaxClycle1)
-                </td>
-            </tr>
-            <tr>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.HasOnlySignature1):
-                </td>
-                <td class="adminData">
-                    @Html.EditorFor(model => model.HasOnlySignature1)
-                </td>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.MinAmountWithSignature1):
-                </td>
-                <td class="adminData">
-                    @Html.EditorFor(model => model.MinAmountWithSignature1)
-                    @Html.ValidationMessageFor(model => model.MinAmountWithSignature1)
-                </td>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.MaxAmountWithSignature1):
-                </td>
-                <td class="adminData">
-                    @Html.EditorFor(model => model.MaxAmountWithSignature1)
-                    @Html.ValidationMessageFor(model => model.MaxAmountWithSignature1)
-                </td>
-            </tr>
-            <tr>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.HasWarranty1):
-                </td>
-                <td class="adminData">
-                    @Html.EditorFor(model => model.HasWarranty1)
-                </td>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.MinAmountWithWarranty1):
-                </td>
-                <td class="adminData">
-                    @Html.EditorFor(model => model.MinAmountWithWarranty1)
-                    @Html.ValidationMessageFor(model => model.MinAmountWithWarranty1)
-                </td>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.MaxAmountWithWarranty1)):
-                </td>
-                <td class="adminData">
-                    @Html.EditorFor(model => model.MaxAmountWithWarranty1)
-                    @Html.ValidationMessageFor(model => model.MaxAmountWithWarranty1)
+                    @Html.EditorFor(model => model.Safe)
+                    @Html.ValidationMessageFor(model => model.Safe)
+                    <script>
+                        $(document).ready(function() {
+                            $('#@Html.FieldIdFor(model => model.Safe)').kendoNumericTextBox({
+                                format: "##.00 %",
+                                decimals:3
+                            }); 
+                        });
+                    </script>
                 </td>
             </tr>
         </table>
-    }
-    @helper State2()
+            }
+
+            @helper State1()
     {
-        <table class="adminContent ">
-            <tr>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.IsEnable2):
-                </td>
-                <td class="adminData">
-                    @Html.EditorFor(model => model.IsEnable2)
-                </td>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.StateName2):
-                </td>
-                <td class="adminData">
-                    @Html.EditorFor(model => model.StateName2)
-                    @Html.ValidationMessageFor(model => model.StateName2)
-                </td>
-            </tr>
-            <tr>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.MinClycle2):
-                </td>
-                <td class="adminData">
-                    @Html.EditorFor(model => model.MinClycle2)
-                    @Html.ValidationMessageFor(model => model.MinClycle2)
-                </td>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.MaxClycle2):
-                </td>
-                <td class="adminData">
-                    @Html.EditorFor(model => model.MaxClycle2)
-                    @Html.ValidationMessageFor(model => model.MaxClycle2)
-                </td>
-            </tr>
-            <tr>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.HasOnlySignature2):
-                </td>
-                <td class="adminData">
-                    @Html.EditorFor(model => model.HasOnlySignature2)
-                </td>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.MinAmountWithSignature2):
-                </td>
-                <td class="adminData">
-                    @Html.EditorFor(model => model.MinAmountWithSignature2)
-                    @Html.ValidationMessageFor(model => model.MinAmountWithSignature2)
-                </td>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.MaxAmountWithSignature2):
-                </td>
-                <td class="adminData">
-                    @Html.EditorFor(model => model.MaxAmountWithSignature2)
-                    @Html.ValidationMessageFor(model => model.MaxAmountWithSignature2)
-                </td>
-            </tr>
-            <tr>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.HasWarranty2):
-                </td>
-                <td class="adminData">
-                    @Html.EditorFor(model => model.HasWarranty2)
-                </td>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.MinAmountWithWarranty2):
-                </td>
-                <td class="adminData">
-                    @Html.EditorFor(model => model.MinAmountWithWarranty2)
-                    @Html.ValidationMessageFor(model => model.MinAmountWithWarranty2)
-                </td>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.MaxAmountWithWarranty2)):
-                </td>
-                <td class="adminData">
-                    @Html.EditorFor(model => model.MaxAmountWithWarranty2)
-                    @Html.ValidationMessageFor(model => model.MaxAmountWithWarranty2)
-                </td>
-            </tr>
-        </table>
-    }
-    @helper State3()
+            <table class="adminContent ">
+                <tr>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.IsEnable1):
+                    </td>
+                    <td class="adminData">
+                        @Html.EditorFor(model => model.IsEnable1)
+                    </td>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.StateName1):
+                    </td>
+                    <td class="adminData">
+                        @Html.EditorFor(model => model.StateName1)
+                        @Html.ValidationMessageFor(model => model.StateName1)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.MinClycle1):
+                    </td>
+                    <td class="adminData">
+                        @Html.EditorFor(model => model.MinClycle1)
+                        @Html.ValidationMessageFor(model => model.MinClycle1)
+                    </td>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.MaxClycle1):
+                    </td>
+                    <td class="adminData">
+                        @Html.EditorFor(model => model.MaxClycle1)
+                        @Html.ValidationMessageFor(model => model.MaxClycle1)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.HasOnlySignature1):
+                    </td>
+                    <td class="adminData">
+                        @Html.EditorFor(model => model.HasOnlySignature1)
+                    </td>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.MinAmountWithSignature1):
+                    </td>
+                    <td class="adminData">
+                        @Html.EditorFor(model => model.MinAmountWithSignature1)
+                        @Html.ValidationMessageFor(model => model.MinAmountWithSignature1)
+                    </td>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.MaxAmountWithSignature1):
+                    </td>
+                    <td class="adminData">
+                        @Html.EditorFor(model => model.MaxAmountWithSignature1)
+                        @Html.ValidationMessageFor(model => model.MaxAmountWithSignature1)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.HasWarranty1):
+                    </td>
+                    <td class="adminData">
+                        @Html.EditorFor(model => model.HasWarranty1)
+                    </td>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.MinAmountWithWarranty1):
+                    </td>
+                    <td class="adminData">
+                        @Html.EditorFor(model => model.MinAmountWithWarranty1)
+                        @Html.ValidationMessageFor(model => model.MinAmountWithWarranty1)
+                    </td>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.MaxAmountWithWarranty1)):
+                    </td>
+                    <td class="adminData">
+                        @Html.EditorFor(model => model.MaxAmountWithWarranty1)
+                        @Html.ValidationMessageFor(model => model.MaxAmountWithWarranty1)
+                    </td>
+                </tr>
+            </table>
+}
+            @helper State2()
     {
-        <table class="adminContent ">
-            <tr>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.IsEnable3):
-                </td>
-                <td class="adminData">
-                    @Html.EditorFor(model => model.IsEnable3)
-                </td>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.StateName3):
-                </td>
-                <td class="adminData">
-                    @Html.EditorFor(model => model.StateName3)
-                    @Html.ValidationMessageFor(model => model.StateName3)
-                </td>
-            </tr>
-            <tr>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.MinClycle3):
-                </td>
-                <td class="adminData">
-                    @Html.EditorFor(model => model.MinClycle3)
-                    @Html.ValidationMessageFor(model => model.MinClycle3)
-                </td>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.MaxClycle3):
-                </td>
-                <td class="adminData">
-                    @Html.EditorFor(model => model.MaxClycle3)
-                    @Html.ValidationMessageFor(model => model.MaxClycle3)
-                </td>
-            </tr>
-            <tr>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.HasOnlySignature3):
-                </td>
-                <td class="adminData">
-                    @Html.EditorFor(model => model.HasOnlySignature3)
-                </td>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.MinAmountWithSignature3):
-                </td>
-                <td class="adminData">
-                    @Html.EditorFor(model => model.MinAmountWithSignature3)
-                    @Html.ValidationMessageFor(model => model.MinAmountWithSignature3)
-                </td>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.MaxAmountWithSignature3):
-                </td>
-                <td class="adminData">
-                    @Html.EditorFor(model => model.MaxAmountWithSignature3)
-                    @Html.ValidationMessageFor(model => model.MaxAmountWithSignature3)
-                </td>
-            </tr>
-            <tr>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.HasWarranty3):
-                </td>
-                <td class="adminData">
-                    @Html.EditorFor(model => model.HasWarranty3)
-                </td>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.MinAmountWithWarranty3):
-                </td>
-                <td class="adminData">
-                    @Html.EditorFor(model => model.MinAmountWithWarranty3)
-                    @Html.ValidationMessageFor(model => model.MinAmountWithWarranty3)
-                </td>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.MaxAmountWithWarranty3)):
-                </td>
-                <td class="adminData">
-                    @Html.EditorFor(model => model.MaxAmountWithWarranty3)
-                    @Html.ValidationMessageFor(model => model.MaxAmountWithWarranty3)
-                </td>
-            </tr>
-        </table>
-    }@helper State4()
+            <table class="adminContent ">
+                <tr>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.IsEnable2):
+                    </td>
+                    <td class="adminData">
+                        @Html.EditorFor(model => model.IsEnable2)
+                    </td>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.StateName2):
+                    </td>
+                    <td class="adminData">
+                        @Html.EditorFor(model => model.StateName2)
+                        @Html.ValidationMessageFor(model => model.StateName2)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.MinClycle2):
+                    </td>
+                    <td class="adminData">
+                        @Html.EditorFor(model => model.MinClycle2)
+                        @Html.ValidationMessageFor(model => model.MinClycle2)
+                    </td>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.MaxClycle2):
+                    </td>
+                    <td class="adminData">
+                        @Html.EditorFor(model => model.MaxClycle2)
+                        @Html.ValidationMessageFor(model => model.MaxClycle2)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.HasOnlySignature2):
+                    </td>
+                    <td class="adminData">
+                        @Html.EditorFor(model => model.HasOnlySignature2)
+                    </td>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.MinAmountWithSignature2):
+                    </td>
+                    <td class="adminData">
+                        @Html.EditorFor(model => model.MinAmountWithSignature2)
+                        @Html.ValidationMessageFor(model => model.MinAmountWithSignature2)
+                    </td>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.MaxAmountWithSignature2):
+                    </td>
+                    <td class="adminData">
+                        @Html.EditorFor(model => model.MaxAmountWithSignature2)
+                        @Html.ValidationMessageFor(model => model.MaxAmountWithSignature2)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.HasWarranty2):
+                    </td>
+                    <td class="adminData">
+                        @Html.EditorFor(model => model.HasWarranty2)
+                    </td>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.MinAmountWithWarranty2):
+                    </td>
+                    <td class="adminData">
+                        @Html.EditorFor(model => model.MinAmountWithWarranty2)
+                        @Html.ValidationMessageFor(model => model.MinAmountWithWarranty2)
+                    </td>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.MaxAmountWithWarranty2)):
+                    </td>
+                    <td class="adminData">
+                        @Html.EditorFor(model => model.MaxAmountWithWarranty2)
+                        @Html.ValidationMessageFor(model => model.MaxAmountWithWarranty2)
+                    </td>
+                </tr>
+            </table>
+}
+            @helper State3()
+    {
+            <table class="adminContent ">
+                <tr>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.IsEnable3):
+                    </td>
+                    <td class="adminData">
+                        @Html.EditorFor(model => model.IsEnable3)
+                    </td>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.StateName3):
+                    </td>
+                    <td class="adminData">
+                        @Html.EditorFor(model => model.StateName3)
+                        @Html.ValidationMessageFor(model => model.StateName3)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.MinClycle3):
+                    </td>
+                    <td class="adminData">
+                        @Html.EditorFor(model => model.MinClycle3)
+                        @Html.ValidationMessageFor(model => model.MinClycle3)
+                    </td>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.MaxClycle3):
+                    </td>
+                    <td class="adminData">
+                        @Html.EditorFor(model => model.MaxClycle3)
+                        @Html.ValidationMessageFor(model => model.MaxClycle3)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.HasOnlySignature3):
+                    </td>
+                    <td class="adminData">
+                        @Html.EditorFor(model => model.HasOnlySignature3)
+                    </td>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.MinAmountWithSignature3):
+                    </td>
+                    <td class="adminData">
+                        @Html.EditorFor(model => model.MinAmountWithSignature3)
+                        @Html.ValidationMessageFor(model => model.MinAmountWithSignature3)
+                    </td>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.MaxAmountWithSignature3):
+                    </td>
+                    <td class="adminData">
+                        @Html.EditorFor(model => model.MaxAmountWithSignature3)
+                        @Html.ValidationMessageFor(model => model.MaxAmountWithSignature3)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.HasWarranty3):
+                    </td>
+                    <td class="adminData">
+                        @Html.EditorFor(model => model.HasWarranty3)
+                    </td>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.MinAmountWithWarranty3):
+                    </td>
+                    <td class="adminData">
+                        @Html.EditorFor(model => model.MinAmountWithWarranty3)
+                        @Html.ValidationMessageFor(model => model.MinAmountWithWarranty3)
+                    </td>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.MaxAmountWithWarranty3)):
+                    </td>
+                    <td class="adminData">
+                        @Html.EditorFor(model => model.MaxAmountWithWarranty3)
+                        @Html.ValidationMessageFor(model => model.MaxAmountWithWarranty3)
+                    </td>
+                </tr>
+            </table>
+}@helper State4()
      {
-         <table class="adminContent ">
-             <tr>
-                 <td class="adminTitle">
-                     @Html.KsLabelFor(model => model.IsEnable4):
-                 </td>
-                 <td class="adminData">
-                     @Html.EditorFor(model => model.IsEnable4)
-                 </td>
-                 <td class="adminTitle">
-                     @Html.KsLabelFor(model => model.StateName4):
-                 </td>
-                 <td class="adminData">
-                     @Html.EditorFor(model => model.StateName4)
-                     @Html.ValidationMessageFor(model => model.StateName4)
-                 </td>
-             </tr>
-             <tr>
-                 <td class="adminTitle">
-                     @Html.KsLabelFor(model => model.MinClycle4):
-                 </td>
-                 <td class="adminData">
-                     @Html.EditorFor(model => model.MinClycle4)
-                     @Html.ValidationMessageFor(model => model.MinClycle4)
-                 </td>
-                 <td class="adminTitle">
-                     @Html.KsLabelFor(model => model.MaxClycle4):
-                 </td>
-                 <td class="adminData">
-                     @Html.EditorFor(model => model.MaxClycle4)
-                     @Html.ValidationMessageFor(model => model.MaxClycle4)
-                 </td>
-             </tr>
-             <tr>
-                 <td class="adminTitle">
-                     @Html.KsLabelFor(model => model.HasOnlySignature4):
-                 </td>
-                 <td class="adminData">
-                     @Html.EditorFor(model => model.HasOnlySignature4)
-                 </td>
-                 <td class="adminTitle">
-                     @Html.KsLabelFor(model => model.MinAmountWithSignature4):
-                 </td>
-                 <td class="adminData">
-                     @Html.EditorFor(model => model.MinAmountWithSignature4)
-                     @Html.ValidationMessageFor(model => model.MinAmountWithSignature4)
-                 </td>
-                 <td class="adminTitle">
-                     @Html.KsLabelFor(model => model.MaxAmountWithSignature4):
-                 </td>
-                 <td class="adminData">
-                     @Html.EditorFor(model => model.MaxAmountWithSignature4)
-                     @Html.ValidationMessageFor(model => model.MaxAmountWithSignature4)
-                 </td>
-             </tr>
-             <tr>
-                 <td class="adminTitle">
-                     @Html.KsLabelFor(model => model.HasWarranty4):
-                 </td>
-                 <td class="adminData">
-                     @Html.EditorFor(model => model.HasWarranty4)
-                 </td>
-                 <td class="adminTitle">
-                     @Html.KsLabelFor(model => model.MinAmountWithWarranty4):
-                 </td>
-                 <td class="adminData">
-                     @Html.EditorFor(model => model.MinAmountWithWarranty4)
-                     @Html.ValidationMessageFor(model => model.MinAmountWithWarranty4)
-                 </td>
-                 <td class="adminTitle">
-                     @Html.KsLabelFor(model => model.MaxAmountWithWarranty4)):
-                 </td>
-                 <td class="adminData">
-                     @Html.EditorFor(model => model.MaxAmountWithWarranty4)
-                     @Html.ValidationMessageFor(model => model.MaxAmountWithWarranty4)
-                 </td>
-             </tr>
-         </table>
-     }@helper State5()
+                <table class="adminContent ">
+                    <tr>
+                        <td class="adminTitle">
+                            @Html.KsLabelFor(model => model.IsEnable4):
+                        </td>
+                        <td class="adminData">
+                            @Html.EditorFor(model => model.IsEnable4)
+                        </td>
+                        <td class="adminTitle">
+                            @Html.KsLabelFor(model => model.StateName4):
+                        </td>
+                        <td class="adminData">
+                            @Html.EditorFor(model => model.StateName4)
+                            @Html.ValidationMessageFor(model => model.StateName4)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="adminTitle">
+                            @Html.KsLabelFor(model => model.MinClycle4):
+                        </td>
+                        <td class="adminData">
+                            @Html.EditorFor(model => model.MinClycle4)
+                            @Html.ValidationMessageFor(model => model.MinClycle4)
+                        </td>
+                        <td class="adminTitle">
+                            @Html.KsLabelFor(model => model.MaxClycle4):
+                        </td>
+                        <td class="adminData">
+                            @Html.EditorFor(model => model.MaxClycle4)
+                            @Html.ValidationMessageFor(model => model.MaxClycle4)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="adminTitle">
+                            @Html.KsLabelFor(model => model.HasOnlySignature4):
+                        </td>
+                        <td class="adminData">
+                            @Html.EditorFor(model => model.HasOnlySignature4)
+                        </td>
+                        <td class="adminTitle">
+                            @Html.KsLabelFor(model => model.MinAmountWithSignature4):
+                        </td>
+                        <td class="adminData">
+                            @Html.EditorFor(model => model.MinAmountWithSignature4)
+                            @Html.ValidationMessageFor(model => model.MinAmountWithSignature4)
+                        </td>
+                        <td class="adminTitle">
+                            @Html.KsLabelFor(model => model.MaxAmountWithSignature4):
+                        </td>
+                        <td class="adminData">
+                            @Html.EditorFor(model => model.MaxAmountWithSignature4)
+                            @Html.ValidationMessageFor(model => model.MaxAmountWithSignature4)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="adminTitle">
+                            @Html.KsLabelFor(model => model.HasWarranty4):
+                        </td>
+                        <td class="adminData">
+                            @Html.EditorFor(model => model.HasWarranty4)
+                        </td>
+                        <td class="adminTitle">
+                            @Html.KsLabelFor(model => model.MinAmountWithWarranty4):
+                        </td>
+                        <td class="adminData">
+                            @Html.EditorFor(model => model.MinAmountWithWarranty4)
+                            @Html.ValidationMessageFor(model => model.MinAmountWithWarranty4)
+                        </td>
+                        <td class="adminTitle">
+                            @Html.KsLabelFor(model => model.MaxAmountWithWarranty4)):
+                        </td>
+                        <td class="adminData">
+                            @Html.EditorFor(model => model.MaxAmountWithWarranty4)
+                            @Html.ValidationMessageFor(model => model.MaxAmountWithWarranty4)
+                        </td>
+                    </tr>
+                </table>
+}@helper State5()
       {
-          <table class="adminContent ">
-              <tr>
-                  <td class="adminTitle">
-                      @Html.KsLabelFor(model => model.IsEnable5):
-                  </td>
-                  <td class="adminData">
-                      @Html.EditorFor(model => model.IsEnable5)
-                  </td>
-                  <td class="adminTitle">
-                      @Html.KsLabelFor(model => model.StateName5):
-                  </td>
-                  <td class="adminData">
-                      @Html.EditorFor(model => model.StateName5)
-                      @Html.ValidationMessageFor(model => model.StateName5)
-                  </td>
-              </tr>
-              <tr>
-                  <td class="adminTitle">
-                      @Html.KsLabelFor(model => model.MinClycle5):
-                  </td>
-                  <td class="adminData">
-                      @Html.EditorFor(model => model.MinClycle5)
-                      @Html.ValidationMessageFor(model => model.MinClycle5)
-                  </td>
-                  <td class="adminTitle">
-                      @Html.KsLabelFor(model => model.MaxClycle5):
-                  </td>
-                  <td class="adminData">
-                      @Html.EditorFor(model => model.MaxClycle5)
-                      @Html.ValidationMessageFor(model => model.MaxClycle5)
-                  </td>
-              </tr>
-              <tr>
-                  <td class="adminTitle">
-                      @Html.KsLabelFor(model => model.HasOnlySignature5):
-                  </td>
-                  <td class="adminData">
-                      @Html.EditorFor(model => model.HasOnlySignature5)
-                  </td>
-                  <td class="adminTitle">
-                      @Html.KsLabelFor(model => model.MinAmountWithSignature5):
-                  </td>
-                  <td class="adminData">
-                      @Html.EditorFor(model => model.MinAmountWithSignature5)
-                      @Html.ValidationMessageFor(model => model.MinAmountWithSignature5)
-                  </td>
-                  <td class="adminTitle">
-                      @Html.KsLabelFor(model => model.MaxAmountWithSignature5):
-                  </td>
-                  <td class="adminData">
-                      @Html.EditorFor(model => model.MaxAmountWithSignature5)
-                      @Html.ValidationMessageFor(model => model.MaxAmountWithSignature5)
-                  </td>
-              </tr>
-              <tr>
-                  <td class="adminTitle">
-                      @Html.KsLabelFor(model => model.HasWarranty5):
-                  </td>
-                  <td class="adminData">
-                      @Html.EditorFor(model => model.HasWarranty5)
-                  </td>
-                  <td class="adminTitle">
-                      @Html.KsLabelFor(model => model.MinAmountWithWarranty5):
-                  </td>
-                  <td class="adminData">
-                      @Html.EditorFor(model => model.MinAmountWithWarranty5)
-                      @Html.ValidationMessageFor(model => model.MinAmountWithWarranty5)
-                  </td>
-                  <td class="adminTitle">
-                      @Html.KsLabelFor(model => model.MaxAmountWithWarranty5)):
-                  </td>
-                  <td class="adminData">
-                      @Html.EditorFor(model => model.MaxAmountWithWarranty5)
-                      @Html.ValidationMessageFor(model => model.MaxAmountWithWarranty5)
-                  </td>
-              </tr>
-          </table>
-      }@helper CashFlow()
+        <table class="adminContent ">
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.IsEnable5):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.IsEnable5)
+                </td>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.StateName5):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.StateName5)
+                    @Html.ValidationMessageFor(model => model.StateName5)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.MinClycle5):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.MinClycle5)
+                    @Html.ValidationMessageFor(model => model.MinClycle5)
+                </td>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.MaxClycle5):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.MaxClycle5)
+                    @Html.ValidationMessageFor(model => model.MaxClycle5)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.HasOnlySignature5):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.HasOnlySignature5)
+                </td>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.MinAmountWithSignature5):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.MinAmountWithSignature5)
+                    @Html.ValidationMessageFor(model => model.MinAmountWithSignature5)
+                </td>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.MaxAmountWithSignature5):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.MaxAmountWithSignature5)
+                    @Html.ValidationMessageFor(model => model.MaxAmountWithSignature5)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.HasWarranty5):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.HasWarranty5)
+                </td>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.MinAmountWithWarranty5):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.MinAmountWithWarranty5)
+                    @Html.ValidationMessageFor(model => model.MinAmountWithWarranty5)
+                </td>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.MaxAmountWithWarranty5)):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.MaxAmountWithWarranty5)
+                    @Html.ValidationMessageFor(model => model.MaxAmountWithWarranty5)
+                </td>
+            </tr>
+        </table>
+}@helper CashFlow()
        {
-           <table class="adminContent">
-               <tr>
-                   <td>
-                       <div id="customer-addresses-grid"></div>
+        <table class="adminContent">
+            <tr>
+                <td>
+                    <div id="cashflow-grid"></div>
 
-                       <script>
-                           $(document).ready(function() {
-                               $("#customer-addresses-grid").kendoGrid({
-                                   dataSource: {
-                                       type: "json",
-                                       transport: {
-                                           read: {
-                                               url: "@Html.Raw(Url.Action("CashFlowSelect", "Setting"))",
-                                               type: "POST",
-                                               dataType: "json",
-                                               data: addAntiForgeryToken
-                                           },
-                                           destroy: {
-                                               url: "@Html.Raw(Url.Action("CashFlowDelete", "Setting"))",
-                                               type: "POST",
-                                               dataType: "json",
-                                               data: addAntiForgeryToken
-                                           }
-                                       },
-                                       schema: {
-                                           data: "Data",
-                                           total: "Total",
-                                           errors: "Errors",
-                                           model: {
-                                               id: "Id"
-                                           }
-                                       },
-                                       error: function(e) {
-                                           display_kendoui_grid_error(e);
-                                           // Cancel the changes
-                                           this.cancelChanges();
-                                       },
-                                       serverPaging: true,
-                                       serverFiltering: true,
-                                       serverSorting: true
-                                   },
-                                   pageable: {
-                                       refresh: true,
-                                       numeric: false,
-                                       previousNext: false,
-                                       info: false
-                                   },
-                                   editable: {
-                                       confirmation: false,
-                                       mode: "inline"
-                                   },
-                                   scrollable: false,
-                                   columns: [
-                                       {
-                                           field: "Since",
-                                           title: "@T("Desde")",
-                                           template: '#= kendo.toString(Since,"c","es-PE") #',
-                                           format: "{0:c2}"
-                                       }, {
-                                           field: "To",
-                                           title: "@T("Hasta")",
-                                           template: '#= kendo.toString(To,"c","es-PE") #',
-                                           format: "{0:c2}"
-                                       }, {
-                                           field: "Amount",
-                                           title: "@T("Monto")",
-                                           template: '#= kendo.toString(Amount,"c","es-PE") #',
-                                           format: "{0:c2}"
-                                       }, {
-                                           command: { name: "destroy", text: "@T("Admin.Common.Delete")" },
-                                           title: "@T("Admin.Common.Delete")",
-                                           width: 100
-                                       }
-                                   ]
-                               });
-                           });
-                       </script>
-                   </td>
-               </tr>
-               <tr>
-                   <td width="100%">
-                       <input type="submit" id="btnAddNewValue" value="@T("Admin.Configuration.Settings.StateActivitySettings.NewCashFlow")" onclick="javascript:OpenWindow('@(Url.Action("CashFlowCreatePopup", "Setting", new {btnId = "btnRefresh", formId = "stateatribute-form"}))', 800, 350, true); return false; " class="k-button"/>
-                       <input type="submit" id="btnRefresh" style="display: none"/>
-                       <script type="text/javascript">
-                           $(document).ready(function() {
-                               $('#btnRefresh').click(function() {
-                                   //refresh grid
-                                   var grid = $("#stateatribute-grid").data('kendoGrid');
-                                   grid.dataSource.read();
+                    <script>
+                        $(document).ready(function () {
+                            $("#cashflow-grid").kendoGrid({
+                                dataSource: {
+                                    type: "json",
+                                    transport: {
+                                        read: {
+                                            url: "@Html.Raw(Url.Action("CashFlowSelect", "Setting"))",
+                                            type: "POST",
+                                            dataType: "json",
+                                            data: addAntiForgeryToken
+                                        },
+                                        destroy: {
+                                            url: "@Html.Raw(Url.Action("CashFlowDelete", "Setting"))",
+                                            type: "POST",
+                                            dataType: "json",
+                                            data: addAntiForgeryToken
+                                        }
+                                    },
+                                    schema: {
+                                        data: "Data",
+                                        total: "Total",
+                                        errors: "Errors",
+                                        model: {
+                                            id: "Id"
+                                        }
+                                    },
+                                    error: function (e) {
+                                        display_kendoui_grid_error(e);
+                                        // Cancel the changes
+                                        this.cancelChanges();
+                                    },
+                                    serverPaging: true,
+                                    serverFiltering: true,
+                                    serverSorting: true
+                                },
+                                pageable: {
+                                    refresh: true,
+                                    numeric: false,
+                                    previousNext: false,
+                                    info: false
+                                },
+                                editable: {
+                                    confirmation: false,
+                                    mode: "inline"
+                                },
+                                scrollable: false,
+                                columns: [
+                                    {
+                                        field: "Since",
+                                        title: "@T("Admin.Configuration.Settings.StateActivitySettings.CashFlow.Since")",
+                                        template: '#= kendo.toString(Since,"c","es-PE") #',
+                                        format: "{0:c2}"
+                                    }, {
+                                        field: "To",
+                                        title: "@T("Admin.Configuration.Settings.StateActivitySettings.CashFlow.To")",
+                                        template: '#= kendo.toString(To,"c","es-PE") #',
+                                        format: "{0:c2}"
+                                    }, {
+                                        field: "Amount",
+                                        title: "@T("Admin.Configuration.Settings.StateActivitySettings.CashFlow.Amount")",
+                                        template: '#= kendo.toString(Amount,"c","es-PE") #',
+                                        format: "{0:c2}"
+                                    }, {
+                                        command: { name: "destroy", text: "@T("Admin.Common.Delete")" },
+                                        title: "@T("Admin.Common.Delete")",
+                                        width: 100
+                                    }
+                                ]
+                            });
+                        });
+                    </script>
+                </td>
+            </tr>
+            <tr>
+                <td width="100%">
+                    <input type="submit" id="btnAddNewValue" value="@T("Admin.Configuration.Settings.StateActivitySettings.NewCashFlow")" onclick="javascript:OpenWindow('@(Url.Action("CashFlowCreatePopup", "Setting", new { btnId = "btnRefresh", formId = "stateatribute-form" }))', 800, 350, true); return false; " class="k-button" />
+                    <input type="submit" id="btnRefresh" style="display: none" />
+                    <script type="text/javascript">
+                        $(document).ready(function () {
+                            $('#btnRefresh').click(function () {
+                                //refresh grid
+                                var grid = $("#cashflow-grid").data('kendoGrid');
+                                grid.dataSource.read();
 
-                                   //return false to don't reload a page
-                                   return false;
-                               });
-                           });
-                       </script>
-                   </td>
-               </tr>
-           </table>
-           <p>
-               @*<input type="button" class="k-button" onclick=" location.href = '@Url.Action("CashFlowCreate")' " value='@T("Admin.Configuration.Settings.StateActivitySettings.NewCashFlow")'/>
-               <input type="button" class="k-button" onclick=" javascript:OpenWindow('@Url.Action("CashFlowCreate")', 800, 350, true); return false; " value='@T("Admin.Configuration.Settings.StateActivitySettings.NewCashFlow")'/>*@
-           </p>
-       }
+                                //return false to don't reload a page
+                                return false;
+                            });
+                        });
+                    </script>
+                </td>
+            </tr>
+        </table>
+}
 
 }

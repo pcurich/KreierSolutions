@@ -1,4 +1,5 @@
-﻿using Ks.Core.Configuration;
+﻿using System;
+using Ks.Core.Configuration;
 
 namespace Ks.Core.Domain.Contract
 {
@@ -83,6 +84,7 @@ namespace Ks.Core.Domain.Contract
 
         #endregion
 
+        
         public string CashFlow { get; set; }
     }
 }

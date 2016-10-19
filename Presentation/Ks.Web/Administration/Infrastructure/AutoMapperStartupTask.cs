@@ -234,9 +234,9 @@ namespace Ks.Admin.Infrastructure
 
             #region LetterSetting
 
-            Mapper.CreateMap<LetterSettings, LetterSettingsModel>()
+            Mapper.CreateMap<SequenceIdsSettings, SequenceIdsSettingsModel>()
                    .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
-            Mapper.CreateMap<LetterSettingsModel, LetterSettings>();
+            Mapper.CreateMap<SequenceIdsSettingsModel, SequenceIdsSettings>();
             #endregion
 
             #region PaymentSetting
@@ -244,6 +244,14 @@ namespace Ks.Admin.Infrastructure
             Mapper.CreateMap<PaymentSettings, PaymentSettingsModel>()
                    .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
             Mapper.CreateMap<PaymentSettingsModel, PaymentSettings>();
+
+            #endregion
+
+            #region BankSetting
+
+            Mapper.CreateMap<BankSettings, BankSettingsModel>()
+                   .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
+            Mapper.CreateMap<BankSettingsModel, BankSettings>();
 
             #endregion
 
@@ -278,6 +286,15 @@ namespace Ks.Admin.Infrastructure
             Mapper.CreateMap<ContributionModel, Contribution>()
                 .ForMember(dest => dest.CreatedOnUtc, mo => mo.Ignore())
                 .ForMember(dest => dest.UpdatedOnUtc, mo => mo.Ignore());
+            #endregion
+
+            #region contribution
+            Mapper.CreateMap<ContributionPayment, ContributionPaymentsModel>()
+                .ForMember(dest => dest.ScheduledDateOn, mo => mo.Ignore())
+                .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
+            Mapper.CreateMap<ContributionPaymentsModel, ContributionPayment>()
+                .ForMember(dest => dest.ScheduledDateOnUtc, mo => mo.Ignore())
+                .ForMember(dest => dest.ProcessedDateOnUtc, mo => mo.Ignore());
             #endregion
 
             #region measure weights

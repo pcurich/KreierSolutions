@@ -1,0 +1,76 @@
+﻿@using System.Globalization
+@model Ks.Admin.Models.Contract.PreCashFlowModel
+
+<div class="section-header">
+    <div class="title">
+        <img src="@Url.Content("~/Administration/Content/images/ico-system.png")" alt=""/>
+        @T("Pre Solicitud")
+    </div>
+</div>
+
+<table class="adminContent">
+    <tr>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.Period):
+        </td>
+        <td class="adminData">
+            @Model.Period - (@T("Common.Month"))
+        </td>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.Amount):
+        </td>
+        <td class="adminData">
+            @Model.Amount.ToString("c", new CultureInfo("es-PE"))
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.Tea):
+        </td>
+        <td class="adminData">
+            @Model.Tea %
+        </td>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.Safe):
+        </td>
+        <td class="adminData">
+            @Model.Safe %
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.TotalFeed):
+        </td>
+        <td class="adminData">
+            @Model.TotalFeed.ToString("c", new CultureInfo("es-PE"))
+        </td>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.TotalSafe):
+        </td>
+        <td class="adminData">
+            @Model.TotalSafe.ToString("c", new CultureInfo("es-PE"))
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.MonthlyQuota):
+        </td>
+        <td class="adminData">
+            @Model.MonthlyQuota.ToString("c", new CultureInfo("es-PE"))
+        </td>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.TotalAmount):
+        </td>
+        <td class="adminData">
+            @Model.TotalAmount.ToString("c", new CultureInfo("es-PE"))
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.TotalToPay):
+        </td>
+        <td class="adminData">
+            @Model.TotalToPay.ToString("c", new CultureInfo("es-PE"))
+        </td>
+    </tr>
+</table>

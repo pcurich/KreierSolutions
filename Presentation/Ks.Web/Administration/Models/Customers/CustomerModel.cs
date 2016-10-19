@@ -27,7 +27,7 @@ namespace Ks.Admin.Models.Customers
             this.CustomerAttributes = new List<CustomerAttributeModel>();
             this.AvailableNewsletterSubscriptionStores = new List<StoreModel>();
             //this.RewardPointsAvailableStores = new List<SelectListItem>();
-            this.ContributionPayments= new List<ContributionPaymentsModel>();
+            this.ContributionPayments = new List<ContributionPaymentsModel>();
         }
 
         public bool AllowUsersToChangeUsernames { get; set; }
@@ -59,7 +59,7 @@ namespace Ks.Admin.Models.Customers
         public string FirstName { get; set; }
         [KsResourceDisplayName("Admin.Customers.Customers.Fields.AdmCode")]
         [AllowHtml]
-        public string AdmCode  { get; set; }
+        public string AdmCode { get; set; }
         [KsResourceDisplayName("Admin.Customers.Customers.Fields.Dni")]
         [AllowHtml]
         public string Dni { get; set; }
@@ -111,7 +111,7 @@ namespace Ks.Admin.Models.Customers
 
         [KsResourceDisplayName("Admin.Customers.Customers.Fields.City")]
         public int CityId { get; set; }
-        public IList<SelectListItem> AvailableCities { get; set; } 
+        public IList<SelectListItem> AvailableCities { get; set; }
 
         public bool PhoneEnabled { get; set; }
         [KsResourceDisplayName("Admin.Customers.Customers.Fields.Phone")]
@@ -159,20 +159,6 @@ namespace Ks.Admin.Models.Customers
 
 
 
-
-        ////EU VAT
-        //[KsResourceDisplayName("Admin.Customers.Customers.Fields.VatNumber")]
-        //[AllowHtml]
-        //public string VatNumber { get; set; }
-
-        //public string VatNumberStatusNote { get; set; }
-
-        //public bool DisplayVatNumber { get; set; }
-
-
-
-
-
         //registration date
         [KsResourceDisplayName("Admin.Customers.Customers.Fields.CreatedOn")]
         public DateTime CreatedOn { get; set; }
@@ -203,20 +189,6 @@ namespace Ks.Admin.Models.Customers
 
 
 
-        ////reward points history
-        //public bool DisplayRewardPointsHistory { get; set; }
-        //[KsResourceDisplayName("Admin.Customers.Customers.RewardPoints.Fields.AddRewardPointsValue")]
-        //public int AddRewardPointsValue { get; set; }
-        //[KsResourceDisplayName("Admin.Customers.Customers.RewardPoints.Fields.AddRewardPointsMessage")]
-        //[AllowHtml]
-        //public string AddRewardPointsMessage { get; set; }
-        //[KsResourceDisplayName("Admin.Customers.Customers.RewardPoints.Fields.AddRewardPointsStore")]
-        //public int AddRewardPointsStoreId { get; set; }
-        //[KsResourceDisplayName("Admin.Customers.Customers.RewardPoints.Fields.AddRewardPointsStore")]
-        //public IList<SelectListItem> RewardPointsAvailableStores { get; set; }
-
-
-
         //send email model
         public SendEmailModel SendEmail { get; set; }
         //send PM model
@@ -230,6 +202,7 @@ namespace Ks.Admin.Models.Customers
         public IList<AssociatedExternalAuthModel> AssociatedExternalAuthRecords { get; set; }
 
         public bool HasContributions { get; set; }
+
         public string NameAmount1 { get; set; }
         public bool IsActiveAmount1 { set; get; }
         public string NameAmount2 { get; set; }
@@ -237,8 +210,14 @@ namespace Ks.Admin.Models.Customers
         public string NameAmount3 { get; set; }
         public bool IsActiveAmount3 { set; get; }
 
-
         public bool HasLoans { get; set; }
+
+        [KsResourceDisplayName("Admin.Customers.Customers.Fields.AuthorizeDiscount")]
+        public int AuthorizeDiscount { get; set; }
+        [KsResourceDisplayName("Admin.Customers.Customers.Fields.TotalCycle")]
+        public int TotalCycle { get; set; }
+        [KsResourceDisplayName("Admin.Customers.Customers.Fields.TotalPayed")]
+        public decimal TotalPayed { get; set; }
 
         #region Nested classes
 
@@ -374,6 +353,6 @@ namespace Ks.Admin.Models.Customers
         }
 
         #endregion
-         
+
     }
 }

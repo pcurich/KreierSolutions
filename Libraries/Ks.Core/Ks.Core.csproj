@@ -117,9 +117,13 @@
     <Compile Include="Domain\Common\SearchTerm.cs" />
     <Compile Include="Domain\Common\SearchTermReportLine.cs" />
     <Compile Include="Domain\Configuration\Setting.cs" />
+    <Compile Include="Domain\Contract\BankSettings.cs" />
     <Compile Include="Domain\Contract\Contribution.cs" />
     <Compile Include="Domain\Contract\ContributionPayment.cs" />
-    <Compile Include="Domain\Contract\LetterSettings.cs" />
+    <Compile Include="Domain\Contract\ContributionSatates.cs" />
+    <Compile Include="Domain\Contract\SequenceIdsSettings.cs" />
+    <Compile Include="Domain\Contract\Loan.cs" />
+    <Compile Include="Domain\Contract\LoanPayment.cs" />
     <Compile Include="Domain\Contract\PaymentSettings.cs" />
     <Compile Include="Domain\Contract\StateActivitySettings.cs" />
     <Compile Include="Domain\Customers\Customer.cs" />

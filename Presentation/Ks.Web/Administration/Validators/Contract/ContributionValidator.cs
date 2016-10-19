@@ -11,11 +11,11 @@ namespace Ks.Admin.Validators.Contract
     {
         public ContributionValidator(ILocalizationService localizationService)
         {
-            RuleFor(x => x.LetterNumber)
+            RuleFor(x => x.AuthorizeDiscount)
                 .GreaterThan(0)
                 .WithMessage(
                     localizationService.GetResource(
-                        "Admin.Contract.Contribution.Fields.LetterNumber.GreaterThanOrEqualTo1"));
+                        "Admin.Contract.Contribution.Fields.AuthorizeDiscount.GreaterThanOrEqualTo1"));
 
             RuleFor(x => x.YearId)
                 .GreaterThan(0)

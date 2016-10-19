@@ -1,0 +1,32 @@
+﻿@using System.Globalization
+@model CashFlowModel
+
+<div class="section-header">
+    <div class="title">
+        <img src="@Url.Content("~/Administration/Content/images/ico-system.png")" alt=""/>
+        @T("Admin.Configuration.Settings.StateActivitySettings.CashFlow")
+    </div>
+</div>
+
+<table class="adminContent">
+    <tr>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.Since):
+        </td>
+        <td class="adminData">
+            @Model.Since.ToString("c", new CultureInfo("es-PE"))
+        </td>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.To):
+        </td>
+        <td class="adminData">
+            @Model.To.ToString("c", new CultureInfo("es-PE"))
+        </td>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.Amount):
+        </td>
+        <td class="adminData">
+            @Model.Amount.ToString("c", new CultureInfo("es-PE"))
+        </td>
+    </tr>
+</table>

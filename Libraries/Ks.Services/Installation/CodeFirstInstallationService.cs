@@ -428,7 +428,7 @@ namespace Ks.Services.Installation
             var customerAttributes = new List<CustomerAttribute>
             {
                 new CustomerAttribute {Name = "Fecha de Ingreso al ACMR", AttributeControlTypeId = 20},
-                new CustomerAttribute {Name = "Situacion Administrativa", AttributeControlTypeId = 1},
+                new CustomerAttribute {Name = "Oficina de Descuento", AttributeControlTypeId = 1},
                 new CustomerAttribute {Name = "Codigo de Descuento", AttributeControlTypeId = 1},
                 new CustomerAttribute {Name = "Situación Militar", AttributeControlTypeId = 1},
                 new CustomerAttribute {Name = "Grado", AttributeControlTypeId = 1},
@@ -436,35 +436,84 @@ namespace Ks.Services.Installation
                 new CustomerAttribute {Name = "Estado Civil", AttributeControlTypeId = 1},
                 new CustomerAttribute {Name = "Unidad", AttributeControlTypeId = 4},
                 new CustomerAttribute {Name = "Gran Unidad", AttributeControlTypeId = 4},
-                new CustomerAttribute {Name = "División Militar", AttributeControlTypeId = 4}
+                new CustomerAttribute {Name = "División Militar", AttributeControlTypeId = 4},
+				
+				//nuevos
+				new CustomerAttribute {Name = "Guarnición", AttributeControlTypeId = 4},
+				new CustomerAttribute {Name = "Nombre Conyuge", AttributeControlTypeId = 4},
+				new CustomerAttribute {Name = "Nro de Solicitud Pago Personal", AttributeControlTypeId = 4},
+				new CustomerAttribute {Name = "Fecha de Solicitud Pago Personal", AttributeControlTypeId = 20},
+				new CustomerAttribute {Name = "Nro de Solicitud de Renuncia", AttributeControlTypeId = 4},
+				new CustomerAttribute {Name = "Fecha de Solicitud de Renuncia", AttributeControlTypeId = 20},
+				new CustomerAttribute {Name = "Es fallecido?", AttributeControlTypeId =2},
+				new CustomerAttribute {Name = "Fecha Fallecimiento", AttributeControlTypeId = 20},
+				new CustomerAttribute {Name = "Nro de Acta de Apertura de Carta Declaratoria", AttributeControlTypeId = 4},
+				new CustomerAttribute {Name = "Fecha de Acta de Apertura de Carta Declaratoria", AttributeControlTypeId = 20},
+				new CustomerAttribute {Name = "Nro Resolución Baja Asociado", AttributeControlTypeId = 4},
+				new CustomerAttribute {Name = "Fecha Resolución Baja Asociado", AttributeControlTypeId = 20},
+				new CustomerAttribute {Name = "Proceso Judicial (Nº Expediente)", AttributeControlTypeId = 4},
+				new CustomerAttribute {Name = "Beneficio Económico Comprometido", AttributeControlTypeId = 4},
+				new CustomerAttribute {Name = "Auxilio Económico Comprometido", AttributeControlTypeId = 4},
+				new CustomerAttribute {Name = "Motivo de Baja", AttributeControlTypeId = 4},
+				new CustomerAttribute {Name = "Fecha Pase Situación de Retiro", AttributeControlTypeId = 20},
+				new CustomerAttribute {Name = "Causal Pase Situación de Retiro", AttributeControlTypeId = 4},
+				new CustomerAttribute {Name = "Arma", AttributeControlTypeId = 1},
+				new CustomerAttribute {Name = "Teléfono Fijo", AttributeControlTypeId = 4},
+				new CustomerAttribute {Name = "Teléfonos Moviles", AttributeControlTypeId = 4},
+				new CustomerAttribute {Name = "Teléfono de Referencia", AttributeControlTypeId = 4},
+				new CustomerAttribute {Name = "Comentario del Usuario", AttributeControlTypeId = 4}				
+				
+				
             };
 
             var customerAttributeValues = new List<CustomerAttributeValue>
             {
-                new CustomerAttributeValue{Name = "CPMP",DisplayOrder = 1, CustomerAttributeId = 2},
-                new CustomerAttributeValue{Name = "PAGO PERSONAL",DisplayOrder = 2, CustomerAttributeId = 2},
-                new CustomerAttributeValue{Name = "OGECOE",DisplayOrder = 3, CustomerAttributeId = 2},
+				new CustomerAttributeValue{Name = "COPERE",DisplayOrder = 1, CustomerAttributeId = 2},
+                new CustomerAttributeValue{Name = "CPMP",DisplayOrder = 2, CustomerAttributeId = 2},
 
                 new CustomerAttributeValue{Name = "6008",DisplayOrder = 1, CustomerAttributeId = 3},
                 new CustomerAttributeValue{Name = "8001",DisplayOrder = 2, CustomerAttributeId = 3},
 
-                new CustomerAttributeValue{Name = "Retiro",DisplayOrder = 1, CustomerAttributeId =4},
-                new CustomerAttributeValue{Name = "Actividad",DisplayOrder = 1, CustomerAttributeId =4},
+                new CustomerAttributeValue{Name = "ACTIVIDAD".ToUpper(),DisplayOrder = 1, CustomerAttributeId =4},
+                new CustomerAttributeValue{Name = "RETIRO".ToUpper(),DisplayOrder = 2, CustomerAttributeId =4},
+				new CustomerAttributeValue{Name = "PERSONAL".ToUpper(),DisplayOrder = 2, CustomerAttributeId =4},
 
-                new CustomerAttributeValue{Name = "Teniente General",DisplayOrder = 1, CustomerAttributeId =5},
-                new CustomerAttributeValue{Name = "Teniente",DisplayOrder = 2, CustomerAttributeId =5},
-                new CustomerAttributeValue{Name = "Capitan",DisplayOrder = 3, CustomerAttributeId =5},
-                new CustomerAttributeValue{Name = "Mayor",DisplayOrder = 4, CustomerAttributeId =5},
-                new CustomerAttributeValue{Name = "Coronel",DisplayOrder = 5, CustomerAttributeId =5},
-                new CustomerAttributeValue{Name = "Alferez",DisplayOrder = 6, CustomerAttributeId =5},
-                new CustomerAttributeValue{Name = "Sargento",DisplayOrder = 7, CustomerAttributeId =5},
-                new CustomerAttributeValue{Name = "General de Brigada",DisplayOrder = 8, CustomerAttributeId =5},
-                new CustomerAttributeValue{Name = "Teniente",DisplayOrder = 9, CustomerAttributeId =5},
+                new CustomerAttributeValue{Name = "SUB-TENIENTE",DisplayOrder = 1, CustomerAttributeId =5},
+                new CustomerAttributeValue{Name = "TENIENTE",DisplayOrder = 2, CustomerAttributeId =5},
+                new CustomerAttributeValue{Name = "ALFERES CABALLERIA",DisplayOrder = 3, CustomerAttributeId =5},
+                new CustomerAttributeValue{Name = "ALFERES ARTILLERIA",DisplayOrder = 4, CustomerAttributeId =5},
+                new CustomerAttributeValue{Name = "CAPITAN",DisplayOrder = 5, CustomerAttributeId =5},
+                new CustomerAttributeValue{Name = "MAYOR",DisplayOrder = 6, CustomerAttributeId =5},
+                new CustomerAttributeValue{Name = "TENIENTE CORONEL",DisplayOrder = 7, CustomerAttributeId =5},
+                new CustomerAttributeValue{Name = "CORONEL",DisplayOrder = 8, CustomerAttributeId =5},
+                new CustomerAttributeValue{Name = "GENERAL DE BRIGADA",DisplayOrder = 9, CustomerAttributeId =5},
+                new CustomerAttributeValue{Name = "GENERAL DE DIVISION",DisplayOrder = 10, CustomerAttributeId =5},
 
-                new CustomerAttributeValue{Name = "Casado(a)",DisplayOrder = 1, CustomerAttributeId =7},
-                new CustomerAttributeValue{Name = "Divorciado(a)",DisplayOrder = 2, CustomerAttributeId =7},
-                new CustomerAttributeValue{Name = "Soltero(a)",DisplayOrder = 3, CustomerAttributeId =7},
-                new CustomerAttributeValue{Name = "Viudo(a)",DisplayOrder = 4, CustomerAttributeId =7},
+                new CustomerAttributeValue{Name = "CASADO(A)".ToUpper(),DisplayOrder = 1, CustomerAttributeId =7},
+                new CustomerAttributeValue{Name = "DIVORCIADO(A)".ToUpper(),DisplayOrder = 2, CustomerAttributeId =7},
+                new CustomerAttributeValue{Name = "SOLTERO(A)".ToUpper(),DisplayOrder = 3, CustomerAttributeId =7},
+                new CustomerAttributeValue{Name = "VIUDO(A)".ToUpper(),DisplayOrder = 4, CustomerAttributeId =7},
+				
+				
+				//nuevos
+				new CustomerAttributeValue{Name = "ART",DisplayOrder = 1, CustomerAttributeId = 29},
+				new CustomerAttributeValue{Name = "CAB",DisplayOrder = 2, CustomerAttributeId = 29},
+				new CustomerAttributeValue{Name = "COM",DisplayOrder = 3, CustomerAttributeId = 29},
+				new CustomerAttributeValue{Name = "DICYT",DisplayOrder = 4, CustomerAttributeId = 29},
+				new CustomerAttributeValue{Name = "FARM",DisplayOrder = 5, CustomerAttributeId = 29},
+				new CustomerAttributeValue{Name = "INF",DisplayOrder = 6, CustomerAttributeId = 29},
+				new CustomerAttributeValue{Name = "ING",DisplayOrder = 7, CustomerAttributeId = 29},
+				new CustomerAttributeValue{Name = "INT",DisplayOrder = 8, CustomerAttributeId = 29},
+				new CustomerAttributeValue{Name = "INTG",DisplayOrder = 9, CustomerAttributeId = 29},
+				new CustomerAttributeValue{Name = "MED",DisplayOrder = 10, CustomerAttributeId = 29},
+				new CustomerAttributeValue{Name = "MG",DisplayOrder = 11, CustomerAttributeId = 29},
+				new CustomerAttributeValue{Name = "ODONT",DisplayOrder = 12, CustomerAttributeId = 29},
+				new CustomerAttributeValue{Name = "PEF",DisplayOrder = 13, CustomerAttributeId = 29},
+				new CustomerAttributeValue{Name = "PSICO",DisplayOrder = 14, CustomerAttributeId = 29},
+				new CustomerAttributeValue{Name = "SAN",DisplayOrder = 15, CustomerAttributeId = 29},
+				new CustomerAttributeValue{Name = "SCYT",DisplayOrder = 16, CustomerAttributeId = 29},
+				new CustomerAttributeValue{Name = "SJE",DisplayOrder = 17, CustomerAttributeId = 29},
+				new CustomerAttributeValue{Name = "VET",DisplayOrder = 18, CustomerAttributeId = 29}
 
             };
             _customerAttributeRepository.Insert(customerAttributes);
@@ -589,14 +638,14 @@ namespace Ks.Services.Installation
                 DateOfBirthEnabled = true,
                 DateOfBirthRequired = false,
                 DateOfBirthMinimumAge = null,
-                CompanyEnabled = true,
-                StreetAddressEnabled = false,
+                CompanyEnabled = false,
+                StreetAddressEnabled = true,
                 StreetAddress2Enabled = false,
                 ZipPostalCodeEnabled = false,
-                CityEnabled = false,
-                CountryEnabled = false,
+                CityEnabled = true,
+                CountryEnabled = true,
                 CountryRequired = false,
-                StateProvinceEnabled = false,
+                StateProvinceEnabled = true,
                 StateProvinceRequired = false,
                 PhoneEnabled = false,
                 FaxEnabled = false,
@@ -656,12 +705,11 @@ namespace Ks.Services.Installation
                 AllowCustomersToSetTimeZone = false
             });
 
-            settingService.SaveSetting(new LetterSettings
+            settingService.SaveSetting(new SequenceIdsSettings
             {
-                FromNumber = 11670,
-                IsAutogenerate = true,
-                LastNumber = 11671,
-                StepNumber = 1
+                AuthorizeDiscount = 1583,
+                DeclaratoryLetter = 11671,
+                RegistrationForm = 54651
             });
 
             settingService.SaveSetting(new PaymentSettings
@@ -698,6 +746,15 @@ namespace Ks.Services.Installation
                 StateName5 = "E",
 
                 CashFlow = "<?xml version=\"1.0\"?>\r\n<ArrayOfCashFlowModel xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <CashFlowModel>\r\n    <Id>1</Id>\r\n    <Since>500</Since>\r\n    <To>3500</To>\r\n    <Amount>1300</Amount>\r\n  </CashFlowModel>\r\n  <CashFlowModel>\r\n    <Id>2</Id>\r\n    <Since>4000</Since>\r\n    <To>6500</To>\r\n    <Amount>2000</Amount>\r\n  </CashFlowModel>\r\n  <CashFlowModel>\r\n    <Id>3</Id>\r\n    <Since>7000</Since>\r\n    <To>9500</To>\r\n    <Amount>3000</Amount>\r\n  </CashFlowModel>\r\n  <CashFlowModel>\r\n    <Id>4</Id>\r\n    <Since>1000</Since>\r\n    <To>12000</To>\r\n    <Amount>4000</Amount>\r\n  </CashFlowModel>\r\n</ArrayOfCashFlowModel>"
+            });
+
+            settingService.SaveSetting(new BankSettings
+            {
+                IsActive1 = true, NameBank1 = "BBVA Continental", AccountNumber1 = "1111111111",
+                IsActive2 = true, NameBank2 = "Banco de Crédito del Perú",AccountNumber2 = "2222222222222",
+                IsActive3 = true, NameBank3 = "Interbank",AccountNumber3 = "33333333333333",
+                IsActive4 = true, NameBank4 = "BANBIF Banco Interamericano de Finanzas",AccountNumber4 = "44444444444444",
+                IsActive5 = true, NameBank5 = "Scotiabank Perú",AccountNumber5 = "5555555555555555"
             });
         }
 

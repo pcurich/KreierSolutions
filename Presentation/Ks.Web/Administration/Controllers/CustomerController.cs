@@ -8,6 +8,7 @@ using Ks.Admin.Extensions;
 using Ks.Admin.Models.Common;
 using Ks.Admin.Models.Contract;
 using Ks.Admin.Models.Customers;
+using Ks.Admin.Models.Settings;
 using Ks.Core;
 using Ks.Core.Domain.Catalog;
 using Ks.Core.Domain.Common;
@@ -30,6 +31,7 @@ using Ks.Web.Framework.Kendoui;
 using Ks.Web.Framework.Mvc;
 using Ks.Services.Configuration;
 using Ks.Services.Contract;
+using Ks.Web.Framework;
 
 namespace Ks.Admin.Controllers
 {
@@ -49,6 +51,7 @@ namespace Ks.Admin.Controllers
         //private readonly RewardPointsSettings _rewardPointsSettings;
         private readonly ICountryService _countryService;
         private readonly IStateProvinceService _stateProvinceService;
+        private readonly ICityService _cityService;
         private readonly IAddressService _addressService;
         private readonly CustomerSettings _customerSettings;
         //private readonly ITaxService _taxService;
@@ -60,6 +63,7 @@ namespace Ks.Admin.Controllers
         private readonly IExportManager _exportManager;
         private readonly ICustomerActivityService _customerActivityService;
         private readonly IContributionService _contributionService;
+        private readonly ILoanService _loanService;
         //private readonly IBackInStockSubscriptionService _backInStockSubscriptionService;
         //private readonly IPriceCalculationService _priceCalculationService;
         //private readonly IProductAttributeFormatter _productAttributeFormatter;
@@ -78,7 +82,8 @@ namespace Ks.Admin.Controllers
         private readonly IAddressAttributeService _addressAttributeService;
         private readonly IAddressAttributeFormatter _addressAttributeFormatter;
         private readonly PaymentSettings _paymentSettings;
-        private readonly LetterSettings _letterSettings;
+        private readonly SequenceIdsSettings _sequenceIdsSettings;
+        private readonly StateActivitySettings _stateActivitySettings;
         //private readonly IAffiliateService _affiliateService;
         //private readonly IWorkflowMessageService _workflowMessageService;
         //private readonly IRewardPointService _rewardPointService;
@@ -99,6 +104,7 @@ namespace Ks.Admin.Controllers
             //RewardPointsSettings rewardPointsSettings,
             ICountryService countryService,
             IStateProvinceService stateProvinceService,
+            ICityService cityService,
             IAddressService addressService,
             CustomerSettings customerSettings,
             //ITaxService taxService,
@@ -110,6 +116,7 @@ namespace Ks.Admin.Controllers
             IExportManager exportManager,
             ICustomerActivityService customerActivityService,
             IContributionService contributionService,
+            ILoanService loanService,
             //IBackInStockSubscriptionService backInStockSubscriptionService,
             //IPriceCalculationService priceCalculationService,
             //IProductAttributeFormatter productAttributeFormatter,
@@ -128,7 +135,8 @@ namespace Ks.Admin.Controllers
             IAddressAttributeService addressAttributeService,
             IAddressAttributeFormatter addressAttributeFormatter,
             PaymentSettings paymentSettings,
-            LetterSettings letterSettings
+            SequenceIdsSettings sequenceIdsSettings,
+            StateActivitySettings stateActivityettings
             //IAffiliateService affiliateService,
             //IWorkflowMessageService workflowMessageService,
             //IRewardPointService rewardPointService
@@ -146,6 +154,7 @@ namespace Ks.Admin.Controllers
             //this._rewardPointsSettings = rewardPointsSettings;
             this._countryService = countryService;
             this._stateProvinceService = stateProvinceService;
+            this._cityService = cityService;
             this._addressService = addressService;
             this._customerSettings = customerSettings;
             //this._taxService = taxService;
@@ -157,6 +166,7 @@ namespace Ks.Admin.Controllers
             this._exportManager = exportManager;
             this._customerActivityService = customerActivityService;
             this._contributionService = contributionService;
+            this._loanService = loanService;
             //this._backInStockSubscriptionService = backInStockSubscriptionService;
             //this._priceCalculationService = priceCalculationService;
             //this._productAttributeFormatter = productAttributeFormatter;
@@ -175,10 +185,11 @@ namespace Ks.Admin.Controllers
             this._addressAttributeService = addressAttributeService;
             this._addressAttributeFormatter = addressAttributeFormatter;
             this._paymentSettings = paymentSettings;
-            this._letterSettings = letterSettings;
+            this._sequenceIdsSettings = sequenceIdsSettings;
             //this._affiliateService = affiliateService;
             //this._workflowMessageService = workflowMessageService;
             //this._rewardPointService = rewardPointService;
+            this._stateActivitySettings = stateActivityettings;
         }
 
         #endregion
@@ -320,12 +331,22 @@ namespace Ks.Admin.Controllers
         [NonAction]
         protected virtual void PrepareCustomerModel(CustomerModel model, Customer customer, bool excludeProperties)
         {
-            var allStores = _ksSystemService.GetAllKsSystems();
             if (customer != null)
             {
                 model.Id = customer.Id;
-                var contribution = _contributionService.GetContributionById(customerId: model.Id);
+                var contribution = _contributionService.GetContributionById(customerId: model.Id,stateId:1);
                 model.HasContributions = contribution != null;
+                var loan = _loanService.GetLoanById(customerId: model.Id);
+                model.HasLoans = loan != null;
+
+                if (model.HasContributions && contribution!=null)
+                {
+                    model.AuthorizeDiscount =contribution.AuthorizeDiscount;
+                    model.TotalPayed =
+                        contribution.ContributionPayments.Where(x => x.StateId == (int)ContributionState.Pagado)
+                            .Sum(x => x.Amount1 + x.Amount2 + x.Amount3);
+                    model.TotalCycle = contribution.ContributionPayments.Count(x=>x.StateId==(int)ContributionState.Pagado);
+                }
 
                 if (!excludeProperties)
                 {
@@ -333,40 +354,14 @@ namespace Ks.Admin.Controllers
                     model.Username = customer.Username;
                     //model.VendorId = customer.VendorId;
                     model.AdminComment = customer.AdminComment;
-                    // model.IsTaxExempt = customer.IsTaxExempt;
                     model.Active = customer.Active;
 
-                    //var affiliate = _affiliateService.GetAffiliateById(customer.AffiliateId);
-                    //if (affiliate != null)
-                    //{
-                    //    model.AffiliateId = affiliate.Id;
-                    //    model.AffiliateName = affiliate.GetFullName();
-                    //}
-
                     model.TimeZoneId = customer.GetAttribute<string>(SystemCustomerAttributeNames.TimeZoneId);
-                    //model.VatNumber = customer.GetAttribute<string>(SystemCustomerAttributeNames.VatNumber);
-                    //model.VatNumberStatusNote = ((VatNumberStatus)customer.GetAttribute<int>(SystemCustomerAttributeNames.VatNumberStatusId))
-                    //    .GetLocalizedEnum(_localizationService, _workContext);
                     model.CreatedOn = _dateTimeHelper.ConvertToUserTime(customer.CreatedOnUtc, DateTimeKind.Utc);
                     model.LastActivityDate = _dateTimeHelper.ConvertToUserTime(customer.LastActivityDateUtc, DateTimeKind.Utc);
                     model.LastIpAddress = customer.LastIpAddress;
                     model.LastVisitedPage = customer.GetAttribute<string>(SystemCustomerAttributeNames.LastVisitedPage);
-
                     model.SelectedCustomerRoleIds = customer.CustomerRoles.Select(cr => cr.Id).ToArray();
-
-                    ////newsletter subscriptions
-                    //if (!String.IsNullOrEmpty(customer.Email))
-                    //{
-                    //    var newsletterSubscriptionStoreIds = new List<int>();
-                    //    foreach (var store in allStores)
-                    //    {
-                    //        var newsletterSubscription = _newsLetterSubscriptionService
-                    //            .GetNewsLetterSubscriptionByEmailAndStoreId(customer.Email, store.Id);
-                    //        if (newsletterSubscription != null)
-                    //            newsletterSubscriptionStoreIds.Add(store.Id);
-                    //        model.SelectedNewsletterSubscriptionStoreIds = newsletterSubscriptionStoreIds.ToArray();
-                    //    }
-                    //}
 
                     //form fields
                     model.FirstName = customer.GetAttribute<string>(SystemCustomerAttributeNames.FirstName);
@@ -379,7 +374,6 @@ namespace Ks.Admin.Controllers
                     model.StreetAddress = customer.GetAttribute<string>(SystemCustomerAttributeNames.StreetAddress);
                     model.StreetAddress2 = customer.GetAttribute<string>(SystemCustomerAttributeNames.StreetAddress2);
                     model.ZipPostalCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.ZipPostalCode);
-                    //model.City = customer.GetAttribute<string>(SystemCustomerAttributeNames.City);
                     model.CountryId = customer.GetAttribute<int>(SystemCustomerAttributeNames.CountryId);
                     model.StateProvinceId = customer.GetAttribute<int>(SystemCustomerAttributeNames.StateProvinceId);
                     model.CityId = customer.GetAttribute<int>(SystemCustomerAttributeNames.CityId);
@@ -393,18 +387,7 @@ namespace Ks.Admin.Controllers
             model.AllowCustomersToSetTimeZone = _dateTimeSettings.AllowCustomersToSetTimeZone;
             foreach (var tzi in _dateTimeHelper.GetSystemTimeZones())
                 model.AvailableTimeZones.Add(new SelectListItem { Text = tzi.DisplayName, Value = tzi.Id, Selected = (tzi.Id == model.TimeZoneId) });
-            //if (customer != null)
-            //{
-            //    model.DisplayVatNumber = _taxSettings.EuVatEnabled;
-            //}
-            //else
-            //{
-            //    model.DisplayVatNumber = false;
-            //}
-
-            ////vendors
-            //PrepareVendorsModel(model);
-            //customer attributes
+             
             PrepareCustomerAttributeModel(model, customer);
 
             model.GenderEnabled = _customerSettings.GenderEnabled;
@@ -452,50 +435,41 @@ namespace Ks.Admin.Controllers
 
                         model.AvailableStates.Add(new SelectListItem
                         {
-                            Text = _localizationService.GetResource(anyCountrySelected ? "Admin.Address.OtherNonUS" : "Admin.Address.SelectState"),
+                            Text = _localizationService.GetResource(anyCountrySelected ? "Admin.Address.Other" : "Admin.Address.SelectState"),
+                            Value = "0"
+                        });
+                    }
+
+                    //districts
+                    var cities = _cityService.GetCitiesByStateProvinceId(model.StateProvinceId).ToList();
+                    if (cities.Count > 0)
+                    {
+                        model.AvailableCities.Add(new SelectListItem { Text = _localizationService.GetResource("Admin.Address.SelectCity"), Value = "0" });
+
+                        foreach (var s in cities)
+                        {
+                            model.AvailableCities.Add(new SelectListItem { Text = s.Name, Value = s.Id.ToString(), Selected = (s.Id == model.CityId) });
+                        }
+                    }
+                    else
+                    {
+                        bool anyStateSelected = model.AvailableCountries.Any(x => x.Selected);
+
+                        model.AvailableCities.Add(new SelectListItem
+                        {
+                            Text = _localizationService.GetResource(anyStateSelected ? "Admin.Address.Other" : "Admin.Address.SelectCity"),
                             Value = "0"
                         });
                     }
                 }
             }
-
-            //newsletter subscriptions
-            //model.AvailableNewsletterSubscriptionStores = allStores
-            //    .Select(s => new CustomerModel.StoreModel() { Id = s.Id, Name = s.Name })
-            //    .ToList();
-
+            
             //customer roles
             model.AvailableCustomerRoles = _customerService
                 .GetAllCustomerRoles(true)
                 .Select(cr => cr.ToModel())
                 .ToList();
-            ////reward points history
-            //if (customer != null)
-            //{
-            //    model.DisplayRewardPointsHistory = _rewardPointsSettings.Enabled;
-            //    model.AddRewardPointsValue = 0;
-            //    model.AddRewardPointsMessage = "Some comment here...";
-
-            //    //stores
-            //    foreach (var store in allStores)
-            //    {
-            //        model.RewardPointsAvailableStores.Add(new SelectListItem
-            //        {
-            //            Text = store.Name,
-            //            Value = store.Id.ToString(),
-            //            Selected = (store.Id == _storeContext.CurrentStore.Id)
-            //        });
-            //    }
-            //}
-            //else
-            //{
-            //    model.DisplayRewardPointsHistory = false;
-            //}
-            ////external authentication records
-            //if (customer != null)
-            //{
-            //    model.AssociatedExternalAuthRecords = GetAssociatedExternalAuthRecords(customer);
-            //}
+            
             //sending of the welcome message:
             //1. "admin approval" registration method
             //2. already created customer
@@ -1031,32 +1005,7 @@ namespace Ks.Admin.Controllers
                         }
                     }
 
-                    //VAT number
-                    //if (_taxSettings.EuVatEnabled)
-                    //{
-                    //    var prevVatNumber = customer.GetAttribute<string>(SystemCustomerAttributeNames.VatNumber);
-
-                    //    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.VatNumber, model.VatNumber);
-                    //    //set VAT number status
-                    //    if (!String.IsNullOrEmpty(model.VatNumber))
-                    //    {
-                    //        if (!model.VatNumber.Equals(prevVatNumber, StringComparison.InvariantCultureIgnoreCase))
-                    //        {
-                    //            _genericAttributeService.SaveAttribute(customer,
-                    //                SystemCustomerAttributeNames.VatNumberStatusId,
-                    //                (int)_taxService.GetVatNumberStatus(model.VatNumber));
-                    //        }
-                    //    }
-                    //    else
-                    //    {
-                    //        _genericAttributeService.SaveAttribute(customer,
-                    //            SystemCustomerAttributeNames.VatNumberStatusId,
-                    //            (int)VatNumberStatus.Empty);
-                    //    }
-                    //}
-
-                    //vendor
-                    //customer.VendorId = model.VendorId;
+                    
 
                     //form fields
                     if (_dateTimeSettings.AllowCustomersToSetTimeZone)
@@ -1091,43 +1040,7 @@ namespace Ks.Admin.Controllers
                     //custom customer attributes
                     var customerAttributes = ParseCustomCustomerAttributes(customer, form);
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.CustomCustomerAttributes, customerAttributes);
-
-                    //newsletter subscriptions
-                    //if (!String.IsNullOrEmpty(customer.Email))
-                    //{
-                    //    var allKsSystems = _ksSystemService.GetAllKsSystems();
-                    //    foreach (var ksSystem in allKsSystems)
-                    //    {
-                    //        var newsletterSubscription = _newsLetterSubscriptionService
-                    //            .GetNewsLetterSubscriptionByEmailAndStoreId(customer.Email, ksSystem.Id);
-                    //        if (model.SelectedNewsletterSubscriptionStoreIds != null &&
-                    //            model.SelectedNewsletterSubscriptionStoreIds.Contains(ksSystem.Id))
-                    //        {
-                    //            //subscribed
-                    //            if (newsletterSubscription == null)
-                    //            {
-                    //                _newsLetterSubscriptionService.InsertNewsLetterSubscription(new NewsLetterSubscription
-                    //                {
-                    //                    NewsLetterSubscriptionGuid = Guid.NewGuid(),
-                    //                    Email = customer.Email,
-                    //                    Active = true,
-                    //                    StoreId = ksSystem.Id,
-                    //                    CreatedOnUtc = DateTime.UtcNow
-                    //                });
-                    //            }
-                    //        }
-                    //        else
-                    //        {
-                    //            //not subscribed
-                    //            if (newsletterSubscription != null)
-                    //            {
-                    //                _newsLetterSubscriptionService.DeleteNewsLetterSubscription(newsletterSubscription);
-                    //            }
-                    //        }
-                    //    }
-                    //}
-
-
+ 
                     //customer roles
                     foreach (var customerRole in allCustomerRoles)
                     {
@@ -1153,29 +1066,7 @@ namespace Ks.Admin.Controllers
                     }
                     _customerService.UpdateCustomer(customer);
                     PrepareSettingPaymentAmount(model);
-
-                    //ensure that a customer with a vendor associated is not in "Administrators" role
-                    //otherwise, he won't have access to the other functionality in admin area
-                    //if (customer.IsAdmin() && customer.VendorId > 0)
-                    //{
-                    //    customer.VendorId = 0;
-                    //    _customerService.UpdateCustomer(customer);
-                    //    ErrorNotification(_localizationService.GetResource("Admin.Customers.Customers.AdminCouldNotbeVendor"));
-                    //}
-
-                    //ensure that a customer in the Vendors role has a vendor account associated.
-                    //otherwise, he will have access to ALL products
-                    //if (customer.IsVendor() && customer.VendorId == 0)
-                    //{
-                    //    var vendorRole = customer
-                    //        .CustomerRoles
-                    //        .FirstOrDefault(x => x.SystemName == SystemCustomerRoleNames.Vendors);
-                    //    customer.CustomerRoles.Remove(vendorRole);
-                    //    _customerService.UpdateCustomer(customer);
-                    //    ErrorNotification(_localizationService.GetResource("Admin.Customers.Customers.CannotBeInVendoRoleWithoutVendorAssociated"));
-                    //}
-
-
+ 
                     //activity log
                     _customerActivityService.InsertActivity("EditMilitaryPerson", _localizationService.GetResource("ActivityLog.EditMilitaryPerson"), customer.Id, customer.Username ?? customer.Email);
 
@@ -1228,63 +1119,7 @@ namespace Ks.Admin.Controllers
 
             return RedirectToAction("Edit", new { id = customer.Id });
         }
-
-        //[HttpPost, ActionName("Edit")]
-        //[FormValueRequired("markVatNumberAsValid")]
-        //public ActionResult MarkVatNumberAsValid(CustomerModel model)
-        //{
-        //    if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
-        //        return AccessDeniedView();
-
-        //    var customer = _customerService.GetCustomerById(model.Id);
-        //    if (customer == null)
-        //        //No customer found with the specified id
-        //        return RedirectToAction("List");
-
-        //    _genericAttributeService.SaveAttribute(customer,
-        //        SystemCustomerAttributeNames.VatNumberStatusId,
-        //        (int)VatNumberStatus.Valid);
-
-        //    return RedirectToAction("Edit", new { id = customer.Id });
-        //}
-
-        //[HttpPost, ActionName("Edit")]
-        //[FormValueRequired("markVatNumberAsInvalid")]
-        //public ActionResult MarkVatNumberAsInvalid(CustomerModel model)
-        //{
-        //    if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
-        //        return AccessDeniedView();
-
-        //    var customer = _customerService.GetCustomerById(model.Id);
-        //    if (customer == null)
-        //        //No customer found with the specified id
-        //        return RedirectToAction("List");
-
-        //    _genericAttributeService.SaveAttribute(customer,
-        //        SystemCustomerAttributeNames.VatNumberStatusId,
-        //        (int)VatNumberStatus.Invalid);
-
-        //    return RedirectToAction("Edit", new { id = customer.Id });
-        //}
-
-        //[HttpPost, ActionName("Edit")]
-        //[FormValueRequired("remove-affiliate")]
-        //public ActionResult RemoveAffiliate(CustomerModel model)
-        //{
-        //    if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
-        //        return AccessDeniedView();
-
-        //    var customer = _customerService.GetCustomerById(model.Id);
-        //    if (customer == null)
-        //        //No customer found with the specified id
-        //        return RedirectToAction("List");
-
-        //    customer.AffiliateId = 0;
-        //    _customerService.UpdateCustomer(customer);
-
-        //    return RedirectToAction("Edit", new { id = customer.Id });
-        //}
-
+ 
         [HttpPost]
         public ActionResult Delete(int id)
         {
@@ -1698,9 +1533,9 @@ namespace Ks.Admin.Controllers
                 CustomerAdmCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode),
                 CustomerCompleteName = customer.GetFullName(),
                 TotalCycle = _paymentSettings.TotalCycle,
-                AmountTotal = _paymentSettings.Amount1+_paymentSettings.Amount2+_paymentSettings.Amount3,
+                AmountTotal = _paymentSettings.Amount1 + _paymentSettings.Amount2 + _paymentSettings.Amount3,
                 CreatedOn = DateTime.Now,
-                LetterNumber = _letterSettings.LastNumber,
+                AuthorizeDiscount = _sequenceIdsSettings.AuthorizeDiscount,
                 DayOfPayment = _paymentSettings.DayOfPayment,
                 MonthsList = PrepareMonthsList(),
                 YearsList = PrepareYearsList()
@@ -1724,28 +1559,35 @@ namespace Ks.Admin.Controllers
             model.MonthsList = PrepareMonthsList();
             model.YearsList = PrepareYearsList();
 
-            #region Only one record ant the time
-            var oldContributionActive = _contributionService.GetContributionById(customerId: model.CustomerId);
-
-            if (oldContributionActive != null)
-                ErrorNotification(_localizationService.GetResource("Admin.Contract.Contribution.Fields.ExistsContribution"));
-            #endregion
-
-            #region Different of time
-            var estimated = new DateTime(model.YearId, model.MonthId, model.DayOfPayment);
-            var today = DateTime.Now;
-
-            if (estimated <= today)
-                ErrorNotification(string.Format(_localizationService.GetResource("Admin.Contract.Contribution.Fields.DayOfPayment.AfterNow"), DateTime.Now));
-
-            #endregion
-
             if (ModelState.IsValid)
             {
+                #region Only one record ant the time
+                var oldContributionActive = _contributionService.GetContributionById(customerId: model.CustomerId, stateId:1);
+
+                if (oldContributionActive != null)
+                {
+                    ErrorNotification(_localizationService.GetResource("Admin.Contract.Contribution.Fields.ExistsContribution"));
+                    return View(model);
+                }
+
+                #endregion
+
+                #region Different of time
+                var estimated = new DateTime(model.YearId, model.MonthId, model.DayOfPayment);
+                var today = DateTime.Now;
+
+                if (estimated <= today)
+                {
+                    ErrorNotification(string.Format(_localizationService.GetResource("Admin.Contract.Contribution.Fields.DayOfPayment.AfterNow"), DateTime.Now));
+                    return View(model);
+                }
+                #endregion
+
+                #region Contribution
                 var contribution = new Contribution
                     {
                         CustomerId = model.CustomerId,
-                        LetterNumber = _letterSettings.LastNumber,
+                        AuthorizeDiscount = _sequenceIdsSettings.AuthorizeDiscount,
                         AmountTotal = 0,
                         Active = true,
                         CreatedOnUtc = DateTime.UtcNow,
@@ -1757,29 +1599,35 @@ namespace Ks.Admin.Controllers
                 {
                     contribution.ContributionPayments.Add(new ContributionPayment
                     {
+                        Number = cycle+1,
                         Amount1 = _paymentSettings.Amount1,
                         Amount2 = _paymentSettings.Amount2,
                         Amount3 = _paymentSettings.Amount3,
+                        IsAutomatic=true,
                         ScheduledDateOnUtc = _dateTimeHelper.ConvertToUtcTime(estimated.AddMonths(cycle)),
                         ProcessedDateOnUtc = null
                     });
                 }
 
                 _contributionService.InsertContribution(contribution);
+                
+                #endregion
 
                 var storeScope = GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
-                var letterSettings = _settingService.LoadSetting<LetterSettings>(storeScope);
+                var sequenceIdsSettings = _settingService.LoadSetting<SequenceIdsSettings>(storeScope);
 
-                letterSettings.LastNumber = _letterSettings.LastNumber + _letterSettings.StepNumber;
-                _settingService.SaveSetting(letterSettings);
+               sequenceIdsSettings.AuthorizeDiscount += 1;
+                _settingService.SaveSetting(sequenceIdsSettings);
                 //now clear settings cache
                 _settingService.ClearCache();
 
                 //activity log
                 _customerActivityService.InsertActivity("AddContribution", string.Format(_localizationService.GetResource("ActivityLog.AddContribution"), model.CustomerCompleteName, model.CustomerId));
                 SuccessNotification(_localizationService.GetResource("Admin.Contract.Contribution.Updated"));
+                
+                SaveSelectedTabIndex(4);
 
-                return View(model);
+                return RedirectToAction("Edit", new { id = model.CustomerId });
 
             }
 
@@ -1792,19 +1640,20 @@ namespace Ks.Admin.Controllers
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
                 return Content("");
 
-            var contributionPayments = _contributionService.GetAllPayments(customerId: customerId, pageIndex: command.Page - 1, pageSize: command.PageSize);
+            var contributionPayments = _contributionService.GetAllPayments(customerId: customerId,stateId:1, pageIndex: command.Page - 1, pageSize: command.PageSize);
             var gridModel = new DataSourceResult
             {
                 Data = contributionPayments.Select(x =>
                 {
                     var m = new ContributionPaymentsModel
                     {
+                        Number = x.Number,
                         Amount1 = x.Amount1,
                         Amount2 = x.Amount2,
                         Amount3 = x.Amount3,
-                        ScheduledDateOnUtc = x.ScheduledDateOnUtc,
-                        ProcessedDateOnUtc = x.ProcessedDateOnUtc,
-                        State = x.Active ? "Completado" : "Pendiente"
+                        ScheduledDateOn = _dateTimeHelper.ConvertToUserTime(x.ScheduledDateOnUtc, DateTimeKind.Local),
+                        ProcessedDateOn = x.ProcessedDateOnUtc.HasValue ? _dateTimeHelper.ConvertToUserTime(x.ProcessedDateOnUtc.Value, DateTimeKind.Local) : x.ProcessedDateOnUtc,
+                        State = x.ContributionState.ToSelectList().FirstOrDefault(r => r.Value == x.StateId.ToString()).Text
                     };
                     return m;
 
@@ -1813,6 +1662,451 @@ namespace Ks.Admin.Controllers
             };
 
             return Json(gridModel);
+        }
+
+        #endregion
+
+        #region Loan
+
+        public ActionResult LoanCreate(int customerId)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
+                return AccessDeniedView();
+
+            var customer = _customerService.GetCustomerById(customerId);
+            if (customer == null)
+                //No customer found with the specified id
+                return RedirectToAction("List");
+
+            var periods = CommonHelper.ConvertToSelectListItem(_stateActivitySettings.Periods, ',');
+            periods.Insert(0, new SelectListItem { Value = "0", Text = "----" });
+            var totalOfContribution = _contributionService.GetAllPayments(customerId: customerId);
+            var totalOfCyclesPayments = totalOfContribution.Count(x => x.StateId==(int)ContributionState.Pagado);
+            var model = (LoanModel)Session["loanModel"];
+            if (model == null || !model.IsPostBack)
+            {
+                var result = new LoanModel
+                {
+                    CustomerId = customer.Id,
+                    Periods = periods,
+                    TotalOfCycle = totalOfCyclesPayments
+                };
+
+                return View(result);
+            }
+            model.Periods = periods;
+            model.TotalOfCycle = totalOfCyclesPayments;
+            Session["loanModel"] = null;
+            return View(model);
+
+        }
+
+        [HttpPost, ActionName("LoanCreate")]
+        [FormValueRequired("EvaluatePopup")]
+        public ActionResult EvaluatePopup(LoanModel model)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
+                return AccessDeniedView();
+            
+            if (!ModelState.IsValid)
+            {
+                var periods = CommonHelper.ConvertToSelectListItem(_stateActivitySettings.Periods, ',');
+                periods.Insert(0, new SelectListItem { Value = "0", Text = "----" });
+                model.Periods = periods;
+                return View(model);
+            }
+
+            model = PrepareLoanModel(model);
+
+            if (model.CashFlowModels == null)
+            {
+                ErrorNotification(_localizationService.GetResource("Admin.Contract.Loan.CashFlow.Error"));
+                model.IsPostBack = false;
+            }
+            if (!(model.CashFlowModels != null &&  model.CashFlowModels.To >= model.Amount))
+            {
+                ErrorNotification(_localizationService.GetResource("Admin.Contract.Loan.CashFlow.Amount.Error"));
+                model.IsPostBack = false;
+            }
+            if (model.StateActivityModels == null)
+            {
+                ErrorNotification(string.Format(_localizationService.GetResource("Admin.Contract.Loan.StateActivity.Error"), model.Amount.ToString("c", new CultureInfo("es-PE"))));
+                model.IsPostBack = false;
+            }
+
+            if (model.StateActivityModels != null && model.StateActivityModels.HasWarranty && model.AdminCode == null)
+            {
+                ErrorNotification(_localizationService.GetResource("Admin.Contract.Loan.StateActivity.Warranty.Error"));
+                model.IsPostBack = false;
+            }
+            Session["loanModel"] = model;
+            return RedirectToAction("LoanCreate", new { customerId = model.CustomerId });
+        }
+
+
+        [HttpPost, ActionName("LoanCreate")]
+        [FormValueRequired("LoanCreate")]
+        public ActionResult LoanCreate(LoanModel model)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
+                return AccessDeniedView();
+
+            if (model.IsPostBack)
+            {
+                //No Errors
+                model = PrepareLoanModel(model);
+                var loan = new Loan
+                {
+                    CustomerId = model.CustomerId,
+                    WarrantyId = model.StateActivityModels.CustomerWarranty!=null?model.StateActivityModels.CustomerWarranty.CustomerId:0,
+                    LoanNumber = Guid.NewGuid(),
+                    Period = model.Period,
+                    Tea = model.PreCashFlow.Tea,
+                    Safe = model.PreCashFlow.Safe,
+                    LoanAmount = model.Amount,
+                    MonthlyQuota = model.PreCashFlow.MonthlyQuota,
+                    TotalFeed = model.PreCashFlow.TotalFeed,
+                    TotalSafe = model.PreCashFlow.TotalSafe,
+                    TotalAmount = model.PreCashFlow.TotalAmount,
+                    TotalToPay = model.PreCashFlow.TotalToPay,
+                    IsAuthorized = false,
+                    IsDelay = false,
+                    Active = true,
+                    CreatedOnUtc = DateTime.UtcNow,
+                    UpdatedOnUtc = null
+                };
+
+                for (var cycle = 1; cycle <= model.Period; cycle++)
+                {
+                    loan.LoanPayments.Add(new LoanPayment
+                    {
+                        Active = false, Quota = cycle,
+                        MonthlyFee = Math.Round(loan.TotalFeed / loan.Period,2),
+                        MonthlyCapital = Math.Round(loan.MonthlyQuota - loan.TotalFeed / loan.Period,2),
+                        MonthlyQuota = Math.Round(loan.MonthlyQuota,2),
+                        ScheduledDateOnUtc = _dateTimeHelper.ConvertToUtcTime(DateTime.UtcNow.AddMonths(cycle)),
+                        ProcessedDateOnUtc = null
+                    });
+                }
+                _loanService.InsertLoan(loan);
+                _customerActivityService.InsertActivity("AddNewLoan", _localizationService.GetResource("ActivityLog.AddNewLoan"), loan.LoanNumber, loan.Id);
+            }
+
+            return RedirectToAction("Edit", new { id = model.CustomerId });
+        }
+
+        [HttpPost]
+        public ActionResult ListLoans(DataSourceRequest command, int customerId)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
+                return Content("");
+
+            var loanPayments = _loanService.GetAllPayments(customerId: customerId, pageIndex: command.Page - 1, pageSize: command.PageSize);
+            var gridModel = new DataSourceResult
+            {
+                Data = loanPayments.Select(x =>
+                {
+                    var m = new LoanPaymentsModel
+                    {
+                        Quota = x.Quota,
+                        MonthlyQuota = x.MonthlyQuota,
+                        MonthlyFee = x.MonthlyFee,
+                        MonthlyCapital=x.MonthlyCapital,
+                        ScheduledDateOnUtc = _dateTimeHelper.ConvertToUserTime(x.ScheduledDateOnUtc,DateTimeKind.Local),
+                        ProcessedDateOnUtc = x.ProcessedDateOnUtc.HasValue ? _dateTimeHelper.ConvertToUserTime(x.ProcessedDateOnUtc.Value, DateTimeKind.Local) : x.ProcessedDateOnUtc,
+                        State = x.Active ? "Completado" : "Pendiente"
+                    };
+                    return m;
+
+                }),
+                Total = loanPayments.TotalCount
+            };
+
+            return Json(gridModel);
+        }
+
+        protected virtual CashFlowModel PrepareCashFlow(decimal cashFlow)
+        {
+            var avalibleCashFlow = XmlHelper.XmlToObject<List<CashFlowModel>>(@_stateActivitySettings.CashFlow);
+            for (int i = 0; i < avalibleCashFlow.Count; i++)
+            {
+                if (i + 1 != avalibleCashFlow.Count)
+                    if (avalibleCashFlow[i].Amount <= cashFlow && avalibleCashFlow[i + 1].Amount >= cashFlow)
+                        return avalibleCashFlow[i];
+            }
+            return null;
+        }
+
+        protected virtual StateActivityModel PrepareClassState(decimal amount, int cycle, Customer warranty, string admCode)
+        {
+            var classState = new StateActivityModel();
+
+            #region Class A
+            if (_stateActivitySettings.IsEnable1 &&
+                _stateActivitySettings.MinClycle1 * 12 <= cycle &&
+                _stateActivitySettings.MaxClycle1 * 12 >= cycle)
+            {
+                if (_stateActivitySettings.HasOnlySignature1 &&
+                    _stateActivitySettings.MinAmountWithSignature1 <= amount &&
+                    _stateActivitySettings.MaxAmountWithSignature1 >= amount)
+                {
+                    classState.StateName = _stateActivitySettings.StateName1;
+                    classState.IsEnable = _stateActivitySettings.IsEnable1;
+                    classState.MinClycle = _stateActivitySettings.MinClycle1;
+                    classState.MaxClycle = _stateActivitySettings.MaxClycle1;
+
+                    classState.HasOnlySignature = _stateActivitySettings.HasOnlySignature1;
+                    classState.MinAmountWithSignature = _stateActivitySettings.MinAmountWithSignature1;
+                    classState.MaxAmountWithSignature = _stateActivitySettings.MaxAmountWithSignature1;
+                    return classState;
+                }
+
+                if (_stateActivitySettings.HasWarranty1 &&
+                    _stateActivitySettings.MinAmountWithWarranty1 <= amount &&
+                    _stateActivitySettings.MaxAmountWithWarranty1 >= amount)
+                {
+                    classState.StateName = _stateActivitySettings.StateName1;
+                    classState.IsEnable = _stateActivitySettings.IsEnable1;
+                    classState.MinClycle = _stateActivitySettings.MinClycle1;
+                    classState.MaxClycle = _stateActivitySettings.MaxClycle1;
+
+                    classState.HasWarranty = _stateActivitySettings.HasWarranty1;
+                    classState.MinAmountWithWarranty = _stateActivitySettings.MinAmountWithWarranty1;
+                    classState.MaxAmountWithWarranty = _stateActivitySettings.MaxAmountWithWarranty1;
+                    classState.CustomerWarranty = new CustomerWarranty
+                    {
+                        CustomerId = warranty.Id,
+                        CompleteName = warranty.GetFullName(),
+                        AdminCode = admCode,
+                        IsActive = warranty.Active,
+                        IsContributor =
+                            _contributionService.GetContributionsByCustomer(customerId: warranty.Id).Count > 0
+                    };
+                    return classState;
+                }
+            };
+            #endregion
+
+            #region Class B
+            if (_stateActivitySettings.IsEnable2 &&
+                _stateActivitySettings.MinClycle2 * 12 <= cycle &&
+                _stateActivitySettings.MaxClycle2 * 12 >= cycle)
+            {
+                if (_stateActivitySettings.HasOnlySignature2 &&
+                    _stateActivitySettings.MinAmountWithSignature2 <= amount &&
+                    _stateActivitySettings.MaxAmountWithSignature2 >= amount)
+                {
+                    classState.StateName = _stateActivitySettings.StateName2;
+                    classState.IsEnable = _stateActivitySettings.IsEnable2;
+                    classState.MinClycle = _stateActivitySettings.MinClycle2;
+                    classState.MaxClycle = _stateActivitySettings.MaxClycle2;
+
+                    classState.HasOnlySignature = _stateActivitySettings.HasOnlySignature2;
+                    classState.MinAmountWithSignature = _stateActivitySettings.MinAmountWithSignature2;
+                    classState.MaxAmountWithSignature = _stateActivitySettings.MaxAmountWithSignature2;
+                    return classState;
+                }
+
+                if (_stateActivitySettings.HasWarranty2 &&
+                    _stateActivitySettings.MinAmountWithWarranty2 <= amount &&
+                    _stateActivitySettings.MaxAmountWithWarranty2 >= amount)
+                {
+                    classState.StateName = _stateActivitySettings.StateName2;
+                    classState.IsEnable = _stateActivitySettings.IsEnable2;
+                    classState.MinClycle = _stateActivitySettings.MinClycle2;
+                    classState.MaxClycle = _stateActivitySettings.MaxClycle2;
+
+                    classState.HasWarranty = _stateActivitySettings.HasWarranty2;
+                    classState.MinAmountWithWarranty = _stateActivitySettings.MinAmountWithWarranty2;
+                    classState.MaxAmountWithWarranty = _stateActivitySettings.MaxAmountWithWarranty2;
+                    classState.CustomerWarranty = new CustomerWarranty
+                    {
+                        CustomerId = warranty.Id,
+                        CompleteName = warranty.GetFullName(),
+                        AdminCode = admCode,
+                        IsActive = warranty.Active,
+                        IsContributor =
+                            _contributionService.GetContributionsByCustomer(customerId: warranty.Id).Count > 0
+                    };
+                    return classState;
+                };
+            };
+            #endregion
+
+            #region Class C
+            if (_stateActivitySettings.IsEnable3 &&
+                _stateActivitySettings.MinClycle3 * 12 <= cycle &&
+                _stateActivitySettings.MaxClycle3 * 12 >= cycle)
+            {
+                if (_stateActivitySettings.HasOnlySignature3 &&
+                    _stateActivitySettings.MinAmountWithSignature3 <= amount &&
+                    _stateActivitySettings.MaxAmountWithSignature3 >= amount)
+                {
+                    classState.StateName = _stateActivitySettings.StateName3;
+                    classState.IsEnable = _stateActivitySettings.IsEnable3;
+                    classState.MinClycle = _stateActivitySettings.MinClycle3;
+                    classState.MaxClycle = _stateActivitySettings.MaxClycle3;
+
+                    classState.HasOnlySignature = _stateActivitySettings.HasOnlySignature3;
+                    classState.MinAmountWithSignature = _stateActivitySettings.MinAmountWithSignature3;
+                    classState.MaxAmountWithSignature = _stateActivitySettings.MaxAmountWithSignature3;
+                    return classState;
+                }
+
+                if (_stateActivitySettings.HasWarranty3 &&
+                    _stateActivitySettings.MinAmountWithWarranty3 <= amount &&
+                    _stateActivitySettings.MaxAmountWithWarranty3 >= amount)
+                {
+                    classState.StateName = _stateActivitySettings.StateName3;
+                    classState.IsEnable = _stateActivitySettings.IsEnable3;
+                    classState.MinClycle = _stateActivitySettings.MinClycle3;
+                    classState.MaxClycle = _stateActivitySettings.MaxClycle3;
+
+                    classState.HasWarranty = _stateActivitySettings.HasWarranty3;
+                    classState.MinAmountWithWarranty = _stateActivitySettings.MinAmountWithWarranty3;
+                    classState.MaxAmountWithWarranty = _stateActivitySettings.MaxAmountWithWarranty3;
+                    classState.CustomerWarranty = new CustomerWarranty
+                    {
+                        CustomerId = warranty.Id,
+                        CompleteName = warranty.GetFullName(),
+                        AdminCode = admCode,
+                        IsActive = warranty.Active,
+                        IsContributor =
+                            _contributionService.GetContributionsByCustomer(customerId: warranty.Id).Count > 0
+                    };
+                    return classState;
+                };
+            };
+            #endregion
+
+            #region Class D
+            if (_stateActivitySettings.IsEnable4 &&
+                _stateActivitySettings.MinClycle4 * 12 <= cycle &&
+                _stateActivitySettings.MaxClycle4 * 12 >= cycle)
+            {
+                if (_stateActivitySettings.HasOnlySignature4 &&
+                    _stateActivitySettings.MinAmountWithSignature4 <= amount &&
+                    _stateActivitySettings.MaxAmountWithSignature4 >= amount)
+                {
+                    classState.StateName = _stateActivitySettings.StateName4;
+                    classState.IsEnable = _stateActivitySettings.IsEnable4;
+                    classState.MinClycle = _stateActivitySettings.MinClycle4;
+                    classState.MaxClycle = _stateActivitySettings.MaxClycle4;
+
+                    classState.HasOnlySignature = _stateActivitySettings.HasOnlySignature4;
+                    classState.MinAmountWithSignature = _stateActivitySettings.MinAmountWithSignature4;
+                    classState.MaxAmountWithSignature = _stateActivitySettings.MaxAmountWithSignature4;
+                    return classState;
+                }
+
+                if (_stateActivitySettings.HasWarranty4 &&
+                    _stateActivitySettings.MinAmountWithWarranty4 <= amount &&
+                    _stateActivitySettings.MaxAmountWithWarranty4 >= amount)
+                {
+                    classState.StateName = _stateActivitySettings.StateName4;
+                    classState.IsEnable = _stateActivitySettings.IsEnable4;
+                    classState.MinClycle = _stateActivitySettings.MinClycle4;
+                    classState.MaxClycle = _stateActivitySettings.MaxClycle4;
+
+                    classState.HasWarranty = _stateActivitySettings.HasWarranty4;
+                    classState.MinAmountWithWarranty = _stateActivitySettings.MinAmountWithWarranty4;
+                    classState.MaxAmountWithWarranty = _stateActivitySettings.MaxAmountWithWarranty4;
+                    classState.CustomerWarranty = new CustomerWarranty
+                    {
+                        CustomerId = warranty.Id,
+                        CompleteName = warranty.GetFullName(),
+                        AdminCode = admCode,
+                        IsActive = warranty.Active,
+                        IsContributor =
+                            _contributionService.GetContributionsByCustomer(customerId: warranty.Id).Count > 0
+                    };
+                    return classState;
+                };
+            };
+            #endregion
+
+            #region Class E
+            if (_stateActivitySettings.IsEnable5 &&
+                _stateActivitySettings.MinClycle5 * 12 <= cycle &&
+                _stateActivitySettings.MaxClycle5 * 12 >= cycle)
+            {
+                if (_stateActivitySettings.HasOnlySignature5 &&
+                    _stateActivitySettings.MinAmountWithSignature5 <= amount &&
+                    _stateActivitySettings.MaxAmountWithSignature5 >= amount)
+                {
+                    classState.StateName = _stateActivitySettings.StateName5;
+                    classState.IsEnable = _stateActivitySettings.IsEnable5;
+                    classState.MinClycle = _stateActivitySettings.MinClycle5;
+                    classState.MaxClycle = _stateActivitySettings.MaxClycle5;
+
+                    classState.HasOnlySignature = _stateActivitySettings.HasOnlySignature5;
+                    classState.MinAmountWithSignature = _stateActivitySettings.MinAmountWithSignature5;
+                    classState.MaxAmountWithSignature = _stateActivitySettings.MaxAmountWithSignature5;
+                    return classState;
+                }
+
+                if (_stateActivitySettings.HasWarranty5 &&
+                    _stateActivitySettings.MinAmountWithWarranty5 <= amount &&
+                    _stateActivitySettings.MaxAmountWithWarranty5 >= amount)
+                {
+                    classState.StateName = _stateActivitySettings.StateName5;
+                    classState.IsEnable = _stateActivitySettings.IsEnable5;
+                    classState.MinClycle = _stateActivitySettings.MinClycle5;
+                    classState.MaxClycle = _stateActivitySettings.MaxClycle5;
+
+                    classState.HasWarranty = _stateActivitySettings.HasWarranty5;
+                    classState.MinAmountWithWarranty = _stateActivitySettings.MinAmountWithWarranty5;
+                    classState.MaxAmountWithWarranty = _stateActivitySettings.MaxAmountWithWarranty5;
+                    classState.CustomerWarranty = new CustomerWarranty
+                    {
+                        CustomerId = warranty.Id,
+                        CompleteName = warranty.GetFullName(),
+                        AdminCode = admCode,
+                        IsActive = warranty.Active,
+                        IsContributor =
+                            _contributionService.GetContributionsByCustomer(customerId: warranty.Id).Count > 0
+                    };
+                    return classState;
+                };
+            };
+            #endregion
+
+            return null;
+        }
+
+        protected virtual LoanModel PrepareLoanModel(LoanModel model)
+        {
+            model.IsPostBack = true;
+            var customer = new Customer();
+            if (!string.IsNullOrWhiteSpace(model.AdminCode))
+            {
+                var entity = _genericAttributeService.GetAttributeForKeyValue("AdmCode", model.AdminCode);
+                customer = _customerService.GetCustomerById(entity.EntityId);
+            }
+
+            var totalOfContribution = _contributionService.GetAllPayments(customerId: model.CustomerId);
+            var totalOfCyclesPayments = totalOfContribution.Count(x => x.StateId == (int)ContributionState.Pagado);
+            //1 ) Get ABCDE 
+            model.StateActivityModels = PrepareClassState(model.Amount, totalOfCyclesPayments, customer, model.AdminCode);
+            //2) Get CashFlow
+            model.CashFlowModels = PrepareCashFlow(model.CashFlow);
+            //3) Calcule PreCashFlow
+            var totalfeed = model.Amount * Convert.ToDecimal(model.Period * _stateActivitySettings.Tea / 12);
+            var totalSafe = model.Amount * Convert.ToDecimal(_stateActivitySettings.Safe);
+            model.PreCashFlow = new PreCashFlowModel
+            {
+                Period = model.Period,
+                Amount = model.Amount,
+                Tea = _stateActivitySettings.Tea * 100,
+                Safe = _stateActivitySettings.Safe * 100,
+                TotalFeed = Math.Round(totalfeed, 2),
+                TotalSafe = Math.Round(totalSafe),
+                MonthlyQuota = Math.Round((model.Amount + totalfeed) / model.Period, 2),
+                TotalAmount = Math.Round(totalfeed + model.Amount, 2),
+                TotalToPay = Math.Round(model.Amount - totalSafe, 2)
+            };
+
+            return model;
         }
 
         #endregion

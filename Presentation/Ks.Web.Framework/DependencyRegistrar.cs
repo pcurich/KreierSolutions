@@ -214,6 +214,7 @@ namespace Ks.Web.Framework
             builder.RegisterType<Tokenizer>().As<ITokenizer>().InstancePerLifetimeScope();
             builder.RegisterType<EmailSender>().As<IEmailSender>().InstancePerLifetimeScope();
             builder.RegisterType<ContributionService>().As<IContributionService>().InstancePerLifetimeScope();
+            builder.RegisterType<LoanService>().As<ILoanService>().InstancePerLifetimeScope();
 
             //builder.RegisterType<FakeWorkflowMessageService>().As<IWorkflowMessageService>().InstancePerLifetimeScope();
 

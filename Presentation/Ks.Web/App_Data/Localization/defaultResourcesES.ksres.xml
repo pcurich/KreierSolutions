@@ -276,8 +276,8 @@
   <LocaleResource Name="Account.Fields.Fax.Required">
     <Value>Se requiere Fax</Value>
   </LocaleResource>
-  <LocaleResource Name="Account.Fields.FirstName">
-    <Value>Primer nombre</Value>
+  <LocaleResource Name="account.fields.firstname">
+    <Value>Nombres</Value>
   </LocaleResource>
   <LocaleResource Name="Account.Fields.FirstName.Required">
     <Value>Se requiere primer nombre.</Value>
@@ -582,8 +582,8 @@
   <LocaleResource Name="Account.YourPersonalDetails">
     <Value>Datos personales</Value>
   </LocaleResource>
-  <LocaleResource Name="ActivityLog.AddContribution">
-    <Value>Se ha agregado una nueva contribucion al personal militar ('{0}' - '{1}')</Value>
+  <LocaleResource Name="activitylog.addcontribution">
+    <Value>Se ha agregado una nueva aportación al personal militar ('{0}' - '{1}')</Value>
   </LocaleResource>
   <LocaleResource Name="ActivityLog.AddNewCategory">
     <Value>Se ha agregado una nueva categoría ('{0}')</Value>
@@ -599,6 +599,9 @@
   </LocaleResource>
   <LocaleResource Name="ActivityLog.AddNewGiftCard">
     <Value>Se ha agregado una nueva tarjeta de regalo ('{0}')</Value>
+  </LocaleResource>
+  <LocaleResource Name="activitylog.addnewloan">
+    <Value>Se ingreso nuevo Apoyo Social Económico con Numero ={0} e identificador ={1}</Value>
   </LocaleResource>
   <LocaleResource Name="ActivityLog.AddNewManufacturer">
     <Value>Se ha agregado un nuevo fabricante ('{0}')</Value>
@@ -786,8 +789,8 @@
   <LocaleResource Name="Address.Fields.FaxNumber.Required">
     <Value>Se requiere el número de fax.</Value>
   </LocaleResource>
-  <LocaleResource Name="Address.Fields.FirstName">
-    <Value>Primer nombre</Value>
+  <LocaleResource Name="address.fields.firstname">
+    <Value>Nombres</Value>
   </LocaleResource>
   <LocaleResource Name="Address.Fields.FirstName.Required">
     <Value>Se requiere primer nombre.</Value>
@@ -990,8 +993,8 @@
   <LocaleResource Name="Admin.Address.Fields.FaxNumber.Required">
     <Value>Se requiere el número de fax.</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Address.Fields.FirstName">
-    <Value>Primer nombre</Value>
+  <LocaleResource Name="admin.address.fields.firstname">
+    <Value>Nombres</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Address.Fields.FirstName.Hint">
     <Value>Introduzca el nombre</Value>
@@ -3120,6 +3123,9 @@
   <LocaleResource Name="Admin.Common.ConfigurationNotRequired">
     <Value>No se requiere configuración</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Common.Consult">
+    <Value>Consultar</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Common.CsvFile">
     <Value>Archivo CSV</Value>
   </LocaleResource>
@@ -3233,6 +3239,9 @@
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration">
     <Value>Configuración</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contributions">
+    <Value>Aportaciones</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.ACL">
     <Value>Accede a la lista de control</Value>
@@ -4335,6 +4344,36 @@
   <LocaleResource Name="Admin.Configuration.Settings.AllSettings.Fields.Value">
     <Value>Valor</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.BankSettings">
+    <Value>Configuracion de cuentas</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.BankSettings.Header">
+    <Value>Configuracion de cuentas Interbancarias</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.BankSettings.Fields.NameBank.Required">
+	<Value>El nombre del Banco es necesario</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.BankSettings.Fields.AcountNumber.Required">
+	<Value>Numero de cuenta es necesario</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.BankSettings.IsActive">
+    <Value>Activar</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.BankSettings.IsActive.Hint">
+    <Value>Activa el banco </Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.BankSettings.NameBank">
+    <Value>Banco</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.BankSettings.NameBank.Hint">
+    <Value>Nombre del banco</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.BankSettings.AcountNumber">
+    <Value>N° de Cuenta</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.BankSettings.AcountNumber.Hint">
+    <Value>N° de Cuenta</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Catalog">
     <Value>Ajustes de catálogo</Value>
   </LocaleResource>
@@ -4652,8 +4691,8 @@
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.ContributionPayment">
     <Value>Configuración de la Ficha de Inscripción</Value>
-  </LocaleResource>
-  <LocaleResource Name="admin.configuration.settings.customeruser">
+  </LocaleResource>  
+  <LocaleResource Name="Admin.Configuration.Settings.Customeruser">
     <Value>Configuración del Usuarios - Asociados</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.CustomerUser.AcceptPrivacyPolicyEnabled">
@@ -5523,36 +5562,36 @@
   <LocaleResource Name="Admin.Configuration.Settings.GeneralCommon.YoutubeLink.Hint">
     <Value>Especifique la URL de su canal de YouTube. Dejar en blanco si no tiene esa página.</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.LetterSettings">
-    <Value>Configuración de las cartas declaratorias</Value>
+  <LocaleResource Name="Admin.Configuration.Settings.SequenceIds">
+    <Value>Configuración de fichas</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.LetterSettings.FromNumber">
-    <Value>Número inicial</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.LetterSettings.FromNumber.Hint">
-    <Value>Establece el primer numero de la carta declaratoria desde el cual va a generar los demás</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.LetterSettings.Header">
+  <LocaleResource Name="Admin.Configuration.Settings.SequenceIds.DeclaratoryLetter.Header">
     <Value>Configuración de carta declaratoria</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.LetterSettings.IsAutogenerate">
-    <Value>Es Autogenerado?</Value>
+  <LocaleResource Name="Admin.Configuration.Settings.SequenceIds.AuthorizeDiscount.Header">
+    <Value>Configuración del descuento de autorización</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.LetterSettings.IsAutogenerate.Hint">
-    <Value>Establece si el sistema generará de manera automatica los numero de la carta declaratoria</Value>
+  <LocaleResource Name="Admin.Configuration.Settings.SequenceIds.RegistrationForm.Header">
+    <Value>Configuración de la ficha de inscripción</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.LetterSettings.LastNumber">
-    <Value>Número actual</Value>
+  <LocaleResource Name="Admin.Configuration.Settings.SequenceIds.DeclaratoryLetter">
+    <Value>N° carta declaratoria</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.LetterSettings.LastNumber.Hint">
-    <Value>último n+umero generado</Value>
+   <LocaleResource Name="Admin.Configuration.Settings.SequenceIds.DeclaratoryLetter.Hint">
+    <Value>N° carta declaratoria</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.LetterSettings.StepNumber">
-    <Value>Incrementar</Value>
+  <LocaleResource Name="Admin.Configuration.Settings.SequenceIds.AuthorizeDiscount">
+    <Value>N° Autorización de Descuento</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.LetterSettings.StepNumber.Hint">
-    <Value>Número para incrementar las cartas declaratorias</Value>
+   <LocaleResource Name="Admin.Configuration.Settings.SequenceIds.AuthorizeDiscount.Hint">
+    <Value>N° Autorización de Descuento</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.SequenceIds.RegistrationForm">
+    <Value>N° de la ficha de inscripción</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.SequenceIds.RegistrationForm.Hint">
+    <Value>N° de la ficha de inscripción</Value>
+  </LocaleResource>  
   <LocaleResource Name="Admin.Configuration.Settings.Media">
     <Value>Configuración de Medios</Value>
   </LocaleResource>
@@ -6177,6 +6216,12 @@
   <LocaleResource Name="Admin.Configuration.Settings.ShoppingCart.ShowProductImagesOnWishList.Hint">
     <Value>Determina si las imágenes de los productos se deben mostrar en la lista de deseos de los clientes.</Value>
   </LocaleResource>
+  <LocaleResource Name="admin.configuration.settings.stateactivity">
+    <Value>Configuración de Apoyo Social Económico</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivity.CashFlow.FindCustomer">
+    <Value>N° Administrativo (Garante)</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings">
     <Value>Situacion Militar</Value>
   </LocaleResource>
@@ -6186,23 +6231,23 @@
   <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.AddNew">
     <Value>Nuevo limite de liquidez</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.Periods">
-    <Value>Plazos</Value>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.CashFlow">
+    <Value>Liquidez</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.Periods.Hint">
-    <Value>Plazos para el prestamo, separados por comas</Value>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.CashFlow.Amount">
+    <Value>Liquidez</Value>
   </LocaleResource>
-   <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.Tea">
-    <Value>T.E.A</Value>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.CashFlow.Since">
+    <Value>Monto Minimo</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.Tea.Hint">
-    <Value>tasa de interés efectiva anual</Value>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.CashFlow.Since.Hint">
+    <Value>Monto MÍnimo para el préstamo</Value>
   </LocaleResource>
-   <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.Safe">
-    <Value>SEG. Desgravamen</Value>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.CashFlow.To">
+    <Value>Monto Máximo</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.Safe.Hint">
-    <Value>Seguro de desgravamen</Value>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.CashFlow.To.Hint">
+    <Value>Monto Maximo para el préstamo</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.HasOnlySignature">
     <Value>Con sola firma?</Value>
@@ -6221,6 +6266,9 @@
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.IsEnable.Hint">
     <Value>Establece si se va a considerar dicho valor</Value>
+  </LocaleResource>
+  <LocaleResource Name="admin.configuration.settings.stateactivitysettings.loan">
+    <Value>Apoyo Social Económico</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.MaxAmountWithSignature">
     <Value>Hasta</Value>
@@ -6261,11 +6309,29 @@
   <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.NewCashFlow">
     <Value>Nueva Liquidez</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.Periods">
+    <Value>Plazos</Value>
+  </LocaleResource>
+  <LocaleResource Name="admin.configuration.settings.stateactivitysettings.periods.hint">
+    <Value>Plazos para el Apoyo Social Económico, separados por comas</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.Safe">
+    <Value>SEG. Desgravamen</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.Safe.Hint">
+    <Value>Seguro de desgravamen (ingresar un numero desde 0 hasta 1, por ejemplo 0.01)</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.StateName">
     <Value>Nombre de la situacion militar en actividad</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.StateName.Hint">
-    <Value>Nombre de la situacion militar en actividad que determina las condiciones del prestamo</Value>
+  <LocaleResource Name="admin.configuration.settings.stateactivitysettings.statename.hint">
+    <Value>Nombre de la situacion militar en actividad que determina las condiciones del Apoyo Social Económico</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.Tea">
+    <Value>T.E.A</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.Tea.Hint">
+    <Value>tasa de interés efectiva anual (ingresar un numero desde 0 hasta 1, por ejemplo 0.08)</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.StoreScope">
     <Value>Configuración Multi-tienda</Value>
@@ -7440,20 +7506,32 @@
   <LocaleResource Name="Admin.Contract.Contribution.Fields.ExistsContribution">
     <Value>Ya se encuenta una contribucion activa</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Contract.Contribution.Fields.IsActive">
-    <Value>Es activo</Value>
+    <LocaleResource Name="Admin.Contract.Contribution.Fields.IsActive">
+    <Value>Activo</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Contribution.Fields.IsActive.Hint">
-    <Value>Determina si la contribucion esta vigente</Value>
+    <Value>Aportacion Activa</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Contract.Contribution.Fields.LetterNumber">
-    <Value>N° Carta Declaratoria</Value>
+  <LocaleResource Name="Admin.Contract.Contribution.Fields.State">
+    <Value>Estado</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Contract.Contribution.Fields.LetterNumber.GreaterThanOrEqualTo1">
+  <LocaleResource Name="Admin.Contract.Contribution.Fields.State.Hint">
+    <Value>Determina el estado de una aportación [Todos,Activos, Inactivos]</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Contribution.Fields.IsContributor">
+    <Value>Contribuyente?</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Contribution.Fields.IsContributor.Hint">
+    <Value>Establece si el garante es un contribuyente en la actualidad</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Contribution.Fields.AuthorizeDiscount">
+    <Value>N° Autorizacion del Descuento</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Contribution.Fields.AuthorizeDiscount.GreaterThanOrEqualTo1">
     <Value>Ingrese numero de carta declaratoria valido</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Contract.Contribution.Fields.LetterNumber.Hint">
-    <Value>Indentificador del N° de Carta Declaratoria</Value>
+  <LocaleResource Name="Admin.Contract.Contribution.Fields.AuthorizeDiscount.Hint">
+    <Value>Indentificador del N° de autorizacion del descuento</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Contribution.Fields.MonthId">
     <Value>Mes de inicio de los cobros</Value>
@@ -7469,18 +7547,6 @@
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Contribution.Fields.SearchAdmCode.Hint">
     <Value>Buscar por el N° Administrativo</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Contract.Contribution.Fields.SearchDateCreatedFrom">
-    <Value>Desde</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Contract.Contribution.Fields.SearchDateCreatedFrom.Hint">
-    <Value>Desde una fecha especifica de creación</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Contract.Contribution.Fields.SearchDateCreatedTo">
-    <Value>Hasta</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Contract.Contribution.Fields.SearchDateCreatedTo.Hint">
-    <Value>Hasta una fecha especifica de creación</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Contribution.Fields.SearchDni">
     <Value>N° Dni</Value>
@@ -7521,14 +7587,146 @@
   <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.Amount">
     <Value>Monto Cobrado</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.ProcessedDateOnUtc">
+  <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.Number">
+    <Value>N° Cuota</Value>
+  </LocaleResource> 
+  <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.Number.Hint">
+    <Value>N° Cuota para filtrar</Value>
+  </LocaleResource> 
+  <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.ProcessedDateOn">
     <Value>Fecha de cobro procesada.</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.ScheduledDateOnUtc">
+  <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.ScheduledDateOn">
     <Value>Fecha de Cobro programado.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.State">
-    <Value>Estado.</Value>
+    <Value>Estado</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.State.Hint">
+    <Value>Estado del pago [Pendiente, EnProceso, PagoParcial, Pagado].</Value>
+  </LocaleResource>
+   <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.BankName">
+    <Value>Banco</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.BankName.Hint">
+    <Value>Seleccione un banco</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.Type">
+    <Value>Tipo.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.Type.Hint">
+    <Value>Automatico o Manual</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.AccountNumber">
+    <Value>N° Cuenta.</Value>
+  </LocaleResource>
+     <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.AccountNumber.Hint">
+    <Value>Numero de cuenta de la asociación.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.TransactionNumber">
+    <Value>N° Transaccion.</Value>
+  </LocaleResource>
+     <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.TransactionNumber.Hint">
+    <Value>Numero de transaccion del pago.</Value>
+  </LocaleResource>
+   <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.Reference">
+    <Value>Referencia.</Value>
+  </LocaleResource>
+     <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.Reference.Hint">
+    <Value>Descripcion de referencia.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.CashFlow">
+    <Value>Liquidez</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.CashFlow.Amount.Error">
+    <Value>El valor del Importe sobrepasa el limite de liquidez. Aumente su liquidez</Value>
+  </LocaleResource>
+  <LocaleResource Name="admin.contract.loan.cashflow.error">
+    <Value>No cuenta con liquidez suficiente para solicitar un Apoyo Social Económico</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.Amount">
+    <Value>Importe</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.Amount.GreaterThanOrEqualTo1">
+    <Value>Ingrese un Importe mayor a cero</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.Amount.Hint">
+    <Value>Importe que se solicita</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.CashFlow">
+    <Value>Liquidez</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.CashFlow.GreaterThanOrEqualTo1">
+    <Value>Ingrese una liquidez mayor a cero</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.CashFlow.Hint">
+    <Value>Valor de la liquidez del solicitante</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.MonthlyFee">
+    <Value>Cuota Mensual</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.MonthlyFee.Hint">
+    <Value>Valor de la cuota mensual,( Importe + Intereses)/Periodo </Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.Period">
+    <Value>Periodo</Value>
+  </LocaleResource>
+  <LocaleResource Name="admin.contract.loan.fields.period.hint">
+    <Value>Numero de meses para el Apoyo Social Económico</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.Safe">
+    <Value>Seg. Desgravamen</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.Safe.Hint">
+    <Value>Seguro de desgravamen</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.Tea">
+    <Value>T.E.A.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.Tea.Hint">
+    <Value>Tasa de Interes Efectiva Anual</Value>
+  </LocaleResource>
+  <LocaleResource Name="admin.contract.loan.fields.totalamount">
+    <Value>Importe Total del Apoyo Social Económico</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.TotalAmount.Hint">
+    <Value>Valor del importe total,( Importe + Intereses) </Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.TotalFeed">
+    <Value>Total de Intereses</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.TotalFeed.Hint">
+    <Value>Total de Interese,Importe * Periodo * tea (mensual) </Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.TotalOfCycle">
+    <Value>Tiempo de aportante</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.TotalOfCycle.Hint">
+    <Value>Determina el tiempo en que esta siendo aportante activo</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.TotalSafe">
+    <Value>Total de Seg. Desgravamen</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.TotalSafe.Hint">
+    <Value>Total de Seg. Desgravamen, Importe * Seg desgravamen </Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.TotalToPay">
+    <Value>Importe a Prestar</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.TotalToPay.Hint">
+    <Value>Valor del importe a prestar,( Importe total - Imp desgravamen) </Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.StateActivity">
+    <Value>Categorización</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.StateActivity.Error">
+    <Value>No puede solicitar un importe de {0} debido a que sobrepasa lo estipulado por la asociación</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.StateActivity.Warranty.Error">
+    <Value>Requiere un garante debido al importe que solicita. Ingrese el N° Administrativo de un garante activo</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Summary">
+    <Value>Pre Evaluación</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.CurrentCarts">
     <Value>Carritos actuales</Value>
@@ -7762,7 +7960,7 @@
     <Value>Direcciones</Value>
   </LocaleResource>
   <LocaleResource Name="admin.customers.customers.addresses.addbutton">
-    <Value>Agregar Aportación1</Value>
+    <Value>Agregar Direccion</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.Addresses.Added">
     <Value>La nueva dirección ha sido agregada con éxito.</Value>
@@ -7806,14 +8004,35 @@
   <LocaleResource Name="Admin.Customers.Customers.Contributions">
     <Value>Aportaciones</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Customers.Customers.Contributions.AddButton">
-    <Value>Asignar una nueva contribucion</Value>
+  <LocaleResource Name="Admin.Customers.Customers.Contributions.Updated">
+    <Value>Se actualizo satisfactoriamente</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Customers.Customers.Contributions.AddNew">
-    <Value>Agregar nueva contribución</Value>
+  <LocaleResource Name="Admin.Customers.Customers.Contributions.Fields.AccountNumber.Required">
+    <Value>Numero de cuenta Requerido</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Contributions.Fields.TransactionNumber.Required">
+    <Value>Numero de transaccion Requerido</Value>
+  </LocaleResource>
+  <LocaleResource Name="admin.customers.customers.contributions.addbutton">
+    <Value>Nueva Aportación</Value>
+  </LocaleResource>
+  <LocaleResource Name="admin.customers.customers.contributions.addnew">
+    <Value>Agregar nueva Aportación</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.Contributions.BackToCustomer">
     <Value>Volver a los detalles del afiliado</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Contributions.Sumamry">
+    <Value>Resumen</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Contributions.Details">
+    <Value>Listado</Value>
+  </LocaleResource>
+   <LocaleResource Name="Admin.Customers.Contributions.ValidActive">
+    <Value>Error, el pago a la aporetacion que selecciono, no se encuentra valida </Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Contributions.ValidPayment">
+    <Value>Error, no se puede pagar cambiar la informacion del pago</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.CurrentShoppingCart">
     <Value>Carrito actual</Value>
@@ -7920,8 +8139,8 @@
   <LocaleResource Name="Admin.Customers.Customers.Fields.Fax.Required">
     <Value>Se requiere Fax</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Customers.Customers.Fields.FirstName">
-    <Value>Primer nombre</Value>
+  <LocaleResource Name="admin.customers.customers.fields.firstname">
+    <Value>Nombres</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.Fields.FirstName.Hint">
     <Value>El primer nombre del cliente.</Value>
@@ -7977,6 +8196,24 @@
   <LocaleResource Name="Admin.Customers.Customers.Fields.LastVisitedPage.Hint">
     <Value>La última fecha de visita (tienda pública).</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Fields.AuthorizeDiscount">
+    <Value>Autorizacion de Descuento</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Fields.AuthorizeDiscount.Hint">
+    <Value>Numero de la Autorizacion de Descuento</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Fields.TotalCycle">
+    <Value>Tiempo de aportación</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Fields.TotalCycle.Hint">
+    <Value>Tiempo de aportación en la asociación</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Fields.TotalPayed">
+    <Value>Monto total aportado</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Fields.TotalPayed.Hint">
+    <Value>Monto total aportado</Value>
+  </LocaleResource>  
   <LocaleResource Name="Admin.Customers.Customers.Fields.Password">
     <Value>Contraseña</Value>
   </LocaleResource>
@@ -8130,8 +8367,8 @@
   <LocaleResource Name="Admin.Customers.Customers.List.SearchEmail.Hint">
     <Value>Buscar por un email específico</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Customers.Customers.List.SearchFirstName">
-    <Value>Primer nombre</Value>
+  <LocaleResource Name="admin.customers.customers.list.searchfirstname">
+    <Value>Nombres</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.List.SearchFirstName.Hint">
     <Value>Buscar por primer nombre</Value>
@@ -8160,8 +8397,17 @@
   <LocaleResource Name="Admin.Customers.Customers.List.SearchZipCode.Hint">
     <Value>Buscar por código postal.</Value>
   </LocaleResource>
-  <LocaleResource Name="admin.customers.customers.loan">
+  <LocaleResource Name="Admin.Customers.Customers.Loan">
     <Value>Apoyo Social Económico</Value>
+  </LocaleResource>
+  <LocaleResource Name="admin.customers.customers.loan.addbutton">
+    <Value>Nuevo Apoyo Social Económico</Value>
+  </LocaleResource>
+  <LocaleResource Name="admin.customers.customers.loan.addnew">
+    <Value>Agregar nuevo Apoyo Social Económico</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Loan.BackToCustomer">
+    <Value>Volver a los detalles del afiliado</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.Orders">
     <Value>órdenes</Value>

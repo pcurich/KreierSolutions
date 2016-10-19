@@ -150,6 +150,21 @@ namespace Ks.Core
             return result;
         }
 
+        public static T XmlToObject<T>(string xml)
+        {
+
+            var serializer = new XmlSerializer(typeof(T));
+
+            using (var textReader = new StringReader(xml))
+            {
+                using (var xmlReader = XmlReader.Create(textReader))
+                {
+                    return (T)serializer.Deserialize(xmlReader);
+                }
+            }
+        }
+  
+
         #endregion
     }
 }

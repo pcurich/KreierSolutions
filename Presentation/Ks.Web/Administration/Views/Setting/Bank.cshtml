@@ -1,0 +1,240 @@
+﻿@model BankSettingsModel
+@Html.ValidationSummary(true)
+@{
+    //page title
+    ViewBag.Title = T("Admin.Configuration.Settings.BankSettings").Text;
+}
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="section-header">
+        <div class="title">
+            <img src="@Url.Content("~/Administration/Content/images/ico-configuration.png")" alt="" />
+            @T("Admin.Configuration.Settings.BankSettings")
+        </div>
+        <div class="options">
+            <input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")" />
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $("#paymentsettings-edit").kendoTabStrip({
+                animation: {
+                    open: {
+                        effects: "fadeIn"
+                    }
+                },
+                select: tabstrip_on_tab_select
+            });
+        });
+    </script>
+    <div id="paymentsettings-edit">
+        <ul>
+            <li @Html.RenderSelectedTabIndex(0, GetSelectedTabIndex())>
+                @T("Admin.Configuration.Settings.BankSettings.Header")
+            </li>
+        </ul>
+        <div>
+            @TabBankSettings()
+        </div>
+    </div>
+
+    @helper TabBankSettings()
+{
+    <script type="text/javascript">
+    var temp = 0;
+    $(document).ready(function () {
+
+        $("#@Html.FieldIdFor(model => model.IsActive1)").click(toggleActive1);
+        $("#@Html.FieldIdFor(model => model.IsActive2)").click(toggleActive2);
+        $("#@Html.FieldIdFor(model => model.IsActive3)").click(toggleActive3);
+        $("#@Html.FieldIdFor(model => model.IsActive4)").click(toggleActive4);
+        $("#@Html.FieldIdFor(model => model.IsActive5)").click(toggleActive5);
+
+        toggleActive1();
+        toggleActive2();
+        toggleActive3();
+        toggleActive4();
+        toggleActive5();
+    });
+
+
+    function toggleActive1() {
+        if ($('#@Html.FieldIdFor(model => model.IsActive1)').is(':checked')) {
+            $('#pnlIsActive1Enabled').show();
+        } else {
+            $('#pnlIsActive1Enabled').hide();
+            $('#@Html.FieldIdFor(model => model.NameBank1)').val("");
+            $('#@Html.FieldIdFor(model => model.AccountNumber1)').val("");
+        }
+    }
+
+    function toggleActive2() {
+        if ($('#@Html.FieldIdFor(model => model.IsActive2)').is(':checked')) {
+            $('#pnlIsActive2Enabled').show();
+        } else {
+            $('#pnlIsActive2Enabled').hide();
+            $('#@Html.FieldIdFor(model => model.NameBank2)').val("");
+            $('#@Html.FieldIdFor(model => model.AccountNumber2)').val("");
+        }
+    }
+
+    function toggleActive3() {
+        if ($('#@Html.FieldIdFor(model => model.IsActive3)').is(':checked')) {
+            $('#pnlIsActive3Enabled').show();
+        } else {
+            $('#pnlIsActive3Enabled').hide();
+            $('#@Html.FieldIdFor(model => model.NameBank3)').val("");
+            $('#@Html.FieldIdFor(model => model.AccountNumber3)').val("");
+        }
+    }
+
+    function toggleActive4() {
+        if ($('#@Html.FieldIdFor(model => model.IsActive4)').is(':checked')) {
+            $('#pnlIsActive4Enabled').show();
+        } else {
+            $('#pnlIsActive4Enabled').hide();
+            $('#@Html.FieldIdFor(model => model.NameBank4)').val("");
+            $('#@Html.FieldIdFor(model => model.AccountNumber4)').val("");
+        }
+    }
+
+    function toggleActive5() {
+        if ($('#@Html.FieldIdFor(model => model.IsActive5)').is(':checked')) {
+            $('#pnlIsActive5Enabled').show();
+        } else {
+            $('#pnlIsActive5Enabled').hide();
+            $('#@Html.FieldIdFor(model => model.NameBank5)').val("");
+            $('#@Html.FieldIdFor(model => model.AccountNumber5)').val("");
+        }
+    }
+
+</script>
+
+        <table class="adminContent">
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.IsActive1):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.IsActive1)
+                </td>
+            </tr>
+            <tr id="pnlIsActive1Enabled">
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.NameBank1):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.NameBank1)
+                    @Html.ValidationMessageFor(model => model.NameBank1)
+                </td>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.AccountNumber1):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.AccountNumber1)
+                    @Html.ValidationMessageFor(model => model.AccountNumber1)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.IsActive2):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.IsActive2)
+                </td>
+            </tr>
+            <tr id="pnlIsActive2Enabled">
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.NameBank2):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.NameBank2)
+                    @Html.ValidationMessageFor(model => model.NameBank2)
+                </td>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.AccountNumber2):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.AccountNumber2)
+                    @Html.ValidationMessageFor(model => model.AccountNumber2)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.IsActive3):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.IsActive3)
+                </td>
+            </tr>
+            <tr id="pnlIsActive3Enabled">
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.NameBank3):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.NameBank3)
+                    @Html.ValidationMessageFor(model => model.NameBank3)
+                </td>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.AccountNumber3):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.AccountNumber3)
+                    @Html.ValidationMessageFor(model => model.AccountNumber3)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.IsActive4):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.IsActive4)
+                </td>
+            </tr>
+            <tr id="pnlIsActive4Enabled">
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.NameBank4):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.NameBank4)
+                    @Html.ValidationMessageFor(model => model.NameBank4)
+                </td>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.AccountNumber4):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.AccountNumber4)
+                    @Html.ValidationMessageFor(model => model.AccountNumber4)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.IsActive5):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.IsActive5)
+                </td>
+            </tr>
+            <tr id="pnlIsActive5Enabled">
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.NameBank5):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.NameBank5)
+                    @Html.ValidationMessageFor(model => model.NameBank5)
+                </td>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.AccountNumber5):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.AccountNumber5)
+                    @Html.ValidationMessageFor(model => model.AccountNumber5)
+                </td>
+            </tr> 
+        </table>
+}
+}

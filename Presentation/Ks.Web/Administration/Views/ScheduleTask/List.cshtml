@@ -9,13 +9,13 @@
         @T("Admin.System.ScheduleTasks")
     </div>
 </div>
-<script type="text/javascript">
+    <script type="text/javascript">
         $(document).ready(function () {
             $("#schedule-tasks-grid").on("click", ".run-now", function (e) {
                 showThrobber('@Html.Raw(HttpUtility.JavaScriptStringEncode(T("Admin.System.ScheduleTasks.RunNow.Progress").Text))');
             });
         });
-</script>
+    </script>    
 <table class="adminContent">
     <tr>
         <td>
@@ -56,9 +56,9 @@
                                         Seconds: { editable: true, type: "number" },
                                         Enabled: { editable: true, type: "boolean" },
                                         StopOnError: { editable: true, type: "boolean" },
-                                        LastStartUtc: { editable: false, type: "date" },
-                                        LastEndUtc: { editable: false, type: "date" },
-                                        LastSuccessUtc: { editable: false, type: "date" },
+                                        LastStartUtc: { editable: false },
+                                        LastEndUtc: { editable: false  },
+                                        LastSuccessUtc: { editable: false  },
                                         Id: { editable: false, type: "number" }
                                     }
                                 }
@@ -146,5 +146,3 @@
         </td>
     </tr>
 </table>
-
-

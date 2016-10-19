@@ -172,25 +172,70 @@ namespace Ks.Admin.Controllers
 
         #endregion
 
-        #region DeclaratoryLetter
+        #region Bank
 
-        public ActionResult DeclaratoryLetter()
+        public ActionResult Bank()
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings))
                 return AccessDeniedView();
 
             var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
-            var letterSettings = _settingService.LoadSetting<LetterSettings>(storeScope);
+            var bankSettings = _settingService.LoadSetting<BankSettings>(storeScope);
+
+            var model = bankSettings.ToModel();
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Bank(BankSettingsModel model)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings))
+                return AccessDeniedView();
+
+            if(!ModelState.IsValid)
+                return View(model);
+
+            var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
+            var bankSettings = _settingService.LoadSetting<BankSettings>(storeScope);
+
+            bankSettings = model.ToEntity(bankSettings);
+            _settingService.SaveSetting(bankSettings);
+
+            //now clear settings cache
+            _settingService.ClearCache();
+
+            //activity log
+            _customerActivityService.InsertActivity("EditSettings", _localizationService.GetResource("ActivityLog.EditSettings"));
+
+            SuccessNotification(_localizationService.GetResource("Admin.Configuration.Updated"));
+
+            //selected tab
+            SaveSelectedTabIndex();
+
+            return RedirectToAction("Bank");
+        }
+
+        #endregion
+
+        #region SequenceIds
+
+        public ActionResult SequenceIds()
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings))
+                return AccessDeniedView();
+
+            var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
+            var letterSettings = _settingService.LoadSetting<SequenceIdsSettings>(storeScope);
 
             var model = letterSettings.ToModel();
             return View(model);
         }
 
         [HttpPost]
-        public ActionResult DeclaratoryLetter(LetterSettingsModel model)
+        public ActionResult SequenceIds(SequenceIdsSettingsModel model)
         {
             var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
-            var letterSettings = _settingService.LoadSetting<LetterSettings>(storeScope);
+            var letterSettings = _settingService.LoadSetting<SequenceIdsSettings>(storeScope);
 
             letterSettings = model.ToEntity(letterSettings);
             _settingService.SaveSetting(letterSettings);
@@ -206,7 +251,7 @@ namespace Ks.Admin.Controllers
             //selected tab
             SaveSelectedTabIndex();
 
-            return RedirectToAction("DeclaratoryLetter");
+            return RedirectToAction("SequenceIds");
         }
 
         #endregion
@@ -311,12 +356,28 @@ namespace Ks.Admin.Controllers
             return View(model);
         }
 
-        public ActionResult CashFlowCreatePopup()
+        [HttpPost]
+        public ActionResult StateActivity(StateActivitySettingsModel model)
         {
-            if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings))
-                return AccessDeniedView();
+            var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
+            var letterSettings = _settingService.LoadSetting<StateActivitySettings>(storeScope);
 
-            return View(new CashFlowModel());
+            model.CashFlow = letterSettings.CashFlow;
+            letterSettings = model.ToEntity(letterSettings);
+            _settingService.SaveSetting(letterSettings);
+
+            //now clear settings cache
+            _settingService.ClearCache();
+
+            //activity log
+            _customerActivityService.InsertActivity("EditSettings", _localizationService.GetResource("ActivityLog.EditSettings"));
+
+            SuccessNotification(_localizationService.GetResource("Admin.Configuration.Updated"));
+
+            //selected tab
+            SaveSelectedTabIndex();
+
+            return RedirectToAction("StateActivity");
         }
 
         [HttpPost]
@@ -328,19 +389,50 @@ namespace Ks.Admin.Controllers
             var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
             var stateActivitySettings = _settingService.LoadSetting<StateActivitySettings>(storeScope);
 
-            List<CashFlowModel> model = new List<CashFlowModel>();
+            //var  model = new List<CashFlowModel>
+            //{
+            //    new CashFlowModel{Id = 1,Since = 500, To = 3500, Amount = 1300},
+            //    new CashFlowModel{Id = 2,Since = 4000, To = 6500, Amount = 2000},
+            //    new CashFlowModel{Id = 3,Since = 7000, To = 9500, Amount = 3000},
+            //    new CashFlowModel{Id = 4,Since = 1000, To = 1200, Amount = 4000},
+            //};
+            //stateActivitySettings.CashFlow = XmlHelper.Serialize2String(model).Replace("\"", "'").Replace("\r", "").Replace("\n", "");
+            //_settingService.SaveSetting(stateActivitySettings);
+            //stateActivitySettings = _settingService.LoadSetting<StateActivitySettings>(storeScope);
 
-            if(!string.IsNullOrEmpty(stateActivitySettings.CashFlow)))
-                model=XmlHelper.Deserialize<List<CashFlowModel>>(stateActivitySettings.CashFlow);
-            
+            //try
+            //{
+            //    if (!string.IsNullOrEmpty(stateActivitySettings.CashFlow))
+            //        model = XmlHelper.XmlToObject<List<CashFlowModel>>(@stateActivitySettings.CashFlow);
+            //}
+            //catch (Exception e)
+            //{
+            //    var xx = e.Message;
+            //    xx = xx + "ss";
+            //}
+            var model = new List<CashFlowModel>();
+
+            if (!string.IsNullOrEmpty(stateActivitySettings.CashFlow))
+            {
+                model = XmlHelper.XmlToObject<List<CashFlowModel>>(@stateActivitySettings.CashFlow);
+                model = model.OrderBy(x => x.Since).ToList();
+            }
 
             var gridModel = new DataSourceResult
             {
                 Data = model,
                 Total = model.Count
             };
-           
+
             return Json(gridModel);
+        }
+
+        public ActionResult CashFlowCreatePopup()
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings))
+                return AccessDeniedView();
+
+            return View(new CashFlowModel());
         }
 
         [HttpPost]
@@ -350,15 +442,23 @@ namespace Ks.Admin.Controllers
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings))
                 return AccessDeniedView();
 
-            if (Session["model"] == null)
-            {
-                Session["model"] = model;
-            }
+            var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
+            var stateActivitySettings = _settingService.LoadSetting<StateActivitySettings>(storeScope);
+
+            List<CashFlowModel> _model = new List<CashFlowModel>();
+
+            if (!string.IsNullOrEmpty(stateActivitySettings.CashFlow))
+                _model = XmlHelper.XmlToObject<List<CashFlowModel>>(@stateActivitySettings.CashFlow);
+            if (_model.Count == 0)
+                model.Id = 1;
             else
-            {
-                var models = (List<CashFlowModel>)Session["model"];
-                models.Add(model);
-            }
+                model.Id = _model.Max(x => x.Id) + 1;
+            
+            _model.Add(model);
+
+            stateActivitySettings.CashFlow = XmlHelper.Serialize2String(_model).Replace("\"", "'").Replace("\r", "").Replace("\n", "");
+            _settingService.SaveSetting(stateActivitySettings);
+
             ViewBag.RefreshPage = true;
             ViewBag.btnId = btnId;
             ViewBag.formId = formId;
@@ -371,6 +471,29 @@ namespace Ks.Admin.Controllers
         [HttpPost]
         public ActionResult CashFlowDelete(int id)
         {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings))
+                return AccessDeniedView();
+
+            var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
+            var stateActivitySettings = _settingService.LoadSetting<StateActivitySettings>(storeScope);
+
+            List<CashFlowModel> model = null;
+            var newModel = new List<CashFlowModel>();
+
+
+            if (!string.IsNullOrEmpty(stateActivitySettings.CashFlow))
+                model = XmlHelper.XmlToObject<List<CashFlowModel>>(@stateActivitySettings.CashFlow);
+
+            if (model != null)
+            {
+                foreach (var m in model)
+                {
+                    if(m.Id!=id)
+                        newModel.Add(m);
+                }
+                stateActivitySettings.CashFlow = XmlHelper.Serialize2String(newModel).Replace("\"", "'").Replace("\r", "").Replace("\n", "");
+                _settingService.SaveSetting(stateActivitySettings);
+            }
             return new NullJsonResult();
         }
 

@@ -260,6 +260,26 @@ namespace Ks.Admin.Extensions
 
         #endregion
 
+        #region ContributionPayments
+
+        public static ContributionPaymentsModel ToModel(this ContributionPayment entity)
+        {
+            return entity.MapTo<ContributionPayment, ContributionPaymentsModel>();
+        }
+
+        public static ContributionPayment ToEntity(this ContributionPaymentsModel model)
+        {
+            return model.MapTo<ContributionPaymentsModel, ContributionPayment>();
+        }
+
+        public static ContributionPayment ToEntity(this ContributionPaymentsModel model, ContributionPayment destination)
+        {
+            return model.MapTo(destination);
+        }
+
+
+        #endregion
+
         #region Log
 
         public static LogModel ToModel(this Log entity)
@@ -312,18 +332,36 @@ namespace Ks.Admin.Extensions
 
         #endregion
 
+        #region BankSetting
+
+        public static BankSettingsModel ToModel(this BankSettings entity)
+        {
+            return entity.MapTo<BankSettings, BankSettingsModel>();
+        }
+        public static BankSettings ToEntity(this BankSettingsModel model)
+        {
+            return model.MapTo<BankSettingsModel, BankSettings>();
+        }
+
+        public static BankSettings ToEntity(this BankSettingsModel model, BankSettings destination)
+        {
+            return model.MapTo(destination);
+        }
+
+        #endregion
+
         #region LetterSetting
 
-        public static LetterSettingsModel ToModel(this LetterSettings entity)
+        public static SequenceIdsSettingsModel ToModel(this SequenceIdsSettings entity)
         {
-            return entity.MapTo<LetterSettings, LetterSettingsModel>();
+            return entity.MapTo<SequenceIdsSettings, SequenceIdsSettingsModel>();
         }
-        public static LetterSettings ToEntity(this LetterSettingsModel model)
+        public static SequenceIdsSettings ToEntity(this SequenceIdsSettingsModel model)
         {
-            return model.MapTo<LetterSettingsModel, LetterSettings>();
+            return model.MapTo<SequenceIdsSettingsModel, SequenceIdsSettings>();
         }
 
-        public static LetterSettings ToEntity(this LetterSettingsModel model, LetterSettings destination)
+        public static SequenceIdsSettings ToEntity(this SequenceIdsSettingsModel model, SequenceIdsSettings destination)
         {
             return model.MapTo(destination);
         }

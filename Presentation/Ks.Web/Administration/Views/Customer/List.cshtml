@@ -264,11 +264,13 @@
                                 field: "CreatedOn",
                                 title: "@T("Admin.Customers.Customers.Fields.CreatedOn")",
                                 width: 200,
+                                template:'#= kendo.toString(CreatedOn,"dd/MM/yyyy HH:mm:ss","es-PE") #',
                                 type: "date",
                                 format: "{0:G}"
                             }, {
                                 field: "LastActivityDate",
                                 title: "@T("Admin.Customers.Customers.Fields.LastActivityDate")",
+                                template:'#= kendo.toString(LastActivityDate,"dd/MM/yyyy HH:mm:ss","es-PE") #',
                                 width: 200,
                                 type: "date",
                                 format: "{0:G}"

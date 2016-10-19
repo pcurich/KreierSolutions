@@ -24,6 +24,11 @@
                                 <option selected="@attributeValue.IsPreSelected" value="@attributeValue.Id">@attributeValue.Name</option>
                             }
                         </select>
+                        <script>
+                                $(document).ready(function() {
+                                    $('#@(controlId)').kendoDropDownList();
+                                });
+                       </script>
                     }
                     break;
                 case AttributeControlType.RadioList:
@@ -68,7 +73,10 @@
                         <input name="@(controlId)" type="datetime"  id="@(controlId)" value="@attribute.DefaultValue"/>
                         <script>
                             $(document).ready(function () {
-                                $("#@controlId").kendoDatePicker();
+                                $("#@controlId").kendoDatePicker({
+                                    format: "dd/MM/yyyy",
+                                    culture:"es-PE"
+                                });
                             });
                         </script>
                     }

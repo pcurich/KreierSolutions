@@ -1129,6 +1129,7 @@
     <Content Include="Content\tinymce\skins\lightgray\fonts\tinymce.ttf" />
     <Content Include="Content\tinymce\skins\lightgray\fonts\tinymce.woff" />
     <Content Include="Scripts\fineuploader\LICENSE" />
+    <Content Include="Scripts\kendo\2014.1.318\messages\kendo.messages.es-PE.js" />
     <Content Include="Themes\DefaultClean\Content\css\ie8.css" />
     <Content Include="Themes\DefaultClean\Content\css\print.css" />
     <Content Include="Themes\DefaultClean\Content\css\styles.css" />

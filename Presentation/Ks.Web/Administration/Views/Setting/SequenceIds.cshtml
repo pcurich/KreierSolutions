@@ -1,4 +1,5 @@
-﻿@model LetterSettingsModel
+﻿@model SequenceIdsSettingsModel
+@Html.ValidationSummary(false)
 @{
     //page title
     ViewBag.Title = T("Admin.Configuration.Settings.LetterSettings").Text;
@@ -20,7 +21,7 @@
 
     <script>
         $(document).ready(function () {
-            $("#declaratorylettersettings-edit").kendoTabStrip({
+            $("#sequenceidssettings-edit").kendoTabStrip({
                 animation: {
                     open: {
                         effects: "fadeIn"
@@ -30,14 +31,26 @@
             });
         });
     </script>
-    <div id="declaratorylettersettings-edit">
+    <div id="sequenceidssettings-edit">
         <ul>
             <li @Html.RenderSelectedTabIndex(0, GetSelectedTabIndex())>
-                @T("Admin.Configuration.Settings.LetterSettings.Header")
+                @T("Admin.Configuration.Settings.SequenceIds.DeclaratoryLetter.Header")
+            </li>
+            <li @Html.RenderSelectedTabIndex(1, GetSelectedTabIndex())>
+                @T("Admin.Configuration.Settings.SequenceIds.AuthorizeDiscount.Header")
+            </li>
+            <li @Html.RenderSelectedTabIndex(2, GetSelectedTabIndex())>
+                @T("Admin.Configuration.Settings.SequenceIds.RegistrationForm.Header")
             </li>
         </ul>
         <div>
             @TabDeclaratoryLetterSettings()
+        </div>
+        <div>
+            @TabAuthorizeDiscountSettings()
+        </div>
+        <div>
+            @TabRegistrationFormSettings()
         </div>
     </div>
 
@@ -46,46 +59,42 @@
     <table class="adminContent">
         <tr>
             <td class="adminTitle">
-                @Html.OverrideStoreCheckboxFor(model => model.IsAutogenerate, model => model.IsAutogenerate, 0)
-                @Html.KsLabelFor(model => model.IsAutogenerate):
+                @Html.KsLabelFor(model => model.DeclaratoryLetter):
             </td>
 
             <td class="adminData">
-                @Html.EditorFor(model => model.IsAutogenerate)
-                @Html.ValidationMessageFor(model => model.IsAutogenerate)
+                @Html.EditorFor(model => model.DeclaratoryLetter)
+                @Html.ValidationMessageFor(model => model.DeclaratoryLetter)
             </td>
         </tr>
+    </table>
+}
+    @helper TabAuthorizeDiscountSettings()
+{
+    <table class="adminContent">
         <tr>
             <td class="adminTitle">
-                @Html.OverrideStoreCheckboxFor(model => model.IsAutogenerate, model => model.FromNumber, 0)
-                @Html.KsLabelFor(model => model.FromNumber):
+                @Html.KsLabelFor(model => model.AuthorizeDiscount):
             </td>
 
             <td class="adminData">
-                @Html.EditorFor(model => model.FromNumber)
-                @Html.ValidationMessageFor(model => model.FromNumber)
+                @Html.EditorFor(model => model.AuthorizeDiscount)
+                @Html.ValidationMessageFor(model => model.DeclaratoryLetter)
             </td>
         </tr>
+    </table>
+}
+    @helper TabRegistrationFormSettings()
+{
+    <table class="adminContent">
         <tr>
             <td class="adminTitle">
-                @Html.OverrideStoreCheckboxFor(model => model.IsAutogenerate, model => model.LastNumber, 0)
-                @Html.KsLabelFor(model => model.LastNumber):
+                @Html.KsLabelFor(model => model.RegistrationForm):
             </td>
 
             <td class="adminData">
-                @Html.EditorFor(model => model.LastNumber)
-                @Html.ValidationMessageFor(model => model.LastNumber)
-            </td>
-        </tr>
-        <tr>
-            <td class="adminTitle">
-                @Html.OverrideStoreCheckboxFor(model => model.IsAutogenerate, model => model.StepNumber, 0)
-                @Html.KsLabelFor(model => model.StepNumber):
-            </td>
-
-            <td class="adminData">
-                @Html.EditorFor(model => model.StepNumber)
-                @Html.ValidationMessageFor(model => model.StepNumber)
+                @Html.EditorFor(model => model.RegistrationForm)
+                @Html.ValidationMessageFor(model => model.RegistrationForm)
             </td>
         </tr>
     </table>

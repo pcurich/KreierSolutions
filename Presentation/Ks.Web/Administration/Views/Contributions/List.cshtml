@@ -1,5 +1,4 @@
 ﻿@model Ks.Admin.Models.Contract.ContributionListModel
-@using System.Globalization;
 @{
     var defaultGridPageSize = EngineContext.Current.Resolve<Ks.Core.Domain.Common.AdminAreaSettings>().DefaultGridPageSize;
     var gridPageSizes = EngineContext.Current.Resolve<Ks.Core.Domain.Common.AdminAreaSettings>().GridPageSizes;
@@ -50,26 +49,15 @@
         </tr>
         <tr>
             <td class="adminTitle">
-                @Html.KsLabelFor(model => model.SearchDateCreatedFrom):
+                @Html.KsLabelFor(model => model.StateId):
             </td>
             <td class="adminData">
-                @Html.EditorFor(model => model.SearchDateCreatedFrom)
-            </td>
-        </tr>
-        <tr>
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.SearchDateCreatedTo):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.SearchDateCreatedTo)
-            </td>
-        </tr>
-        <tr>
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.IsActive):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.IsActive)
+                @Html.DropDownListFor(model => model.StateId, Model.States)
+                <script>
+                    $(document).ready(function() {
+                        $('#@Html.FieldIdFor(x=>x.StateId)').kendoDropDownList();
+                    });
+                </script>
             </td>
         </tr>
         <tr>
@@ -118,58 +106,53 @@
                             scrollable: false,
                             dataBound: onDataBound,
                             columns: [
-                            {
-                                field: "Id",
-                                headerTemplate: "<input id='mastercheckbox' type='checkbox'/>",
-                                headerAttributes: { style: "text-align:center" },
-                                attributes: { style: "text-align:center" },
-                                template: "<input type='checkbox' value='#=Id#' class='checkboxGroups'/>",
-                                width: 50
-                            }, {
-                                field: "LetterNumber",
-                                title: "@T("Admin.Contract.Contribution.Fields.LetterNumber")",
-                                width: 50
-                            }, {
-                                field: "CustomerCompleteName",
-                                title: "@T("Admin.Contract.Contribution.Fields.CustomerCompleteName")",
-                                width: 150
-                            }, {
-                                field: "CustomerDni",
-                                title: "@T("Admin.Contract.Contribution.Fields.CustomerDni")",
-                                width: 50
-                            }, {
-                                field: "CustomerAdmCode",
-                                title: "@T("Admin.Contract.Contribution.Fields.CustomerAdmCode")",
-                                width: 50
-                            }, {
-                                field: "AmountTotal",
-                                title: "@T("Admin.Contract.Contribution.Fields.AmountTotal")",
-                                width: 200
-                            }, {
-                                field: "Active",
-                                title: "@T("Admin.Contract.Contribution.Fields.Active")",
-                                width: 100,
-                                headerAttributes: { style: "text-align:center" },
-                                attributes: { style: "text-align:center" },
-                                template: '<img src="@Url.Content("~/Administration/Content/images/")active-#=Active#.gif" />'
-                            }, {
-                                field: "CreatedOn",
-                                title: "@T("Admin.Contract.Contribution.Fields.CreatedOn")",
-                                width: 200,
-                                type: "date",
-                                format: "{0:G}"
-                            }, {
-                                field: "UpdatedOn",
-                                title: "@T("Admin.Contract.Contribution.Fields.UpdatedOn")",
-                                width: 200,
-                                type: "date",
-                                format: "{0:G}"
-                            }, {
-                                field: "Id",
-                                title: "@T("Admin.Common.Edit")",
-                                width: 50,
-                                template: '<a href="Edit/#=Id#">@T("Admin.Common.Edit")</a>'
-                            }
+                              {
+                                  field: "AuthorizeDiscount",
+                                  title: "@T("Admin.Contract.Contribution.Fields.AuthorizeDiscount")",
+                                  width: 50
+                              }, {
+                                  field: "CustomerCompleteName",
+                                  title: "@T("Admin.Contract.Contribution.Fields.CustomerCompleteName")",
+                                  width: 100
+                              }, {
+                                  field: "CustomerDni",
+                                  title: "@T("Admin.Contract.Contribution.Fields.CustomerDni")",
+                                  width: 50
+                              }, {
+                                  field: "CustomerAdmCode",
+                                  title: "@T("Admin.Contract.Contribution.Fields.CustomerAdmCode")",
+                                  width: 50
+                              }, {
+                                  field: "AmountTotal",
+                                  title: "@T("Admin.Contract.Contribution.Fields.AmountTotal")",
+                                  width: 200
+                              }, {
+                                  field: "Active",
+                                  title: "@T("Admin.Contract.Contribution.Fields.Active")",
+                                  width: 100,
+                                  headerAttributes: { style: "text-align:center" },
+                                  attributes: { style: "text-align:center" },
+                                  template: '<img src="@Url.Content("~/Administration/Content/images/")active-#=Active#.gif" />'
+                              }, {
+                                  field: "CreatedOn",
+                                  title: "@T("Admin.Contract.Contribution.Fields.CreatedOn")",
+                                  width: 100,
+                                  template:'#= CreatedOn!=null ? kendo.toString(CreatedOn,"dd/MM/yyyy HH:mm:ss","es-PE"): " "#',
+                                  type: "date",
+                                  format: "{0:G}"
+                              }, {
+                                  field: "UpdatedOn",
+                                  title: "@T("Admin.Contract.Contribution.Fields.UpdatedOn")",
+                                  width: 100,
+                                  template:'#= UpdatedOn!=null ? kendo.toString(UpdatedOn,"dd/MM/yyyy HH:mm:ss","es-PE"): " "#',
+                                  type: "date",
+                                  format: "{0:G}"
+                              }, {
+                                  field: "Id",
+                                  title: "@T("Admin.Common.Edit")",
+                                  width: 50,
+                                  template: '<a href="Edit/#=Id#">@T("Admin.Common.Edit")</a>'
+                              }
                             ]
                         });
                     });
@@ -261,10 +244,8 @@
                         var data = {
                             SearchDni: $('#@Html.FieldIdFor(model => model.SearchDni)').val(),
                             SearchAdmCode: $('#@Html.FieldIdFor(model => model.SearchAdmCode)').val(),
-                            SearchDateCreatedFrom: $('#@Html.FieldIdFor(model => model.SearchDateCreatedFrom)').val(),
-                            SearchDateCreatedTo: $('#@Html.FieldIdFor(model => model.SearchDateCreatedTo)').val(),
                             SearchLetter: $('#@Html.FieldIdFor(model => model.SearchLetter)').val(),
-                            IsActive: $('#@Html.FieldIdFor(model => model.IsActive)').is(':checked')
+                            StateId: $('#@Html.FieldIdFor(model => model.StateId)').val()
                         };
                         addAntiForgeryToken(data);
                         return data;

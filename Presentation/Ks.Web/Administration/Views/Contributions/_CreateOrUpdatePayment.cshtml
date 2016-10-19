@@ -1,0 +1,107 @@
+﻿@using System.Globalization
+@model ContributionPaymentsModel
+@Html.ValidationSummary(true)
+@Html.HiddenFor(x => x.Id)
+@Html.HiddenFor(x => x.CustomerId)
+@Html.HiddenFor(x => x.ContributionId)
+
+<table class="adminContent">
+    <tr>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.Number):
+        </td>
+        <td class="adminData">
+            @Model.Number
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.ScheduledDateOn):
+        </td>
+        <td class="adminData">
+            @Model.ScheduledDateOn
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.BankName):
+        </td>
+        <td class="adminData">
+            @Html.DropDownListFor(model => model.BankName, Model.Banks)
+        </td>
+    </tr>
+    @{
+        if (Model.IsActiveAmount1)
+        {
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabel(Model.NameAmount1):
+                </td>
+                <td class="adminData">
+                    @Model.Amount1.ToString("c", new CultureInfo("es-PE"))
+                    @Html.HiddenFor(model => model.Amount1)
+                </td>
+            </tr>
+        }
+        if (Model.IsActiveAmount2)
+        {
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabel(Model.NameAmount2):
+                </td>
+                <td class="adminData">
+                    @Model.Amount2.ToString("c", new CultureInfo("es-PE"))
+                    @Html.HiddenFor(model => model.Amount2)
+                </td>
+            </tr>
+        }
+        if (Model.IsActiveAmount3)
+        {
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabel(Model.NameAmount3):
+                </td>
+                <td class="adminData">
+                    @Model.Amount3.ToString("c", new CultureInfo("es-PE"))
+                    @Html.HiddenFor(model => model.Amount3)
+                </td>
+            </tr>
+        }
+    }
+    <tr>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.AccountNumber):
+        </td>
+        <td class="adminData">
+            @Html.TextBoxFor(model => model.AccountNumber, new {@readonly = "readonly", @class = "text-box single-line"})
+            @Html.ValidationMessageFor(model => model.AccountNumber)
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.TransactionNumber):
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.TransactionNumber)
+            @Html.ValidationMessageFor(model => model.TransactionNumber)
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.Reference):
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.Reference)
+            @Html.ValidationMessageFor(model => model.Reference)
+        </td>
+    </tr>
+</table>
+
+<script>
+    $(document).ready(function() {
+        $("#@Html.FieldIdFor(model => model.BankName)").change(function() {
+            var selectedItem = $(this).val();
+            $("#@Html.FieldIdFor(model => model.AccountNumber)").val(selectedItem);
+        });
+    });
+</script>

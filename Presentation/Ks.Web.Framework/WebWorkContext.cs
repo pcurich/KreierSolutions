@@ -17,32 +17,13 @@ using Ks.Web.Framework.Localization;
 namespace Ks.Web.Framework
 {
     /// <summary>
-    /// Work context for web application
+    ///     Work context for web application
     /// </summary>
-    public partial class WebWorkContext : IWorkContext
+    public class WebWorkContext : IWorkContext
     {
         #region Const
 
         private const string CUSTOMER_COOKIE_NAME = "Ks.customer";
-
-        #endregion
-
-        #region Fields
-
-        private readonly HttpContextBase _httpContext;
-        private readonly ICustomerService _customerService;
-        private readonly IKsSystemContext _ksSystemContext;
-        private readonly IAuthenticationService _authenticationService;
-        private readonly ILanguageService _languageService;
-        private readonly ICurrencyService _currencyService;
-        private readonly IGenericAttributeService _genericAttributeService;
-        private readonly CurrencySettings _currencySettings;
-        private readonly LocalizationSettings _localizationSettings;
-        private readonly IUserAgentHelper _userAgentHelper;
-        
-        private Customer _cachedCustomer;
-        private Language _cachedLanguage;
-        private Currency _cachedCurrency;
 
         #endregion
 
@@ -59,17 +40,36 @@ namespace Ks.Web.Framework
             LocalizationSettings localizationSettings,
             IUserAgentHelper userAgentHelper)
         {
-            this._httpContext = httpContext;
-            this._customerService = customerService;
-            this._ksSystemContext = ksSystemContext;
-            this._authenticationService = authenticationService;
-            this._languageService = languageService;
-            this._currencyService = currencyService;
-            this._genericAttributeService = genericAttributeService;
-            this._currencySettings = currencySettings;
-            this._localizationSettings = localizationSettings;
-            this._userAgentHelper = userAgentHelper;
+            _httpContext = httpContext;
+            _customerService = customerService;
+            _ksSystemContext = ksSystemContext;
+            _authenticationService = authenticationService;
+            _languageService = languageService;
+            _currencyService = currencyService;
+            _genericAttributeService = genericAttributeService;
+            _currencySettings = currencySettings;
+            _localizationSettings = localizationSettings;
+            _userAgentHelper = userAgentHelper;
         }
+
+        #endregion
+
+        #region Fields
+
+        private readonly HttpContextBase _httpContext;
+        private readonly ICustomerService _customerService;
+        private readonly IKsSystemContext _ksSystemContext;
+        private readonly IAuthenticationService _authenticationService;
+        private readonly ILanguageService _languageService;
+        private readonly ICurrencyService _currencyService;
+        private readonly IGenericAttributeService _genericAttributeService;
+        private readonly CurrencySettings _currencySettings;
+        private readonly LocalizationSettings _localizationSettings;
+        private readonly IUserAgentHelper _userAgentHelper;
+
+        private Customer _cachedCustomer;
+        private Language _cachedLanguage;
+        private Currency _cachedCurrency;
 
         #endregion
 
@@ -96,7 +96,7 @@ namespace Ks.Web.Framework
                 }
                 else
                 {
-                    int cookieExpires = 24 * 365; //TODO make configurable
+                    var cookieExpires = 24*365; //TODO make configurable
                     cookie.Expires = DateTime.Now.AddHours(cookieExpires);
                 }
 
@@ -110,8 +110,8 @@ namespace Ks.Web.Framework
             if (_httpContext == null || _httpContext.Request == null)
                 return null;
 
-            string virtualPath = _httpContext.Request.AppRelativeCurrentExecutionFilePath;
-            string applicationPath = _httpContext.Request.ApplicationPath;
+            var virtualPath = _httpContext.Request.AppRelativeCurrentExecutionFilePath;
+            var applicationPath = _httpContext.Request.ApplicationPath;
             if (!virtualPath.IsLocalizedUrl(applicationPath, false))
                 return null;
 
@@ -144,7 +144,7 @@ namespace Ks.Web.Framework
             var language = _languageService
                 .GetAllLanguages()
                 .FirstOrDefault(l => userLanguage.Equals(l.LanguageCulture, StringComparison.InvariantCultureIgnoreCase));
-            if (language != null && language.Published  )
+            if (language != null && language.Published)
             {
                 return language;
             }
@@ -157,7 +157,7 @@ namespace Ks.Web.Framework
         #region Properties
 
         /// <summary>
-        /// Gets or sets the current customer
+        ///     Gets or sets the current customer
         /// </summary>
         public virtual Customer CurrentCustomer
         {
@@ -189,7 +189,7 @@ namespace Ks.Web.Framework
                     customer = _authenticationService.GetAuthenticatedCustomer();
                 }
 
-                
+
                 //load guest customer
                 if (customer == null || customer.Deleted || !customer.Active)
                 {
@@ -212,6 +212,13 @@ namespace Ks.Web.Framework
                 if (customer == null || customer.Deleted || !customer.Active)
                 {
                     customer = _customerService.InsertGuestCustomer();
+                    //customer = new Customer
+                    //{
+                    //    CustomerGuid = Guid.NewGuid(),
+                    //    Active = true,
+                    //    CreatedOnUtc = DateTime.UtcNow,
+                    //    LastActivityDateUtc = DateTime.UtcNow
+                    //};
                 }
 
 
@@ -230,9 +237,9 @@ namespace Ks.Web.Framework
                 _cachedCustomer = value;
             }
         }
-        
+
         /// <summary>
-        /// Get or set current user working language
+        ///     Get or set current user working language
         /// </summary>
         public virtual Language WorkingLanguage
         {
@@ -251,31 +258,32 @@ namespace Ks.Web.Framework
                 {
                     //get language from browser settings
                     //but we do it only once
-                    if (!this.CurrentCustomer.GetAttribute<bool>(SystemCustomerAttributeNames.LanguageAutomaticallyDetected,
+                    if (!CurrentCustomer.GetAttribute<bool>(SystemCustomerAttributeNames.LanguageAutomaticallyDetected,
                         _genericAttributeService, _ksSystemContext.CurrentSystem.Id))
                     {
                         detectedLanguage = GetLanguageFromBrowserSettings();
                         if (detectedLanguage != null)
                         {
-                            _genericAttributeService.SaveAttribute(this.CurrentCustomer, SystemCustomerAttributeNames.LanguageAutomaticallyDetected,
-                                 true, _ksSystemContext.CurrentSystem.Id);
+                            _genericAttributeService.SaveAttribute(CurrentCustomer,
+                                SystemCustomerAttributeNames.LanguageAutomaticallyDetected,
+                                true, _ksSystemContext.CurrentSystem.Id);
                         }
                     }
                 }
                 if (detectedLanguage != null)
                 {
                     //the language is detected. now we need to save it
-                    if (this.CurrentCustomer.GetAttribute<int>(SystemCustomerAttributeNames.LanguageId,
+                    if (CurrentCustomer.GetAttribute<int>(SystemCustomerAttributeNames.LanguageId,
                         _genericAttributeService, _ksSystemContext.CurrentSystem.Id) != detectedLanguage.Id)
                     {
-                        _genericAttributeService.SaveAttribute(this.CurrentCustomer, SystemCustomerAttributeNames.LanguageId,
+                        _genericAttributeService.SaveAttribute(CurrentCustomer, SystemCustomerAttributeNames.LanguageId,
                             detectedLanguage.Id, _ksSystemContext.CurrentSystem.Id);
                     }
                 }
 
                 var allLanguages = _languageService.GetAllLanguages(storeId: _ksSystemContext.CurrentSystem.Id);
                 //find current customer language
-                var languageId = this.CurrentCustomer.GetAttribute<int>(SystemCustomerAttributeNames.LanguageId,
+                var languageId = CurrentCustomer.GetAttribute<int>(SystemCustomerAttributeNames.LanguageId,
                     _genericAttributeService, _ksSystemContext.CurrentSystem.Id);
                 var language = allLanguages.FirstOrDefault(x => x.Id == languageId);
                 if (language == null)
@@ -302,7 +310,7 @@ namespace Ks.Web.Framework
             set
             {
                 var languageId = value != null ? value.Id : 0;
-                _genericAttributeService.SaveAttribute(this.CurrentCustomer,
+                _genericAttributeService.SaveAttribute(CurrentCustomer,
                     SystemCustomerAttributeNames.LanguageId,
                     languageId, _ksSystemContext.CurrentSystem.Id);
 
@@ -312,7 +320,7 @@ namespace Ks.Web.Framework
         }
 
         /// <summary>
-        /// Get or set current user working currency
+        ///     Get or set current user working currency
         /// </summary>
         public virtual Currency WorkingCurrency
         {
@@ -322,7 +330,7 @@ namespace Ks.Web.Framework
                     return _cachedCurrency;
 
                 //return primary store currency when we're in admin area/mode
-                if (this.IsAdmin)
+                if (IsAdmin)
                 {
                     var primaryStoreCurrency = _currencyService.GetCurrencyById(_currencySettings.PrimaryStoreCurrencyId);
                     if (primaryStoreCurrency != null)
@@ -335,13 +343,13 @@ namespace Ks.Web.Framework
 
                 var allCurrencies = _currencyService.GetAllCurrencies(ksSystemId: _ksSystemContext.CurrentSystem.Id);
                 //find a currency previously selected by a customer
-                var currencyId = this.CurrentCustomer.GetAttribute<int>(SystemCustomerAttributeNames.CurrencyId,
+                var currencyId = CurrentCustomer.GetAttribute<int>(SystemCustomerAttributeNames.CurrencyId,
                     _genericAttributeService, _ksSystemContext.CurrentSystem.Id);
                 var currency = allCurrencies.FirstOrDefault(x => x.Id == currencyId);
                 if (currency == null)
                 {
                     //it not found, then let's load the default currency for the current language (if specified)
-                    currencyId = this.WorkingLanguage.DefaultCurrencyId;
+                    currencyId = WorkingLanguage.DefaultCurrencyId;
                     currency = allCurrencies.FirstOrDefault(x => x.Id == currencyId);
                 }
                 if (currency == null)
@@ -362,7 +370,7 @@ namespace Ks.Web.Framework
             set
             {
                 var currencyId = value != null ? value.Id : 0;
-                _genericAttributeService.SaveAttribute(this.CurrentCustomer,
+                _genericAttributeService.SaveAttribute(CurrentCustomer,
                     SystemCustomerAttributeNames.CurrencyId,
                     currencyId, _ksSystemContext.CurrentSystem.Id);
 
@@ -370,9 +378,9 @@ namespace Ks.Web.Framework
                 _cachedCurrency = null;
             }
         }
- 
+
         /// <summary>
-        /// Get or set value indicating whether we're in admin area
+        ///     Get or set value indicating whether we're in admin area
         /// </summary>
         public virtual bool IsAdmin { get; set; }
 

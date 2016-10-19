@@ -1,4 +1,5 @@
-﻿@model CustomerModel
+﻿@using System.Globalization
+@model CustomerModel
 @Html.ValidationSummary(false)
 @Html.HiddenFor(model => model.Id)
 
@@ -25,18 +26,21 @@
         </li>
         @if (Model.Id > 0)
         {
-            <li @Html.RenderSelectedTabIndex(3, GetSelectedTabIndex())>
+            <li @Html.RenderSelectedTabIndex(2, GetSelectedTabIndex())>
                 @T("Admin.Customers.Customers.Addresses")
             </li>
-            <li @Html.RenderSelectedTabIndex(6, GetSelectedTabIndex())>
+            <li @Html.RenderSelectedTabIndex(3, GetSelectedTabIndex())>
                 @T("Admin.Customers.Customers.ActivityLog")
             </li>
-            <li @Html.RenderSelectedTabIndex(7, GetSelectedTabIndex())>
+            <li @Html.RenderSelectedTabIndex(4, GetSelectedTabIndex())>
                 @T("Admin.Customers.Customers.Contributions")
             </li>
-            <li @Html.RenderSelectedTabIndex(8, GetSelectedTabIndex())>
-                @T("Admin.Customers.Customers.Loan")
-            </li>
+            if (Model.HasContributions)
+            {
+                <li @Html.RenderSelectedTabIndex(5, GetSelectedTabIndex())>
+                    @T("Admin.Customers.Customers.Loan")
+                </li>
+            }
         }
     </ul>
     <div>
@@ -56,9 +60,12 @@
         <div>
             @TabContribution()
         </div>
-        <div>
-            @TabLoan()
-        </div>
+        if (Model.HasContributions)
+        {
+            <div>
+                @TabLoan()
+            </div>
+        }
     }
 
 </div>
@@ -107,6 +114,32 @@
                         }
                     });
                 });
+
+                $("#@Html.FieldIdFor(model => model.StateProvinceId)").change(function() {
+                    var selectedItem = $(this).val();
+                    var ddlCities = $("#@Html.FieldIdFor(model => model.CityId)");
+
+                    var postData = {
+                        stateProvinceId: selectedItem,
+                        addSelectCityItem: "true"
+                    };
+
+                    $.ajax({
+                        cache: false,
+                        type: "GET",
+                        url: "@Url.Action("GetCityByStateProvinceId", "Country")",
+                        data: postData,
+                        success: function(data) {
+                            ddlCities.html('');
+                            $.each(data, function(id, option) {
+                                ddlCities.append($('<option></option>').val(option.id).html(option.name));
+                            });
+                        },
+                        error: function(xhr, ajaxOptions, thrownError) {
+                            alert('Failed to retrieve states.');
+                        }
+                    });
+                });
             });
         </script>
     }
@@ -147,19 +180,19 @@
                 @Html.ValidationMessageFor(model => model.Email)
             </td>
         </tr>
-        <tr>
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.Password):
-            </td>
-            <td class="adminData">
-                @Html.TextBoxFor(model => model.Password, new { autocomplete = "off", @class = "text-box single-line" })
-                @Html.ValidationMessageFor(model => model.Password)
-                @if (Model.Id > 0)
-                {
-                    <input type="submit" name="changepassword" class="k-button" value="@T("Admin.Customers.Customers.Fields.Password.Change")" />
-                }
-            </td>
-        </tr>
+        @*<tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.Password):
+                </td>
+                <td class="adminData">
+                    @Html.TextBoxFor(model => model.Password, new { autocomplete = "off", @class = "text-box single-line" })
+                    @Html.ValidationMessageFor(model => model.Password)
+                    @if (Model.Id > 0)
+                    {
+                        <input type="submit" name="changepassword" class="k-button" value="@T("Admin.Customers.Customers.Fields.Password.Change")" />
+                    }
+                </td>
+            </tr>*@
         @if (Model.GenderEnabled)
         {
             <tr>
@@ -283,6 +316,11 @@
                 <td class="adminData">
                     @Html.DropDownList("CountryId", Model.AvailableCountries)
                     @Html.ValidationMessageFor(model => model.CountryId)
+                    @*<script>
+                            $(document).ready(function() {
+                                $('#CountryId').kendoDropDownList();
+                            });
+                        </script>*@
                 </td>
             </tr>
         }
@@ -295,6 +333,11 @@
                 <td class="adminData">
                     @Html.DropDownList("StateProvinceId", Model.AvailableStates)
                     @Html.ValidationMessageFor(model => model.StateProvinceId)
+                    @*<script>
+                            $(document).ready(function() {
+                                $('#StateProvinceId').kendoDropDownList();
+                            });
+                        </script>*@
                 </td>
             </tr>
         }
@@ -307,6 +350,11 @@
                 <td class="adminData">
                     @Html.DropDownList("CityId", Model.AvailableCities)
                     @Html.ValidationMessageFor(model => model.CityId)
+                    @*<script>
+                            $(document).ready(function() {
+                                $('#CityId').kendoDropDownList();
+                            });
+                        </script>*@
                 </td>
             </tr>
         }
@@ -595,6 +643,46 @@
 
     if (Model.HasContributions)
     {
+        <div class="section-header">
+            <div class="title">
+                <img src="@Url.Content("~/Administration/Content/images/ico-system.png")" alt="" />
+                @T("Admin.Customers.Contributions.Sumamry")
+            </div>
+        </div>
+        <table>
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.AuthorizeDiscount):
+                </td>
+                <td class="adminData">
+                    @Model.AuthorizeDiscount
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.TotalPayed):
+                </td>
+                <td class="adminData">
+                    @Model.TotalPayed.ToString("c", new CultureInfo("es-PE"))
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.TotalCycle):
+                </td>
+                <td class="adminData">
+                    @(Model.TotalCycle / 12) <small>@T("Common.Year")</small> - @(Model.TotalCycle % 12) <small>@T("Common.Month")</small>
+                </td>
+            </tr>
+        </table>
+
+
+        <div class="section-header">
+            <div class="title">
+                <img src="@Url.Content("~/Administration/Content/images/ico-system.png")" alt="" />
+                @T("Admin.Customers.Contributions.Details")
+            </div>
+        </div>
         <table class="adminContent">
             <tr>
                 <td>
@@ -637,7 +725,14 @@
                                     mode: "inline"
                                 },
                                 scrollable: false,
+                                filterable: true,
+                                sortable: true,
                                 columns: [
+                                    {
+                                        field: "Number",
+                                        title: "@T("Admin.Contract.ContributionPayments.Fields.Number")",
+                                        width: 50
+                                    },
                                     @if (Model.IsActiveAmount1)
                                     {
                                         <text>
@@ -675,41 +770,148 @@
                                         </text>
                                     }
                                     {
-                                        field: "ScheduledDateOnUtc",
-                                        title:"@T("Admin.Contract.ContributionPayments.Fields.ScheduledDateOnUtc")",
-                                        width: 100,
+                                        field: "ScheduledDateOn",
+                                        title:"@T("Admin.Contract.ContributionPayments.Fields.ScheduledDateOn")",
+                                        width: 80,
+                                        filterable: { ui: "datetimepicker" },
+                                        template:'#= ScheduledDateOn!=null ? kendo.toString(ScheduledDateOn,"dd/MM/yyyy HH:mm:ss","es-PE"): " "#',
                                         type: "date",
                                         format: "{0:G}"
                                     }, {
-                                        field: "ProcessedDateOnUtc",
-                                        title:"@T("Admin.Contract.ContributionPayments.Fields.ProcessedDateOnUtc")",
-                                        width: 100,
+                                        field: "ProcessedDateOn",
+                                        title:"@T("Admin.Contract.ContributionPayments.Fields.ProcessedDateOn")",
+                                        width: 80,
+                                        filterable: { ui: "datetimepicker" },
+                                        template:'#= ProcessedDateOn!=null ? kendo.toString(ProcessedDateOn,"dd/MM/yyyy HH:mm:ss","es-PE"): " "#',
                                         type: "date",
                                         format: "{0:G}"
                                     },{
                                         field: "State",
-                                        title: "@T("Admin.Contract.ContributionPayments.Fields.Active")",
+                                        title: "@T("Admin.Contract.ContributionPayments.Fields.State")",
                                         width: 100
                                     }]
                             });
                         });
                     </script>
                 </td>
-
-
-
             </tr>
         </table>
     }
     else
     {
         <p>
-            <input type="button" class="k-button" onclick="location.href='@Url.Action("ContributionCreate", new { customerId = Model.Id })'" value='@T("Admin.Customers.Customers.Addresses.AddButton")' />
+            <input type="button" class="k-button" onclick="location.href='@Url.Action("ContributionCreate", new { customerId = Model.Id })'" value='@T("Admin.Customers.Customers.Contributions.AddButton")' />
         </p>
     }
 }
 
 @helper TabLoan()
 {
-    <p>TODO</p>
+    if (Model.HasLoans)
+    {
+        var defaultGridPageSize = EngineContext.Current.Resolve<Ks.Core.Domain.Common.AdminAreaSettings>().DefaultGridPageSize;
+        var gridPageSizes = EngineContext.Current.Resolve<Ks.Core.Domain.Common.AdminAreaSettings>().GridPageSizes;
+
+        <table class="adminContent">
+            <tr>
+                <td>
+                    <div id="loan-grid"></div>
+
+                    <script>
+                        $(document).ready(function () {
+
+                            $("#loan-grid").kendoGrid({
+                                dataSource: {
+                                    type: "json",
+                                    transport: {
+                                        read: {
+                                            url: "@Html.Raw(Url.Action("ListLoans", "Customer", new { customerId = Model.Id }))",
+                                            type: "POST",
+                                            dataType: "json",
+                                            data: addAntiForgeryToken
+                                        }
+                                    },
+                                    schema: {
+                                        data: "Data",
+                                        total: "Total",
+                                        errors: "Errors"
+                                    },
+                                    error: function(e) {
+                                        display_kendoui_grid_error(e);
+                                        // Cancel the changes
+                                        this.cancelChanges();
+                                    },
+                                    pageSize: @(defaultGridPageSize),
+                                    serverPaging: true,
+                                    serverFiltering: true,
+                                    serverSorting: true
+                                },
+                                pageable: {
+                                    refresh: true,
+                                    pageSizes: [@(gridPageSizes)]
+                                },
+                                editable: {
+                                    confirmation: false,
+                                    mode: "inline"
+                                },
+                                scrollable: false,
+                                filterable: true,
+                                sortable: true,
+                                columns: [
+                                    {
+                                        field: "Quota",
+                                        title: "N° Couta",
+                                        width: 50
+                                    },{
+                                        field: "MonthlyQuota",
+                                        title: "Cuota Mensual",
+                                        width: 50,
+                                        template:'#= kendo.toString(MonthlyQuota,"c","es-PE") #',
+                                        format:"{0:c2}"
+                                    },{
+                                        field: "MonthlyFee",
+                                        title: "Interes",
+                                        width: 50,
+                                        template:'#= kendo.toString(MonthlyFee,"c","es-PE") #',
+                                        format:"{0:c2}"
+                                    },{
+                                        field: "MonthlyCapital",
+                                        title: "Capital",
+                                        width: 50,
+                                        template:'#= kendo.toString(MonthlyCapital,"c","es-PE") #',
+                                        format:"{0:c2}"
+                                    },{
+                                        field: "ScheduledDateOnUtc",
+                                        title:"@T("Admin.Contract.ContributionPayments.Fields.ScheduledDateOnUtc")",
+                                        width: 80,
+                                        filterable: { ui: "datetimepicker" },
+                                        template:'#= ScheduledDateOnUtc!=null ? kendo.toString(ScheduledDateOnUtc,"dd/MM/yyyy HH:mm:ss","es-PE"): " "#',
+                                        type: "date",
+                                        format: "{0:G}"
+                                    }, {
+                                        field: "ProcessedDateOnUtc",
+                                        title:"@T("Admin.Contract.ContributionPayments.Fields.ProcessedDateOnUtc")",
+                                        width: 80,
+                                        filterable: { ui: "datetimepicker" },
+                                        template:'#= ProcessedDateOnUtc!=null ? kendo.toString(ProcessedDateOnUtc,"dd/MM/yyyy HH:mm:ss","es-PE") :" "#',
+                                        type: "date",
+                                        format: "{0:G}"
+                                    },{
+                                        field: "State",
+                                        title: "@T("Admin.Contract.ContributionPayments.Fields.State")",
+                                        width: 100
+                                    }]
+                            });
+                        });
+                    </script>
+                </td>
+            </tr>
+        </table>
+    }
+    else
+    {
+        <p>
+            <input type="button" class="k-button" onclick="location.href='@Url.Action("LoanCreate", new { customerId = Model.Id })'" value='@T("Admin.Customers.Customers.Loan.AddButton")' />
+        </p>
+    }
 }

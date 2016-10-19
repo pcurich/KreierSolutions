@@ -1,0 +1,121 @@
+﻿@model Ks.Admin.Models.Contract.LoanModel
+@Html.ValidationSummary(true)
+@Html.HiddenFor(model => model.CustomerId)
+@Html.HiddenFor(model => model.IsPostBack)
+
+ 
+        <table class="adminContent">
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.CashFlow):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.CashFlow)
+                    @Html.ValidationMessageFor(model => model.CashFlow)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.TotalOfCycle):
+                </td>
+                <td class="adminData">
+                    @(Model.TotalOfCycle/12) <small>@T("Common.Year")</small> - @(Model.TotalOfCycle%12) <small>@T("Common.Month")</small>
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.Amount):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.Amount)
+                    @Html.ValidationMessageFor(model => model.Amount)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.Period):
+                </td>
+                <td class="adminData">
+                    @Html.DropDownListFor(model => model.Period, Model.Periods)
+                    @Html.ValidationMessageFor(model => model.Period)
+                    <script>
+                        $(document).ready(function() {
+                            $("#@Html.FieldIdFor(model => model.Period)").kendoDropDownList();
+                        });
+                    </script>
+
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.AdminCode) (Garante):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.AdminCode)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="submit" id="EvaluatePopup" name="EvaluatePopup" class="k-button" value="@T("Admin.Common.Consult")"/>
+                </td>
+            </tr>
+        </table>
+
+<hr/>
+
+@{
+            if (Model.IsPostBack)
+            {
+                <script>
+                    $(document).ready(function() {
+                        $("#loan-edit").kendoTabStrip({
+                            animation: {
+                                open: {
+                                    effects: "fadeIn"
+                                }
+                            },
+                            select: tabstrip_on_tab_select
+                        });
+                    });
+                </script>
+
+                <div id="loan-edit">
+                    <ul>
+                        <li @Html.RenderSelectedTabIndex(0, GetSelectedTabIndex())>
+                            @T("Admin.Contract.Loan.StateActivity")  
+                        </li>
+                        <li @Html.RenderSelectedTabIndex(1, GetSelectedTabIndex())>
+                            @T("Admin.Contract.Loan.CashFlow")
+                        </li>
+                        <li @Html.RenderSelectedTabIndex(1, GetSelectedTabIndex())>
+                            @T("Admin.Contract.Loan.Summary")
+                        </li>
+                    </ul>
+                    <div>
+                        @TabState()
+                    </div>
+                    <div>
+                        @TabCashFlow()
+                    </div>
+                    <div>
+                        @TabSummary()
+                    </div>
+                </div>
+                @*save selected tab index*@
+                <input type="hidden" id="selected-tab-index" name="selected-tab-index" value="@(GetSelectedTabIndex())">
+            @helper TabState()
+            { 
+                    @Html.Partial("_LoanStateActivity", Model.StateActivityModels)
+                
+            }
+            @helper TabCashFlow()
+             {
+                 @Html.Partial("_CashFlowActivity", Model.CashFlowModels)
+             }
+            @helper TabSummary()
+            {
+                @Html.Partial("_PreCashFlowActivity", Model.PreCashFlow)
+            }
+        }
+        }
+ 

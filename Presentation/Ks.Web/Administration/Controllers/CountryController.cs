@@ -572,7 +572,7 @@ namespace Ks.Admin.Controllers
 
         [AcceptVerbs(HttpVerbs.Get)]
         public ActionResult GetCityByStateProvinceId(string stateProvinceId,
-            bool? addSelectStateItem, bool? addAsterisk)
+            bool? addSelectCityItem, bool? addAsterisk)
         {
             //permission validation is not required here
 
@@ -595,7 +595,7 @@ namespace Ks.Admin.Controllers
                 if (stateProvince == null)
                 {
                     //stateProvince is not selected ("choose stateProvince" item)
-                    if (addSelectStateItem.HasValue && addSelectStateItem.Value)
+                    if (addSelectCityItem.HasValue && addSelectCityItem.Value)
                     {
                         result.Insert(0, new { id = 0, name = _localizationService.GetResource("Admin.Address.SelectCity") });
                     }
@@ -615,7 +615,7 @@ namespace Ks.Admin.Controllers
                     else
                     {
                         //country has some states
-                        if (addSelectStateItem.HasValue && addSelectStateItem.Value)
+                        if (addSelectCityItem.HasValue && addSelectCityItem.Value)
                         {
                             result.Insert(0, new { id = 0, name = _localizationService.GetResource("Admin.Address.SelectCity") });
                         }

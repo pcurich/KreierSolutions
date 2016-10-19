@@ -77,6 +77,8 @@
     <Compile Include="Mapping\Configuration\SettingMap.cs" />
     <Compile Include="Mapping\Contract\ContributionMap.cs" />
     <Compile Include="Mapping\Contract\ContributionPaymentMap.cs" />
+    <Compile Include="Mapping\Contract\LoanMap.cs" />
+    <Compile Include="Mapping\Contract\LoanPaymentMap.cs" />
     <Compile Include="Mapping\Customers\CustomerAttributeMap.cs" />
     <Compile Include="Mapping\Customers\CustomerAttributeValueMap.cs" />
     <Compile Include="Mapping\Customers\CustomerMap.cs" />

@@ -140,7 +140,7 @@
     <Content Include="Content\images\ico-stat1.gif" />
     <Content Include="Content\images\ico-system.png" />
     <Content Include="Content\images\ico-warnings.gif" />
-    <Content Include="Content\images\logo.gif" />
+    <Content Include="Content\images\Logo.png" />
     <Content Include="Content\images\success-message.gif" />
     <Content Include="Content\images\throbber-synchronizing.gif" />
     <Content Include="Content\images\warnings-ajax-loader.gif" />
@@ -199,12 +199,14 @@
     <Content Include="Views\Customer\_CreateOrUpdate.cshtml" />
     <Content Include="Views\Setting\AllSettings.cshtml" />
     <Content Include="Views\Contributions\List.cshtml" />
-    <Content Include="Views\Contributions\Create.cshtml" />
+    <Content Include="Views\Contributions\CreatePayment.cshtml" />
     <Content Include="Views\Contributions\Edit.cshtml" />
     <Content Include="Views\Contributions\_CreateOrUpdate.cshtml" />
     <Content Include="Views\Customer\ContributionCreate.cshtml" />
     <None Include="Properties\PublishProfiles\Admin.pubxml" />
-    <None Include="Views\Customer\_CreateOrUpdate2.cshtml" />
+    <Content Include="Views\Customer\LoanCreate.cshtml" />
+    <Content Include="Views\Customer\EvaluatePopup.cshtml" />
+    <Content Include="Views\Customer\_CashFlowActivity.cshtml" />
     <Content Include="Views\Setting\CustomerUser.cshtml" />
     <Content Include="Views\Customer\_CreateOrUpdateAddress.cshtml" />
     <Content Include="Views\Customer\_CustomerAttributes.cshtml" />
@@ -248,12 +250,17 @@
     <Content Include="Views\KsSystem\Edit.cshtml" />
     <Content Include="Views\KsSystem\_CreateOrUpdate.cshtml" />
     <Content Include="Views\OnlineCustomer\List.cshtml" />
-    <Content Include="Views\Setting\DeclaratoryLetter.cshtml" />
+    <Content Include="Views\Setting\SequenceIds.cshtml" />
     <Content Include="Views\Setting\Payments.cshtml" />
     <Content Include="Views\Customer\_CreateOrUpdateContributions.cshtml" />
     <Content Include="Views\Setting\_CreateOrUpdateCashFlow.cshtml" />
     <Content Include="Views\Setting\StateActivity.cshtml" />
     <Content Include="Views\Setting\CashFlowCreatePopup.cshtml" />
+    <Content Include="Views\Customer\_CreateOrUpdateLoans.cshtml" />
+    <Content Include="Views\Customer\_LoanStateActivity.cshtml" />
+    <Content Include="Views\Customer\_PreCashFlowActivity.cshtml" />
+    <Content Include="Views\Setting\Bank.cshtml" />
+    <Content Include="Views\Contributions\_CreateOrUpdatePayment.cshtml" />
     <None Include="Views\Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -307,8 +314,10 @@
     <Compile Include="Models\Common\SystemWarningModel.cs" />
     <Compile Include="Models\Common\UrlRecordListModel.cs" />
     <Compile Include="Models\Common\UrlRecordModel.cs" />
+    <Compile Include="Models\Contract\ContributionPaymentListModel.cs" />
     <Compile Include="Models\Contract\ContributionListModel.cs" />
     <Compile Include="Models\Contract\ContributionModel.cs" />
+    <Compile Include="Models\Contract\LoanModel.cs" />
     <Compile Include="Models\Customers\ContributionPaymentsModel.cs" />
     <Compile Include="Models\Customers\CustomerAddressModel.cs" />
     <Compile Include="Models\Customers\CustomerAttributeModel.cs" />
@@ -316,6 +325,7 @@
     <Compile Include="Models\Customers\CustomerListModel.cs" />
     <Compile Include="Models\Customers\CustomerModel.cs" />
     <Compile Include="Models\Customers\CustomerRoleModel.cs" />
+    <Compile Include="Models\Customers\LoanPaymentsModel.cs" />
     <Compile Include="Models\Customers\OnlineCustomerModel.cs" />
     <Compile Include="Models\Directory\CityModel.cs" />
     <Compile Include="Models\Directory\CountryModel.cs" />
@@ -338,9 +348,10 @@
     <Compile Include="Models\Messages\TestMessageTemplateModel.cs" />
     <Compile Include="Models\Security\PermissionMappingModel.cs" />
     <Compile Include="Models\Security\PermissionRecordModel.cs" />
+    <Compile Include="Models\Settings\BankSettingsModel.cs" />
     <Compile Include="Models\Settings\CashFlowModel.cs" />
     <Compile Include="Models\Settings\CustomerUserSettingsModel.cs" />
-    <Compile Include="Models\Settings\LetterSettingsModel.cs" />
+    <Compile Include="Models\Settings\SequenceIdsSettingsModel.cs" />
     <Compile Include="Models\Settings\PaymentSettingsModel.cs" />
     <Compile Include="Models\Settings\SettingModel.cs" />
     <Compile Include="Models\Settings\StateActivitySettingsModel.cs" />
@@ -351,6 +362,8 @@
     <Compile Include="Validators\Common\AddressAttributeValueValidator.cs" />
     <Compile Include="Validators\Common\AddressValidator.cs" />
     <Compile Include="Validators\Contract\ContributionValidator.cs" />
+    <Compile Include="Validators\Contract\LoanValidator.cs" />
+    <Compile Include="Validators\Customers\ContributionPaymentsValidator.cs" />
     <Compile Include="Validators\Customers\CustomerAttributeValidator.cs" />
     <Compile Include="Validators\Customers\CustomerAttributeValueValidator.cs" />
     <Compile Include="Validators\Customers\CustomerRoleValidator.cs" />
@@ -367,6 +380,7 @@
     <Compile Include="Validators\Messages\MessageTemplateValidator.cs" />
     <Compile Include="Validators\Messages\QueuedEmailValidator.cs" />
     <Compile Include="Validators\Messages\TestMessageTemplateValidator.cs" />
+    <Compile Include="Validators\Settings\BankSettingsModelValidator.cs" />
     <Compile Include="Validators\Settings\PaymentSettingsModelValidator.cs" />
     <Compile Include="Validators\Settings\SettingValidator.cs" />
     <Compile Include="Validators\Systems\KsSystemValidator.cs" />

@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
+using System.Web.Mvc;
 using Ks.Core.ComponentModel;
 
 
@@ -23,12 +24,14 @@ namespace Ks.Core
         /// </summary>
         /// <param name="email">The email.</param>
         /// <returns></returns>
-        public static string EnsureSubscriberEmailOrThrow(string email) {
+        public static string EnsureSubscriberEmailOrThrow(string email)
+        {
             string output = EnsureNotNull(email);
             output = output.Trim();
             output = EnsureMaximumLength(output, 255);
 
-            if(!IsValidEmail(output)) {
+            if (!IsValidEmail(output))
+            {
                 throw new KsException("Email is not valid.");
             }
 
@@ -139,9 +142,11 @@ namespace Ks.Core
         /// </summary>
         /// <param name="stringsToValidate">Array of strings to validate</param>
         /// <returns>Boolean</returns>
-        public static bool AreNullOrEmpty(params string[] stringsToValidate) {
+        public static bool AreNullOrEmpty(params string[] stringsToValidate)
+        {
             bool result = false;
-            Array.ForEach(stringsToValidate, str => {
+            Array.ForEach(stringsToValidate, str =>
+            {
                 if (string.IsNullOrEmpty(str)) result = true;
             });
             return result;
@@ -297,7 +302,7 @@ namespace Ks.Core
             //return (T)Convert.ChangeType(value, typeof(T), CultureInfo.InvariantCulture);
             return (T)To(value, typeof(T));
         }
-        
+
         /// <summary>
         /// Convert enum for front-end
         /// </summary>
@@ -315,6 +320,19 @@ namespace Ks.Core
             return result;
         }
 
+        public static List<SelectListItem> ConvertToSelectListItem(string str, char splitParent = '\0', char splitChild = '\0')
+        {
+            var result = new List<SelectListItem>();
+            string[] letters = str.Split(splitParent);
+            foreach (string c in letters)
+                if (splitChild != '\0')
+                    result.Add(new SelectListItem { Value = c.Split(splitChild)[0], Text = c.Split(splitChild)[1] });
+                else
+                    result.Add(new SelectListItem { Value = c, Text = c });
+
+            return result;
+        }
+
         /// <summary>
         /// Set Telerik (Kendo UI) culture
         /// </summary>
@@ -322,7 +340,7 @@ namespace Ks.Core
         {
             //little hack here
             //always set culture to 'en-US' (Kendo UI has a bug related to editing decimal values in other cultures). Like currently it's done for admin area in Global.asax.cs
-            
+
             var culture = new CultureInfo("es-PE");
             Thread.CurrentThread.CurrentCulture = culture;
             Thread.CurrentThread.CurrentUICulture = culture;
@@ -339,7 +357,7 @@ namespace Ks.Core
             //source: http://stackoverflow.com/questions/9/how-do-i-calculate-someones-age-in-c
             //this assumes you are looking for the western idea of age and not using East Asian reckoning.
             int age = endDate.Year - startDate.Year;
-            if (startDate > endDate.AddYears(-age)) 
+            if (startDate > endDate.AddYears(-age))
                 age--;
             return age;
         }

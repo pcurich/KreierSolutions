@@ -1,12 +1,15 @@
 ﻿@model Ks.Admin.Models.Contract.ContributionModel
 @Html.ValidationSummary(true)
+@Html.HiddenFor(x=>x.CustomerId)
+@Html.HiddenFor(x => x.Id)
 <table class="adminContent">
     <tr>
         <td class="adminTitle">
             @Html.KsLabelFor(model => model.CustomerCompleteName):
         </td>
         <td class="adminData">
-            @Html.EditorFor(model => model.CustomerCompleteName)
+            @Model.CustomerCompleteName
+            @Html.HiddenFor(model => model.CustomerCompleteName)
         </td>
     </tr>
     <tr>
@@ -14,7 +17,8 @@
             @Html.KsLabelFor(model => model.CustomerDni):
         </td>
         <td class="adminData">
-            @Html.EditorFor(model => model.CustomerDni)
+            @Model.CustomerDni
+            @Html.HiddenFor(model => model.CustomerDni)
         </td>
     </tr>
     <tr>
@@ -22,16 +26,17 @@
             @Html.KsLabelFor(model => model.CustomerAdmCode):
         </td>
         <td class="adminData">
-           @Html.EditorFor(model => model.CustomerAdmCode)
+            @Model.CustomerAdmCode
+            @Html.HiddenFor(model => model.CustomerAdmCode)
         </td>
     </tr>
     <tr>
         <td class="adminTitle">
-            @Html.KsLabelFor(model => model.LetterNumber):
+            @Html.KsLabelFor(model => model.AuthorizeDiscount):
         </td>
         <td class="adminData">
-            @Html.EditorFor(model => model.LetterNumber)
-            @Html.ValidationMessageFor(model => model.LetterNumber)
+            @Html.EditorFor(model => model.AuthorizeDiscount)
+            @Html.ValidationMessageFor(model => model.AuthorizeDiscount)
         </td>
     </tr>
     <tr>
@@ -63,7 +68,8 @@
             @Html.KsLabelFor(model => model.CreatedOn):
         </td>
         <td class="adminData">
-            @Html.EditorFor(model => model.CreatedOn)
+            @Model.CreatedOn
+            @Html.HiddenFor(model => model.CreatedOn)
         </td>
     </tr>
     <tr>
