@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using Ks.Core.Domain.Directory;
+using System.IO;
+using Ks.Core.Domain.Report;
 
 namespace Ks.Services.ExportImport
 {
@@ -38,6 +40,17 @@ namespace Ks.Services.ExportImport
                 sb.Append(Environment.NewLine);  //new line
             }
             return sb.ToString();
+        }
+
+        public virtual void ExportReportContributionPaymentToXlsx(Stream stream, IList<ReportContributionPayment> reportContributionPayment)
+        {
+            if (stream == null)
+                throw new ArgumentNullException("stream");
+
+                using (var xlPackage = new ExcelPackage(stream))
+                {
+
+                }
         }
 
         #endregion

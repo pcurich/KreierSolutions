@@ -346,6 +346,7 @@
     <Compile Include="Models\Messages\QueuedEmailListModel.cs" />
     <Compile Include="Models\Messages\QueuedEmailModel.cs" />
     <Compile Include="Models\Messages\TestMessageTemplateModel.cs" />
+    <Compile Include="Models\ReportContributionPaymentModel.cs" />
     <Compile Include="Models\Security\PermissionMappingModel.cs" />
     <Compile Include="Models\Security\PermissionRecordModel.cs" />
     <Compile Include="Models\Settings\BankSettingsModel.cs" />

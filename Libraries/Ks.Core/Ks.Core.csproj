@@ -173,6 +173,7 @@
     <Compile Include="Domain\Messages\MessageTemplatesSettings.cs" />
     <Compile Include="Domain\Messages\QueuedEmail.cs" />
     <Compile Include="Domain\Messages\QueuedEmailPriority.cs" />
+    <Compile Include="Domain\Report\ReportContributionPaymentModel.cs" />
     <Compile Include="Domain\Security\AclRecord.cs" />
     <Compile Include="Domain\Security\DefaultPermissionRecord.cs" />
     <Compile Include="Domain\Security\IAclSupported.cs" />
