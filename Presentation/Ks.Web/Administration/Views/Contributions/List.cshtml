@@ -125,7 +125,9 @@
                               }, {
                                   field: "AmountTotal",
                                   title: "@T("Admin.Contract.Contribution.Fields.AmountTotal")",
-                                  width: 200
+                                  width: 50,
+                                  template:'#= kendo.toString(AmountTotal,"c","es-PE") #',
+                                  format:"{0:c2}"
                               }, {
                                   field: "Active",
                                   title: "@T("Admin.Contract.Contribution.Fields.Active")",

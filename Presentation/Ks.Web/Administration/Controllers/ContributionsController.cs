@@ -163,29 +163,47 @@ namespace Ks.Admin.Controllers
 
             var model = new ContributionPaymentListModel
             {
+                ContributionId = id,
                 States = ContributionState.EnProceso.ToSelectList(false).ToList(),
                 Banks = PrepareBanks(),
                 Types = new List<SelectListItem>
                 {
-                    new SelectListItem {Value = "1", Text = "Automatico"},
-                    new SelectListItem {Value = "0", Text = "Manual"}
+                    new SelectListItem { Value = "0", Text = "--------------", Selected = true},
+                    new SelectListItem {Value = "2", Text = "Automatico"},
+                    new SelectListItem {Value = "1", Text = "Manual"}
                 }
             };
 
-            model.States.Insert(0, new SelectListItem { Value = "-1", Text = "          " });
-            model.Banks.Insert(0, new SelectListItem { Value = "-1", Text = "          " });
-            model.Types.Insert(0, new SelectListItem { Value = "-1", Text = "          " });
- 
+            model.States.Insert(0, new SelectListItem { Value = "0", Text = "--------------", Selected = true});
+
+            model.IsActiveAmount1 = _paymentSettings.IsActiveAmount1;
+            model.NameAmount1 = _paymentSettings.NameAmount1;
+            model.IsActiveAmount2 = _paymentSettings.IsActiveAmount2;
+            model.NameAmount2 = _paymentSettings.NameAmount2;
+            model.IsActiveAmount3 = _paymentSettings.IsActiveAmount3;
+            model.NameAmount3 = _paymentSettings.NameAmount3;
+
             return View(model);
         }
 
         [HttpPost]
-        public ActionResult ListContributionsPayments(DataSourceRequest command, int contributionId, int customerId)
+        public ActionResult ListContributionsPayments(DataSourceRequest command, ContributionPaymentListModel model)
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributions))
                 return AccessDeniedView();
+            
+            bool? type = null;
+            if (model.Type == 0)
+                type = null;
+            if (model.Type == 2)
+                type = true;
+            if(model.Type==1)
+                type = false;
 
-            var contributionPayments = _contributionService.GetAllPayments(contributionId: contributionId, customerId: customerId, stateId: -1, pageIndex: command.Page - 1,
+            var contributionPayments = _contributionService.GetAllPayments(
+                contributionId: model.ContributionId, number:model.Number,
+                stateId: model.StateId, accountNumber:model.BankName,
+                type:type,pageIndex: command.Page - 1,
                 pageSize: command.PageSize);
 
             var gridModel = new DataSourceResult
@@ -279,25 +297,11 @@ namespace Ks.Admin.Controllers
         #region Utilities
 
         [NonAction]
-        protected virtual ContributionModel PrepareContributionModel(Contribution entity)
-        {
-            var model = entity.ToModel();
-            model.Banks = PrepareBanks();
-
-            model.IsActiveAmount1 = _paymentSettings.IsActiveAmount1;
-            model.NameAmount1 = _paymentSettings.NameAmount1;
-            model.IsActiveAmount2 = _paymentSettings.IsActiveAmount2;
-            model.NameAmount2 = _paymentSettings.NameAmount2;
-            model.IsActiveAmount3 = _paymentSettings.IsActiveAmount3;
-            model.NameAmount3 = _paymentSettings.NameAmount3;
-
-            return model;
-        }
-
-        [NonAction]
         protected virtual List<SelectListItem> PrepareBanks()
         {
             var model = new List<SelectListItem>();
+            model.Insert(0, new SelectListItem { Value = "0", Text = "----------------" });
+
             if (_bankSettings.IsActive1)
                 model.Add(new SelectListItem { Value = _bankSettings.AccountNumber1, Text = _bankSettings.NameBank1 });
             if (_bankSettings.IsActive2)
@@ -308,8 +312,6 @@ namespace Ks.Admin.Controllers
                 model.Add(new SelectListItem { Value = _bankSettings.AccountNumber4, Text = _bankSettings.NameBank4 });
             if (_bankSettings.IsActive5)
                 model.Add(new SelectListItem { Value = _bankSettings.AccountNumber5, Text = _bankSettings.NameBank5 });
-
-            model.Insert(0, new SelectListItem { Value = "0", Text = "----------------" });
 
             return model;
         }

@@ -200,13 +200,24 @@ namespace Ks.Services.Contract
             _eventPublisher.EntityUpdated(contribution);
         }
 
-        public virtual IPagedList<ContributionPayment> GetAllPayments(int contributionId = 0, int customerId = 0,
-            int stateId = -1, int pageIndex = 0, int pageSize = Int32.MaxValue)
+        public virtual IPagedList<ContributionPayment> GetAllPayments(int contributionId = 0,
+            int customerId = 0, int number = 0, int stateId = -1, string accountNumber = "0",
+            bool? type=null,int pageIndex = 0, int pageSize = Int32.MaxValue)
         {
-            var source = GetContributionById(contributionId, customerId, stateId);
-            return source != null ?
-                new PagedList<ContributionPayment>(source.ContributionPayments.ToList(), pageIndex, pageSize) :
-                new PagedList<ContributionPayment>(new List<ContributionPayment>(), pageIndex, pageSize);
+            var query = from c in _contributionPaymentRepository.Table
+                        select c;
+            if (contributionId != 0)
+                query = query.Where(x => x.ContributionId == contributionId);
+            if (number != 0)
+                query = query.Where(x => x.Number == number);
+            if (stateId != 0)
+                query = query.Where(x => x.StateId == stateId);
+            if (!"0".Equals(accountNumber))
+                query = query.Where(x => x.AccountNumber == accountNumber);
+            if (type!=null)
+                query = query.Where(x => x.IsAutomatic == type.Value);
+
+            return new PagedList<ContributionPayment>(query.ToList(), pageIndex, pageSize);
         }
 
         public virtual ContributionPayment GetPaymentById(int contributionPaymentId)

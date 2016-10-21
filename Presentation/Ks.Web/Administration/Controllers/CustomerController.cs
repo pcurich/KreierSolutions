@@ -1640,7 +1640,7 @@ namespace Ks.Admin.Controllers
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
                 return Content("");
 
-            var contributionPayments = _contributionService.GetAllPayments(customerId: customerId,stateId:1, pageIndex: command.Page - 1, pageSize: command.PageSize);
+            var contributionPayments = _contributionService.GetAllPayments(customerId: customerId, pageIndex: command.Page - 1, pageSize: command.PageSize);
             var gridModel = new DataSourceResult
             {
                 Data = contributionPayments.Select(x =>

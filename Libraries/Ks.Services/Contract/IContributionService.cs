@@ -73,12 +73,16 @@ namespace Ks.Services.Contract
         /// </summary>
         /// <param name="contributionId">The contribution identifier.</param>
         /// <param name="customerId">The customer identifier.</param>
+        /// <param name="number">The number.</param>
         /// <param name="stateId">The state identifier.</param>
+        /// <param name="accountNumber">The account number.</param>
+        /// <param name="type">The type.</param>
         /// <param name="pageIndex">Index of the page.</param>
         /// <param name="pageSize">Size of the page.</param>
         /// <returns></returns>
-        IPagedList<ContributionPayment> GetAllPayments(int contributionId = 0, int customerId = 0, int stateId = -1,
-            int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<ContributionPayment> GetAllPayments(int contributionId = 0,
+            int customerId = 0, int number = 0, int stateId = -1, string accountNumber = "",
+            bool? type = null, int pageIndex = 0, int pageSize = Int32.MaxValue);
 
         /// <summary>
         /// Gets the payment by identifier.

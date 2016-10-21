@@ -2,9 +2,9 @@
 {
     public enum ContributionState
     {
-        Pendiente=0,
-        EnProceso=1,
-        PagoParcial=2,
-        Pagado = 3
+        Pendiente=1,
+        EnProceso=2,
+        PagoParcial=3,
+        Pagado = 4
     }
 }

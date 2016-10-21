@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
 using System.Web.Mvc;
 using Ks.Web.Framework;
 
@@ -29,6 +27,13 @@ namespace Ks.Admin.Models.Contract
         public List<SelectListItem> Types { get; set; }
         public List<SelectListItem> Banks { get; set; }
 
+        public int ContributionId { get; set; }
 
+        public string NameAmount1 { get; set; }
+        public bool IsActiveAmount1 { set; get; }
+        public string NameAmount2 { get; set; }
+        public bool IsActiveAmount2 { set; get; }
+        public string NameAmount3 { get; set; }
+        public bool IsActiveAmount3 { set; get; }
     }
 }
