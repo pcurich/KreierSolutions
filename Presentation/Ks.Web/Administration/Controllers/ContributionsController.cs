@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 using Ks.Admin.Extensions;
@@ -12,6 +13,7 @@ using Ks.Core.Domain.Customers;
 using Ks.Services.Common;
 using Ks.Services.Contract;
 using Ks.Services.Customers;
+using Ks.Services.ExportImport;
 using Ks.Services.Helpers;
 using Ks.Services.Localization;
 using Ks.Services.Logging;
@@ -33,6 +35,7 @@ namespace Ks.Admin.Controllers
         private readonly IDateTimeHelper _dateTimeHelper;
         private readonly ICustomerActivityService _customerActivityService;
         private readonly ILocalizationService _localizationService;
+        private readonly IExportManager _exportManager;
 
         private readonly PaymentSettings _paymentSettings;
         private readonly BankSettings _bankSettings;
@@ -41,13 +44,15 @@ namespace Ks.Admin.Controllers
 
         #region Constructors
 
-        public ContributionsController(IPermissionService permissionService,
-            IContributionService contributionService,
-            ICustomerService customerService,
-            IGenericAttributeService genericAttributeService,
-            IDateTimeHelper dateTimeHelper,
-            ICustomerActivityService customerActivityService,
-            ILocalizationService localizationService,
+        public ContributionsController(
+            IPermissionService permissionService, 
+            IContributionService contributionService, 
+            ICustomerService customerService, 
+            IGenericAttributeService genericAttributeService, 
+            IDateTimeHelper dateTimeHelper, 
+            ICustomerActivityService customerActivityService, 
+            ILocalizationService localizationService, 
+            IExportManager exportManager,
             PaymentSettings paymentSettings,
             BankSettings bankSettings)
         {
@@ -58,6 +63,7 @@ namespace Ks.Admin.Controllers
             _dateTimeHelper = dateTimeHelper;
             _customerActivityService = customerActivityService;
             _localizationService = localizationService;
+            _exportManager = exportManager;
             _paymentSettings = paymentSettings;
             _bankSettings = bankSettings;
         }
@@ -137,33 +143,18 @@ namespace Ks.Admin.Controllers
 
             return Json(gridModel);
         }
-
-        public ActionResult Create()
-        {
-            if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributions))
-                return AccessDeniedView();
-
-            var model = new ContributionModel();
-            return View(model);
-        }
-
-        [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
-        public ActionResult Create(ContributionModel model, bool continueEditing)
-        {
-            if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributions))
-                return AccessDeniedView();
-
-            return View(new ContributionModel());
-        }
+ 
 
         public ActionResult Edit(int id)
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributions))
                 return AccessDeniedView();
 
+            var customer = _contributionService.GetContributionById(id);
             var model = new ContributionPaymentListModel
             {
                 ContributionId = id,
+                CustomerId = customer.Id,
                 States = ContributionState.EnProceso.ToSelectList(false).ToList(),
                 Banks = PrepareBanks(),
                 Types = new List<SelectListItem>
@@ -278,7 +269,7 @@ namespace Ks.Admin.Controllers
 
             var contribution = _contributionService.GetContributionById(model.ContributionId);
             contribution.UpdatedOnUtc = DateTime.UtcNow;
-            contribution.AmountTotal = contributionPayment.Amount1 + contributionPayment.Amount2 +
+            contribution.AmountTotal += contributionPayment.Amount1 + contributionPayment.Amount2 +
                                        contributionPayment.Amount3;
             //contribution.CycleOfDelay--;
             _contributionService.UpdateContribution(contribution);
@@ -292,6 +283,34 @@ namespace Ks.Admin.Controllers
             return RedirectToAction("Edit", new { id = contributionPayment.ContributionId });
         }
 
+        [HttpPost, ActionName("Edit")]
+        [FormValueRequired("exportexcel-all")]
+        public ActionResult ExportExcelAll(ContributionPaymentListModel model)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributions))
+                return AccessDeniedView();
+
+            var customer = _customerService.GetCustomerById(model.CustomerId);
+            var contribution = _contributionService.GetContributionById(model.ContributionId);
+            var reportContributionPayment=_contributionService.GetReportContributionPayment(model.ContributionId);
+            try
+            {
+                byte[] bytes;
+                using (var stream = new MemoryStream())
+                {
+                    _exportManager.ExportReportContributionPaymentToXlsx(stream,customer,contribution, reportContributionPayment);
+                    bytes = stream.ToArray();
+                }
+                //Response.ContentType = "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                //Response.AddHeader("content-disposition", "attachment; filename=Aportaciones.xlsx");
+                return File(bytes, "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Aportaciones.xlsx");
+            }
+            catch (Exception exc)
+            {
+                ErrorNotification(exc);
+                return RedirectToAction("List");
+            }
+        }
         #endregion
 
         #region Utilities

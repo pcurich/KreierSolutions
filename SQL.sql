@@ -26,7 +26,7 @@ SELECT * FROM ActivityLog
 SELECT * FROM ActivityLogType
 
 
- SELECT YEARS AS 'YEAR',IsAutomatic, StateId,
+SELECT YEARS AS 'YEAR',IsAutomatic, StateId,
 SUM(ENE) AS 'ENE',SUM(FEB) AS 'FEB',SUM(MAR) AS 'MAR',
 SUM(ABR) AS 'ABR',SUM(MAY) AS 'MAY',SUM(JUN) AS 'JUN',
 SUM(JUL) AS 'JUL',SUM(AGO) AS 'AGO',SUM(SEP) AS 'SEP',
@@ -49,7 +49,7 @@ FROM
 	SUM(CD.Amount1+CD.Amount2+CD.Amount3) AS TOTAL 
 	FROM contributionPayment  CD
 	INNER JOIN Contribution C ON C.Id=CD.contributionId
-	WHERE C.Active=1 AND C.CustomerId=1  
+	WHERE  C.Id=1  
 	GROUP BY YEAR(CD.ScheduledDateOnUtc ), MONTH(CD.ScheduledDateOnUtc ), CD.Number,CD.IsAutomatic, CD.StateId
 ) AS ReportContributionPayment
 GROUP BY YEARS  ,IsAutomatic, StateId,TOTAL
@@ -63,3 +63,16 @@ GROUP BY YEARS  ,IsAutomatic, StateId,TOTAL
 
 --update ContributionPayment set StateId=4
 --where BankName='BBVA Continental'
+
+
+update ContributionPayment set stateid=1
+
+select * from Contribution
+
+select * from ContributionPayment
+
+update ContributionPayment set IsAutomatic=1 where id=4
+update Contribution set Active=1 where id=1
+
+
+update ContributionPayment set StateId=3 where Number=5 and ContributionId=1

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Ks.Core;
 using Ks.Core.Domain.Contract;
+using Ks.Core.Domain.Report;
 
 namespace Ks.Services.Contract
 {
@@ -91,6 +92,19 @@ namespace Ks.Services.Contract
         /// <returns></returns>
         ContributionPayment GetPaymentById(int contributionPaymentId);
 
+        /// <summary>
+        /// Updates the contribution payment.
+        /// </summary>
+        /// <param name="contributionPayment">The contribution payment.</param>
         void UpdateContributionPayment(ContributionPayment contributionPayment);
+
+        /// <summary>
+        /// Gets the report contribution payment.
+        /// </summary>
+        /// <param name="contributionId">The contribution identifier.</param>
+        /// <param name="pageIndex">Index of the page.</param>
+        /// <param name="pageSize">Size of the page.</param>
+        /// <returns></returns>
+        IList<ReportContributionPayment> GetReportContributionPayment(int contributionId, int pageIndex = 0,int pageSize = Int32.MaxValue);
     }
 }

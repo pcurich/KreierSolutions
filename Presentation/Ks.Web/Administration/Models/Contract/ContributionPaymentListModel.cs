@@ -28,6 +28,7 @@ namespace Ks.Admin.Models.Contract
         public List<SelectListItem> Banks { get; set; }
 
         public int ContributionId { get; set; }
+        public int CustomerId { get; set; }
 
         public string NameAmount1 { get; set; }
         public bool IsActiveAmount1 { set; get; }

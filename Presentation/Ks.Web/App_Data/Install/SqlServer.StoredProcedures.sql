@@ -315,3 +315,44 @@ END
 SELECT ColumnName, ColumnValue FROM #Results
 END
 GO
+
+ALTER PROCEDURE [dbo].[SummaryReportContributionPayment]
+(
+	@ContributionId int,
+	@TotalRecordsDeleted int = null OUTPUT
+)
+AS
+BEGIN
+
+SELECT convert(int,ROW_NUMBER()  OVER(ORDER BY YEARS DESC))  AS Id, YEARS AS 'YEAR',IsAutomatic, StateId,
+SUM(ENE) AS 'ENE',SUM(FEB) AS 'FEB',SUM(MAR) AS 'MAR',
+SUM(ABR) AS 'ABR',SUM(MAY) AS 'MAY',SUM(JUN) AS 'JUN',
+SUM(JUL) AS 'JUL',SUM(AGO) AS 'AGO',SUM(SEP) AS 'SEP',
+SUM(OCT) AS 'OCT',SUM(NOV) AS 'NOV',SUM(DIC) AS 'DIC' 
+INTO  #tmp_reports
+FROM 
+(
+	SELECT CD.IsAutomatic, CD.StateId, YEAR(CD.ScheduledDateOnUtc ) AS 'YEARS', 
+	'ENE' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=1 AND CD.StateId<>1 THEN SUM(CD.Amount1+CD.Amount2+CD.Amount3) ELSE 0 END ,
+	'FEB' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=2 AND CD.StateId<>1 THEN SUM(CD.Amount1+CD.Amount2+CD.Amount3) ELSE 0 END ,
+	'MAR' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=3 AND CD.StateId<>1 THEN SUM(CD.Amount1+CD.Amount2+CD.Amount3) ELSE 0 END ,
+	'ABR' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=4 AND CD.StateId<>1 THEN SUM(CD.Amount1+CD.Amount2+CD.Amount3) ELSE 0 END ,
+	'MAY' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=5 AND CD.StateId<>1 THEN SUM(CD.Amount1+CD.Amount2+CD.Amount3) ELSE 0 END ,
+	'JUN' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=6 AND CD.StateId<>1 THEN SUM(CD.Amount1+CD.Amount2+CD.Amount3) ELSE 0 END ,
+	'JUL' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=7 AND CD.StateId<>1 THEN SUM(CD.Amount1+CD.Amount2+CD.Amount3) ELSE 0 END ,
+	'AGO' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=8 AND CD.StateId<>1 THEN SUM(CD.Amount1+CD.Amount2+CD.Amount3) ELSE 0 END ,
+	'SEP' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=9 AND CD.StateId<>1 THEN SUM(CD.Amount1+CD.Amount2+CD.Amount3) ELSE 0 END ,
+	'OCT' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=10 AND CD.StateId<>1 THEN SUM(CD.Amount1+CD.Amount2+CD.Amount3) ELSE 0 END ,
+	'NOV' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=11 AND CD.StateId<>1 THEN SUM(CD.Amount1+CD.Amount2+CD.Amount3) ELSE 0 END ,
+	'DIC' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=12 AND CD.StateId<>1 THEN SUM(CD.Amount1+CD.Amount2+CD.Amount3) ELSE 0 END  
+	FROM contributionPayment  CD
+	INNER JOIN Contribution C ON C.Id=CD.contributionId
+	WHERE  C.Id=@ContributionId and CD.ContributionId=@ContributionId 
+	GROUP BY YEAR(CD.ScheduledDateOnUtc ), MONTH(CD.ScheduledDateOnUtc ),  CD.IsAutomatic, CD.StateId
+) AS ReportContributionPayment
+GROUP BY YEARS  ,IsAutomatic, StateId 
+
+SELECT @TotalRecordsDeleted = COUNT(1) FROM #tmp_reports
+SELECT * FROM  #tmp_reports order by 1 desc
+END
+GO

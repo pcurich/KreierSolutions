@@ -12,9 +12,7 @@
             @T("Admin.Contract.Contribution.AddNew") @Html.ActionLink("(" + T("Admin.Contract.Contribution.BackToList") + ")", "List")
         </div>
         <div class="options">
-            <input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")" />
-            <input type="submit" name="save-continue" class="k-button" value="@T("Admin.Common.SaveContinue")" />
-            <span id="contribution-delete" class="k-button">@T("Admin.Common.Delete")</span>
+            <input type="submit" name="exportexcel-all" class="k-button" value="@T("Admin.Common.ExportToExcel.All")" />
         </div>
     </div>
     @Html.Partial("_CreateOrUpdate", Model)

@@ -1,5 +1,6 @@
 ﻿@model Ks.Admin.Models.Contract.ContributionPaymentListModel
 @Html.HiddenFor(model => model.ContributionId)
+@Html.HiddenFor(model => model.CustomerId)
 @{
     var defaultGridPageSize = EngineContext.Current.Resolve<Ks.Core.Domain.Common.AdminAreaSettings>().DefaultGridPageSize;
     var gridPageSizes = EngineContext.Current.Resolve<Ks.Core.Domain.Common.AdminAreaSettings>().GridPageSizes;

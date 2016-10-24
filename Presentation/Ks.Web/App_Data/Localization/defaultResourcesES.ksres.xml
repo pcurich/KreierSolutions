@@ -4368,10 +4368,10 @@
   <LocaleResource Name="Admin.Configuration.Settings.BankSettings.NameBank.Hint">
     <Value>Nombre del banco</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.BankSettings.AcountNumber">
+  <LocaleResource Name="Admin.Configuration.Settings.BankSettings.AccountNumber">
     <Value>N° de Cuenta</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.BankSettings.AcountNumber.Hint">
+  <LocaleResource Name="Admin.Configuration.Settings.BankSettings.AccountNumber.Hint">
     <Value>N° de Cuenta</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Catalog">

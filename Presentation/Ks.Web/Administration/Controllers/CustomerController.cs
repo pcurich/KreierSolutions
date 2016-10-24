@@ -1641,6 +1641,8 @@ namespace Ks.Admin.Controllers
                 return Content("");
 
             var contributionPayments = _contributionService.GetAllPayments(customerId: customerId, pageIndex: command.Page - 1, pageSize: command.PageSize);
+            //volver a hacer
+
             var gridModel = new DataSourceResult
             {
                 Data = contributionPayments.Select(x =>

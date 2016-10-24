@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using Ks.Core.Domain.Directory;
 using System.IO;
+using Ks.Core.Domain.Contract;
+using Ks.Core.Domain.Customers;
 using Ks.Core.Domain.Report;
 
 namespace Ks.Services.ExportImport
@@ -17,7 +19,7 @@ namespace Ks.Services.ExportImport
         /// <returns>Result in TXT (string) format</returns>
         string ExportStatesToTxt(IList<StateProvince> states);
 
-        void ExportReportContributionPaymentToXlsx(Stream stream, IList<ReportContributionPayment> reportContributionPayment);
+        void ExportReportContributionPaymentToXlsx(Stream stream, Customer customer, Contribution contribution, IList<ReportContributionPayment> reportContributionPayment);
         
     }
 }

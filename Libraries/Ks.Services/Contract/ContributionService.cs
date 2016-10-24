@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using Ks.Core;
@@ -7,6 +8,8 @@ using Ks.Core.Caching;
 using Ks.Core.Data;
 using Ks.Core.Domain.Contract;
 using Ks.Core.Domain.Customers;
+using Ks.Core.Domain.Report;
+using Ks.Data;
 using Ks.Services.Events;
 
 namespace Ks.Services.Contract
@@ -39,22 +42,22 @@ namespace Ks.Services.Contract
         private readonly IRepository<ContributionPayment> _contributionPaymentRepository;
         private readonly ICacheManager _cacheManager;
         private readonly IEventPublisher _eventPublisher;
+        private readonly IDataProvider _dataProvider;
+        private readonly IDbContext _dbContext;
 
         #endregion
 
         #region Constructor
 
-        public ContributionService(IRepository<Customer> customerRepository,
-            IRepository<Contribution> contributionRepository,
-            IRepository<ContributionPayment> contributionPaymentRepository, 
-            ICacheManager cacheManager, 
-            IEventPublisher eventPublisher)
+        public ContributionService(IRepository<Customer> customerRepository, IRepository<Contribution> contributionRepository, IRepository<ContributionPayment> contributionPaymentRepository, ICacheManager cacheManager, IEventPublisher eventPublisher, IDataProvider dataProvider, IDbContext dbContext)
         {
             _customerRepository = customerRepository;
             _contributionRepository = contributionRepository;
             _contributionPaymentRepository = contributionPaymentRepository;
             _cacheManager = cacheManager;
             _eventPublisher = eventPublisher;
+            _dataProvider = dataProvider;
+            _dbContext = dbContext;
         }
 
         #endregion
@@ -88,14 +91,14 @@ namespace Ks.Services.Contract
                 AmountTotal = Convert.ToInt32(contribution.AmountTotal)
             }).ToList();
         }
- 
+
 
         public virtual IPagedList<Contribution> SearchContributionByCustomerId(int customerId, int stateId = -1,
-            int pageIndex = 0,int pageSize = Int32.MaxValue)
+            int pageIndex = 0, int pageSize = Int32.MaxValue)
         {
             var query = from c in _contributionRepository.Table
                         orderby c.CreatedOnUtc
-                        where c.CustomerId == customerId 
+                        where c.CustomerId == customerId
                         select c;
             if (stateId >= 0)
             {
@@ -110,7 +113,7 @@ namespace Ks.Services.Contract
             int stateId = -1, int pageIndex = 0,
             int pageSize = Int32.MaxValue)
         {
-            
+
             var query = from c in _contributionRepository.Table
                         orderby c.CreatedOnUtc
                         where c.AuthorizeDiscount == letterNumberbool
@@ -145,13 +148,13 @@ namespace Ks.Services.Contract
 
                 query = query.OrderByDescending(x => x.CreatedOnUtc);
                 return query.ToList();
-                 
+
             });
         }
 
         public virtual Contribution GetContributionById(int contributionId = 0, int customerId = 0, int stateId = -1)
         {
-            if (customerId == 0 && contributionId==0)
+            if (customerId == 0 && contributionId == 0)
                 return null;
 
             var key = string.Format(CONTRIBUTIONS_BY_KEY, contributionId, customerId, stateId);
@@ -161,11 +164,11 @@ namespace Ks.Services.Contract
                             select c;
                 if (stateId >= 0)
                 {
-                    query = stateId==0 ? query.Where(x => x.Active == false) : query.Where(x => x.Active == true);
+                    query = stateId == 0 ? query.Where(x => x.Active == false) : query.Where(x => x.Active == true);
                 }
                 if (contributionId != 0)
                     query = query.Where(x => x.Id == contributionId);
-                
+
                 if (customerId != 0)
                     query = query.Where(x => x.CustomerId == customerId);
                 return query.FirstOrDefault();
@@ -202,7 +205,7 @@ namespace Ks.Services.Contract
 
         public virtual IPagedList<ContributionPayment> GetAllPayments(int contributionId = 0,
             int customerId = 0, int number = 0, int stateId = -1, string accountNumber = "0",
-            bool? type=null,int pageIndex = 0, int pageSize = Int32.MaxValue)
+            bool? type = null, int pageIndex = 0, int pageSize = Int32.MaxValue)
         {
             var query = from c in _contributionPaymentRepository.Table
                         select c;
@@ -214,7 +217,7 @@ namespace Ks.Services.Contract
                 query = query.Where(x => x.StateId == stateId);
             if (!"0".Equals(accountNumber))
                 query = query.Where(x => x.AccountNumber == accountNumber);
-            if (type!=null)
+            if (type != null)
                 query = query.Where(x => x.IsAutomatic == type.Value);
 
             return new PagedList<ContributionPayment>(query.ToList(), pageIndex, pageSize);
@@ -243,6 +246,34 @@ namespace Ks.Services.Contract
             //event notification
             _eventPublisher.EntityUpdated(contributionPayment);
         }
+
+        public virtual IList<ReportContributionPayment> GetReportContributionPayment
+            (int contributionId,int pageIndex = 0,
+            int pageSize =  Int32.MaxValue)
+        {
+            if(contributionId==0)
+                return new  List<ReportContributionPayment>();
+
+            var pContributionId = _dataProvider.GetParameter();
+            pContributionId.ParameterName = "ContributionId";
+            pContributionId.Value = contributionId;
+            pContributionId.DbType = DbType.Int32;
+
+            var pTotalRecords = _dataProvider.GetParameter();
+            pTotalRecords.ParameterName = "TotalRecords";
+            pTotalRecords.Direction = ParameterDirection.Output;
+            pTotalRecords.DbType = DbType.Int32;
+
+             //invoke stored procedure
+            var data = _dbContext.ExecuteStoredProcedureList<ReportContributionPayment>("SummaryReportContributionPayment",
+                pContributionId, pTotalRecords);
+
+            //return products
+            var  totalRecords = (pTotalRecords.Value != DBNull.Value) ? Convert.ToInt32(pTotalRecords.Value) : 0;
+            return new PagedList<ReportContributionPayment>(data, pageIndex, pageSize, totalRecords);
+
+        }
+
         #endregion
     }
 }

@@ -103,6 +103,9 @@
     <Compile Include="Mapping\Messages\EmailAccountMap.cs" />
     <Compile Include="Mapping\Messages\MessageTemplateMap.cs" />
     <Compile Include="Mapping\Messages\QueuedEmailMap.cs" />
+    <Compile Include="Mapping\Report\ReportContributionPaymentMap.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Mapping\Security\AclRecordMap.cs" />
     <Compile Include="Mapping\Security\PermissionRecordMap.cs" />
     <Compile Include="Mapping\Seo\UrlRecordMap.cs" />

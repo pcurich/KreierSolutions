@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Ks.Core.Domain.Report
+﻿namespace Ks.Core.Domain.Report
 {
-    public class ReportContributionPayment
+    public class ReportContributionPayment:BaseEntity
     {
         public int Year { get; set; }
+        public int StateId { get; set; }
+        public bool IsAutomatic { get; set; }
         public decimal Ene { get; set; }
         public decimal Feb { get; set; }
         public decimal Mar { get; set; }
