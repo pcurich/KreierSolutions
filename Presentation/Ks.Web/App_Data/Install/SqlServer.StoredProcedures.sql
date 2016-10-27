@@ -316,7 +316,7 @@ SELECT ColumnName, ColumnValue FROM #Results
 END
 GO
 
-ALTER PROCEDURE [dbo].[SummaryReportContributionPayment]
+CREATE PROCEDURE [dbo].[SummaryReportContributionPayment]
 (
 	@ContributionId int,
 	@TotalRecordsDeleted int = null OUTPUT
