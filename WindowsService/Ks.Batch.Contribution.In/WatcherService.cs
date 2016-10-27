@@ -1,20 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Topshelf.Logging;
 
-namespace Ks.Batch
+namespace Ks.Batch.Contribution.In
 {
-    public class ConverterService
+    public class WatcherService
     {
-        private static readonly LogWriter Log = HostLogger.Get<ConverterService>();
+        private static readonly LogWriter Log = HostLogger.Get<WatcherService>();
         private FileSystemWatcher _watcher;
 
         #region Start, Stop, Pause,Continue
 
         public bool Start()
         {
-            _watcher = new FileSystemWatcher(@"c:\temp2\a", "*_in.txt");
+            _watcher = new FileSystemWatcher(@"c:\KS\ACMR\WinService\In", "*.txt");
             _watcher.Created += FileCreated;
             _watcher.IncludeSubdirectories = false;
             _watcher.EnableRaisingEvents = true;
@@ -44,9 +48,20 @@ namespace Ks.Batch
 
         private void FileCreated(object sender, FileSystemEventArgs e)
         {
-            Thread.Sleep(500);
+            Thread.Sleep(1000*10); //10 Sec because is not atomic
 
-            Log.InfoFormat("Starting conversion of '{0}'", e.FullPath);
+            try
+            {
+                Log.InfoFormat("Starting Reading file '{0}'", e.FullPath);
+
+            }
+            catch (Exception ex)
+            {
+                Log.ErrorFormat("Error in Reading file:'{0}'", e.FullPath);
+                Log.ErrorFormat("Exception: '{0}'", e.FullPath);
+            }
+
+            
 
             if (e.FullPath.Contains("bad_in"))
             {
@@ -67,7 +82,7 @@ namespace Ks.Batch
         public void CustomCommand(int commandNumber)
         {
             //128-255
-            Log.InfoFormat("Starting Convertion of '{0}' ",commandNumber);
+            Log.InfoFormat("Starting Convertion of '{0}' ", commandNumber);
         }
     }
 }

@@ -5,6 +5,10 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ks.Batch", "Ks.Batch\Ks.Batch.csproj", "{1B9EC460-517A-4173-904E-2944BBEE0895}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ks.Batch.Contribution.In", "Ks.Batch.Contribution.In\Ks.Batch.Contribution.In.csproj", "{FA3521DA-1CA4-46F5-BAF6-AD7DEE285782}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ks.Batch.Contribution.Out", "Ks.Batch.Contribution.Out\Ks.Batch.Contribution.Out.csproj", "{F520B72B-5FFC-409B-8C96-E2E933F35F00}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{1B9EC460-517A-4173-904E-2944BBEE0895}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B9EC460-517A-4173-904E-2944BBEE0895}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B9EC460-517A-4173-904E-2944BBEE0895}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA3521DA-1CA4-46F5-BAF6-AD7DEE285782}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA3521DA-1CA4-46F5-BAF6-AD7DEE285782}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA3521DA-1CA4-46F5-BAF6-AD7DEE285782}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA3521DA-1CA4-46F5-BAF6-AD7DEE285782}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F520B72B-5FFC-409B-8C96-E2E933F35F00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F520B72B-5FFC-409B-8C96-E2E933F35F00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F520B72B-5FFC-409B-8C96-E2E933F35F00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F520B72B-5FFC-409B-8C96-E2E933F35F00}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
