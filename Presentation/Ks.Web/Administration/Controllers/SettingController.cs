@@ -256,26 +256,26 @@ namespace Ks.Admin.Controllers
 
         #endregion
 
-        #region Payments
+        #region Contributions
 
-        public ActionResult Payments()
+        public ActionResult Contributions()
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings))
                 return AccessDeniedView();
 
             var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
-            var paymentSettings = _settingService.LoadSetting<PaymentSettings>(storeScope);
+            var paymentSettings = _settingService.LoadSetting<ContributionSettings>(storeScope);
 
             var model = paymentSettings.ToModel();
             return View(model);
         }
 
-        [HttpPost, ActionName("Payments")]
+        [HttpPost, ActionName("Contributions")]
         [FormValueRequired("save")]
-        public ActionResult Payments(PaymentSettingsModel model)
+        public ActionResult Contributions(ContributionSettingsModel model)
         {
             var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
-            var paymentSettings = _settingService.LoadSetting<PaymentSettings>(storeScope);
+            var paymentSettings = _settingService.LoadSetting<ContributionSettings>(storeScope);
 
             if (ModelState.IsValid)
             {
@@ -293,16 +293,16 @@ namespace Ks.Admin.Controllers
                 //selected tab
                 SaveSelectedTabIndex();
 
-                return RedirectToAction("Payments");
+                return RedirectToAction("Contributions");
             }
 
             return View(model);
 
         }
 
-        [HttpPost, ActionName("Payments")]
+        [HttpPost, ActionName("Contributions")]
         [FormValueRequired("viewresultpopup")]
-        public ActionResult ViewResultPopup(PaymentSettingsModel model)
+        public ActionResult ViewResultPopup(ContributionSettingsModel model)
         {
             var contributionsDelays = _contributionService.GetContributionGroupByDelay();
             model.CustumerToChange = new List<CustumerToChange>();

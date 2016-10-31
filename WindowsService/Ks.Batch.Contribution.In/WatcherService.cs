@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Topshelf.Logging;
 
 namespace Ks.Batch.Contribution.In
@@ -18,7 +14,7 @@ namespace Ks.Batch.Contribution.In
 
         public bool Start()
         {
-            _watcher = new FileSystemWatcher(@"c:\KS\ACMR\WinService\In", "*.txt");
+            _watcher = new FileSystemWatcher(@"c:\KS\ACMR\WinService\Out", "*.txt");
             _watcher.Created += FileCreated;
             _watcher.IncludeSubdirectories = false;
             _watcher.EnableRaisingEvents = true;
@@ -48,41 +44,38 @@ namespace Ks.Batch.Contribution.In
 
         private void FileCreated(object sender, FileSystemEventArgs e)
         {
-            Thread.Sleep(1000*10); //10 Sec because is not atomic
+            Thread.Sleep(1000 * 10); //10 Sec because is not atomic
 
             try
             {
                 Log.InfoFormat("Starting Reading file '{0}'", e.FullPath);
 
+                var infos=InfoService.ReadFile(e.FullPath);
+                Log.InfoFormat("File readed with '{0}' records", infos.Count);
+                
+                var dao = new DaoService();
+                dao.Connect();
+                Log.InfoFormat("Data Base Connect Successfull");
+
+                var number=dao.Process(infos);
+                Log.InfoFormat("Records Process {0}",number);
+
+                dao.Close();
+                Log.InfoFormat("Process Done");
             }
             catch (Exception ex)
             {
                 Log.ErrorFormat("Error in Reading file:'{0}'", e.FullPath);
-                Log.ErrorFormat("Exception: '{0}'", e.FullPath);
+                Log.ErrorFormat("Exception: '{0}'", ex.Message);
             }
-
-            
-
-            if (e.FullPath.Contains("bad_in"))
-            {
-                throw new NotSupportedException("Cannot convert");
-            }
-
-            var content = File.ReadAllText(e.FullPath);
-            var upperContent = content.ToUpperInvariant();
-            var dir = Path.GetDirectoryName(e.FullPath);
-            var convertedFileName = Path.GetFileName(e.FullPath) + ".converted";
-            if (dir != null)
-            {
-                var convertedPath = Path.Combine(dir, convertedFileName);
-                File.WriteAllText(convertedPath, upperContent);
-            }
+ 
         }
 
         public void CustomCommand(int commandNumber)
         {
             //128-255
-            Log.InfoFormat("Starting Convertion of '{0}' ", commandNumber);
+            //sc control ProceesName commandNumber
+            Log.InfoFormat("This is '{0}' ", commandNumber);
         }
     }
 }

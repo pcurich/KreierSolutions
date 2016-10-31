@@ -1,0 +1,243 @@
+﻿@model ContributionSettingsModel
+@Html.ValidationSummary(false)
+@{
+    //page title
+    ViewBag.Title = T("Admin.Configuration.Settings.ContributionSettings").Text;
+}
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="section-header">
+        <div class="title">
+            <img src="@Url.Content("~/Administration/Content/images/ico-configuration.png")" alt="" />
+            @T("Admin.Configuration.Settings.ContributionSettings")
+        </div>
+        <div class="options">
+            <input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")" />
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $("#Contributionsettings-edit").kendoTabStrip({
+                animation: {
+                    open: {
+                        effects: "fadeIn"
+                    }
+                },
+                select: tabstrip_on_tab_select
+            });
+        });
+    </script>
+    <div id="Contributionsettings-edit">
+        <ul>
+            <li @Html.RenderSelectedTabIndex(0, GetSelectedTabIndex())>
+                @T("Admin.Configuration.Settings.ContributionSettings.Header")
+            </li>
+        </ul>
+        <div>
+            @TabDeclaratoryLetterSettings()
+        </div>
+    </div>
+
+    @helper TabDeclaratoryLetterSettings()
+{
+    <script type="text/javascript">
+        var temp = 0;
+        $(document).ready(function () {
+
+            $("#@Html.FieldIdFor(model => model.IsActiveAmount1)").click(toggleAmount1);
+            $("#@Html.FieldIdFor(model => model.IsActiveAmount2)").click(toggleAmount2);
+            $("#@Html.FieldIdFor(model => model.IsActiveAmount3)").click(toggleAmount3);
+
+            toggleAmount1();
+            toggleAmount2();
+            toggleAmount3();
+        });
+
+
+        function toggleAmount1() {
+            if ($('#@Html.FieldIdFor(model => model.IsActiveAmount1)').is(':checked')) {
+                $('#pnlActiveAmount1Enabled').show();
+                $('#pnlActiveNameAmount1Enabled').show();
+            } else {
+                $('#pnlActiveAmount1Enabled').hide();
+                $('#pnlActiveNameAmount1Enabled').hide();
+            }
+        }
+
+        function toggleAmount2() {
+            if ($('#@Html.FieldIdFor(model => model.IsActiveAmount2)').is(':checked')) {
+                $('#pnlActiveAmount2Enabled').show();
+                $('#pnlActiveNameAmount2Enabled').show();
+            } else {
+                $('#pnlActiveAmount2Enabled').hide();
+                $('#pnlActiveNameAmount2Enabled').hide();
+            }
+        }
+
+        function toggleAmount3() {
+            if ($('#@Html.FieldIdFor(model => model.IsActiveAmount3)').is(':checked')) {
+                $('#pnlActiveAmount3Enabled').show();
+                $('#pnlActiveNameAmount3Enabled').show();
+            } else {
+                $('#pnlActiveAmount3Enabled').hide();
+                $('#pnlActiveNameAmount3Enabled').hide();
+            }
+        }
+
+    </script>
+
+    <table class="adminContent">
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.TotalCycle):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.TotalCycle)
+                @Html.ValidationMessageFor(model => model.TotalCycle)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.DayOfPayment):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.DayOfPayment)
+                @Html.ValidationMessageFor(model => model.DayOfPayment)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.CycleOfDelay):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.CycleOfDelay)
+                @Html.ValidationMessageFor(model => model.CycleOfDelay)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.MaximumCharge):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.MaximumCharge)
+                @Html.ValidationMessageFor(model => model.MaximumCharge)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle"></td>
+            <td class="adminData">
+                <input type="submit" name="viewresultpopup" class="k-button" value="@T("Comprobar")" />
+            </td>
+            @{
+                if (Model.CustumerToChange != null)
+                {
+                    <td>
+                        <table>
+                            <tr>
+                                <td>Ciclos de demora</td>
+                                <td>Cantidad</td>
+                            </tr>
+                            @{
+                    foreach (var toChange in Model.CustumerToChange)
+                    {
+                        <tr>
+
+                            <td>@toChange.Delay</td>
+                            <td>@toChange.Size</td>
+                        </tr>
+                    }
+                            }
+
+                        </table>
+
+                    </td>
+                }
+
+            }
+
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.IsActiveAmount1):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.IsActiveAmount1)
+            </td>
+        </tr>
+        <tr id="pnlActiveNameAmount1Enabled">
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.NameAmount1):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.NameAmount1)
+                @Html.ValidationMessageFor(model => model.NameAmount1)
+            </td>
+        </tr>
+        <tr id="pnlActiveAmount1Enabled">
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.Amount1):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.Amount1)
+                @Html.ValidationMessageFor(model => model.NameAmount1)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.IsActiveAmount2):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.IsActiveAmount2)
+            </td>
+        </tr>
+        <tr id="pnlActiveNameAmount2Enabled">
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.NameAmount2):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.NameAmount2)
+                @Html.ValidationMessageFor(model => model.NameAmount2)
+            </td>
+        </tr>
+        <tr id="pnlActiveAmount2Enabled">
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.Amount2):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.Amount2)
+                @Html.ValidationMessageFor(model => model.Amount2)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.IsActiveAmount3):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.IsActiveAmount3)
+            </td>
+        </tr>
+        <tr id="pnlActiveNameAmount3Enabled">
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.NameAmount3):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.NameAmount3)
+                @Html.ValidationMessageFor(model => model.NameAmount3)
+            </td>
+        </tr>
+        <tr id="pnlActiveAmount3Enabled">
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.Amount3):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.Amount3)
+                @Html.ValidationMessageFor(model => model.Amount3)
+            </td>
+        </tr>
+    </table>
+}
+}

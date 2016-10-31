@@ -430,7 +430,6 @@ namespace Ks.Services.Installation
                 new CustomerAttribute {Name = "Fecha de Ingreso al ACMR", AttributeControlTypeId = 20},
                 new CustomerAttribute {Name = "Oficina de Descuento", AttributeControlTypeId = 1},
                 new CustomerAttribute {Name = "Codigo de Descuento", AttributeControlTypeId = 1},
-                new CustomerAttribute {Name = "Situación Militar", AttributeControlTypeId = 1},
                 new CustomerAttribute {Name = "Grado", AttributeControlTypeId = 1},
                 new CustomerAttribute {Name = "Fecha de egreso de la Escuela Militar", AttributeControlTypeId = 20},
                 new CustomerAttribute {Name = "Estado Civil", AttributeControlTypeId = 1},
@@ -473,47 +472,44 @@ namespace Ks.Services.Installation
 
                 new CustomerAttributeValue{Name = "6008",DisplayOrder = 1, CustomerAttributeId = 3},
                 new CustomerAttributeValue{Name = "8001",DisplayOrder = 2, CustomerAttributeId = 3},
+                
 
-                new CustomerAttributeValue{Name = "ACTIVIDAD".ToUpper(),DisplayOrder = 1, CustomerAttributeId =4},
-                new CustomerAttributeValue{Name = "RETIRO".ToUpper(),DisplayOrder = 2, CustomerAttributeId =4},
-				new CustomerAttributeValue{Name = "PERSONAL".ToUpper(),DisplayOrder = 2, CustomerAttributeId =4},
+                new CustomerAttributeValue{Name = "SUB-TENIENTE",DisplayOrder = 1, CustomerAttributeId =4},
+                new CustomerAttributeValue{Name = "TENIENTE",DisplayOrder = 2, CustomerAttributeId =4},
+                new CustomerAttributeValue{Name = "ALFERES CABALLERIA",DisplayOrder = 3, CustomerAttributeId =4},
+                new CustomerAttributeValue{Name = "ALFERES ARTILLERIA",DisplayOrder = 4, CustomerAttributeId =4},
+                new CustomerAttributeValue{Name = "CAPITAN",DisplayOrder = 5, CustomerAttributeId =4},
+                new CustomerAttributeValue{Name = "MAYOR",DisplayOrder = 6, CustomerAttributeId =4},
+                new CustomerAttributeValue{Name = "TENIENTE CORONEL",DisplayOrder = 7, CustomerAttributeId =4},
+                new CustomerAttributeValue{Name = "CORONEL",DisplayOrder = 8, CustomerAttributeId =4},
+                new CustomerAttributeValue{Name = "GENERAL DE BRIGADA",DisplayOrder = 9, CustomerAttributeId =4},
+                new CustomerAttributeValue{Name = "GENERAL DE DIVISION",DisplayOrder = 10, CustomerAttributeId =4},
 
-                new CustomerAttributeValue{Name = "SUB-TENIENTE",DisplayOrder = 1, CustomerAttributeId =5},
-                new CustomerAttributeValue{Name = "TENIENTE",DisplayOrder = 2, CustomerAttributeId =5},
-                new CustomerAttributeValue{Name = "ALFERES CABALLERIA",DisplayOrder = 3, CustomerAttributeId =5},
-                new CustomerAttributeValue{Name = "ALFERES ARTILLERIA",DisplayOrder = 4, CustomerAttributeId =5},
-                new CustomerAttributeValue{Name = "CAPITAN",DisplayOrder = 5, CustomerAttributeId =5},
-                new CustomerAttributeValue{Name = "MAYOR",DisplayOrder = 6, CustomerAttributeId =5},
-                new CustomerAttributeValue{Name = "TENIENTE CORONEL",DisplayOrder = 7, CustomerAttributeId =5},
-                new CustomerAttributeValue{Name = "CORONEL",DisplayOrder = 8, CustomerAttributeId =5},
-                new CustomerAttributeValue{Name = "GENERAL DE BRIGADA",DisplayOrder = 9, CustomerAttributeId =5},
-                new CustomerAttributeValue{Name = "GENERAL DE DIVISION",DisplayOrder = 10, CustomerAttributeId =5},
-
-                new CustomerAttributeValue{Name = "CASADO(A)".ToUpper(),DisplayOrder = 1, CustomerAttributeId =7},
-                new CustomerAttributeValue{Name = "DIVORCIADO(A)".ToUpper(),DisplayOrder = 2, CustomerAttributeId =7},
-                new CustomerAttributeValue{Name = "SOLTERO(A)".ToUpper(),DisplayOrder = 3, CustomerAttributeId =7},
-                new CustomerAttributeValue{Name = "VIUDO(A)".ToUpper(),DisplayOrder = 4, CustomerAttributeId =7},
+                new CustomerAttributeValue{Name = "CASADO(A)".ToUpper(),DisplayOrder = 1, CustomerAttributeId =6},
+                new CustomerAttributeValue{Name = "DIVORCIADO(A)".ToUpper(),DisplayOrder = 2, CustomerAttributeId =6},
+                new CustomerAttributeValue{Name = "SOLTERO(A)".ToUpper(),DisplayOrder = 3, CustomerAttributeId =6},
+                new CustomerAttributeValue{Name = "VIUDO(A)".ToUpper(),DisplayOrder = 4, CustomerAttributeId =6},
 				
 				
 				//nuevos
-				new CustomerAttributeValue{Name = "ART",DisplayOrder = 1, CustomerAttributeId = 29},
-				new CustomerAttributeValue{Name = "CAB",DisplayOrder = 2, CustomerAttributeId = 29},
-				new CustomerAttributeValue{Name = "COM",DisplayOrder = 3, CustomerAttributeId = 29},
-				new CustomerAttributeValue{Name = "DICYT",DisplayOrder = 4, CustomerAttributeId = 29},
-				new CustomerAttributeValue{Name = "FARM",DisplayOrder = 5, CustomerAttributeId = 29},
-				new CustomerAttributeValue{Name = "INF",DisplayOrder = 6, CustomerAttributeId = 29},
-				new CustomerAttributeValue{Name = "ING",DisplayOrder = 7, CustomerAttributeId = 29},
-				new CustomerAttributeValue{Name = "INT",DisplayOrder = 8, CustomerAttributeId = 29},
-				new CustomerAttributeValue{Name = "INTG",DisplayOrder = 9, CustomerAttributeId = 29},
-				new CustomerAttributeValue{Name = "MED",DisplayOrder = 10, CustomerAttributeId = 29},
-				new CustomerAttributeValue{Name = "MG",DisplayOrder = 11, CustomerAttributeId = 29},
-				new CustomerAttributeValue{Name = "ODONT",DisplayOrder = 12, CustomerAttributeId = 29},
-				new CustomerAttributeValue{Name = "PEF",DisplayOrder = 13, CustomerAttributeId = 29},
-				new CustomerAttributeValue{Name = "PSICO",DisplayOrder = 14, CustomerAttributeId = 29},
-				new CustomerAttributeValue{Name = "SAN",DisplayOrder = 15, CustomerAttributeId = 29},
-				new CustomerAttributeValue{Name = "SCYT",DisplayOrder = 16, CustomerAttributeId = 29},
-				new CustomerAttributeValue{Name = "SJE",DisplayOrder = 17, CustomerAttributeId = 29},
-				new CustomerAttributeValue{Name = "VET",DisplayOrder = 18, CustomerAttributeId = 29}
+				new CustomerAttributeValue{Name = "ART",DisplayOrder = 1, CustomerAttributeId = 28},
+				new CustomerAttributeValue{Name = "CAB",DisplayOrder = 2, CustomerAttributeId = 28},
+				new CustomerAttributeValue{Name = "COM",DisplayOrder = 3, CustomerAttributeId = 28},
+				new CustomerAttributeValue{Name = "DICYT",DisplayOrder = 4, CustomerAttributeId = 28},
+				new CustomerAttributeValue{Name = "FARM",DisplayOrder = 5, CustomerAttributeId = 28},
+				new CustomerAttributeValue{Name = "INF",DisplayOrder = 6, CustomerAttributeId = 28},
+				new CustomerAttributeValue{Name = "ING",DisplayOrder = 7, CustomerAttributeId = 28},
+				new CustomerAttributeValue{Name = "INT",DisplayOrder = 8, CustomerAttributeId = 28},
+				new CustomerAttributeValue{Name = "INTG",DisplayOrder = 9, CustomerAttributeId = 28},
+				new CustomerAttributeValue{Name = "MED",DisplayOrder = 10, CustomerAttributeId = 28},
+				new CustomerAttributeValue{Name = "MG",DisplayOrder = 11, CustomerAttributeId = 28},
+				new CustomerAttributeValue{Name = "ODONT",DisplayOrder = 12, CustomerAttributeId = 28},
+				new CustomerAttributeValue{Name = "PEF",DisplayOrder = 13, CustomerAttributeId = 28},
+				new CustomerAttributeValue{Name = "PSICO",DisplayOrder = 14, CustomerAttributeId = 28},
+				new CustomerAttributeValue{Name = "SAN",DisplayOrder = 15, CustomerAttributeId = 28},
+				new CustomerAttributeValue{Name = "SCYT",DisplayOrder = 16, CustomerAttributeId = 28},
+				new CustomerAttributeValue{Name = "SJE",DisplayOrder = 17, CustomerAttributeId = 28},
+				new CustomerAttributeValue{Name = "VET",DisplayOrder = 18, CustomerAttributeId = 28}
 
             };
             _customerAttributeRepository.Insert(customerAttributes);
@@ -712,15 +708,17 @@ namespace Ks.Services.Installation
                 RegistrationForm = 54651
             });
 
-            settingService.SaveSetting(new PaymentSettings
+            settingService.SaveSetting(new ContributionSettings
             {
-                
                 TotalCycle = 12*35,
                 DayOfPayment = 20,
                 CycleOfDelay = 6,
                 IsActiveAmount1 = true,
-                NameAmount1 = "Cobro de afiliado",
+                NameAmount1 = "Valor de aportación",
                 Amount1 = 35M,
+                Amount2 = 0M,
+                Amount3 = 0M,
+                MaximumCharge = 70M
             });
 
             settingService.SaveSetting(new StateActivitySettings

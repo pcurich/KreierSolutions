@@ -1,5 +1,6 @@
 ﻿using System;
 using AutoMapper;
+using Ks.Admin.Models.Batchs;
 using Ks.Admin.Models.Common;
 using Ks.Admin.Models.Contract;
 using Ks.Admin.Models.Customers;
@@ -9,6 +10,7 @@ using Ks.Admin.Models.Logging;
 using Ks.Admin.Models.Messages;
 using Ks.Admin.Models.Settings;
 using Ks.Admin.Models.Systems;
+using Ks.Core.Domain.Batchs;
 using Ks.Core.Domain.Catalog;
 using Ks.Core.Domain.Common;
 using Ks.Core.Domain.Contract;
@@ -370,16 +372,16 @@ namespace Ks.Admin.Extensions
 
         #region PaymentSetting
 
-        public static PaymentSettingsModel ToModel(this PaymentSettings entity)
+        public static ContributionSettingsModel ToModel(this ContributionSettings entity)
         {
-            return entity.MapTo<PaymentSettings, PaymentSettingsModel>();
+            return entity.MapTo<ContributionSettings, ContributionSettingsModel>();
         }
-        public static PaymentSettings ToEntity(this PaymentSettingsModel model)
+        public static ContributionSettings ToEntity(this ContributionSettingsModel model)
         {
-            return model.MapTo<PaymentSettingsModel, PaymentSettings>();
+            return model.MapTo<ContributionSettingsModel, ContributionSettings>();
         }
 
-        public static PaymentSettings ToEntity(this PaymentSettingsModel model, PaymentSettings destination)
+        public static ContributionSettings ToEntity(this ContributionSettingsModel model, ContributionSettings destination)
         {
             return model.MapTo(destination);
         }
@@ -506,6 +508,25 @@ namespace Ks.Admin.Extensions
         }
 
         public static KsSystem ToEntity(this KsSystemModel model, KsSystem destination)
+        {
+            return model.MapTo(destination);
+        }
+
+        #endregion
+
+        #region ScheduleBatchs
+
+        public static ScheduleBatchModel ToModel(this ScheduleBatch entity)
+        {
+            return entity.MapTo<ScheduleBatch, ScheduleBatchModel>();
+        }
+
+        public static ScheduleBatch ToEntity(this ScheduleBatchModel model)
+        {
+            return model.MapTo<ScheduleBatchModel, ScheduleBatch>();
+        }
+
+        public static ScheduleBatch ToEntity(this ScheduleBatchModel model, ScheduleBatch destination)
         {
             return model.MapTo(destination);
         }

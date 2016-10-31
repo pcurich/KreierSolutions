@@ -251,7 +251,7 @@
     <Content Include="Views\KsSystem\_CreateOrUpdate.cshtml" />
     <Content Include="Views\OnlineCustomer\List.cshtml" />
     <Content Include="Views\Setting\SequenceIds.cshtml" />
-    <Content Include="Views\Setting\Payments.cshtml" />
+    <Content Include="Views\Setting\Contributions.cshtml" />
     <Content Include="Views\Customer\_CreateOrUpdateContributions.cshtml" />
     <Content Include="Views\Setting\_CreateOrUpdateCashFlow.cshtml" />
     <Content Include="Views\Setting\StateActivity.cshtml" />
@@ -261,6 +261,9 @@
     <Content Include="Views\Customer\_PreCashFlowActivity.cshtml" />
     <Content Include="Views\Setting\Bank.cshtml" />
     <Content Include="Views\Contributions\_CreateOrUpdatePayment.cshtml" />
+    <Content Include="Views\ScheduleBatch\Edit.cshtml" />
+    <Content Include="Views\ScheduleBatch\_CreateOrUpdate.cshtml" />
+    <Content Include="Views\ScheduleBatch\List.cshtml" />
     <None Include="Views\Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -296,6 +299,7 @@
     <Compile Include="Controllers\MessageTemplateController.cs" />
     <Compile Include="Controllers\OnlineCustomerController.cs" />
     <Compile Include="Controllers\QueuedEmailController.cs" />
+    <Compile Include="Controllers\ScheduleBatchController.cs" />
     <Compile Include="Controllers\ScheduleTaskController.cs" />
     <Compile Include="Controllers\SecurityController.cs" />
     <Compile Include="Controllers\SettingController.cs" />
@@ -305,6 +309,7 @@
     <Compile Include="Infrastructure\AutoMapperStartupTask.cs" />
     <Compile Include="Infrastructure\Cache\ModelCacheEventConsumer.cs" />
     <Compile Include="Infrastructure\DependencyRegistrar.cs" />
+    <Compile Include="Models\Batchs\ScheduleBatchModel.cs" />
     <Compile Include="Models\Common\AddressAttributeModel.cs" />
     <Compile Include="Models\Common\AddressAttributeValueModel.cs" />
     <Compile Include="Models\Common\AddressModel.cs" />
@@ -353,7 +358,7 @@
     <Compile Include="Models\Settings\CashFlowModel.cs" />
     <Compile Include="Models\Settings\CustomerUserSettingsModel.cs" />
     <Compile Include="Models\Settings\SequenceIdsSettingsModel.cs" />
-    <Compile Include="Models\Settings\PaymentSettingsModel.cs" />
+    <Compile Include="Models\Settings\ContributionSettingsModel.cs" />
     <Compile Include="Models\Settings\SettingModel.cs" />
     <Compile Include="Models\Settings\StateActivitySettingsModel.cs" />
     <Compile Include="Models\Systems\KsSystemModel.cs" />

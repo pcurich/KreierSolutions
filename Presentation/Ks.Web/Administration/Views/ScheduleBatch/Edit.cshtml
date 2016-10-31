@@ -1,0 +1,20 @@
+﻿@model Ks.Admin.Models.Batchs.ScheduleBatchModel
+@{
+    //page title
+    ViewBag.Title = T("Admin.System.EditScheduleBatchs").Text;
+}
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="section-header">
+        <div class="title">
+            <img src="@Url.Content("~/Administration/Content/images/ico-promotions.png")" alt="" />
+            @T("Admin.System.EditScheduleBatchs") - @Model.Name @Html.ActionLink("(" + T("Admin.System.ScheduleBatchs.BackToList") + ")", "List")
+        </div>
+        <div class="options">
+            <input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")" />
+            <input type="submit" name="save-continue" class="k-button" value="@T("Admin.Common.SaveContinue")" />
+        </div>
+    </div>
+    @Html.Partial("_CreateOrUpdate", Model)
+}

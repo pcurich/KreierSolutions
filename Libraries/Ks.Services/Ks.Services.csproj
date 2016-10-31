@@ -144,6 +144,8 @@
   <ItemGroup>
     <Compile Include="Authentication\FormsAuthenticationService.cs" />
     <Compile Include="Authentication\IAuthenticationService.cs" />
+    <Compile Include="Batchs\IScheduleBatchService.cs" />
+    <Compile Include="Batchs\ScheduleBatchService.cs" />
     <Compile Include="Caching\ClearCacheTask.cs" />
     <Compile Include="Common\AddressAttributeExtensions.cs" />
     <Compile Include="Common\AddressAttributeFormatter.cs" />
@@ -301,7 +303,9 @@
       <Name>Ks.Data</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Reports\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />
   <Target Name="EnsureBclBuildImported" BeforeTargets="BeforeBuild" Condition="'$(BclBuildImported)' == ''">

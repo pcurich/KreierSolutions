@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Ks.Batch.Contribution.In")]
+[assembly: AssemblyTitle("Ks.Batch.Contribution.Out")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Ks.Batch.Contribution.In")]
+[assembly: AssemblyProduct("Ks.Batch.Contribution.Out")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("41087fd8-6e8a-42b6-9d09-e3509cfebfd0")]
+[assembly: Guid("2a68c478-f66d-450f-9fc3-3a36eaf5c00f")]
 
 // Version information for an assembly consists of the following four values:
 //

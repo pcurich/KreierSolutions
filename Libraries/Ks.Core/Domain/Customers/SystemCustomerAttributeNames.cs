@@ -9,12 +9,14 @@
 
         public static string AdmCode { get { return "AdmCode"; } }
         public static string Dni { get { return "Dni"; } }
+        public static string MilitarySituationId { get { return "MilitarySituationId"; } }
 
         public static string DateOfBirth { get { return "DateOfBirth"; } }
         public static string Company { get { return "Company"; } }
         public static string StreetAddress { get { return "StreetAddress"; } }
         public static string StreetAddress2 { get { return "StreetAddress2"; } }
         public static string ZipPostalCode { get { return "ZipPostalCode"; } }
+        
         //public static string City { get { return "City"; } }
         public static string CityId { get { return "CityId"; } }
         public static string CountryId { get { return "CountryId"; } }

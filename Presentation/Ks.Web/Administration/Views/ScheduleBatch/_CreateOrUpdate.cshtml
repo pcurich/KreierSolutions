@@ -1,0 +1,167 @@
+﻿@model Ks.Admin.Models.Batchs.ScheduleBatchModel
+@Html.ValidationSummary(true)
+@Html.HiddenFor(model => model.Id)
+@Html.HiddenFor(model => model.SystemName)
+
+<script>
+    $(document).ready(function () {
+        $("#country-edit").kendoTabStrip({
+            animation: {
+                open: {
+                    effects: "fadeIn"
+                }
+            },
+            select: tabstrip_on_tab_select
+        });
+    });
+</script>
+<div id="country-edit">
+    <ul>
+        <li @Html.RenderSelectedTabIndex(0, GetSelectedTabIndex())>
+            @T("Admin.System.ScheduleBatchs.Info")
+        </li>
+    </ul>
+    <div>
+        @TabInfo()
+    </div>
+</div>
+
+@{
+    //custom tabs
+    var eventMessage = new AdminTabStripCreated(this.Html, "country-edit");
+    EngineContext.Current.Resolve<IEventPublisher>().Publish(eventMessage);
+    foreach (var eventBlock in eventMessage.BlocksToRender)
+    {
+        @eventBlock
+    }
+}
+
+
+@*save selected tab index*@
+<input type="hidden" id="selected-tab-index" name="selected-tab-index" value="@(GetSelectedTabIndex())">
+
+@helper TabInfo()
+{
+    <table class="adminContent">
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.Name):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.Name)
+                @Html.ValidationMessageFor(model => model.Name)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.FrecuencyId):
+            </td>
+            <td class="adminData">
+                @Html.DropDownListFor(model => model.FrecuencyId, Model.AvailableFrecuencies)
+                <script>
+                    $(document).ready(function () {
+                        $('#@Html.FieldIdFor(model => model.FrecuencyId)').kendoDropDownList();
+                    });
+                </script>
+
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.PathRead):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.PathRead)
+                @Html.ValidationMessageFor(model => model.PathRead)
+                <script>
+                    $(document).ready(function () {
+                        $('#@Html.FieldIdFor(model => model.PathRead)').width(800);
+                    });
+                </script>
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.PathLog):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.PathLog)
+                @Html.ValidationMessageFor(model => model.PathLog)
+                <script>
+                    $(document).ready(function () {
+                        $('#@Html.FieldIdFor(model => model.PathLog)').width(800);
+                    });
+                </script>
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.PathMoveToDone):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.PathMoveToDone)
+                @Html.ValidationMessageFor(model => model.PathMoveToDone)
+                <script>
+                    $(document).ready(function () {
+                        $('#@Html.FieldIdFor(model => model.PathMoveToDone)').width(800);
+                    });
+                </script>
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.PathMoveToError):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.PathMoveToError)
+                @Html.ValidationMessageFor(model => model.PathMoveToError)
+                <script>
+                    $(document).ready(function () {
+                        $('#@Html.FieldIdFor(model => model.PathMoveToError)').width(800);
+                    });
+                </script>
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.StartExecutionOn):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.StartExecutionOn)
+                @Html.ValidationMessageFor(model => model.StartExecutionOn)
+                @*<script>
+                    $(document).ready(function () {
+                        $('#@Html.FieldIdFor(model => model.StartExecutionOn)').kendoDateTimePicker({
+                            ARIATemplate: "Date: #=kendo.toString(@Model.StartExecutionOn, 'G')#"
+                    });
+                    });
+                </script>*@
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.NextExecutionOn):
+            </td>
+            <td class="adminData">
+                @Model.NextExecutionOn
+
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.LastExecutionOn):
+            </td>
+            <td class="adminData">
+                @Model.LastExecutionOn
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.Enabled):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.Enabled)
+            </td>
+        </tr>
+    </table>
+}

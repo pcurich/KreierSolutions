@@ -4689,8 +4689,8 @@
   <LocaleResource Name="Admin.Configuration.Settings.Catalog.TopCategoryMenuSubcategoryLevelsToDisplay.Hint">
     <Value>Introduzca el número de niveles de subcategoría para mostrar en el menú de la categoría superior.</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.ContributionPayment">
-    <Value>Configuración de la Ficha de Inscripción</Value>
+  <LocaleResource Name="Admin.Configuration.Settings.Contributions">
+    <Value>Configuración de la Ficha de las Aportaciones</Value>
   </LocaleResource>  
   <LocaleResource Name="Admin.Configuration.Settings.Customeruser">
     <Value>Configuración del Usuarios - Asociados</Value>
@@ -5865,106 +5865,112 @@
   <LocaleResource Name="Admin.Configuration.Settings.Order.TermsOfServiceOnShoppingCartPage.Hint">
     <Value>Exigir a los clientes aceptar o rechazar los términos de servicio antes de procesar el pedido (en la página del carrito).</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.PaymentSettings">
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings">
     <Value>Configuracion de los cobros programados</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.Amount">
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.Amount">
     <Value>Valor de la couta</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.Amount.Hint">
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.Amount.Hint">
     <Value>Valor de la couta a descontarse de forma periodica</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.Amount1">
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.Amount1">
     <Value>Valor del primer monto</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.Amount1.Hint">
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.Amount1.Hint">
     <Value>Valor del primer monto a descontarse de forma periodica</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.Amount2">
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.Amount2">
     <Value>Valor del segundo monto</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.Amount2.Hint">
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.Amount2.Hint">
     <Value>Valor del segundo monto a descontarse de forma periodica</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.Amount3">
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.Amount3">
     <Value>Valor del tercer monto</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.Amount3.Hint">
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.Amount3.Hint">
     <Value>Valor del tercer monto a descontarse de forma periodica</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.CycleOfDelay">
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.CycleOfDelay">
     <Value>Ciclos de espera</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.CycleOfDelay.Hint">
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.CycleOfDelay.Hint">
     <Value>Cantidad de ciclos que se debe acumular antes de dar de baja a un afiliado</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.DayOfPayment">
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.MaximumCharge"> 
+	<Value>Cargo Maximo</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.MaximumCharge.Hint"> 
+	<Value>Monto maximo que se le puede cargar cuando no tenga liquidez suficiente</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.DayOfPayment">
     <Value>Dia de cobros</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.DayOfPayment.Hint">
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.DayOfPayment.Hint">
     <Value>Dia en que se programa los descuentos</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.Fields.Amount1.GreaterThanZero">
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.Fields.Amount1.GreaterThanZero">
     <Value>El valor del primer monto debe debe ser mayor a cero</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.Fields.Amount2.GreaterThanZero">
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.Fields.Amount2.GreaterThanZero">
     <Value>El valor del segundo monto debe debe ser mayor a cero</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.Fields.Amount3.GreaterThanZero">
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.Fields.Amount3.GreaterThanZero">
     <Value>El valor del tercer monto debe debe ser mayor a cero</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.Fields.NameAmount1.Required">
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.Fields.NameAmount1.Required">
     <Value>El nombre del primer monto es obligatorio</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.Fields.NameAmount2.Required">
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.Fields.NameAmount2.Required">
     <Value>El nombre del segundo monto es obligatorio</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.Fields.NameAmount3.Required">
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.Fields.NameAmount3.Required">
     <Value>El nombre del tercer monto es obligatorio</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.Header">
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.Header">
     <Value>Configuracion de ficha de inscripcion</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.IsActiveAmount1">
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.IsActiveAmount1">
     <Value>Primer monto activo?</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.IsActiveAmount1.Hint">
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.IsActiveAmount1.Hint">
     <Value>Establece si el concepto del primer cobro debe considerarse</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.IsActiveAmount2">
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.IsActiveAmount2">
     <Value>Segundo monto activo?</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.IsActiveAmount2.Hint">
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.IsActiveAmount2.Hint">
     <Value>Establece si el concepto del segundo cobro debe considerarse</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.IsActiveAmount3">
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.IsActiveAmount3">
     <Value>Tercer monto activo?</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.IsActiveAmount3.Hint">
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.IsActiveAmount3.Hint">
     <Value>Establece si el concepto del tercer cobro debe considerarse</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.NameAmount1">
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.NameAmount1">
     <Value>Concepto del primer monto</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.NameAmount1.Hint">
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.NameAmount1.Hint">
     <Value>Concepto del primer monto, es la cabecera de los resportes</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.NameAmount2">
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.NameAmount2">
     <Value>Concepto del segundo monto</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.NameAmount2.Hint">
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.NameAmount2.Hint">
     <Value>Concepto del segundo monto, es la cabecera de los resportes</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.NameAmount3">
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.NameAmount3">
     <Value>Concepto del tercer monto</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.NameAmount3.Hint">
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.NameAmount3.Hint">
     <Value>Concepto del tercer monto, es la cabecera de los resportes</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.TotalCycle">
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.TotalCycle">
     <Value>Numero de Ciclos</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.PaymentSettings.TotalCycle.Hint">
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.TotalCycle.Hint">
     <Value>Numero de meses que se va a realizar los descuentos</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.RewardPoints">
@@ -7594,11 +7600,23 @@
     <Value>N° Cuota para filtrar</Value>
   </LocaleResource> 
   <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.ProcessedDateOn">
+    <Value>Fecha Procesado.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.ProcessedDateOn.Hint">
     <Value>Fecha de cobro procesada.</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.ScheduledDateOn">
-    <Value>Fecha de Cobro programado.</Value>
+  <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.AmountTotal">
+    <Value>Valor de aportación.</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.AmountTotal.Hint">
+    <Value>Monto Total de la aportacion en el caso en que se tenga mas de un monto de aportación.</Value>
+  </LocaleResource>
+<LocaleResource Name="Admin.Contract.ContributionPayments.Fields.ScheduledDateOn">
+    <Value>Fecha Programado.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.ScheduledDateOn.Hint">
+    <Value>Fecha de Cobro programado.</Value>
+  </LocaleResource>  
   <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.State">
     <Value>Estado</Value>
   </LocaleResource>
@@ -7634,6 +7652,12 @@
   </LocaleResource>
      <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.Reference.Hint">
     <Value>Descripcion de referencia.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.Description">
+    <Value>Nota</Value>
+  </LocaleResource>
+     <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.Description.Hint">
+    <Value>Descripcion adicional creada por el sistema.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Loan.CashFlow">
     <Value>Liquidez</Value>
@@ -8121,6 +8145,12 @@
   <LocaleResource Name="Admin.Customers.Customers.Fields.Dni.Hint">
     <Value>Documento Nacional de Identidad</Value>
   </LocaleResource>
+    <LocaleResource Name="Admin.Customers.Customers.Fields.MilitarySituation">
+    <Value>Situación Militar</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Fields.MilitarySituation.Hint">
+    <Value>Situación Militar</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.Fields.Email">
     <Value>Email</Value>
   </LocaleResource>
@@ -8138,6 +8168,9 @@
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.Fields.Fax.Required">
     <Value>Se requiere Fax</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Fields.MilitarySituation.GreaterThanZero">
+    <Value>Seleccione una Situacion Militar</Value>
   </LocaleResource>
   <LocaleResource Name="admin.customers.customers.fields.firstname">
     <Value>Nombres</Value>
@@ -10776,6 +10809,85 @@
   <LocaleResource Name="Admin.System.ScheduleTasks.StopOnError">
     <Value>Detener en error</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.System.ScheduleBatchs">
+    <Value>Programador de Servicios</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.ScheduleBatchs.Info">
+    <Value>Información</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.EditScheduleBatchs">
+    <Value>Editar Servicio</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.ScheduleBatchs.Updated">
+    <Value>Servicio Actualizado</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.ScheduleBatchs.Error">
+    <Value>Primero debe de desactivar el servicio antes de modificarlo</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.ScheduleBatchs.BackToList">
+    <Value>Regresar a la lista de servicios</Value>
+  </LocaleResource>  
+   <LocaleResource Name="Admin.System.ScheduleBatchs.Name">
+    <Value>Nombre</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.ScheduleBatchs.Name.Hint">
+    <Value>Nombre que tiene el servicio</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.ScheduleBatchs.PathRead">
+    <Value>Directorio de Lectura</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.ScheduleBatchs.PathRead.Hint">
+    <Value>Directorio donde se colocan los archivos para ser procesados</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.ScheduleBatchs.PathLog">
+    <Value>Directorio de Logs</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.ScheduleBatchs.PathLog.Hint">
+    <Value>Directorio donde se colocan los logs de los archivos leidos</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.ScheduleBatchs.PathMoveToDone">
+    <Value>Directorio de Prosesados</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.ScheduleBatchs.PathMoveToDone.Hint">
+    <Value>Directorio donde se colocan los archivos una vez que sean procesados</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.ScheduleBatchs.PathMoveToError">
+    <Value>Directorio de Error</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.ScheduleBatchs.PathMoveToError.Hint">
+    <Value>Directorio donde se colocan los archivos que poseen errores y no pudieron ser procesados</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.ScheduleBatchs.Frecuency">
+    <Value>Frecuencia de ejecución</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.ScheduleBatchs.Frecuency.Hint">
+    <Value>Establece la frecuencia con la que se ejecuta el servicio</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.ScheduleBatchs.StartExecutionOn">
+    <Value>Fecha de Inicio</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.ScheduleBatchs.StartExecutionOn.Hint">
+    <Value>Establece la fecha desde la cual empieza a ejecutarse el servicio</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.ScheduleBatchs.NextExecutionOn">
+    <Value>Fecha de Próxima Ejecución</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.ScheduleBatchs.NextExecutionOn.Hint">
+    <Value>Establece la fecha de la proxima ejecution del servicio</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.ScheduleBatchs.LastExecutionOn">
+    <Value>Fecha de Ultima Ejecución</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.ScheduleBatchs.LastExecutionOn.Hint">
+    <Value>Establece la fecha de la última ejecution del servicio</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.ScheduleBatchs.Enabled">
+    <Value>Activo?</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.ScheduleBatchs.Enabled.Hint">
+    <Value>Establece el estado del servicio</Value>
+  </LocaleResource>
+  
   <LocaleResource Name="Admin.System.SeNames">
     <Value>Los motores de búsqueda de los nombres de página</Value>
   </LocaleResource>

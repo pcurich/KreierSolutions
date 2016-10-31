@@ -3,7 +3,7 @@ using Ks.Core.Domain.Directory;
 using System.IO;
 using Ks.Core.Domain.Contract;
 using Ks.Core.Domain.Customers;
-using Ks.Core.Domain.Report;
+using Ks.Core.Domain.Reports;
 
 namespace Ks.Services.ExportImport
 {

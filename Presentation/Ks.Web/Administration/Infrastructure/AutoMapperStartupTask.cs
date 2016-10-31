@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Ks.Admin.Models.Batchs;
 using Ks.Admin.Models.Common;
 using Ks.Admin.Models.Contract;
 using Ks.Admin.Models.Customers;
@@ -8,6 +9,7 @@ using Ks.Admin.Models.Logging;
 using Ks.Admin.Models.Messages;
 using Ks.Admin.Models.Settings;
 using Ks.Admin.Models.Systems;
+using Ks.Core.Domain.Batchs;
 using Ks.Core.Domain.Common;
 using Ks.Core.Domain.Contract;
 using Ks.Core.Domain.Customers;
@@ -241,9 +243,9 @@ namespace Ks.Admin.Infrastructure
 
             #region PaymentSetting
 
-            Mapper.CreateMap<PaymentSettings, PaymentSettingsModel>()
+            Mapper.CreateMap<ContributionSettings, ContributionSettingsModel>()
                    .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
-            Mapper.CreateMap<PaymentSettingsModel, PaymentSettings>();
+            Mapper.CreateMap<ContributionSettingsModel, ContributionSettings>();
 
             #endregion
 
@@ -320,6 +322,20 @@ namespace Ks.Admin.Infrastructure
                 .ForMember(dest => dest.Locales, mo => mo.Ignore())
                 .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
             Mapper.CreateMap<KsSystemModel, KsSystem>();
+
+            #endregion
+
+            #region ScheduleBatchs
+
+            Mapper.CreateMap<ScheduleBatch, ScheduleBatchModel>()
+                .ForMember(dest => dest.NextExecutionOn, mo => mo.Ignore())
+                .ForMember(dest => dest.StartExecutionOn, mo => mo.Ignore())
+                .ForMember(dest => dest.LastExecutionOn, mo => mo.Ignore())
+                .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
+            Mapper.CreateMap<ScheduleBatchModel, ScheduleBatch>()
+                .ForMember(dest => dest.StartExecutionOnUtc, et => et.Ignore())
+                .ForMember(dest => dest.NextExecutionOnUtc, et => et.Ignore())
+                .ForMember(dest => dest.LastExecutionOnUtc, et => et.Ignore());
 
             #endregion
         }

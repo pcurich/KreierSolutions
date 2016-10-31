@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Ks.Core;
 using Ks.Core.Domain.Contract;
-using Ks.Core.Domain.Report;
+using Ks.Core.Domain.Reports;
 
 namespace Ks.Services.Contract
 {

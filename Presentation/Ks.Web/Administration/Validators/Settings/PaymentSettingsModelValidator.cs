@@ -5,7 +5,7 @@ using Ks.Web.Framework.Validators;
 
 namespace Ks.Admin.Validators.Settings
 {
-    public class PaymentSettingsModelValidator : BaseKsValidator<PaymentSettingsModel>
+    public class PaymentSettingsModelValidator : BaseKsValidator<ContributionSettingsModel>
     {
         public PaymentSettingsModelValidator(ILocalizationService localizationService)
         {

@@ -10,7 +10,7 @@ using Ks.Core;
 using Ks.Core.Domain;
 using Ks.Core.Domain.Contract;
 using Ks.Core.Domain.Customers;
-using Ks.Core.Domain.Report;
+using Ks.Core.Domain.Reports;
 using Ks.Services.Customers;
 using Ks.Services.Helpers;
 using Ks.Services.KsSystems;

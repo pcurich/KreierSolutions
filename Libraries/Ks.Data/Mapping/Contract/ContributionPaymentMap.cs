@@ -11,6 +11,7 @@ namespace Ks.Data.Mapping.Contract
             Property(sp => sp.Amount1).HasPrecision(6, 2);
             Property(sp => sp.Amount2).HasPrecision(6, 2);
             Property(sp => sp.Amount3).HasPrecision(6, 2);
+            Property(sp => sp.AmountTotal).HasPrecision(6, 2);
 
             Ignore(sp => sp.ContributionState);
 

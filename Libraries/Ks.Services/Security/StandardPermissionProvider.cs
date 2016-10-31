@@ -57,7 +57,7 @@ namespace Ks.Services.Security
         public static readonly PermissionRecord ManageMaintenance = new PermissionRecord { Name = "Admin area. Manage Maintenance", SystemName = "ManageMaintenance", Category = "Configuration" };
         public static readonly PermissionRecord HtmlEditorManagePictures = new PermissionRecord { Name = "Admin area. HTML Editor. Manage pictures", SystemName = "HtmlEditor.ManagePictures", Category = "Configuration" };
         public static readonly PermissionRecord ManageScheduleTasks = new PermissionRecord { Name = "Admin area. Manage Schedule Tasks", SystemName = "ManageScheduleTasks", Category = "Configuration" };
-        
+        public static readonly PermissionRecord ManageScheduleBatchs = new PermissionRecord { Name = "Admin area. Manage Schedule Batchs", SystemName = "ManageScheduleBatchs", Category = "Configuration" };
 
         //public store permissions
         public static readonly PermissionRecord DisplayPrices = new PermissionRecord { Name = "Public store. Display Prices", SystemName = "DisplayPrices", Category = "PublicStore" };
@@ -118,6 +118,7 @@ namespace Ks.Services.Security
                 ManageMaintenance,
                 HtmlEditorManagePictures,
                 ManageScheduleTasks,
+                ManageScheduleBatchs,
                 DisplayPrices,
                 EnableShoppingCart,
                 EnableWishlist,
@@ -182,6 +183,7 @@ namespace Ks.Services.Security
                         ManageMaintenance,
                         HtmlEditorManagePictures,
                         ManageScheduleTasks,
+                        ManageScheduleBatchs,
                         DisplayPrices,
                         EnableShoppingCart,
                         EnableWishlist,

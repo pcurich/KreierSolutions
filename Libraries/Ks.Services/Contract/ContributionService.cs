@@ -8,7 +8,7 @@ using Ks.Core.Caching;
 using Ks.Core.Data;
 using Ks.Core.Domain.Contract;
 using Ks.Core.Domain.Customers;
-using Ks.Core.Domain.Report;
+using Ks.Core.Domain.Reports;
 using Ks.Data;
 using Ks.Services.Events;
 

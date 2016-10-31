@@ -39,6 +39,10 @@
     <Reference Include="EntityFramework.SqlServerCompact">
       <HintPath>..\..\packages\EntityFramework.SqlServerCompact.6.1.3\lib\net45\EntityFramework.SqlServerCompact.dll</HintPath>
     </Reference>
+    <Reference Include="Ks.Data, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Presentation\Ks.Web\Bin\Ks.Data.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -67,6 +71,7 @@
     <Compile Include="Initializers\DropCreateCeDatabaseAlways.cs" />
     <Compile Include="Initializers\DropCreateCeDatabaseIfModelChanges.cs" />
     <Compile Include="Initializers\SqlCeInitializer.cs" />
+    <Compile Include="Mapping\Batchs\ScheduleBatchMap.cs" />
     <Compile Include="Mapping\Catalog\SpecificationAttributeMap.cs" />
     <Compile Include="Mapping\Catalog\SpecificationAttributeOptionMap.cs" />
     <Compile Include="Mapping\Common\AddressAttributeMap.cs" />
@@ -103,9 +108,10 @@
     <Compile Include="Mapping\Messages\EmailAccountMap.cs" />
     <Compile Include="Mapping\Messages\MessageTemplateMap.cs" />
     <Compile Include="Mapping\Messages\QueuedEmailMap.cs" />
-    <Compile Include="Mapping\Report\ReportContributionPaymentMap.cs">
+    <Compile Include="Mapping\Reports\ReportContributionPaymentMap.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Mapping\Reports\ReportsMap.cs" />
     <Compile Include="Mapping\Security\AclRecordMap.cs" />
     <Compile Include="Mapping\Security\PermissionRecordMap.cs" />
     <Compile Include="Mapping\Seo\UrlRecordMap.cs" />

@@ -23,10 +23,11 @@ namespace Ks.Admin.Models.Customers
             this.AvailableCountries = new List<SelectListItem>();
             this.AvailableStates = new List<SelectListItem>();
             this.AvailableCities = new List<SelectListItem>();
+            this.AvailableMilitarySituations = new List<SelectListItem>();
             //this.AvailableVendors = new List<SelectListItem>();
             this.CustomerAttributes = new List<CustomerAttributeModel>();
             this.AvailableNewsletterSubscriptionStores = new List<StoreModel>();
-            //this.RewardPointsAvailableStores = new List<SelectListItem>();
+            
             this.ContributionPayments = new List<ContributionPaymentsModel>();
         }
 
@@ -63,6 +64,10 @@ namespace Ks.Admin.Models.Customers
         [KsResourceDisplayName("Admin.Customers.Customers.Fields.Dni")]
         [AllowHtml]
         public string Dni { get; set; }
+        [KsResourceDisplayName("Admin.Customers.Customers.Fields.MilitarySituation")]
+        public int MilitarySituationId { get; set; }
+        public IList<SelectListItem> AvailableMilitarySituations { get; set; }
+
         [KsResourceDisplayName("Admin.Customers.Customers.Fields.LastName")]
         [AllowHtml]
         public string LastName { get; set; }

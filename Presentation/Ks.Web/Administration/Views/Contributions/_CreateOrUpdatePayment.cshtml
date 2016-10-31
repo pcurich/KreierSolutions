@@ -30,7 +30,20 @@
             @Html.DropDownListFor(model => model.BankName, Model.Banks)
         </td>
     </tr>
+
+
     @{
+        if (Model.ShowAmountTotal)
+        {
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.AmountTotal):
+                </td>
+                <td class="adminData">
+                    @Model.AmountTotal.ToString("c", new CultureInfo("es-PE"))
+                </td>
+            </tr>
+        }
         if (Model.IsActiveAmount1)
         {
             <tr>

@@ -16,6 +16,7 @@ using Ks.Core.Infrastructure;
 using Ks.Core.Infrastructure.DependencyManagement;
 using Ks.Data;
 using Ks.Services.Authentication;
+using Ks.Services.Batchs;
 using Ks.Services.Common;
 using Ks.Services.Configuration;
 using Ks.Services.Contract;
@@ -251,6 +252,7 @@ namespace Ks.Web.Framework
             builder.RegisterType<PageHeadBuilder>().As<IPageHeadBuilder>().InstancePerLifetimeScope();
 
             builder.RegisterType<ScheduleTaskService>().As<IScheduleTaskService>().InstancePerLifetimeScope();
+            builder.RegisterType<ScheduleBatchService>().As<IScheduleBatchService>().InstancePerLifetimeScope();
 
             builder.RegisterType<ExportManager>().As<IExportManager>().InstancePerLifetimeScope();
             builder.RegisterType<ImportManager>().As<IImportManager>().InstancePerLifetimeScope();

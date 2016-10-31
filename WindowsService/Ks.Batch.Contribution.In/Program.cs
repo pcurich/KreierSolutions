@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Topshelf;
+﻿using Topshelf;
 
 namespace Ks.Batch.Contribution.In
 {
@@ -27,14 +22,12 @@ namespace Ks.Batch.Contribution.In
 
                 serviceConfig.EnableServiceRecovery(recoveryOption =>
                 {
-                    //recoveryOption.RunProgram(1, @"SendEmail.exe");
                     recoveryOption.RestartService(1); //Un minuto para recuperarse
-                    //recoveryOption.RestartComputer(2, "Adios");
                 });
 
-                serviceConfig.SetServiceName("AwesomeFileConverted");
-                serviceConfig.SetDisplayName("Awesome File Converted");
-                serviceConfig.SetDescription("A pluralsight demo service");
+                serviceConfig.SetServiceName("KsBatchContributionOut");
+                serviceConfig.SetDisplayName("Ks Batch Contribution Out");
+                serviceConfig.SetDescription(@"This process read a file from COPERE and Update data base. Those Files must be in c:\KS\ACMR\WinService\Out");
 
                 serviceConfig.EnablePauseAndContinue();
                 serviceConfig.StartAutomatically();

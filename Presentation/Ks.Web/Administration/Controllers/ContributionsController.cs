@@ -37,7 +37,7 @@ namespace Ks.Admin.Controllers
         private readonly ILocalizationService _localizationService;
         private readonly IExportManager _exportManager;
 
-        private readonly PaymentSettings _paymentSettings;
+        private readonly ContributionSettings _contributionSettings;
         private readonly BankSettings _bankSettings;
 
         #endregion
@@ -45,15 +45,15 @@ namespace Ks.Admin.Controllers
         #region Constructors
 
         public ContributionsController(
-            IPermissionService permissionService, 
-            IContributionService contributionService, 
-            ICustomerService customerService, 
-            IGenericAttributeService genericAttributeService, 
-            IDateTimeHelper dateTimeHelper, 
-            ICustomerActivityService customerActivityService, 
-            ILocalizationService localizationService, 
+            IPermissionService permissionService,
+            IContributionService contributionService,
+            ICustomerService customerService,
+            IGenericAttributeService genericAttributeService,
+            IDateTimeHelper dateTimeHelper,
+            ICustomerActivityService customerActivityService,
+            ILocalizationService localizationService,
             IExportManager exportManager,
-            PaymentSettings paymentSettings,
+            ContributionSettings contributionSettings,
             BankSettings bankSettings)
         {
             _permissionService = permissionService;
@@ -64,7 +64,7 @@ namespace Ks.Admin.Controllers
             _customerActivityService = customerActivityService;
             _localizationService = localizationService;
             _exportManager = exportManager;
-            _paymentSettings = paymentSettings;
+            _contributionSettings = contributionSettings;
             _bankSettings = bankSettings;
         }
 
@@ -143,7 +143,7 @@ namespace Ks.Admin.Controllers
 
             return Json(gridModel);
         }
- 
+
 
         public ActionResult Edit(int id)
         {
@@ -165,14 +165,14 @@ namespace Ks.Admin.Controllers
                 }
             };
 
-            model.States.Insert(0, new SelectListItem { Value = "0", Text = "--------------", Selected = true});
+            model.States.Insert(0, new SelectListItem { Value = "0", Text = "--------------", Selected = true });
 
-            model.IsActiveAmount1 = _paymentSettings.IsActiveAmount1;
-            model.NameAmount1 = _paymentSettings.NameAmount1;
-            model.IsActiveAmount2 = _paymentSettings.IsActiveAmount2;
-            model.NameAmount2 = _paymentSettings.NameAmount2;
-            model.IsActiveAmount3 = _paymentSettings.IsActiveAmount3;
-            model.NameAmount3 = _paymentSettings.NameAmount3;
+            model.IsActiveAmount1 = _contributionSettings.IsActiveAmount1;
+            model.NameAmount1 = _contributionSettings.NameAmount1;
+            model.IsActiveAmount2 = _contributionSettings.IsActiveAmount2;
+            model.NameAmount2 = _contributionSettings.NameAmount2;
+            model.IsActiveAmount3 = _contributionSettings.IsActiveAmount3;
+            model.NameAmount3 = _contributionSettings.NameAmount3;
 
             return View(model);
         }
@@ -182,19 +182,19 @@ namespace Ks.Admin.Controllers
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributions))
                 return AccessDeniedView();
-            
+
             bool? type = null;
             if (model.Type == 0)
                 type = null;
             if (model.Type == 2)
                 type = true;
-            if(model.Type==1)
+            if (model.Type == 1)
                 type = false;
 
             var contributionPayments = _contributionService.GetAllPayments(
-                contributionId: model.ContributionId, number:model.Number,
-                stateId: model.StateId, accountNumber:model.BankName,
-                type:type,pageIndex: command.Page - 1,
+                contributionId: model.ContributionId, number: model.Number,
+                stateId: model.StateId, accountNumber: model.BankName,
+                type: type, pageIndex: command.Page - 1,
                 pageSize: command.PageSize);
 
             var gridModel = new DataSourceResult
@@ -256,14 +256,18 @@ namespace Ks.Admin.Controllers
             contributionPayment.AccountNumber = model.AccountNumber;
             contributionPayment.TransactionNumber = model.TransactionNumber;
             contributionPayment.Reference = model.Reference;
+            contributionPayment.Description = model.Description;
             contributionPayment.ProcessedDateOnUtc = DateTime.UtcNow;
 
-            if (_paymentSettings.IsActiveAmount1)
+            contributionPayment.AmountTotal = model.Amount1 + model.Amount2 + model.Amount3;
+
+            if (_contributionSettings.IsActiveAmount1)
                 contributionPayment.Amount1 = model.Amount1;
-            if (_paymentSettings.IsActiveAmount2)
+            if (_contributionSettings.IsActiveAmount2)
                 contributionPayment.Amount2 = model.Amount2;
-            if (_paymentSettings.IsActiveAmount3)
+            if (_contributionSettings.IsActiveAmount3)
                 contributionPayment.Amount3 = model.Amount3;
+
 
             _contributionService.UpdateContributionPayment(contributionPayment);
 
@@ -271,6 +275,7 @@ namespace Ks.Admin.Controllers
             contribution.UpdatedOnUtc = DateTime.UtcNow;
             contribution.AmountTotal += contributionPayment.Amount1 + contributionPayment.Amount2 +
                                        contributionPayment.Amount3;
+            //TODO
             //contribution.CycleOfDelay--;
             _contributionService.UpdateContribution(contribution);
 
@@ -292,13 +297,13 @@ namespace Ks.Admin.Controllers
 
             var customer = _customerService.GetCustomerById(model.CustomerId);
             var contribution = _contributionService.GetContributionById(model.ContributionId);
-            var reportContributionPayment=_contributionService.GetReportContributionPayment(model.ContributionId);
+            var reportContributionPayment = _contributionService.GetReportContributionPayment(model.ContributionId);
             try
             {
                 byte[] bytes;
                 using (var stream = new MemoryStream())
                 {
-                    _exportManager.ExportReportContributionPaymentToXlsx(stream,customer,contribution, reportContributionPayment);
+                    _exportManager.ExportReportContributionPaymentToXlsx(stream, customer, contribution, reportContributionPayment);
                     bytes = stream.ToArray();
                 }
                 //Response.ContentType = "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
@@ -344,27 +349,34 @@ namespace Ks.Admin.Controllers
                 ContributionId = contributionPayment.ContributionId,
                 ScheduledDateOn =
                     _dateTimeHelper.ConvertToUserTime(contributionPayment.ScheduledDateOnUtc, DateTimeKind.Local),
-                Number = contributionPayment.Number
+                Number = contributionPayment.Number,
+                ShowAmountTotal = false
             };
-
-            if (_paymentSettings.IsActiveAmount1)
+            var shares = 0;
+            if (_contributionSettings.IsActiveAmount1)
             {
+                shares++;
                 model.IsActiveAmount1 = true;
-                model.NameAmount1 = _paymentSettings.NameAmount1;
-                model.Amount1 = _paymentSettings.Amount1;
+                model.NameAmount1 = _contributionSettings.NameAmount1;
+                model.Amount1 = _contributionSettings.Amount1;
             }
-            if (_paymentSettings.IsActiveAmount2)
+            if (_contributionSettings.IsActiveAmount2)
             {
+                shares++;
                 model.IsActiveAmount2 = true;
-                model.NameAmount2 = _paymentSettings.NameAmount2;
-                model.Amount2 = _paymentSettings.Amount2;
+                model.NameAmount2 = _contributionSettings.NameAmount2;
+                model.Amount2 = _contributionSettings.Amount2;
             }
-            if (_paymentSettings.IsActiveAmount3)
+            if (_contributionSettings.IsActiveAmount3)
             {
+                shares++;
                 model.IsActiveAmount3 = true;
-                model.NameAmount3 = _paymentSettings.NameAmount3;
-                model.Amount3 = _paymentSettings.Amount3;
+                model.NameAmount3 = _contributionSettings.NameAmount3;
+                model.Amount3 = _contributionSettings.Amount3;
             }
+
+            if (shares >= 2)
+                model.ShowAmountTotal = true;
 
             return model;
         }

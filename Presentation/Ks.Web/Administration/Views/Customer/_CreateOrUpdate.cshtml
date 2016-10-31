@@ -247,6 +247,19 @@
                 @Html.ValidationMessageFor(model => model.Dni)
             </td>
         </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.MilitarySituationId):
+            </td>
+            <td class="adminData">
+                @Html.DropDownListFor(model => model.MilitarySituationId, Model.AvailableMilitarySituations)
+                <script>
+                        $(document).ready(function() {
+                            $('#@Html.FieldIdFor(model=>model.MilitarySituationId)').kendoDropDownList();
+                        });
+                    </script>
+            </td>
+        </tr>
         @if (Model.DateOfBirthEnabled)
         {
             <tr>
