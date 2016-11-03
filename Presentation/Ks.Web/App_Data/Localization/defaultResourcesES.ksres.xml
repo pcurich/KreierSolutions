@@ -10826,6 +10826,15 @@
   </LocaleResource>
   <LocaleResource Name="Admin.System.ScheduleBatchs.BackToList">
     <Value>Regresar a la lista de servicios</Value>
+  </LocaleResource>    
+   <LocaleResource Name="Admin.System.ScheduleBatchs.Fields.Name.Required">
+    <Value>El nombre del sistema es necesario</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.ScheduleBatchs.Fields.PeriodMonth.GreaterThanOrEqualTo1">
+    <Value>Seleccione un mes valido</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.ScheduleBatchs.Fields.PeriodYear.GreaterThanOrEqualTo1">
+    <Value>seleccione un año valido</Value>
   </LocaleResource>  
    <LocaleResource Name="Admin.System.ScheduleBatchs.Name">
     <Value>Nombre</Value>
@@ -10833,28 +10842,34 @@
   <LocaleResource Name="Admin.System.ScheduleBatchs.Name.Hint">
     <Value>Nombre que tiene el servicio</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.System.ScheduleBatchs.PathRead">
+  <LocaleResource Name="Admin.System.ScheduleBatchs.PathBase">
+    <Value>Directorio Raiz</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.ScheduleBatchs.PathBase.Hint">
+    <Value>Directorio base del servicio</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.ScheduleBatchs.FolderRead">
     <Value>Directorio de Lectura</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.System.ScheduleBatchs.PathRead.Hint">
+  <LocaleResource Name="Admin.System.ScheduleBatchs.FolderRead.Hint">
     <Value>Directorio donde se colocan los archivos para ser procesados</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.System.ScheduleBatchs.PathLog">
+  <LocaleResource Name="Admin.System.ScheduleBatchs.FolderLog">
     <Value>Directorio de Logs</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.System.ScheduleBatchs.PathLog.Hint">
+  <LocaleResource Name="Admin.System.ScheduleBatchs.FolderLog.Hint">
     <Value>Directorio donde se colocan los logs de los archivos leidos</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.System.ScheduleBatchs.PathMoveToDone">
+  <LocaleResource Name="Admin.System.ScheduleBatchs.FolderMoveToDone">
     <Value>Directorio de Prosesados</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.System.ScheduleBatchs.PathMoveToDone.Hint">
+  <LocaleResource Name="Admin.System.ScheduleBatchs.FolderMoveToDone.Hint">
     <Value>Directorio donde se colocan los archivos una vez que sean procesados</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.System.ScheduleBatchs.PathMoveToError">
+  <LocaleResource Name="Admin.System.ScheduleBatchs.FolderMoveToError">
     <Value>Directorio de Error</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.System.ScheduleBatchs.PathMoveToError.Hint">
+  <LocaleResource Name="Admin.System.ScheduleBatchs.FolderMoveToError.Hint">
     <Value>Directorio donde se colocan los archivos que poseen errores y no pudieron ser procesados</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.System.ScheduleBatchs.Frecuency">
@@ -10862,6 +10877,18 @@
   </LocaleResource>
   <LocaleResource Name="Admin.System.ScheduleBatchs.Frecuency.Hint">
     <Value>Establece la frecuencia con la que se ejecuta el servicio</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.ScheduleBatchs.PeriodYear">
+    <Value>Periodo (Año)</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.ScheduleBatchs.PeriodYear.Hint">
+    <Value>Año del periodo a ejecutar en la fecha de Inicio</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.ScheduleBatchs.PeriodMonth">
+    <Value>Periodo (Mes)</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.ScheduleBatchs.PeriodMonth.Hint">
+    <Value>Mes del periodo a ejecutar en la fecha de Inicio</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.System.ScheduleBatchs.StartExecutionOn">
     <Value>Fecha de Inicio</Value>

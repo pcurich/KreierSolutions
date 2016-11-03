@@ -2,16 +2,21 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
+using FluentValidation.Attributes;
+using Ks.Admin.Validators.Batchs;
 using Ks.Web.Framework;
 using Ks.Web.Framework.Mvc;
 
 namespace Ks.Admin.Models.Batchs
 {
-    public class ScheduleBatchModel : BaseKsEntityModel
+    [Validator(typeof(ScheduleBatchValidator))]
+    public partial class ScheduleBatchModel : BaseKsEntityModel
     {
         public ScheduleBatchModel()
         {
-            AvailableFrecuencies= new List<SelectListItem>();
+            AvailableFrecuencies = new List<SelectListItem>();
+            AvailableMonths = new List<SelectListItem>();
+            AvailableYears = new List<SelectListItem>();
         }
 
         [KsResourceDisplayName("Admin.System.ScheduleBatchs.Name")]
@@ -20,18 +25,21 @@ namespace Ks.Admin.Models.Batchs
 
         public string SystemName { get; set; }
 
+        [KsResourceDisplayName("Admin.System.ScheduleBatchs.PathBase")]
+        [AllowHtml]
+        public string PathBase { get; set; }
         [KsResourceDisplayName("Admin.System.ScheduleBatchs.PathRead")]
         [AllowHtml]
-        public string PathRead { get; set; }
+        public string FolderRead { get; set; }
         [KsResourceDisplayName("Admin.System.ScheduleBatchs.PathLog")]
         [AllowHtml]
-        public string PathLog { get; set; }
+        public string FolderLog { get; set; }
         [KsResourceDisplayName("Admin.System.ScheduleBatchs.PathMoveToDone")]
         [AllowHtml]
-        public string PathMoveToDone { get; set; }
+        public string FolderMoveToDone { get; set; }
         [KsResourceDisplayName("Admin.System.ScheduleBatchs.PathMoveToError")]
         [AllowHtml]
-        public string PathMoveToError { get; set; }
+        public string FolderMoveToError { get; set; }
 
         [KsResourceDisplayName("Admin.System.ScheduleBatchs.Frecuency")]
         [AllowHtml]
@@ -41,6 +49,14 @@ namespace Ks.Admin.Models.Batchs
         public int FrecuencyId { get; set; }
 
         public List<SelectListItem> AvailableFrecuencies { get; set; }
+
+        [KsResourceDisplayName("Admin.System.ScheduleBatchs.PeriodYear")]
+        public int PeriodYear { get; set; }
+        [KsResourceDisplayName("Admin.System.ScheduleBatchs.PeriodMonth")]
+        public int PeriodMonth { get; set; }
+
+        public List<SelectListItem> AvailableMonths { get; set; }
+        public List<SelectListItem> AvailableYears { get; set; }
 
         [KsResourceDisplayName("Admin.System.ScheduleBatchs.StartExecutionOn")]
         [AllowHtml]

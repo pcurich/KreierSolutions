@@ -15,25 +15,38 @@ namespace Ks.Core.Domain.Batchs
         public string SystemName { get; set; }
 
         /// <summary>
-        /// Gets or sets the path read.
+        /// Gets or sets the path base.
         /// </summary>
-        public string PathRead { get; set; }
+        public string PathBase { get; set; }
+
         /// <summary>
-        /// Gets or sets the path log.
+        /// Gets or sets the folder read.
         /// </summary>
-        public string PathLog { get; set; }
+        public string FolderRead { get; set; }
         /// <summary>
-        /// Gets or sets the path move to done.
+        /// Gets or sets the folder log.
         /// </summary>
-        public string PathMoveToDone { get; set; }
+        public string FolderLog { get; set; }
         /// <summary>
-        /// Gets or sets the path move to error.
+        /// Gets or sets the folder move to done.
         /// </summary>
-        public string PathMoveToError { get; set; }
+        public string FolderMoveToDone { get; set; }
+        /// <summary>
+        /// Gets or sets the folder move to error.
+        /// </summary>
+        public string FolderMoveToError { get; set; }
         /// <summary>
         /// Gets or sets the frecuency identifier.
         /// </summary>
         public int FrecuencyId { get; set; }
+        /// <summary>
+        /// Gets or sets the period year.
+        /// </summary>
+        public int PeriodYear { get; set; }
+        /// <summary>
+        /// Gets or sets the period month.
+        /// </summary>
+        public int PeriodMonth { get; set; }
         /// <summary>
         /// Gets or sets the start execution on UTC.
         /// </summary>

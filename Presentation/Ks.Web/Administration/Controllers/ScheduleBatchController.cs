@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Web.Mvc;
@@ -61,7 +62,40 @@ namespace Ks.Admin.Controllers
             if (batch.LastExecutionOnUtc.HasValue)
                 model.LastExecutionOn = _dateTimeHelper.ConvertToUserTime(batch.LastExecutionOnUtc.Value, DateTimeKind.Local);
 
+            model.AvailableMonths = PrepareMonthsList();
+            model.AvailableYears = PrepareYearsList();
             return model;
+        }
+
+        [NonAction]
+        protected virtual List<SelectListItem> PrepareMonthsList()
+        {
+            var listOfMonth = (from i in Enumerable.Range(0, 12)
+                               let now = DateTime.UtcNow.AddMonths(i)
+                               select new SelectListItem
+                               {
+                                   Text = now.ToString("MMMM"),
+                                   Value = now.Month.ToString()
+                               }).OrderBy(x => int.Parse(x.Value)).ToList();
+
+            listOfMonth.Insert(0, new SelectListItem { Value = "0", Text = _localizationService.GetResource("Common.Month") });
+
+            return listOfMonth;
+        }
+
+        [NonAction]
+        protected virtual List<SelectListItem> PrepareYearsList()
+        {
+            var listOfYear = (from i in Enumerable.Range(0, 10)
+                              let now = DateTime.UtcNow.AddYears(i)
+                              select new SelectListItem
+                              {
+                                  Text = now.Year.ToString(),
+                                  Value = now.Year.ToString()
+                              }).OrderBy(x => int.Parse(x.Value)).ToList();
+
+            listOfYear.Insert(0, new SelectListItem { Value = "0", Text = _localizationService.GetResource("Common.Year") });
+            return listOfYear;
         }
 
         #endregion
@@ -113,6 +147,8 @@ namespace Ks.Admin.Controllers
             model.FrecuencyName = ((ScheduleBatchFrecuency)batch.FrecuencyId).ToString();
             model.AvailableFrecuencies = ScheduleBatchFrecuency.Diario.ToSelectList().ToList();
             model.AvailableFrecuencies.Insert(0, new SelectListItem { Value = "0", Text = "-----------" });
+            model.AvailableMonths = PrepareMonthsList();
+            model.AvailableYears = PrepareYearsList();
 
             if (!batch.StartExecutionOnUtc.HasValue)
             {
@@ -161,23 +197,8 @@ namespace Ks.Admin.Controllers
 
             if (ModelState.IsValid)
             {
-                if (batch.Enabled && model.Enabled)
+                if (batch.Enabled)
                 {
-                    model = batch.ToModel();
-                    model.FrecuencyName = ((ScheduleBatchFrecuency)batch.FrecuencyId).ToString();
-                    model.AvailableFrecuencies = ScheduleBatchFrecuency.Diario.ToSelectList().ToList();
-                    model.AvailableFrecuencies.Insert(0, new SelectListItem { Value = "0", Text = "---------" });
-                    if (!batch.StartExecutionOnUtc.HasValue)
-                    {
-                        //only for the First Time
-                        var startExecution = new DateTime(DateTime.Now.Year, DateTime.Now.Month, _contributionSettings.DayOfPayment);
-                        if (DateTime.Now.Day > _contributionSettings.DayOfPayment)
-                            startExecution = startExecution.AddMonths(1);
-
-                        model.StartExecutionOn = startExecution;
-                        model.NextExecutionOn = startExecution.AddDays(batch.FrecuencyId);
-                        model.LastExecutionOn = startExecution;
-                    }
                     ErrorNotification(_localizationService.GetResource("Admin.System.ScheduleBatchs.Error"));
                     return RedirectToAction("Edit", new { id = batch.Id });
                 }

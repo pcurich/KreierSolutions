@@ -364,6 +364,7 @@
     <Compile Include="Models\Systems\KsSystemModel.cs" />
     <Compile Include="Models\Tasks\ScheduleTaskModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Validators\Batchs\ScheduleBatchValidator.cs" />
     <Compile Include="Validators\Common\AddressAttributeValidator.cs" />
     <Compile Include="Validators\Common\AddressAttributeValueValidator.cs" />
     <Compile Include="Validators\Common\AddressValidator.cs" />

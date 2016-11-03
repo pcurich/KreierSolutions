@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace Ks.Batch.Sync
+namespace Ks.Batch.Util
 {
     public class XmlHelper
     {

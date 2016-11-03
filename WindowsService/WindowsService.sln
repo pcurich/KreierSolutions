@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ks.Batch.Contribution.Caja.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ks.Batch.Test", "Ks.Batch.Test\Ks.Batch.Test.csproj", "{C2F6234E-7B80-4339-A6AE-968799F6F9AD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ks.Batch.Util", "Ks.Batch.Util\Ks.Batch.Util.csproj", "{BB41FD37-76E8-47C8-9E72-062F5743316B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,10 @@ Global
 		{C2F6234E-7B80-4339-A6AE-968799F6F9AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2F6234E-7B80-4339-A6AE-968799F6F9AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2F6234E-7B80-4339-A6AE-968799F6F9AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB41FD37-76E8-47C8-9E72-062F5743316B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB41FD37-76E8-47C8-9E72-062F5743316B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB41FD37-76E8-47C8-9E72-062F5743316B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB41FD37-76E8-47C8-9E72-062F5743316B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
