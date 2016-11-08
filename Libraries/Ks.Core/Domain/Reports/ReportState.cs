@@ -2,6 +2,11 @@
 {
     public enum ReportState
     {
-         Active=1
+        Waiting = 1,
+        InProcess = 2,
+        Active = 3,
+        Inactive = 4,
+        Completed = 5
+
     }
 }

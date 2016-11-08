@@ -1432,7 +1432,9 @@ namespace Ks.Admin.Controllers
                         Amount1 = _contributionSettings.Amount1,
                         Amount2 = _contributionSettings.Amount2,
                         Amount3 = _contributionSettings.Amount3,
-                        IsAutomatic = true,
+                        AmountTotal = _contributionSettings.Amount1+_contributionSettings.Amount2+_contributionSettings.Amount3,
+                        StateId = 1,BankName = "",AccountNumber = "",TransactionNumber ="",
+                        Reference = "",Description = "",IsAutomatic = true,
                         ScheduledDateOnUtc = _dateTimeHelper.ConvertToUtcTime(estimated.AddMonths(cycle)),
                         ProcessedDateOnUtc = null
                     });

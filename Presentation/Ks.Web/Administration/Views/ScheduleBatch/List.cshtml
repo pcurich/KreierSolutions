@@ -37,7 +37,7 @@
                             schema: {
                                 data: "Data",
                                 total: "Total",
-                                errors: "Errors",
+                                errors: "Errors"
                             },
                             error: function (e) {
                                 display_kendoui_grid_error(e);
@@ -61,16 +61,13 @@
                         scrollable: false,
                         columns: [{
                             field: "Name",
-                            title: "@T("Admin.System.ScheduleBatchs.Name")",
-                            width: 300
+                            title: "@T("Admin.System.ScheduleBatchs.Name")" 
                         }, {
                             field: "FrecuencyName",
-                            title: "@T("Admin.System.ScheduleBatchs.Frecuency")",
-                            width: 50
+                            title: "@T("Admin.System.ScheduleBatchs.Frecuency")" 
                         }, {
                             field: "StartExecutionOn",
                             title: "@T("Admin.System.ScheduleBatchs.StartExecutionOn")",
-                            width: 100,
                             headerAttributes: { style: "text-align:center" },
                             attributes: { style: "text-align:center" },
                             type: "date",
@@ -78,7 +75,6 @@
                         }, {
                             field: "NextExecutionOn",
                             title: "@T("Admin.System.ScheduleBatchs.NextExecutionOn")",
-                            width: 100,
                             headerAttributes: { style: "text-align:center" },
                             attributes: { style: "text-align:center" },
                             type: "date",
@@ -86,7 +82,6 @@
                         }, {
                             field: "LastExecutionOn",
                             title: "@T("Admin.System.ScheduleBatchs.LastExecutionOn")",
-                            width: 100,
                             headerAttributes: { style: "text-align:center" },
                             attributes: { style: "text-align:center" },
                             type: "date",
@@ -94,14 +89,12 @@
                         }, {
                             field: "Enabled",
                             title: "@T("Admin.System.ScheduleBatchs.Enabled")",
-                            width: 100,
                             headerAttributes: { style: "text-align:center" },
                             attributes: { style: "text-align:center" },
                             template: '<img src="@Url.Content("~/Administration/Content/images/")active-#=Enabled#.gif" />'
                         }, {
                             field: "Id",
                             title: "@T("Admin.Common.Edit")",
-                            width: 100,
                             template: '<a href="Edit/#=Id#">@T("Admin.Common.Edit")</a>'
                         }]
                     });

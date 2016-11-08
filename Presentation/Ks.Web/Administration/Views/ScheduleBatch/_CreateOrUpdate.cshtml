@@ -59,6 +59,7 @@
             </td>
             <td class="adminData">
                 @Html.DropDownListFor(model => model.FrecuencyId, Model.AvailableFrecuencies)
+                @Html.ValidationMessageFor(model => model.FrecuencyId)
                 <script>
                     $(document).ready(function() {
                         $('#@Html.FieldIdFor(model => model.FrecuencyId)').kendoDropDownList();
@@ -73,6 +74,7 @@
             </td>
             <td class="adminData">
                 @Html.DropDownListFor(model => model.PeriodYear, Model.AvailableYears)
+                @Html.ValidationMessageFor(model => model.PeriodYear)
                 <script>
                     $(document).ready(function() {
                         $('#@Html.FieldIdFor(model => model.PeriodYear)').kendoDropDownList();
@@ -87,6 +89,7 @@
             </td>
             <td class="adminData">
                 @Html.DropDownListFor(model => model.PeriodMonth, Model.AvailableMonths)
+                @Html.ValidationMessageFor(model => model.PeriodMonth)
                 <script>
                     $(document).ready(function() {
                         $('#@Html.FieldIdFor(model => model.PeriodMonth)').kendoDropDownList();

@@ -11,7 +11,6 @@ namespace Ks.Batch.Contribution.In
         public SqlCommand Command;
         public string Sql;
         public SqlDataReader DataReader;
-             
 
         public void Connect()
         {

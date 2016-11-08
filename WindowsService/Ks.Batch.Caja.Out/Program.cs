@@ -1,9 +1,8 @@
-﻿using Ks.Batch.Util;
-using Quartz;
+﻿using Quartz;
 using Topshelf;
 using Topshelf.Quartz;
 
-namespace Ks.Batch.Contribution.Caja.Out
+namespace Ks.Batch.Caja.Out
 {
     public class Program
     {
@@ -24,11 +23,12 @@ namespace Ks.Batch.Contribution.Caja.Out
 
                     serviceInstance.ScheduleQuartzJob(q =>
                          q.WithJob(() =>
-                                JobBuilder.Create<Job>().Build())
+                                JobBuilder.Create<Job>()
+                                .Build())
                             .AddTrigger(() =>
                                 TriggerBuilder.Create()
                                     .WithSimpleSchedule(builder => builder
-                                        .WithIntervalInMinutes(2)
+                                        .WithIntervalInSeconds(60)
                                         .RepeatForever())
                                     .Build())
                             );
@@ -39,9 +39,9 @@ namespace Ks.Batch.Contribution.Caja.Out
                     recoveryOption.RestartService(1); //Un minuto para recuperarse
                 });
 
-                serviceConfig.SetServiceName("Ks.Batch.Contribution.Caja.Out");
-                serviceConfig.SetDisplayName("Ks Batch Contribution Caja Out");
-                serviceConfig.SetDescription("Process to get the file with customer in retired state");
+                serviceConfig.SetServiceName("Ks.Batch.Caja.Out");
+                serviceConfig.SetDisplayName("Ks Batch Caja Out");
+                serviceConfig.SetDescription("Process to get the file with customer in retired state to Caja Cooperativa");
 
                 serviceConfig.EnablePauseAndContinue();
                 serviceConfig.StartAutomatically();

@@ -7,8 +7,8 @@
     <ProjectGuid>{FA3521DA-1CA4-46F5-BAF6-AD7DEE285782}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Ks.Batch.Contribution.Copere.Out</RootNamespace>
-    <AssemblyName>Ks.Batch.Contribution.Copere.Out</AssemblyName>
+    <RootNamespace>Ks.Batch.Copere.Out</RootNamespace>
+    <AssemblyName>Ks.Batch.Copere.Out</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -65,13 +65,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DaoService.cs" />
-    <Compile Include="ExportDataJob.cs" />
-    <Compile Include="Info.cs" />
-    <Compile Include="InfoJob.cs" />
+    <Compile Include="BatchContainer.cs" />
+    <Compile Include="Dao.cs" />
+    <Compile Include="Job.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="JobScheduler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -79,6 +77,12 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ks.Batch.Util\Ks.Batch.Util.csproj">
+      <Project>{BB41FD37-76E8-47C8-9E72-062F5743316B}</Project>
+      <Name>Ks.Batch.Util</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

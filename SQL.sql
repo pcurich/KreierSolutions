@@ -76,3 +76,164 @@ update Contribution set Active=1 where id=1
 
 
 update ContributionPayment set StateId=3 where Number=5 and ContributionId=1
+
+
+use acmr
+
+select * from reports
+
+Copere, 
+Caja Pesnion militar Policial 
+
+=> source
+
+al copere se le envia :  aportaciones y  prestamos por separado pero en el mismo archivo
+respuetsa del copere viene uno consolidado
+
+caja pension se le envia :  aportaciones y  prestamos sumados 
+respuesta : viene uno consolidado
+
+SELECT * FROM ContributionPayment
+		4610		3000		
+
+
+me colgaste
+
+ENE FEB MAR ABR
+35  35   35    35
+250 250 250  250 Y 25
+		ENE  
+		260   35 225
+ SELECT * FROM LoanPayment  -- COLUMNA MAS DE DESCRIPCION 
+
+ select * from Setting where Value='20'
+
+
+ select * from Setting where name like '%contributionsettings%'
+
+ SELECT EntityId 
+ FROM GenericAttribute 
+ WHERE KeyGroup='Customer' AND [Key]='MilitarySituationId' AND Value= 1
+
+ SELECT * 
+ FROM ContributionPayment CP
+ INNER JOIN Contribution C ON C.Id=CP.ContributionId
+ WHERE 
+ C.CustomerId IN (SELECT EntityId 
+ FROM GenericAttribute 
+ WHERE KeyGroup='Customer' AND [Key]='MilitarySituationId' AND Value= 1) AND
+ YEAR(CP.ScheduledDateOnUtc)=2016 AND  MONTH(CP.ScheduledDateOnUtc)=6 
+
+SELECT * FROM GenericAttribute
+ 
+
+
+
+	   select * from CustomerAttributeValue where CustomerAttributeId=4
+
+use acmr 
+select * from ScheduleBatch
+
+ insert into ScheduleBatch values 
+ ('Exportacion para caja','Ks.Batch.Contribution.Caja.Out','','','','',
+ 0,2016,11, null,null,null,1);
+
+ delete ScheduleBatch where id=1
+
+ SELECT GETUTCDATE()
+
+ select * from GenericAttribute
+ update ScheduleBatch 
+ set 
+ name='Exportacion para Caja',
+ SystemName ='Ks.Batch.Contribution.Caja.Out',
+  StartExecutionOnUtc=null, 
+ NextExecutionOnUtc=null,
+ LastExecutionOnUtc=null,
+PathRead='hola',
+PathLog='',
+PathMoveToDone='',
+PathMoveToError='',
+ FrecuencyId=15 ,
+ PeriodYear=0,
+ PeriodMonth=0,
+ Enabled=0
+ where id>1
+
+ 
+ update ScheduleBatch set enabled =0
+ SELECT EntityId, Attribute =[Key], Value
+ FROM GenericAttribute 
+ WHERE KeyGroup='Customer' and  [Key] in ('Dni','AdmCode') AND
+ EntityId IN ( SELECT EntityId FROM GenericAttribute WHERE [Key]='MilitarySituationId' AND Value=2)
+ 
+
+ SELECT * FROM GenericAttribute
+
+ select c.CustomerId, cp.AmountTotal 
+ from ContributionPayment cp
+ INNER JOIN  Contribution c on c.Id=cp.ContributionId
+ WHERE c.CustomerId in (1) AND 
+ YEAR(cp.ScheduledDateOnUtc)=2016 AND
+ MONTH(cp.ScheduledDateOnUtc)=12 AND 
+ DAY(CP.ScheduledDateOnUtc)=20
+
+ select * from ContributionPayment
+
+SELECT EntityId, Attribute =[Key], Value FROM GenericAttribute 
+WHERE KeyGroup='Customer' and  [Key] in ('Dni','AdmCode') AND 
+EntityId IN ( SELECT EntityId FROM GenericAttribute WHERE [Key]='MilitarySituationId' AND Value=2)
+
+update ScheduleBatch set Enabled=1 where SystemName='Ks.Batch.Contribution.Caja.Out'
+
+delete from ScheduleBatch where SystemName='Ks.Batch.Contribution.caja.Out'
+
+use acmr
+select * from ScheduleBatch
+SELECT SystemName FROM ScheduleBatch WHERE SystemName='Ks.Batch.Contribution.Caja.Out'
+
+SELECT EntityId, Attribute =[Key], Value FROM GenericAttribute
+WHERE KeyGroup='Customer' and  [Key] in ('Dni','AdmCode') AND 
+EntityId IN ( SELECT EntityId FROM GenericAttribute WHERE [Key]='MilitarySituationId' AND Value=2)
+
+SELECT cp.Id 
+FROM ContributionPayment cp  
+INNER JOIN  Contribution c on c.Id=cp.ContributionId 
+WHERE c.CustomerId IN (1) AND 
+YEAR(cp.ScheduledDateOnUtc)=2016 AND 
+MONTH(cp.ScheduledDateOnUtc)=12  
+
+UPDATE ContributionPayment SET StateId =2 WHERE ID IN (
+SELECT  cp.Id
+FROM ContributionPayment cp  
+INNER JOIN  Contribution c on c.Id=cp.ContributionId  
+WHERE c.CustomerId IN (@CustomerId) AND  
+YEAR(cp.ScheduledDateOnUtc)=@Year AND  
+MONTH(cp.ScheduledDateOnUtc)=@Month   
+)   --ESTADO PENDIENTE
+
+SELECT * FROM ContributionPayment
+
+update ContributionPayment set StateId=1 where id>1
+
+ 
+
+select * from ScheduleBatch
+
+update ScheduleBatch  Set  NextExecutionOnUtc=GETUTCDATE() where id=17
+
+select StartExecutionOnUtc,
+NextExecutionOnUtc,
+LastExecutionOnUtc from ScheduleBatch
+
+delete from ScheduleBatch where id=19
+
+select GETUTCDATE(), GETDATE()
+
+select * from Reports
+1) CREA EL TXT
+2) ACTUALIZA LOS CRONOGRAMAS DE APORTACOINES
+3) CREA REPORTES
+4) ACTUALIZA EL BACHERO
+
+delete Reports

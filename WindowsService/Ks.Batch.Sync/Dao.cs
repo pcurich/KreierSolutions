@@ -31,21 +31,22 @@ namespace Ks.Batch.Sync
                             Id = sqlReader.GetInt32(0),
                             Name = sqlReader.GetString(1),
                             SystemName = sqlReader.GetString(2),
-                            PathRead = sqlReader.GetString(3),
-                            PathLog = sqlReader.GetString(4),
-                            PathMoveToDone = sqlReader.GetString(5),
-                            PathMoveToError = sqlReader.GetString(6),
-                            FrecuencyId = sqlReader.GetInt32(7),
-                            PeriodYear = sqlReader.GetInt32(8),
-                            PeriodMonth = sqlReader.GetInt32(9),
-                            Enabled = sqlReader.GetBoolean(13)
+                            PathBase = sqlReader.GetString(3),
+                            FolderRead = sqlReader.GetString(4),
+                            FolderLog = sqlReader.GetString(5),
+                            FolderMoveToDone = sqlReader.GetString(6),
+                            FolderMoveToError = sqlReader.GetString(7),
+                            FrecuencyId = sqlReader.GetInt32(8),
+                            PeriodYear = sqlReader.GetInt32(9),
+                            PeriodMonth = sqlReader.GetInt32(10),
+                            Enabled = sqlReader.GetBoolean(14)
                         };
-                        if (!sqlReader.IsDBNull(8))
-                            schedule.StartExecutionOnUtc = sqlReader.GetDateTime(10);
-                        if (!sqlReader.IsDBNull(9))
-                            schedule.NextExecutionOnUtc = sqlReader.GetDateTime(11);
-                        if (!sqlReader.IsDBNull(10))
-                            schedule.LastExecutionOnUtc = sqlReader.GetDateTime(12);
+                        if (!sqlReader.IsDBNull(11))
+                            schedule.StartExecutionOnUtc = sqlReader.GetDateTime(11);
+                        if (!sqlReader.IsDBNull(12))
+                            schedule.NextExecutionOnUtc = sqlReader.GetDateTime(12);
+                        if (!sqlReader.IsDBNull(13))
+                            schedule.LastExecutionOnUtc = sqlReader.GetDateTime(13);
 
                         result.Add(schedule);
                     }

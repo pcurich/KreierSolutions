@@ -32,7 +32,7 @@ namespace Ks.Batch.Sync
                                 .AddTrigger(() =>
                                     TriggerBuilder.Create()
                                         .WithSimpleSchedule(builder => builder
-                                            .WithIntervalInSeconds(40)
+                                            .WithIntervalInSeconds(10)
                                             .RepeatForever())
                                         .Build())
                             );

@@ -3,7 +3,7 @@ using System.Configuration;
 using Ks.Batch.Util;
 using Topshelf.Logging;
 
-namespace Ks.Batch.Contribution.Caja.Out
+namespace Ks.Batch.Caja.Out
 {
     public class BatchContainer : IBatchContainer
     {
@@ -23,8 +23,8 @@ namespace Ks.Batch.Contribution.Caja.Out
 
         public bool Stop()
         {
+            UnInstall();
             Log.InfoFormat("Time: {0}: Action: {1}", DateTime.Now, "Service Stop");
-            Disabled();
             return true;
         }
 
@@ -54,6 +54,12 @@ namespace Ks.Batch.Contribution.Caja.Out
             dao.Install(Batch);
         }
 
+        private void UnInstall()
+        {
+            var dao = new Dao(Connection);
+            dao.UnInstall(Batch.SystemName);
+        }
+
         private void Enabled()
         {
             var dao = new Dao(Connection);
@@ -65,6 +71,7 @@ namespace Ks.Batch.Contribution.Caja.Out
             var dao = new Dao(Connection);
             dao.Disabled(Batch.SystemName);
         }
+
         private void Read()
         {
             Connection = ConfigurationManager.ConnectionStrings["ACMR"].ConnectionString;

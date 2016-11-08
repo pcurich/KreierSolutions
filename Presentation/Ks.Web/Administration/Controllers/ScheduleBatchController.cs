@@ -56,11 +56,11 @@ namespace Ks.Admin.Controllers
             var model = batch.ToModel();
             model.FrecuencyName = ((ScheduleBatchFrecuency)batch.FrecuencyId).ToString();
             if (batch.StartExecutionOnUtc != null)
-                model.StartExecutionOn = _dateTimeHelper.ConvertToUserTime(batch.StartExecutionOnUtc.Value, DateTimeKind.Local);
+                model.StartExecutionOn = _dateTimeHelper.ConvertToUserTime(batch.StartExecutionOnUtc.Value, DateTimeKind.Utc);
             if (batch.NextExecutionOnUtc != null)
-                model.NextExecutionOn = _dateTimeHelper.ConvertToUserTime(batch.NextExecutionOnUtc.Value, DateTimeKind.Local);
+                model.NextExecutionOn = _dateTimeHelper.ConvertToUserTime(batch.NextExecutionOnUtc.Value, DateTimeKind.Utc);
             if (batch.LastExecutionOnUtc.HasValue)
-                model.LastExecutionOn = _dateTimeHelper.ConvertToUserTime(batch.LastExecutionOnUtc.Value, DateTimeKind.Local);
+                model.LastExecutionOn = _dateTimeHelper.ConvertToUserTime(batch.LastExecutionOnUtc.Value, DateTimeKind.Utc);
 
             model.AvailableMonths = PrepareMonthsList();
             model.AvailableYears = PrepareYearsList();
@@ -172,11 +172,11 @@ namespace Ks.Admin.Controllers
 
                 var startExecution = new DateTime(year,month,day, hour, minute, second);
 
-                model.StartExecutionOn = _dateTimeHelper.ConvertToUserTime(startExecution, DateTimeKind.Utc);
+                model.StartExecutionOn = _dateTimeHelper.ConvertToUserTime(startExecution, TimeZoneInfo.Utc);
                 if (batch.NextExecutionOnUtc != null)
-                    model.NextExecutionOn = _dateTimeHelper.ConvertToUserTime(batch.NextExecutionOnUtc.Value, DateTimeKind.Utc);
+                    model.NextExecutionOn = _dateTimeHelper.ConvertToUserTime(batch.NextExecutionOnUtc.Value, TimeZoneInfo.Utc);
                 if (batch.LastExecutionOnUtc.HasValue)
-                    model.LastExecutionOn = _dateTimeHelper.ConvertToUserTime(batch.LastExecutionOnUtc.Value, DateTimeKind.Utc);
+                    model.LastExecutionOn = _dateTimeHelper.ConvertToUserTime(batch.LastExecutionOnUtc.Value, TimeZoneInfo.Utc);
             }
 
             return View(model);
@@ -220,8 +220,8 @@ namespace Ks.Admin.Controllers
                         startExecution = startExecution.AddMonths(1);
 
                     batch.StartExecutionOnUtc = _dateTimeHelper.ConvertToUtcTime(startExecution);
-                    batch.NextExecutionOnUtc = batch.StartExecutionOnUtc.Value.AddDays(batch.FrecuencyId);
-                    batch.LastExecutionOnUtc = batch.StartExecutionOnUtc;
+                    batch.NextExecutionOnUtc = _dateTimeHelper.ConvertToUtcTime(startExecution); ;
+                    batch.LastExecutionOnUtc = null;
                 }
                     
                 _scheduleBatchService.UpdateBatch(batch);
@@ -229,6 +229,13 @@ namespace Ks.Admin.Controllers
                 SuccessNotification(_localizationService.GetResource("Admin.System.ScheduleBatchs.Updated"));
                 return continueEditing ? RedirectToAction("Edit", new { id = batch.Id }) : RedirectToAction("List");
             }
+
+            model.FrecuencyName = ((ScheduleBatchFrecuency)batch.FrecuencyId).ToString();
+            model.AvailableFrecuencies = ScheduleBatchFrecuency.Diario.ToSelectList().ToList();
+            model.AvailableFrecuencies.Insert(0, new SelectListItem { Value = "0", Text = "-----------" });
+            model.AvailableMonths = PrepareMonthsList();
+            model.AvailableYears = PrepareYearsList();
+
             return View(model);
         }
         #endregion
