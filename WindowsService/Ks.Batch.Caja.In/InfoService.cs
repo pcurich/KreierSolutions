@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Ks.Batch.Util.Model;
 using Topshelf.Logging;
 
-namespace Ks.Batch.Contribution.In
+namespace Ks.Batch.Caja.In
 {
     public class InfoService
     {
@@ -18,14 +19,16 @@ namespace Ks.Batch.Contribution.In
             {
                 try
                 {
-                    if (line.Length >= 100)
+                    if (line.Length >48)
                     {
                         result.Add(new Info
                         {
-                            Year = Convert.ToInt32(line.Substring(5, 4)),
-                            Month = Convert.ToInt32(line.Substring(10, 2)),
-                            AdminCode = line.Substring(34, 9),
-                            Total = Convert.ToDecimal(line.Substring(86, 10))
+                            Year = Convert.ToInt32(line.Substring(33, 4)),
+                            Month = Convert.ToInt32(line.Substring(37, 2)),
+                            AdminCode = line.Substring(10, 9),
+                            HasAdminCode = true,HasDni = true,
+                            Dni = line.Substring(23, 8),
+                            Total = Convert.ToDecimal(line.Substring(39, 10))
                         });
                     }
                 }
@@ -33,6 +36,7 @@ namespace Ks.Batch.Contribution.In
                 {
                     Log.ErrorFormat("Read File with error message error: '{0}'",ex.Message);
                     Log.ErrorFormat("Read File with error in line: '{0}'", line);
+                    return null;
                 }
             }
             return result;

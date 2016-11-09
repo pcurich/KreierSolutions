@@ -1,6 +1,6 @@
 ﻿using Topshelf;
 
-namespace Ks.Batch.Contribution.In
+namespace Ks.Batch.Caja.In
 {
     class Program
     {
@@ -9,9 +9,9 @@ namespace Ks.Batch.Contribution.In
             HostFactory.Run(serviceConfig =>
             {
                 serviceConfig.UseNLog();
-                serviceConfig.Service<WatcherService>(serviceInstance =>
+                serviceConfig.Service<BatchContainer>(serviceInstance =>
                 {
-                    serviceInstance.ConstructUsing(() => new WatcherService());
+                    serviceInstance.ConstructUsing(() => new BatchContainer());
                     serviceInstance.WhenStarted(execute => execute.Start());
                     serviceInstance.WhenStopped(execute => execute.Stop());
                     serviceInstance.WhenPaused(execute => execute.Pause());
@@ -25,9 +25,9 @@ namespace Ks.Batch.Contribution.In
                     recoveryOption.RestartService(1); //Un minuto para recuperarse
                 });
 
-                serviceConfig.SetServiceName("KsBatchContributionOut");
-                serviceConfig.SetDisplayName("Ks Batch Contribution Out");
-                serviceConfig.SetDescription(@"This process read a file from COPERE and Update data base. Those Files must be in c:\KS\ACMR\WinService\Out");
+                serviceConfig.SetServiceName("Ks.Batch.Caja.In");
+                serviceConfig.SetDisplayName("Ks Batch Caja In");
+                serviceConfig.SetDescription(@"This process read a file from Caja and Update data base");
 
                 serviceConfig.EnablePauseAndContinue();
                 serviceConfig.StartAutomatically();

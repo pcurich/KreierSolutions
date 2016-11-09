@@ -279,14 +279,16 @@ namespace Ks.Batch.Copere.Out
                 Guid.NewGuid();
                 Command = new SqlCommand(Sql, Connection);
                 Command.Parameters.AddWithValue("@Key", Guid.NewGuid());
-                Command.Parameters.AddWithValue("@Name", string.Format("Archivos para la caja en el periodo - {0}", Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00")));
-                Command.Parameters.AddWithValue("@Value", XmlHelper.Serialize2String(new List<Info>(ReportOut.Values)));
-                Command.Parameters.AddWithValue("@PathBase", Batch.PathBase);
+                Command.Parameters.AddWithValue("@Name", "");
+                Command.Parameters.AddWithValue("@Value", "");
+                Command.Parameters.AddWithValue("@PathBase", "");
                 Command.Parameters.AddWithValue("@StateId", 1);
                 Command.Parameters.AddWithValue("@Period", Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00"));
                 Command.Parameters.AddWithValue("@Source", "Ks.Batch.Copere.In");
                 Command.Parameters.AddWithValue("@ParentKey", guid);
                 Command.Parameters.AddWithValue("@DateUtc", DateTime.UtcNow);
+
+                
 
                 Command.ExecuteNonQuery();
             }

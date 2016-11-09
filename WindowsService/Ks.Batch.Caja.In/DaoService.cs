@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 
-namespace Ks.Batch.Contribution.In
+namespace Ks.Batch.Caja.In
 {
     public class DaoService
     {
