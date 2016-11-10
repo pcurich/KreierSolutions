@@ -25,7 +25,7 @@ namespace Ks.Batch.Copere.In
                 try
                 {
                     Sql =
-                        " UPDATE Reports set Name=@Name, Value=@Value, PathBase=@PathBase,Source=@Source, DateUtc=@DateUtc" +
+                        Sql = " UPDATE Reports set Name=@Name, StateId=@StateId, Value=@Value, PathBase=@PathBase,Source=@Source, DateUtc=@DateUtc" +
                         " WHERE [Key]=@Key";
 
                     Command = new SqlCommand(Sql, Connection);
@@ -35,6 +35,7 @@ namespace Ks.Batch.Copere.In
                             Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00")));
                     Command.Parameters.AddWithValue("@Value", XmlHelper.Serialize2String(new List<Info>(infos)));
                     Command.Parameters.AddWithValue("@PathBase", Batch.PathBase);
+                    Command.Parameters.AddWithValue("@StateId", 2);
                     Command.Parameters.AddWithValue("@Source", Batch.SystemName);
                     Command.Parameters.AddWithValue("@DateUtc", DateTime.UtcNow);
 
