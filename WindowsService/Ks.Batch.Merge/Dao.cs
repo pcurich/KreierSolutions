@@ -11,7 +11,7 @@ namespace Ks.Batch.Merge
     public class Dao : DaoBase
     {
         private static readonly LogWriter Log = HostLogger.Get<Dao>();
-
+        private List<Info> _listInfo= new List<Info>();  
 
 
         public Dao(string connetionString)
@@ -67,11 +67,13 @@ namespace Ks.Batch.Merge
         }
 
 
-        public void ProcessCopere(List<Info> infoIn, List<Info> infoOut)
+        public void ProcessCopere(Reports report, List<Info> infoIn, List<Info> infoOut)
         {
-            List<Info> infoEquals = new List<Info>(); //aountIn == amountOut  Pago completo
-            List<Info> infoNotIn = new List<Info>(); //aountIn >0 aountOut ==0 No tiene liquidez
-            List<Info> infoLoss = new List<Info>(); //aountIn >0 aountOut >0 pago por puchos 
+            var infoEquals = new List<Info>(); //aountIn == amountOut  Pago completo
+            var infoNotIn = new List<Info>(); //aountIn >0 aountOut ==0 No tiene liquidez
+            var infoLoss = new List<Info>(); //aountIn >0 aountOut >0 pago por puchos 
+
+            #region SplitList
 
             foreach (var info in infoIn)
             {
@@ -85,7 +87,39 @@ namespace Ks.Batch.Merge
                     else
                         infoLoss.Add(info);
             }
+
+            #endregion
+
+            ConmpletePayment(report,infoEquals);
+
         }
+
+        private void ConmpletePayment(Reports report, List<Info> infoEquals)
+        {
+            var listOfCustomer = infoEquals.Select(x=>x.CustomerId);
+
+            Sql = " UPDATE ContributionPayment  SET ProcessedDateOnUtc=@ProcessedDateOnUtc, " +
+                  " StateId=@StateId, BankName=@Source, Description=@Description " +
+                  " WHERE Id IN ( " +
+                  "     SELECT CP.Id " +
+                  "     FROM ContributionPayment CP " +
+                  "     INNER JOIN Contribution C ON C.Id=CP.ContributionId " +
+                  "     WHERE C.CustomerId IN (" + string.Join(",", listOfCustomer.ToArray()) + ") AND  " +
+                  "     YEAR (CP.ScheduledDateOnUtc) =@Year and MONTH(CP.ScheduledDateOnUtc)=@Month" +
+                  " ) ";
+
+            Command = new SqlCommand(Sql, Connection);
+            Command.Parameters.AddWithValue("@Source", report.Source);
+            Command.Parameters.AddWithValue("@ProcessedDateOnUtc", report.DateUtc);
+            Command.Parameters.AddWithValue("@StateId", (int)ContributionState.Pagado);
+            Command.Parameters.AddWithValue("@Description", "Proceso automática por el sistema ACMR");
+            Command.Parameters.AddWithValue("@Year", Convert.ToInt32(report.Period.Substring(0, 4)));
+            Command.Parameters.AddWithValue("@Month", Convert.ToInt32(report.Period.Substring(4, 2)));
+
+            Command.ExecuteNonQuery();
+
+        }
+
 
         public void ProcessCaja(List<Info> infoIn, List<Info> infoOut)
         {

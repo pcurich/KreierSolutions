@@ -56,18 +56,12 @@ namespace Ks.Batch.Caja.Out
             Sql = "SELECT  c.CustomerId, cp.AmountTotal " +
                   "FROM ContributionPayment cp " +
                   "INNER JOIN  Contribution c on c.Id=cp.ContributionId " +
-                  "WHERE c.CustomerId IN (@CustomerId) AND " +
+                  "WHERE c.CustomerId IN (" + string.Join(",", customerIds.ToArray()) + ") AND " +
                   "YEAR(cp.ScheduledDateOnUtc)=@Year AND " +
                   "MONTH(cp.ScheduledDateOnUtc)=@Month  ";
 
             Command = new SqlCommand(Sql, Connection);
-            var pCustomerIds = new SqlParameter
-            {
-                ParameterName = "@CustomerId",
-                SqlDbType = SqlDbType.NVarChar,
-                Direction = ParameterDirection.Input,
-                Value = string.Join(",", customerIds.ToArray())
-            };
+            
             var pYear = new SqlParameter
             {
                 ParameterName = "@Year",
@@ -83,7 +77,6 @@ namespace Ks.Batch.Caja.Out
                 Value = Batch.PeriodMonth
             };
 
-            Command.Parameters.Add(pCustomerIds);
             Command.Parameters.Add(pYear);
             Command.Parameters.Add(pMonth);
 
@@ -164,19 +157,13 @@ namespace Ks.Batch.Caja.Out
                   " SELECT  cp.Id " +
                   " FROM ContributionPayment cp " +
                   " INNER JOIN  Contribution c on c.Id=cp.ContributionId " +
-                  " WHERE c.CustomerId IN (@CustomerId) AND  " +
+                  " WHERE c.CustomerId IN (" + string.Join(",", customerIds.ToArray()) + ") AND  " +
                   " YEAR(cp.ScheduledDateOnUtc)=@Year AND  " +
                   " MONTH(cp.ScheduledDateOnUtc)=@Month " +
                   " ) ";
 
             Command = new SqlCommand(Sql, Connection);
-            var pCustomerIds = new SqlParameter
-            {
-                ParameterName = "@CustomerId",
-                SqlDbType = SqlDbType.NVarChar,
-                Direction = ParameterDirection.Input,
-                Value = string.Join(",", customerIds.ToArray())
-            };
+            
             var pYear = new SqlParameter
             {
                 ParameterName = "@Year",
@@ -191,8 +178,7 @@ namespace Ks.Batch.Caja.Out
                 Direction = ParameterDirection.Input,
                 Value = Batch.PeriodMonth
             };
-
-            Command.Parameters.Add(pCustomerIds);
+ 
             Command.Parameters.Add(pYear);
             Command.Parameters.Add(pMonth);
 

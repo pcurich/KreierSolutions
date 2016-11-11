@@ -55,6 +55,7 @@
     <Compile Include="DateTimeHelper.cs" />
     <Compile Include="IBatchContainer.cs" />
     <Compile Include="IDaoBase.cs" />
+    <Compile Include="Model\ContributionState.cs" />
     <Compile Include="Model\Info.cs" />
     <Compile Include="Model\Reports.cs" />
     <Compile Include="Model\ReportState.cs" />

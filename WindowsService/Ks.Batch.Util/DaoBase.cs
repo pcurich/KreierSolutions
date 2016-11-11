@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Threading;
 using Topshelf.Logging;
 
 namespace Ks.Batch.Util
@@ -38,7 +37,7 @@ namespace Ks.Batch.Util
             catch (Exception ex)
             {
                 IsConnected = false;
-                Log.FatalFormat("Time: {0} Error: {1}", DateTime.Now, ex.Message);
+                Log.FatalFormat("Ks.Batch.Util.DaoBase.Connect  Time: {0} Error: {1}", DateTime.Now, ex.Message);
             }
 
         }
@@ -55,7 +54,7 @@ namespace Ks.Batch.Util
             }
             catch (Exception ex)
             {
-                Log.FatalFormat("Time: {0} Error: {1}", DateTime.Now, ex.Message);
+                Log.FatalFormat("Ks.Batch.Util.DaoBase.Close  Time: {0} Error: {1}", DateTime.Now, ex.Message);
             }
         }
 
@@ -75,20 +74,10 @@ namespace Ks.Batch.Util
 
             Sql = "SELECT EntityId, Attribute =[Key], Value FROM GenericAttribute WHERE " +
                   " [Key] in ('FirstName','LastName') AND " +
-                  " KeyGroup='Customer' AND EntityId IN (@CustomerId) " +
+                  " KeyGroup='Customer' AND EntityId IN (" + string.Join(",", customerIds.ToArray()) + ") " +
                   " ORDER BY EntityId ";
 
             Command = new SqlCommand(Sql, Connection);
-            var pCustomerIds = new SqlParameter
-            {
-                ParameterName = "@CustomerId",
-                SqlDbType = SqlDbType.NVarChar,
-                Direction = ParameterDirection.Input,
-                Value = string.Join(",", customerIds.ToArray())
-            };
-
-            Command.Parameters.Add(pCustomerIds);
-
             var sqlReader = Command.ExecuteReader();
 
             var count = 0;
@@ -173,7 +162,7 @@ namespace Ks.Batch.Util
             }
             catch (Exception ex)
             {
-                Log.FatalFormat("Time: {0}: ERROR: {1} ", DateTime.Now, ex.Message);
+                Log.FatalFormat("Ks.Batch.Util.DaoBase.Install  Time: {0}: ERROR: {1} ", DateTime.Now, ex.Message);
                 Close();
             }
 
@@ -212,7 +201,7 @@ namespace Ks.Batch.Util
             }
             catch (Exception ex)
             {
-                Log.FatalFormat("Time: {0}: ERROR: {1} ", DateTime.Now, ex.Message);
+                Log.FatalFormat("Ks.Batch.Util.DaoBase.Uninstall    Time: {0}: ERROR: {1} ", DateTime.Now, ex.Message);
             }
             Close();
         }
@@ -260,7 +249,7 @@ namespace Ks.Batch.Util
             }
             catch (Exception ex)
             {
-                Log.FatalFormat("Time: {0}: ERROR: {1} ", DateTime.Now, ex.Message);
+                Log.FatalFormat("Ks.Batch.Util.DaoBase.UpdateScheduleBatch    Time: {0}: ERROR: {1} ", DateTime.Now, ex.Message);
                 Close();
             }
 
@@ -296,7 +285,7 @@ namespace Ks.Batch.Util
             }
             catch (Exception ex)
             {
-                Log.FatalFormat("Time: {0}: ERROR: {1} ", DateTime.Now, ex.Message);
+                Log.FatalFormat("Ks.Batch.Util.DaoBase.IsInstalled  Time: {0}: ERROR: {1} ", DateTime.Now, ex.Message);
 
             }
             Close();
@@ -325,7 +314,7 @@ namespace Ks.Batch.Util
             }
             catch (Exception ex)
             {
-                Log.FatalFormat("Time: {0}: ERROR: {1} ", DateTime.Now, ex.Message);
+                Log.FatalFormat("Ks.Batch.Util.DaoBase.Exec  Time: {0}: ERROR: {1} ", DateTime.Now, ex.Message);
             }
             Close();
         }

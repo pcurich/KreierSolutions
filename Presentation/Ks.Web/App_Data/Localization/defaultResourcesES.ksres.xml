@@ -327,6 +327,12 @@
   <LocaleResource Name="Account.Fields.StateProvince.Required">
     <Value>Se requiere departamento</Value>
   </LocaleResource>
+  <LocaleResource Name="Account.Fields.AdmCode.Length">
+    <Value>El código administrativo debe ser de 9 caracteres</Value>
+  </LocaleResource>
+  <LocaleResource Name="Account.Fields.Dni.Length">
+    <Value>El DNI debe ser de 8 caracteres</Value>
+  </LocaleResource>
   <LocaleResource Name="Account.Fields.StreetAddress">
     <Value>Dirección</Value>
   </LocaleResource>

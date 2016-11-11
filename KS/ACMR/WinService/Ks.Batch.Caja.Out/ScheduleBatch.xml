@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<ScheduleBatch xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Id>22</Id>
+  <Name>Exportacion para caja</Name>
+  <SystemName>Ks.Batch.Caja.Out</SystemName>
+  <PathBase>C:\KS\ACMR\WinService\Ks.Batch.Caja.Out</PathBase>
+  <FolderRead>Read</FolderRead>
+  <FolderLog>Logs</FolderLog>
+  <FolderMoveToDone>Process</FolderMoveToDone>
+  <FolderMoveToError>Error</FolderMoveToError>
+  <FrecuencyId>1</FrecuencyId>
+  <PeriodYear>2017</PeriodYear>
+  <PeriodMonth>3</PeriodMonth>
+  <StartExecutionOnUtc>2016-11-20T05:30:00</StartExecutionOnUtc>
+  <NextExecutionOnUtc>2016-11-12T06:30:15.13</NextExecutionOnUtc>
+  <LastExecutionOnUtc>2016-11-11T07:50:34.427</LastExecutionOnUtc>
+  <Enabled>true</Enabled>
+</ScheduleBatch>

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Globalization;
 using System.Linq;
 using Ks.Batch.Util;
 using Ks.Batch.Util.Model;
@@ -12,6 +11,8 @@ namespace Ks.Batch.Copere.Out
     public class Dao : DaoBase
     {
         private Dictionary<int, Info> ReportOut { get; set; }
+        private Dictionary<int, string> FileOut { get; set; }
+
         private ScheduleBatch Batch { get; set; }
 
         private const string AMOUNT = "AMOUNT";
@@ -24,7 +25,6 @@ namespace Ks.Batch.Copere.Out
 
         public List<string> Process(ScheduleBatch batch)
         {
-            List<string> result;
             Batch = batch;
             try
             {
@@ -32,16 +32,16 @@ namespace Ks.Batch.Copere.Out
 
                 List<int> customerIds;
                 ReportOut = new Dictionary<int, Info>();
-                var temp = GetCustomer(out customerIds);
-                result = GetContributionPayments(temp, customerIds);
+                GetCustomer(out customerIds);
+                GetContributionPayments(FileOut, customerIds);
 
-                if (result != null)
+                if (FileOut != null)
                 {
                     DeleteReport();
-                    CompleteCustomerName(temp);
+                    CompleteCustomerName();
                     var guid = CreateReportIn();
                     CreateReportOut(guid);
-                    Log.InfoFormat("Time: {0}: Action: {1}", DateTime.Now, result.Count + " records readed");
+                    Log.InfoFormat("Time: {0}: Action: {1}", DateTime.Now, FileOut.Count + " records readed");
                 }
 
             }
@@ -50,29 +50,23 @@ namespace Ks.Batch.Copere.Out
                 Log.FatalFormat("Time: {0} Error: {1}", DateTime.Now, ex.Message);
                 return null;
             }
-            return result;
+            return FileOut.Values.ToList();
         }
 
         #region Util
 
-        private List<string> GetContributionPayments(Dictionary<int, string> customer, List<int> customerIds)
+        private void GetContributionPayments(Dictionary<int, string> customer, List<int> customerIds)
         {
             var result = new List<string>();
             Sql = "SELECT  c.CustomerId, cp.AmountTotal " +
                   "FROM ContributionPayment cp " +
                   "INNER JOIN  Contribution c on c.Id=cp.ContributionId " +
-                  "WHERE c.CustomerId IN (@CustomerId) AND " +
+                  "WHERE c.CustomerId IN (" + string.Join(",", customerIds.ToArray()) + ") AND " +
                   "YEAR(cp.ScheduledDateOnUtc)=@Year AND " +
                   "MONTH(cp.ScheduledDateOnUtc)=@Month  ";
 
             Command = new SqlCommand(Sql, Connection);
-            var pCustomerIds = new SqlParameter
-            {
-                ParameterName = "@CustomerId",
-                SqlDbType = SqlDbType.NVarChar,
-                Direction = ParameterDirection.Input,
-                Value = string.Join(",", customerIds.ToArray())
-            };
+
             var pYear = new SqlParameter
             {
                 ParameterName = "@Year",
@@ -88,17 +82,21 @@ namespace Ks.Batch.Copere.Out
                 Value = Batch.PeriodMonth
             };
 
-            Command.Parameters.Add(pCustomerIds);
             Command.Parameters.Add(pYear);
             Command.Parameters.Add(pMonth);
 
             var sqlReader = Command.ExecuteReader();
+
+            var reportOut2 = new Dictionary<int, Info>();
+            var fileOut2 = new Dictionary<int, string>();
+            var customerIds2 = new List<int>();
+
             var hasValue = false;
             while (sqlReader.Read())
             {
                 hasValue = true;
                 var line = string.Format("{0}        {1}{2}",
-                    customer[sqlReader.GetInt32(0)].Replace(AMOUNT, (Math.Round(sqlReader.GetDecimal(1) * 100).ToString() .PadLeft(13, '0'))), Batch.PeriodYear, Batch.PeriodMonth.ToString("00"));
+                    customer[sqlReader.GetInt32(0)].Replace(AMOUNT, (Math.Round(sqlReader.GetDecimal(1) * 100).ToString().PadLeft(13, '0'))), Batch.PeriodYear, Batch.PeriodMonth.ToString("00"));
                 Info info;
                 ReportOut.TryGetValue(sqlReader.GetInt32(0), out info);
                 if (info != null)
@@ -108,20 +106,31 @@ namespace Ks.Batch.Copere.Out
                     info.Total = sqlReader.GetDecimal(1);
                 }
                 ReportOut.Remove(sqlReader.GetInt32(0));
-                ReportOut.Add(sqlReader.GetInt32(0), info);
-                result.Add(line);
+                reportOut2.Add(sqlReader.GetInt32(0), info);
+                fileOut2.Add(sqlReader.GetInt32(0), line);
             }
             sqlReader.Close();
+            ReportOut.Clear();
+            FileOut.Clear();
 
-            UpdateData(customerIds);
+            foreach (var pk in reportOut2)
+            {
+                customerIds2.Add(pk.Key);
+                ReportOut.Add(pk.Key, pk.Value);
+            }
 
-            return hasValue ? result : null;
+            foreach (var pk in fileOut2)
+            {
+                FileOut.Add(pk.Key, pk.Value);
+            }
+
+            UpdateData(customerIds2);
         }
 
-        private Dictionary<int, string> GetCustomer(out List<int> customerIds)
+        private void GetCustomer(out List<int> customerIds)
         {
             customerIds = new List<int>();
-            var temp = new Dictionary<int, string>();
+            FileOut = new Dictionary<int, string>();
             Sql = "SELECT EntityId, Attribute =[Key], Value FROM GenericAttribute " +
                   "WHERE KeyGroup='Customer' and  [Key] in ('Dni','AdmCode') AND " +
                   "EntityId IN ( SELECT EntityId FROM GenericAttribute WHERE [Key]='MilitarySituationId' AND Value=1)";
@@ -151,14 +160,14 @@ namespace Ks.Batch.Copere.Out
                 }
                 if (count == 2 && entityId == repeatEntityId)
                 {
-                    temp.Add(entityId, string.Format("8A{0}8001{1}0000000000000{2}", admCode, AMOUNT, NUMBER));
+                    FileOut.Add(entityId, string.Format("8A{0}8001{1}0000000000000{2}", admCode, AMOUNT, NUMBER));
                     customerIds.Add(entityId);
                     ReportOut.Add(entityId, new Info { CustomerId = entityId, AdminCode = admCode, HasAdminCode = true, Dni = dni, HasDni = true });
                     entityId = repeatEntityId = count = 0;
                 }
             }
             sqlReader.Close();
-            return temp;
+
         }
 
         private void UpdateData(List<int> customerIds)
@@ -167,19 +176,13 @@ namespace Ks.Batch.Copere.Out
                   " SELECT  cp.Id " +
                   " FROM ContributionPayment cp " +
                   " INNER JOIN  Contribution c on c.Id=cp.ContributionId " +
-                  " WHERE c.CustomerId IN (@CustomerId) AND  " +
+                  " WHERE c.CustomerId IN (" + string.Join(",", customerIds.ToArray()) + ") AND  " +
                   " YEAR(cp.ScheduledDateOnUtc)=@Year AND  " +
                   " MONTH(cp.ScheduledDateOnUtc)=@Month " +
                   " ) ";
 
             Command = new SqlCommand(Sql, Connection);
-            var pCustomerIds = new SqlParameter
-            {
-                ParameterName = "@CustomerId",
-                SqlDbType = SqlDbType.NVarChar,
-                Direction = ParameterDirection.Input,
-                Value = string.Join(",", customerIds.ToArray())
-            };
+
             var pYear = new SqlParameter
             {
                 ParameterName = "@Year",
@@ -195,7 +198,6 @@ namespace Ks.Batch.Copere.Out
                 Value = Batch.PeriodMonth
             };
 
-            Command.Parameters.Add(pCustomerIds);
             Command.Parameters.Add(pYear);
             Command.Parameters.Add(pMonth);
 
@@ -204,20 +206,20 @@ namespace Ks.Batch.Copere.Out
 
         }
 
-        private void CompleteCustomerName(Dictionary<int, string> temp)
+        private void CompleteCustomerName()
         {
-            var result=GetUserNames(temp.Keys.ToList());
+            var result = GetUserNames(FileOut.Keys.ToList());
 
             foreach (var pair in result)
             {
                 Info info;
                 ReportOut.TryGetValue(pair.Key, out info);
-                if (info == null) 
+                if (info == null)
                     continue;
-                
+
                 info.CompleteName = pair.Value;
                 ReportOut.Remove(pair.Key);
-                ReportOut.Add(pair.Key,info);
+                ReportOut.Add(pair.Key, info);
             }
         }
 
@@ -288,7 +290,7 @@ namespace Ks.Batch.Copere.Out
                 Command.Parameters.AddWithValue("@ParentKey", guid);
                 Command.Parameters.AddWithValue("@DateUtc", DateTime.UtcNow);
 
-                
+
 
                 Command.ExecuteNonQuery();
             }

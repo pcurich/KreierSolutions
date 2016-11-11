@@ -27,6 +27,12 @@ namespace Ks.Admin.Validators.Customers
             {
                 Custom(x =>
                 {
+                    if(x.AdmCode.Length!=9)
+                        return new ValidationFailure("AdmCode", localizationService.GetResource("Account.Fields.AdmCode.Length"));
+
+                    if (x.Dni.Length != 9)
+                        return new ValidationFailure("Dni", localizationService.GetResource("Account.Fields.Dni.Length"));
+
                     //does selected country have states?
                     var hasStates = stateProvinceService.GetStateProvincesByCountryId(x.CountryId).Count > 0;
                     if (hasStates)
@@ -37,6 +43,7 @@ namespace Ks.Admin.Validators.Customers
                             return new ValidationFailure("StateProvinceId", localizationService.GetResource("Account.Fields.StateProvince.Required"));
                         }
                     }
+
                     return null;
                 });
             }
@@ -54,8 +61,8 @@ namespace Ks.Admin.Validators.Customers
                 RuleFor(x => x.Phone).NotEmpty().WithMessage(localizationService.GetResource("Admin.Customers.Customers.Fields.Phone.Required"));
             if (customerSettings.FaxRequired && customerSettings.FaxEnabled)
                 RuleFor(x => x.Fax).NotEmpty().WithMessage(localizationService.GetResource("Admin.Customers.Customers.Fields.Fax.Required"));
+            
             RuleFor(x => x.MilitarySituationId).GreaterThan(0).WithMessage(localizationService.GetResource("Admin.Customers.Customers.Fields.MilitarySituation.GreaterThanZero"));
-
         }
     }
 }

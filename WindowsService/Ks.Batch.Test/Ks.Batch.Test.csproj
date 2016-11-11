@@ -53,12 +53,6 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Quartz.Net\Lesson3.cs" />
-    <Compile Include="Quartz.Net\Lesson1.cs" />
-    <Compile Include="Quartz.Net\Lesson2.cs" />
-    <Compile Include="Quartz.Net\Lesson4.cs" />
-    <Compile Include="Quartz.Net\Lesson5.cs" />
-    <Compile Include="Quartz.Net\Lesson6.cs" />
     <Compile Include="ScheduleBatch.cs" />
     <Compile Include="XmlHelper.cs" />
   </ItemGroup>

@@ -14,6 +14,8 @@ namespace Ks.Batch.Merge
         List<Info> _copereIn;
         List<Info> _cajaOut;
         List<Info> _cajaIn;
+        Reports _reportCopere;
+        Reports _reportCaja;
         string _connection;
 
         public void Execute(IJobExecutionContext context)
@@ -25,7 +27,7 @@ namespace Ks.Batch.Merge
             SplitList(listData);
 
             if (_copereOut != null && _copereIn != null && _copereOut.Count > 0 && _copereIn.Count > 0)
-                dao.ProcessCopere(_copereIn, _copereOut);
+                dao.ProcessCopere(_reportCopere,_copereIn, _copereOut);
             if (_cajaOut != null && _cajaIn != null && _cajaOut.Count > 0 && _cajaIn.Count > 0)
                 dao.ProcessCaja(_cajaIn, _cajaOut);
 
@@ -42,21 +44,25 @@ namespace Ks.Batch.Merge
                     case "Ks.Batch.Copere.Out":
                         {
                             _copereOut = data.Value;
+                            _reportCopere = data.Key;
                             break;
                         }
                     case "Ks.Batch.Copere.In":
                         {
                             _copereIn = data.Value;
+                            _reportCopere = data.Key;
                             break;
                         }
                     case "Ks.Batch.Caja.Out":
                         {
                             _cajaOut = data.Value;
+                            _reportCaja = data.Key;
                             break;
                         }
                     case "Ks.Batch.Caja.In":
                         {
                             _cajaIn = data.Value;
+                            _reportCaja = data.Key;
                             break;
                         }
                 }
