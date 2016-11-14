@@ -38,6 +38,7 @@ namespace Ks.Admin.Models.Contract
 
         [KsResourceDisplayName("Admin.Contract.Contribution.Fields.DayOfPayment")]
         public int DayOfPayment { get; set; }
+        
 
         [KsResourceDisplayName("Admin.Contract.Contribution.Fields.CreatedOn")]
         public DateTime? CreatedOn { get; set; }
@@ -45,9 +46,16 @@ namespace Ks.Admin.Models.Contract
         [KsResourceDisplayName("Admin.Contract.Contribution.Fields.UpdatedOn")]
         public DateTime? UpdatedOn { get; set; }
 
+        [KsResourceDisplayName("Admin.Contract.Contribution.Fields.Description")]
+        public string Description { get; set; }
+
         [KsResourceDisplayName("Admin.Contract.Contribution.Fields.AmountTotal")]
         [UIHint("Decimal")]
         public decimal AmountTotal { get; set; }
+        [KsResourceDisplayName("Admin.Contract.Contribution.Fields.IsDelay")]
+        public bool IsDelay { get; set; }
+        [KsResourceDisplayName("Admin.Contract.Contribution.Fields.CycleOfDelay")]
+        public int CycleOfDelay { get; set; }
 
         [KsResourceDisplayName("Admin.Contract.Contribution.Fields.TotalCycle")]
         public int TotalCycle { get; set; }

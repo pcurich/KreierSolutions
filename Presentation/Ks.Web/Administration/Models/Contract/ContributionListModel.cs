@@ -12,10 +12,10 @@ namespace Ks.Admin.Models.Contract
         {
             States= new List<SelectListItem>();
         }
-
-        [KsResourceDisplayName("Admin.Contract.Contribution.Fields.SearchLetter")]
+        
+        [KsResourceDisplayName("Admin.Contract.Contribution.Fields.SearchAuthorizeDiscount")]
         [UIHint("Int32Nullable")]
-        public int? SearchLetter { get; set; }
+        public int? SearchAuthorizeDiscount { get; set; }
         [KsResourceDisplayName("Admin.Contract.Contribution.Fields.SearchDni")]
         public string SearchDni { get; set; }
         [KsResourceDisplayName("Admin.Contract.Contribution.Fields.SearchAdmCode")]

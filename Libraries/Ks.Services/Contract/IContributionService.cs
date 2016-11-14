@@ -31,14 +31,14 @@ namespace Ks.Services.Contract
         IPagedList<Contribution> SearchContributionByCustomerId(int customerId, int stateId = -1, int pageIndex = 0, int pageSize = int.MaxValue);
 
         /// <summary>
-        /// Searches the contribution by letter number.
+        /// Searches the contribution by Authorize Discount.
         /// </summary>
-        /// <param name="letterNumberbool">The letter numberbool.</param>
+        /// <param name="authorizeDiscountBool">The Authorize Discount.</param>
         /// <param name="stateId">The state identifier.</param>
         /// <param name="pageIndex">Index of the page.</param>
         /// <param name="pageSize">Size of the page.</param>
         /// <returns></returns>
-        IPagedList<Contribution> SearchContributionByLetterNumber(int letterNumberbool, int stateId = -1, int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<Contribution> SearchContributionByAuthorizeDiscount(int authorizeDiscountBool, int stateId = -1, int pageIndex = 0, int pageSize = int.MaxValue);
 
         /// <summary>
         /// Gets the contributions by customer.

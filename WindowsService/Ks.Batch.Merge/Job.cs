@@ -22,15 +22,17 @@ namespace Ks.Batch.Merge
         {
             _connection = ConfigurationManager.ConnectionStrings["ACMR"].ConnectionString;
             var dao = new Dao(_connection);
+            dao.Connect();
             var listData = dao.GetData();
 
-            SplitList(listData);
+            if (listData.Count == 2)
+                SplitList(listData);
 
             if (_copereOut != null && _copereIn != null && _copereOut.Count > 0 && _copereIn.Count > 0)
-                dao.ProcessCopere(_reportCopere,_copereIn, _copereOut);
+                dao.Process(_reportCopere, _copereIn, _copereOut);
             if (_cajaOut != null && _cajaIn != null && _cajaOut.Count > 0 && _cajaIn.Count > 0)
-                dao.ProcessCaja(_cajaIn, _cajaOut);
-
+                dao.Process(_reportCaja ,_cajaIn, _cajaOut);
+            dao.Close();
         }
 
         #region Util

@@ -69,7 +69,7 @@ namespace Ks.Batch.Copere.In
         protected static void UpdateScheduleBatch(bool executed = true)
         {
             var dao = new Dao(Connection);
-
+            dao.Connect();
             if (executed)
             {
                 if (Batch.NextExecutionOnUtc.HasValue)
@@ -80,12 +80,14 @@ namespace Ks.Batch.Copere.In
 
             Batch.LastExecutionOnUtc = DateTime.UtcNow;
             dao.UpdateScheduleBatch(Batch);
+            dao.Close();
         }
 
         private static void MoveFile(string fullPath, string fileName)
         {
             File.Move(fullPath, System.IO.Path.Combine(System.IO.Path.Combine(Path, Batch.FolderMoveToDone), fileName));
         }
+
         #endregion
     }
 }

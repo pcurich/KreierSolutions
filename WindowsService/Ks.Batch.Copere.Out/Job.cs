@@ -25,7 +25,7 @@ namespace Ks.Batch.Copere.Out
                 if (!ExistFile())
                 {
                     var records = DataBase();
-                    if (records != null)
+                    if (records.Count!=0)
                     {
                         SyncFiles(records);
                         UpdateScheduleBatch();
@@ -66,7 +66,7 @@ namespace Ks.Batch.Copere.Out
         protected void UpdateScheduleBatch(bool executed = true)
         {
             var dao = new Dao(Connection);
-
+            dao.Connect();
             if (executed)
             {
                 if (Batch.NextExecutionOnUtc.HasValue)
@@ -85,6 +85,7 @@ namespace Ks.Batch.Copere.Out
 
             Batch.LastExecutionOnUtc = DateTime.UtcNow;
             dao.UpdateScheduleBatch(Batch);
+            dao.Close();
         }
 
         #endregion

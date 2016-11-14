@@ -109,77 +109,49 @@
                             {
                                 field: "Number",
                                 title: "@T("Admin.Contract.ContributionPayments.Fields.Number")",
-                                width: 50
-                            },
-                            @if (Model.IsActiveAmount1)
-                                    {
-                                        <text>
-                                    {
-                                        field: "Amount1",
-                                        title: "@Model.NameAmount1",
-                                        width: 50,
-                                        template:'#= kendo.toString(Amount1,"c","es-PE") #',
-                                        format:"{0:c2}"
-                                    },
-                                </text>
-                                    }
-                            @if (Model.IsActiveAmount2)
-                                    {
-                                        <text>
-                                    {
-                                        field: "Amount2",
-                                        title: "@Model.NameAmount2",
-                                        width: 50,
-                                        template:'#= kendo.toString(Amount2,"c","es-PE") #',
-                                        format:"{0:c2}"
-                                    },
-                                </text>
-                                    }
-                            @if (Model.IsActiveAmount3)
-                                    {
-                                        <text>
-                                    {
-                                        field: "Amount3",
-                                        title: "@Model.NameAmount3",
-                                        width: 50,
-                                        template:'#= kendo.toString(Amount3,"c","es-PE") #',
-                                        format:"{0:c2}"
-                                    },
-                                </text>
-                                    }{
-                                    field: "BankName",
-                                    title:"@T("Admin.Contract.ContributionPayments.Fields.BankName")",
-                                    width: 200
-                                }, {
-                                    field: "ScheduledDateOn",
-                                    title:"@T("Admin.Contract.ContributionPayments.Fields.ScheduledDateOn")",
-                                    width: 40,
-                                    filterable: { ui: "datetimepicker" },
-                                    template:'#= ScheduledDateOn!=null ? kendo.toString(ScheduledDateOn,"dd/MM/yyyy HH:mm:ss","es-PE"): " "#',
-                                    type: "date",
-                                    format: "{0:G}"
-                                }, {
-                                    field: "ProcessedDateOn",
-                                    title:"@T("Admin.Contract.ContributionPayments.Fields.ProcessedDateOn")",
-                                    width: 40,
-                                    filterable: { ui: "datetimepicker" },
-                                    template:'#= ProcessedDateOn!=null ? kendo.toString(ProcessedDateOn,"dd/MM/yyyy HH:mm:ss","es-PE"): " "#',
-                                    type: "date",
-                                    format: "{0:G}"
-                                },{
-                                    field: "State",
-                                    title: "@T("Admin.Contract.ContributionPayments.Fields.State")",
-                                    width: 50
-                                },{
-                                    field: "Type",
-                                    title: "@T("Admin.Contract.ContributionPayments.Fields.Type")",
-                                    width: 50
-                                }, {
-                                    field: "Id",
-                                    title: "@T("Admin.Common.Edit")",
-                                    width: 50,
-                                    template: '<a href="@Url.Content("~/Admin/Contributions/CreatePayment/#=Id#")">@T("Admin.Common.Edit")</a>'
-                                }
+                                width: 30
+                            },{
+                                field: "AmountTotal",
+                                title:"@T("Admin.Contract.ContributionPayments.Fields.AmountTotal")",
+                                width: 30,
+                                template:'#= kendo.toString(AmountTotal,"c","es-PE") #',
+                                format:"{0:c2}"
+                            },{
+                                field: "AmountPayed",
+                                title:"@T("Admin.Contract.ContributionPayments.Fields.AmountPayed")",
+                                width: 30,
+                                template:'#= kendo.toString(AmountPayed,"c","es-PE") #',
+                                format:"{0:c2}"
+                            },{
+                                field: "BankName",
+                                title:"@T("Admin.Contract.ContributionPayments.Fields.BankName")",
+                                width: 100
+                            }, {
+                                field: "ScheduledDateOn",
+                                title:"@T("Admin.Contract.ContributionPayments.Fields.ScheduledDateOn")",
+                                width: 30,
+                                filterable: { ui: "datetimepicker" },
+                                template:'#= ScheduledDateOn!=null ? kendo.toString(ScheduledDateOn,"dd/MM/yyyy","es-PE"): " "#',
+                                type: "date",
+                                format: "{0:G}"
+                            }, {
+                                field: "ProcessedDateOn",
+                                title:"@T("Admin.Contract.ContributionPayments.Fields.ProcessedDateOn")",
+                                width: 30,
+                                filterable: { ui: "datetimepicker" },
+                                template:'#= ProcessedDateOn!=null ? kendo.toString(ProcessedDateOn,"dd/MM/yyyy","es-PE"): " "#',
+                                type: "date",
+                                format: "{0:G}"
+                            },{
+                                field: "State",
+                                title: "@T("Admin.Contract.ContributionPayments.Fields.State")",
+                                width: 20
+                            }, {
+                                field: "Id",
+                                title: "@T("Admin.Common.Edit")",
+                                width: 50,
+                                template: '<a href="@Url.Content("~/Admin/Contributions/CreatePayment/#=Id#")">@T("Admin.Common.Edit")</a>'
+                            }
                         ]
                     });
                 });
@@ -197,6 +169,7 @@
                 }
             </script>
         </td>
+
     </tr>
 </table>
 

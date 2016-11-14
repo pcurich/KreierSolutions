@@ -139,6 +139,138 @@ BEGIN
 END
 GO
 
+CREATE PROCEDURE [UpdateContributionPayment]
+(
+	@XmlPackage xml, 
+	@Year int, 
+	@Month int
+)
+AS
+BEGIN
+ 
+CREATE TABLE #ContributionPaymentTmp
+			( 
+				[Id] [int] NOT NULL,
+				[ContributionId] [int] NOT NULL,
+				[CustomerId] [int] NOT NULL,
+				[Amount1] [decimal] NOT NULL,
+				[Amount2] [decimal] NOT NULL,
+				[Amount3] [decimal] NOT NULL,
+				[AmountTotal] [decimal] NOT NULL,
+				[AmountPayed] [decimal] NOT NULL,		
+				[StateId] [int] NOT NULL,
+				[BankName] [nvarchar](500) NOT NULL,
+				[Description] [nvarchar](1000) NOT NULL,
+				[Number] [int] NOT NULL,
+				[IsDelay] [int] NOT NULL,
+				[CycleOfDelay] [int] NOT NULL
+			)
+
+ 
+INSERT INTO #ContributionPaymentTmp (Id,ContributionId,CustomerId, Amount1,Amount2,Amount3,AmountTotal,AmountPayed,StateId,BankName,[Description],Number,CycleOfDelay,IsDelay)
+SELECT	0, --Id
+		0, --ContributionId
+		nref.value('CustomerId[1]', 'int'), --CustomerId
+		nref.value('Amount1[1]', 'decimal'),--Amount1
+		nref.value('Amount2[1]', 'decimal'),--Amount2
+		nref.value('Amount3[1]', 'decimal'),--Amount3
+		nref.value('AmountTotal[1]', 'decimal'),--AmountTotal
+		nref.value('AmountPayed[1]', 'decimal'),--AmountPayed
+		nref.value('StateId[1]', 'int'), --StateId
+		nref.value('BankName[1]', 'nvarchar(500)'), --BankName
+		nref.value('Description[1]', 'nvarchar(1000)'), --[Description]
+		nref.value('Number[1]', 'nvarchar(1000)'), --[Number]
+		0,0 --Delay thinks
+		FROm @XmlPackage.nodes('//ArrayOfInfo/Info') AS R(nref)
+
+--Complete whith the ContributionId 
+UPDATE #ContributionPaymentTmp SET  ContributionId= Contribution.Id
+FROM Contribution 
+wHERE Contribution.CustomerId =#ContributionPaymentTmp.CustomerId AND Contribution.Active=1
+
+ 
+--Complete with the id of ContributionPayment
+UPDATE #ContributionPaymentTmp SET  Id= ContributionPayment.Id
+FROM ContributionPayment 
+wHERE ContributionPayment.ContributionId =#ContributionPaymentTmp.ContributionId AND 
+	  YEAR(ContributionPayment.ScheduledDateOnUtc)=@Year and MONTH(ContributionPayment.ScheduledDateOnUtc)=@Month AND
+	  ContributionPayment.StateId=2 --InProcess
+	  
+
+--update the contributions payments
+UPDATE ContributionPayment 
+SET Amount1=#ContributionPaymentTmp.Amount1, Amount2=#ContributionPaymentTmp.Amount2, Amount3=#ContributionPaymentTmp.Amount3, 
+	AmountPayed=#ContributionPaymentTmp.AmountPayed,ProcessedDateOnUtc=GETUTCDATE(), StateId=#ContributionPaymentTmp.StateId,
+	BankName=#ContributionPaymentTmp.BankName,[Description]=#ContributionPaymentTmp.[Description]
+FROM  #ContributionPaymentTmp
+WHERE #ContributionPaymentTmp.Id=ContributionPayment.Id 
+
+Declare @TimeToDelay int= (select value from Setting where Name ='contributionsettings.cycleofdelay')
+
+--Update delay cycles and state
+UPDATE #ContributionPaymentTmp SET CycleOfDelay=temp.CountState, IsDelay=temp.IsDelay
+FROM 
+(
+	SELECT 
+	ContributionId, 
+	COUNT(StateId) as CountState,
+	IsDelay = case when COUNT(StateId)=@TimeToDelay then 1 else 0 end,
+	[Description]= case when COUNT(StateId)=@TimeToDelay then 'El aportante ha sido dado de baja debido a que ha pasado ' + CAST(@TimeToDelay as nvarchar(1)) + ' meses en estado de SIN LIQUIDEZ'  ELSE '' END
+	FROM 
+	ContributionPayment 
+	WHERE ContributionPayment.StateId =5 -- sin liquidez
+	GROUP BY ContributionId
+) as temp 
+WHERE 
+temp.ContributionId=#ContributionPaymentTmp.ContributionId
+
+--update the contribution per customer
+Update Contribution 
+SET Contribution.AmountTotal=Contribution.AmountTotal+#ContributionPaymentTmp.AmountPayed,
+	Contribution.CycleOfDelay=#ContributionPaymentTmp.CycleOfDelay,
+	Contribution.Active = case when #ContributionPaymentTmp.CycleOfDelay=@TimeToDelay then 0 else 1 end,
+	Contribution.IsDelay=#ContributionPaymentTmp.IsDelay,
+	Contribution.UpdatedOnUtc=GETUTCDATE(),
+	Contribution.[Description]= #ContributionPaymentTmp.[Description]
+FROM #ContributionPaymentTmp 
+WHERE #ContributionPaymentTmp.ContributionId=Contribution.Id
+ 
+
+--Alter the next Quota to pay
+--Only work with state Sin Liquidez 
+DELETE FROM #ContributionPaymentTmp WHERE StateId<>5
+
+Declare @ValueOfQuota1 int= (select Value from Setting where Name  = 'contributionsettings.amount1')
+Declare @ValueOfQuota2 int= (select Value from Setting where Name  = 'contributionsettings.amount2')
+Declare @ValueOfQuota3 int= (select Value from Setting where Name  = 'contributionsettings.amount3')
+
+--Alter the amount to the next quota
+UPDATE  ContributionPayment 
+SET 
+ContributionPayment.AmountTotal=ContributionPayment.AmountTotal+@ValueOfQuota1+@ValueOfQuota2+@ValueOfQuota3,
+contributionPayment.AmountOld=@ValueOfQuota1+@ValueOfQuota2+@ValueOfQuota3,
+ContributionPayment.NumberOld=TMP.Number,
+ContributionPayment.[Description] ='Valor de la couta aumentado por el sistema ACMR debido a la falta de liquitdez de la cuota N° ' + CAST(TMP.Number as nvarchar(3))
+FROM 
+(
+	SELECT CP.ContributionId AS ContributionId, NextPayment.NumberNextQuota AS NumberNextQuota ,
+	CPT.Number AS Number
+	--The nex quota and the Actual 
+	FROM 
+	ContributionPayment CP
+	INNER JOIN (
+			SELECT ContributionId,MIN(Number) as NumberNextQuota
+			FROM ContributionPayment 
+			WHERE StateId = 1 --Get the next Quota in stateId=1 (Pendiente) 
+			GROUP BY ContributionId
+	) NextPayment ON NextPayment.ContributionId=CP.ContributionId
+	INNER JOIN #ContributionPaymentTmp CPT ON CPT.ContributionId=CP.ContributionId  --This is Unique
+) as TMP
+WHERE --only the next quota to pay
+ContributionPayment.ContributionId=TMP.ContributionId AND ContributionPayment.Number=TMP.NumberNextQuota
+
+END
+GO
 
 CREATE PROCEDURE [LanguagePackImport]
 (
@@ -157,7 +289,7 @@ BEGIN
 			)
 
 		INSERT INTO #LocaleStringResourceTmp (LanguageID, ResourceName, ResourceValue)
-		SELECT	@LanguageId, nref.value('@Name', 'nvarchar(200)'), nref.value('Value[1]', 'nvarchar(MAX)')
+		SELECT	@LanguageId, nref.value('@Name', 'nvarchar(200)'), 
 		FROM	@XmlPackage.nodes('//Language/LocaleResource') AS R(nref)
 
 		DECLARE @ResourceName nvarchar(200)
@@ -333,18 +465,18 @@ INTO  #tmp_reports
 FROM 
 (
 	SELECT CD.IsAutomatic, CD.StateId, YEAR(CD.ScheduledDateOnUtc ) AS 'YEARS', 
-	'ENE' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=1 AND CD.StateId<>1 THEN SUM(CD.Amount1+CD.Amount2+CD.Amount3) ELSE 0 END ,
-	'FEB' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=2 AND CD.StateId<>1 THEN SUM(CD.Amount1+CD.Amount2+CD.Amount3) ELSE 0 END ,
-	'MAR' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=3 AND CD.StateId<>1 THEN SUM(CD.Amount1+CD.Amount2+CD.Amount3) ELSE 0 END ,
-	'ABR' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=4 AND CD.StateId<>1 THEN SUM(CD.Amount1+CD.Amount2+CD.Amount3) ELSE 0 END ,
-	'MAY' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=5 AND CD.StateId<>1 THEN SUM(CD.Amount1+CD.Amount2+CD.Amount3) ELSE 0 END ,
-	'JUN' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=6 AND CD.StateId<>1 THEN SUM(CD.Amount1+CD.Amount2+CD.Amount3) ELSE 0 END ,
-	'JUL' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=7 AND CD.StateId<>1 THEN SUM(CD.Amount1+CD.Amount2+CD.Amount3) ELSE 0 END ,
-	'AGO' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=8 AND CD.StateId<>1 THEN SUM(CD.Amount1+CD.Amount2+CD.Amount3) ELSE 0 END ,
-	'SEP' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=9 AND CD.StateId<>1 THEN SUM(CD.Amount1+CD.Amount2+CD.Amount3) ELSE 0 END ,
-	'OCT' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=10 AND CD.StateId<>1 THEN SUM(CD.Amount1+CD.Amount2+CD.Amount3) ELSE 0 END ,
-	'NOV' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=11 AND CD.StateId<>1 THEN SUM(CD.Amount1+CD.Amount2+CD.Amount3) ELSE 0 END ,
-	'DIC' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=12 AND CD.StateId<>1 THEN SUM(CD.Amount1+CD.Amount2+CD.Amount3) ELSE 0 END  
+	'ENE' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=1 AND CD.StateId<>1 THEN SUM(CD.AmountPayed) ELSE 0 END ,
+	'FEB' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=2 AND CD.StateId<>1 THEN SUM(CD.AmountPayed) ELSE 0 END ,
+	'MAR' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=3 AND CD.StateId<>1 THEN SUM(CD.AmountPayed) ELSE 0 END ,
+	'ABR' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=4 AND CD.StateId<>1 THEN SUM(CD.AmountPayed) ELSE 0 END ,
+	'MAY' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=5 AND CD.StateId<>1 THEN SUM(CD.AmountPayed) ELSE 0 END ,
+	'JUN' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=6 AND CD.StateId<>1 THEN SUM(CD.AmountPayed) ELSE 0 END ,
+	'JUL' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=7 AND CD.StateId<>1 THEN SUM(CD.AmountPayed) ELSE 0 END ,
+	'AGO' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=8 AND CD.StateId<>1 THEN SUM(CD.AmountPayed) ELSE 0 END ,
+	'SEP' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=9 AND CD.StateId<>1 THEN SUM(CD.AmountPayed) ELSE 0 END ,
+	'OCT' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=10 AND CD.StateId<>1 THEN SUM(CD.AmountPayed) ELSE 0 END ,
+	'NOV' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=11 AND CD.StateId<>1 THEN SUM(CD.AmountPayed) ELSE 0 END ,
+	'DIC' = CASE WHEN MONTH(CD.ScheduledDateOnUtc )=12 AND CD.StateId<>1 THEN SUM(CD.AmountPayed) ELSE 0 END  
 	FROM contributionPayment  CD
 	INNER JOIN Contribution C ON C.Id=CD.contributionId
 	WHERE  C.Id=@ContributionId and CD.ContributionId=@ContributionId 

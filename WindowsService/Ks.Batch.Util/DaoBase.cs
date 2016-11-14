@@ -25,104 +25,117 @@ namespace Ks.Batch.Util
 
         public void Connect()
         {
-            try
+            if (!IsConnected)
             {
-                Log.InfoFormat("Time: {0}: Action: {1} ", DateTime.Now, "Connected");
-                Connection = new SqlConnection(ConnetionString);
-                Connection.Open();
-                Log.InfoFormat("Time: {0}: Action: {1} ", DateTime.Now, "Open");
-                IsConnected = true;
-
-            }
-            catch (Exception ex)
-            {
-                IsConnected = false;
-                Log.FatalFormat("Ks.Batch.Util.DaoBase.Connect  Time: {0} Error: {1}", DateTime.Now, ex.Message);
+                try
+                {
+                    Log.InfoFormat("Action: {0}", "DaoBase.Connect()");
+                    Connection = new SqlConnection(ConnetionString);
+                    Connection.Open();
+                    IsConnected = true;
+                }
+                catch (Exception ex)
+                {
+                    IsConnected = false;
+                    Log.FatalFormat("Action: {0} Error: {1}", "DaoBase.Connect()", ex.Message);
+                }
             }
 
         }
 
         public void Close()
         {
-            IsConnected = false;
-            try
+            if (IsConnected)
             {
-                Log.InfoFormat("Time: {0}: Action: {1} ", DateTime.Now, "Data Base to be close");
-                Command.Dispose();
-                Connection.Close();
-                Log.InfoFormat("Time: {0}: Action: {1} ", DateTime.Now, "Data Base closed");
-            }
-            catch (Exception ex)
-            {
-                Log.FatalFormat("Ks.Batch.Util.DaoBase.Close  Time: {0} Error: {1}", DateTime.Now, ex.Message);
+                IsConnected = false;
+                try
+                {
+                    Log.InfoFormat("Action: {0}", "DaoBase.Close()");
+                    Command.Dispose();
+                    Connection.Close();
+                }
+                catch (Exception ex)
+                {
+                    Log.FatalFormat("Action: {0} Error: {1}", "DaoBase.Close()", ex.Message);
+                }
             }
         }
 
         public void Enabled(string systemName)
         {
-            Exec(systemName, 1);
+            if (IsConnected)
+                Exec(systemName, 1);
         }
 
         public void Disabled(string systemName)
         {
-            Exec(systemName, 0);
+            if (IsConnected)
+                Exec(systemName, 0);
         }
 
-        public Dictionary<int, string> GetUserNames(List<int> customerIds )
+        public Dictionary<int, string> GetUserNames(List<int> customerIds)
         {
             var result = new Dictionary<int, string>();
 
-            Sql = "SELECT EntityId, Attribute =[Key], Value FROM GenericAttribute WHERE " +
+            try
+            {
+                Log.InfoFormat("Action: {0}", "DaoBase.GetUserNames(" + string.Join(",", customerIds.ToArray()) + ")");
+
+                Sql = "SELECT EntityId, Attribute =[Key], Value FROM GenericAttribute WHERE " +
                   " [Key] in ('FirstName','LastName') AND " +
                   " KeyGroup='Customer' AND EntityId IN (" + string.Join(",", customerIds.ToArray()) + ") " +
                   " ORDER BY EntityId ";
 
-            Command = new SqlCommand(Sql, Connection);
-            var sqlReader = Command.ExecuteReader();
+                Command = new SqlCommand(Sql, Connection);
+                var sqlReader = Command.ExecuteReader();
 
-            var count = 0;
-            var firstName = "";
-            var lastName = "";
-            var entityId = 0;
-            var repeatEntityId = 0;
+                var count = 0;
+                var firstName = "";
+                var lastName = "";
+                var entityId = 0;
+                var repeatEntityId = 0;
 
-            while (sqlReader.Read())
-            {
-                if (sqlReader.GetString(1).Equals("FirstName"))
+                while (sqlReader.Read())
                 {
-                    count++;
-                    firstName = sqlReader.GetString(2);
-                    entityId = sqlReader.GetInt32(0);
+                    if (sqlReader.GetString(1).Equals("FirstName"))
+                    {
+                        count++;
+                        firstName = sqlReader.GetString(2);
+                        entityId = sqlReader.GetInt32(0);
+                    }
+                    if (sqlReader.GetString(1).Equals("LastName"))
+                    {
+                        count++;
+                        lastName = sqlReader.GetString(2);
+                        repeatEntityId = sqlReader.GetInt32(0);
+                    }
+                    if (count == 2 && entityId == repeatEntityId)
+                    {
+                        result.Add(entityId, firstName + " " + lastName);
+                        entityId = repeatEntityId = count = 0;
+                    }
                 }
-                if (sqlReader.GetString(1).Equals("LastName"))
-                {
-                    count++;
-                    lastName = sqlReader.GetString(2);
-                    repeatEntityId = sqlReader.GetInt32(0);
-                }
-                if (count == 2 && entityId == repeatEntityId)
-                {
-                    result.Add(entityId, firstName + " " + lastName);
-                    entityId = repeatEntityId = count = 0;
-                }
+                sqlReader.Close();
             }
-            sqlReader.Close();
+            catch (Exception ex)
+            {
+                Log.FatalFormat("Action: {0} Error: {1}", "DaoBase.GetUserNames(" + string.Join(",", customerIds.ToArray()) + ")", ex.Message);
+            }
+
             return result;
-        } 
+        }
 
         public void Install(ScheduleBatch batch)
         {
             try
             {
+                Log.InfoFormat("Action: {0}", "DaoBase.Install(" + batch.SystemName + ")");
                 if (!IsInstalled(batch.SystemName))
                 {
-                    Connect();
                     Sql = "INSERT INTO ScheduleBatch " +
                           "(Name, SystemName, PathBase,FolderRead,FolderLog,FolderMoveToDone,FolderMoveToError, FrecuencyId, PeriodYear, PeriodMonth,Enabled) " +
                           "VALUES " +
                           "(@Name, @SystemName, @PathBase,@FolderRead,@FolderLog,@FolderMoveToDone,@FolderMoveToError, @FrecuencyId, @PeriodYear, @PeriodMonth, @Enabled) ";
-
-                    Log.InfoFormat("Time: {0}: SQL: {1} ", DateTime.Now, Sql);
 
                     var pName = new SqlParameter { ParameterName = "@Name", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = batch.Name };
                     var pSystemName = new SqlParameter { ParameterName = "@SystemName", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = batch.SystemName };
@@ -150,35 +163,24 @@ namespace Ks.Batch.Util
                     Command.Parameters.Add(pPeriodYear);
                     Command.Parameters.Add(pEnabled);
 
-
                     Command.ExecuteNonQuery();
-                    Log.InfoFormat("Time: {0}: RESULT: {1} ", DateTime.Now, "Service Installed");
-                    Close();
-                }
-                else
-                {
-                    Log.InfoFormat("Time: {0}: RESULT: {1} ", DateTime.Now, "Service Was Installed");
                 }
             }
             catch (Exception ex)
             {
-                Log.FatalFormat("Ks.Batch.Util.DaoBase.Install  Time: {0}: ERROR: {1} ", DateTime.Now, ex.Message);
-                Close();
+                Log.FatalFormat("Action: {0} Error: {1}", "DaoBase.Install(" + batch.SystemName + ")", ex.Message);
             }
-
         }
 
         public void UnInstall(string systemName)
         {
             try
             {
+                Log.InfoFormat("Action: {0}", "DaoBase.UnInstall(" + systemName + ")");
+
                 if (!IsInstalled(systemName))
                 {
-                    Connect();
-                    Sql = "DELETE FROM ScheduleBatch " +
-                          "WHERE SystemName=@SystemName";
-
-                    Log.InfoFormat("Time: {0}: SQL: {1} ", DateTime.Now, Sql);
+                    Sql = "DELETE FROM ScheduleBatch WHERE SystemName=@SystemName";
 
                     var pSystemName = new SqlParameter
                     {
@@ -191,28 +193,22 @@ namespace Ks.Batch.Util
                     Command = new SqlCommand(Sql, Connection);
                     Command.Parameters.Add(pSystemName);
                     Command.ExecuteNonQuery();
-
-                    Log.InfoFormat("Time: {0}: RESULT: {1} ", DateTime.Now, "Service Installed");
-                }
-                else
-                {
-                    Log.InfoFormat("Time: {0}: RESULT: {1} ", DateTime.Now, "Service Was Installed");
                 }
             }
             catch (Exception ex)
             {
-                Log.FatalFormat("Ks.Batch.Util.DaoBase.Uninstall    Time: {0}: ERROR: {1} ", DateTime.Now, ex.Message);
+                Log.FatalFormat("Action: {0} Error: {1}", "DaoBase.UnInstall(" + systemName + ")", ex.Message);
             }
-            Close();
         }
 
         public void UpdateScheduleBatch(ScheduleBatch batch)
         {
             try
             {
+                Log.InfoFormat("Action: {0}", "DaoBase.UpdateScheduleBatch(" + batch.SystemName + ")");
+
                 if (IsInstalled(batch.SystemName))
                 {
-                    Connect();
                     Sql = "UPDATE ScheduleBatch SET " +
                           "NextExecutionOnUtc=@NextExecutionOnUtc , " +
                           "LastExecutionOnUtc=@LastExecutionOnUtc , " +
@@ -220,14 +216,11 @@ namespace Ks.Batch.Util
                           "PeriodMonth=@PeriodMonth " +
                           "where SystemName=@SystemName ";
 
-                    Log.InfoFormat("Time: {0}: SQL: {1} ", DateTime.Now, Sql);
-
                     var pNextExecutionOnUtc = new SqlParameter { ParameterName = "@NextExecutionOnUtc", SqlDbType = SqlDbType.DateTime2, Direction = ParameterDirection.Input, Value = batch.NextExecutionOnUtc };
                     var pLastExecutionOnUtc = new SqlParameter { ParameterName = "@LastExecutionOnUtc", SqlDbType = SqlDbType.DateTime2, Direction = ParameterDirection.Input, Value = batch.LastExecutionOnUtc };
                     var pPeriodYear = new SqlParameter { ParameterName = "@PeriodYear", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = batch.PeriodYear };
                     var pPeriodMonth = new SqlParameter { ParameterName = "@PeriodMonth", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = batch.PeriodMonth };
                     var pSystemName = new SqlParameter { ParameterName = "@SystemName", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = batch.SystemName };
-
 
                     Command = new SqlCommand(Sql, Connection);
 
@@ -238,32 +231,106 @@ namespace Ks.Batch.Util
                     Command.Parameters.Add(pSystemName);
 
                     Command.ExecuteNonQuery();
-
-                    Log.InfoFormat("Time: {0}: RESULT: {1} ", DateTime.Now, "Service Updated");
-                    Close();
-                }
-                else
-                {
-                    Log.InfoFormat("Time: {0}: RESULT: {1} ", DateTime.Now, "Service Was not Installed");
                 }
             }
             catch (Exception ex)
             {
-                Log.FatalFormat("Ks.Batch.Util.DaoBase.UpdateScheduleBatch    Time: {0}: ERROR: {1} ", DateTime.Now, ex.Message);
-                Close();
+                Log.FatalFormat("Action: {0} Error: {1}", "DaoBase.UpdateScheduleBatch(" + batch.SystemName + ")", ex.Message);
             }
+        }
 
+        public void DeleteReport(string period, string source)
+        {
+            try
+            {
+                Log.InfoFormat("Action: {0}", "DaoBase.DeleteReport()");
+
+                Sql = " DELETE Reports WHERE Period=@Period AND [Source]=@Source";
+
+                Command = new SqlCommand(Sql, Connection);
+                Command.Parameters.AddWithValue("@Period", period);
+                Command.Parameters.AddWithValue("@Source", source);
+                Command.ExecuteNonQuery();
+
+            }
+            catch (Exception ex)
+            {
+                Log.FatalFormat("Action: {0} Error: {1}", "DaoBase.DeleteReport()", ex.Message);
+            }
+        }
+        public Guid CreateReportIn(ScheduleBatch batch, string value)
+        {
+            var guid = Guid.NewGuid();
+            try
+            {
+                Log.InfoFormat("Action: {0}", "DaoBase.CreateReportIn()");
+
+                Sql = " INSERT INTO Reports " +
+                      " ([Key],Name,Value,PathBase,StateId,Period,Source, ParentKey,DateUtc)" +
+                      " VALUES " +
+                      " (@Key,@Name,@Value,@PathBase,@StateId,@Period,@Source,@ParentKey,@DateUtc)";
+
+
+                Command = new SqlCommand(Sql, Connection);
+                Command.Parameters.AddWithValue("@Key", guid);
+                Command.Parameters.AddWithValue("@Name", string.Format("Archivos para la caja en el periodo - {0}", batch.PeriodYear.ToString("0000") + batch.PeriodMonth.ToString("00")));
+                Command.Parameters.AddWithValue("@Value", value);
+                Command.Parameters.AddWithValue("@PathBase", batch.PathBase);
+                Command.Parameters.AddWithValue("@StateId", 2);
+                Command.Parameters.AddWithValue("@Period", batch.PeriodYear.ToString("0000") + batch.PeriodMonth.ToString("00"));
+                Command.Parameters.AddWithValue("@Source", batch.SystemName);
+                Command.Parameters.AddWithValue("@ParentKey", guid);
+                Command.Parameters.AddWithValue("@DateUtc", DateTime.UtcNow);
+
+                Command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Log.FatalFormat("Action: {0} Error: {1}", "DaoBase.CreateReportIn()", ex.Message);
+            }
+            return guid;
+        }
+        public void CreateReportOut(Guid guid, string period, string source)
+        {
+            try
+            {
+                Log.InfoFormat("Action: {0}", "DaoBase.CreateReportOut(" + guid + ")");
+
+                Sql = " INSERT INTO Reports " +
+                      " ([Key],Name,Value,PathBase,StateId,Period,Source, ParentKey,DateUtc)" +
+                      " VALUES " +
+                      " (@Key,@Name,@Value,@PathBase,@StateId,@Period,@Source,@ParentKey,@DateUtc)";
+
+                Guid.NewGuid();
+                Command = new SqlCommand(Sql, Connection);
+                Command.Parameters.AddWithValue("@Key", Guid.NewGuid());
+                Command.Parameters.AddWithValue("@Name", "");
+                Command.Parameters.AddWithValue("@Value", "");
+                Command.Parameters.AddWithValue("@PathBase", "");
+                Command.Parameters.AddWithValue("@StateId", 1);
+                Command.Parameters.AddWithValue("@Period", period);
+                Command.Parameters.AddWithValue("@Source", source);
+                Command.Parameters.AddWithValue("@ParentKey", guid);
+                Command.Parameters.AddWithValue("@DateUtc", DateTime.UtcNow);
+
+                Command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Log.FatalFormat("Action: {0} Error: {1}", "DaoBase.CreateReportOut(" + guid + ")", ex.Message);
+            }
         }
 
         #region Utilities
+
         private bool IsInstalled(string systemName)
         {
             var result = false;
-            Connect();
             try
             {
+                Log.InfoFormat("Action: {0}", "DaoBase.IsInstalled(" + systemName + ")");
+
                 Sql = "SELECT SystemName FROM ScheduleBatch WHERE SystemName=@SystemName ";
-                Log.InfoFormat("Time: {0}: SQL: {1} ", DateTime.Now, Sql);
 
                 Command = new SqlCommand(Sql, Connection);
                 var pSystemName = new SqlParameter
@@ -279,26 +346,22 @@ namespace Ks.Batch.Util
                 while (sqlReader.Read())
                     result = true;
 
-                Log.InfoFormat("Time: {0}: RESULT: {1} ", DateTime.Now, result ? "Service Installed" : "Service Not Installed");
                 sqlReader.Close();
 
             }
             catch (Exception ex)
             {
-                Log.FatalFormat("Ks.Batch.Util.DaoBase.IsInstalled  Time: {0}: ERROR: {1} ", DateTime.Now, ex.Message);
-
+                Log.FatalFormat("Action: {0} Error: {1}", "DaoBase.IsInstalled(" + systemName + ")", ex.Message);
             }
-            Close();
             return result;
         }
 
         private void Exec(string systemName, int option)
         {
-            Connect();
             try
             {
                 Sql = "UPDATE ScheduleBatch SET Enabled=" + option + " WHERE SystemName=@SystemName ";
-                Log.InfoFormat("Time: {0}: SQL: {1} ", DateTime.Now, Sql);
+                Log.InfoFormat("Action: {0}", "DaoBase.Exec(" + systemName + "," + option + ")");
 
                 Command = new SqlCommand(Sql, Connection);
                 var pSystemName = new SqlParameter
@@ -309,15 +372,15 @@ namespace Ks.Batch.Util
                     Value = systemName
                 };
                 Command.Parameters.Add(pSystemName);
-                var i = Command.ExecuteNonQuery();
-                Log.InfoFormat("Time: {0}: RESULT: {1} ", DateTime.Now, i);
+                Command.ExecuteNonQuery();
             }
             catch (Exception ex)
             {
-                Log.FatalFormat("Ks.Batch.Util.DaoBase.Exec  Time: {0}: ERROR: {1} ", DateTime.Now, ex.Message);
+                Log.FatalFormat("Action: {0} Error: {1}", "DaoBase.Exec(" + option + ")", ex.Message);
             }
-            Close();
         }
+
+
         #endregion
     }
 }

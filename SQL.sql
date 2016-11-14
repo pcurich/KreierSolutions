@@ -231,9 +231,134 @@ delete from ScheduleBatch where id=19
 select GETUTCDATE(), GETDATE()
 
 select * from Reports
-1) CREA EL TXT
-2) ACTUALIZA LOS CRONOGRAMAS DE APORTACOINES
-3) CREA REPORTES
-4) ACTUALIZA EL BACHERO
-
+ 
 delete Reports
+
+select * from Reports
+select * from ScheduleBatch
+
+update ScheduleBatch  Set  NextExecutionOnUtc=GETUTCDATE() where id=20
+
+SELECT EntityId, Attribute =[Key], Value FROM GenericAttribute 
+                  WHERE KeyGroup='Customer' and  [Key] in ('Dni','AdmCode') AND 
+                  EntityId IN ( SELECT EntityId FROM GenericAttribute WHERE [Key]='MilitarySituationId' AND Value=2)
+
+				  select * from CustomerAttribute where Name like'%Situacion%'
+				  select * from CustomerAttributeValue where Name like'%retiro%'
+				  select * from GenericAttribute
+12345678910
+
+use acmr
+select * from schedulebatch
+delete schedulebatch
+UPDATE ScheduleBatch SET PathBase ='C:\KS\ACMR\WinService\Ks.Batch.Copere.Out' WHERE SystemName='Ks.Batch.Copere.Out'
+
+select * from ContributionPayment
+delete from Reports
+update ContributionPayment set StateId=1, ProcessedDateOnUtc=null, BankName=null, Description=null
+
+UPDATE ScheduleBatch set PeriodMonth=9 , PeriodYear=2016 WHERE SystemName='Ks.Batch.Copere.Out'
+UPDATE ScheduleBatch set PeriodMonth=12 , PeriodYear=2016 WHERE SystemName='Ks.Batch.caja.Out'
+
+update ScheduleBatch  Set  NextExecutionOnUtc=GETUTCDATE()  WHERE SystemName='Ks.Batch.Copere.Out'
+
+select * from Reports where Source LIKE '%Ks.Batch.Caja.%' and Period=201706
+
+SELECT EntityId, Attribute =[Key], Value FROM GenericAttribute 
+                  WHERE KeyGroup='Customer' and  [Key] in ('Dni','AdmCode','FirstName','LastName') AND 
+                  EntityId IN ( SELECT EntityId FROM GenericAttribute WHERE [Key]='MilitarySituationId' AND Value=2)
+
+				  select * from GenericAttribute
+
+
+select * from GenericAttribute where 
+[Key] in ('FirstName','LastName') AND
+KeyGroup='Customer' AND EntityId IN (1,4)
+ORDER BY EntityId
+ 
+select * from ScheduleBatch
+
+update ScheduleBatch set NextExecutionOnUtc =GETUTCDATE() where SystemName like '%Ks.Batch.Copere.Out%'
+
+select * from Reports where Source in ('Ks.Batch.Caja.Out','Ks.Batch.Caja.In')
+
+select * from Reports where [key]='bf616db1-82a4-47a5-a4bd-964e93ff5742'
+select * from Reports where Source like 'Ks.Batch.Copere%'
+
+--delete Reports
+select * from Reports where ParentKey in 
+(select ParentKey  from Reports where StateId=2  and len(name)<>0  group by ParentKey having count(ParentKey)=2)
+ 
+
+update Reports set StateId=2 where id in (64,65,66,68)
+
+use acmr
+
+UPDATE ContributionPayment  SET ProcessedDateOnUtc=@ProcessedDateOnUtc, 
+StateId=@StateId, BankName='SystemName', Description='Lectura automatica por sistema ACMR' WHERE Id in 
+(
+	SELECT CP.Id 
+	FROM ContributionPayment CP
+	INNER JOIN Contribution C ON C.Id=CP.ContributionId
+	WHERE C.CustomerId IN (4,7,8,9) AND 
+	YEAR (CP.ScheduledDateOnUtc) =2016 and MONTH(CP.ScheduledDateOnUtc)=11
+)
+
+ 
+select * from Reports where ParentKey ='1231eb15-e825-4981-8b94-e8baf4a5a6c6' 
+update Reports set Value = ''
+
+select * from ScheduleBatch
+
+update ScheduleBatch set Enabled=1, NextExecutionOnUtc =GETUTCDATE(), PeriodMonth=2, PeriodYear=2017 where id>1
+
+select * from Contribution where CustomerId=9
+select * from ContributionPayment where ContributionId in (select id from Contribution where CustomerId=9)
+ 
+ ----------------------
+ --PRUEBAS DEL MERGE
+
+
+select * from Contribution 
+where CustomerId in (SELECT ENTITYID FROM GenericAttribute WHERE [KEY]='AdmCode' and value in ('123456911'))
+
+SELECT CP.* FROM Contribution C 
+INNER JOIN ContributionPayment CP ON CP.ContributionId=c.Id
+WHERE
+C.CustomerId in (SELECT ENTITYID FROM GenericAttribute WHERE [KEY]='AdmCode' and value in ('123456911'))
+AND YEAR(CP.ScheduledDateOnUtc)=2016 AND MONTH(CP.ScheduledDateOnUtc)=11
+ORDER BY Number
+
+
+---------------------------------
+--CLEAN DATA
+UPDATE Contribution SET IsDelay=0, CycleOfDelay=0, Active=1, UpdatedOnUtc=NULL, AmountTotal=0
+UPDATE ContributionPayment SET NumberOld =0, AmountOld =0, AmountPayed=0, AmountTotal=35, ProcessedDateOnUtc=null, StateId=1, IsAutomatic=1, BankName=null,Description=''
+delete Reports
+
+--Export Data 
+
+update ScheduleBatch set   NextExecutionOnUtc =GETUTCDATE()
+select SystemName,PeriodYear, PeriodMonth, NextExecutionOnUtc,LastExecutionOnUtc from ScheduleBatch
+where  SystemName='Ks.Batch.Copere.Out'
+
+update ScheduleBatch set PeriodMonth=11, PeriodYear=2016,  NextExecutionOnUtc =GETUTCDATE() where  SystemName IN ('Ks.Batch.Copere.Out','Ks.Batch.Caja.Out')
+update ScheduleBatch set   NextExecutionOnUtc =GETUTCDATE() where  SystemName IN ('Ks.Batch.Copere.Out','Ks.Batch.Caja.Out')
+select * from ContributionPayment
+select Period,Source,StateId,* from Reports
+
+select * from ContributionPayment where BankName is not null
+update ContributionPayment set Reference=BankName, AccountNumber=BankName, TransactionNumber=BankName
+
+select * from Reports  where ParentKey='1cee5abd-c624-4e54-80bb-ae5ae0265755'
+
+select * from ContributionPayment WHERE StateId=5
+SELECT * FROM ScheduleBatch
+SELECT * FROM Reports
+
+
+
+UPDATE ContributionPayment SET StateId=2 WHERE ID=422
+UPDATE Reports SET StateId= 2 WHERE StateId=5
+
+SELECT * FROM ContributionPayment WHERE ID=422

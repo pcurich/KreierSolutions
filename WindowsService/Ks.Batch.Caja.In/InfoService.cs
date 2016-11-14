@@ -28,7 +28,7 @@ namespace Ks.Batch.Caja.In
                             AdminCode = line.Substring(10, 9),
                             HasAdminCode = true,HasDni = true,
                             Dni = line.Substring(23, 8),
-                            Total = Convert.ToDecimal(line.Substring(39, 10))
+                            AmountPayed = Convert.ToDecimal(line.Substring(39, 10))
                         });
                     }
                 }

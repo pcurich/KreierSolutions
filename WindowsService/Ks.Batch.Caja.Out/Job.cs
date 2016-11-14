@@ -25,7 +25,7 @@ namespace Ks.Batch.Caja.Out
                 if (!ExistFile())
                 {
                     var records = DataBase();
-                    if (records != null)
+                    if (records.Count != 0)
                     {
                         SyncFiles(records);
                         UpdateScheduleBatch();
@@ -34,7 +34,6 @@ namespace Ks.Batch.Caja.Out
                     {
                         UpdateScheduleBatch(false);
                     }
-                    
                 }
             }
             else
@@ -67,7 +66,7 @@ namespace Ks.Batch.Caja.Out
         protected void UpdateScheduleBatch(bool executed = true)
         {
             var dao = new Dao(Connection);
-
+            dao.Connect();
             if (executed)
             {
                 if (Batch.NextExecutionOnUtc.HasValue)
@@ -86,6 +85,7 @@ namespace Ks.Batch.Caja.Out
 
             Batch.LastExecutionOnUtc = DateTime.UtcNow;
             dao.UpdateScheduleBatch(Batch);
+            dao.Close();
         }
 
         #endregion

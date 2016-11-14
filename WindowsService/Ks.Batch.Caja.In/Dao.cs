@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 using Ks.Batch.Util;
 using Ks.Batch.Util.Model;
 
@@ -21,6 +19,8 @@ namespace Ks.Batch.Caja.In
         {
             Batch = batch;
             var guid = GetParentOut();
+
+            Log.InfoFormat("Action: {0}","Dao.Process(" + batch.SystemName + ")");
 
             if (guid != null)
             {
@@ -42,7 +42,7 @@ namespace Ks.Batch.Caja.In
                 }
                 catch (Exception ex)
                 {
-                    Log.FatalFormat("Time: {0} Error: {1}", DateTime.Now, ex.Message);
+                    Log.FatalFormat("Action: {0} Error: {1}","Dao.Process(" + batch.SystemName + ")", ex.Message);
                 }
             }
         }
@@ -54,6 +54,8 @@ namespace Ks.Batch.Caja.In
             Guid? guid = null;
             try
             {
+                Log.InfoFormat("Action: {0}","Dao.GetParentOut()");
+
                 Sql = " SELECT [Key]  FROM Reports " +
                       " WHERE Source=@Source AND " +
                       " Period=@Period";
@@ -72,6 +74,7 @@ namespace Ks.Batch.Caja.In
             }
             catch (Exception ex)
             {
+                Log.FatalFormat("Action: {0} Error: {1}","Dao.GetParentOut()", ex.Message);
                 return null;
             }
             return guid;

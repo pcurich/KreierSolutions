@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using Ks.Batch.Util;
@@ -11,7 +12,7 @@ namespace Ks.Batch.Merge
     public class Dao : DaoBase
     {
         private static readonly LogWriter Log = HostLogger.Get<Dao>();
-        private List<Info> _listInfo= new List<Info>();  
+        private List<Info> _listInfo = new List<Info>();
 
 
         public Dao(string connetionString)
@@ -30,7 +31,7 @@ namespace Ks.Batch.Merge
                 if (IsConnected)
                 {
                     Sql = "SELECT * FROM Reports WHERE ParentKey in " +
-                          " (SELECT ParentKey  FROM Reports WHERE StateId=" + (int)ReportState.InProcess +
+                          " (SELECT TOP 1 ParentKey  FROM Reports WHERE StateId=" + (int)ReportState.InProcess +
                           "  and len(name)<>0  " +
                           "group by ParentKey having count(ParentKey)=2) ";
 
@@ -67,7 +68,7 @@ namespace Ks.Batch.Merge
         }
 
 
-        public void ProcessCopere(Reports report, List<Info> infoIn, List<Info> infoOut)
+        public void Process(Reports report, List<Info> infoIn, List<Info> infoOut)
         {
             var infoEquals = new List<Info>(); //aountIn == amountOut  Pago completo
             var infoNotIn = new List<Info>(); //aountIn >0 aountOut ==0 No tiene liquidez
@@ -75,55 +76,135 @@ namespace Ks.Batch.Merge
 
             #region SplitList
 
-            foreach (var info in infoIn)
+            Info _infoIn;
+            foreach (var info in infoOut)
             {
+                info.BankName = report.Source;
+                info.Description = "Proceso automática por el sistema ACMR";
+
                 var info1 = info;
-                var _info = infoOut.FirstOrDefault(x => x.AdminCode == info1.AdminCode);
-                if (_info == null)
+                _infoIn = infoIn.FirstOrDefault(x => x.AdminCode == info1.AdminCode);
+                if (_infoIn == null)
+                {
+                    info.StateId = (int)ContributionState.SinLiquidez;
                     infoNotIn.Add(info);
+                }
                 else
-                    if (info.Total == _info.Total)
+                {
+                    if (info.AmountTotal == _infoIn.AmountPayed)
+                    {
+                        info.StateId = (int)ContributionState.Pagado;
+                        info.AmountPayed = _infoIn.AmountPayed;
                         infoEquals.Add(info);
+                    }
                     else
+                    {
+                        info.StateId = (int)ContributionState.PagoParcial;
+                        info.AmountPayed = _infoIn.AmountPayed;
+                        if ((_infoIn.AmountPayed - info.Amount1) >= 0)
+                        {
+                            info.Amount1 = _infoIn.AmountPayed - info.Amount1;
+                            _infoIn.AmountPayed = _infoIn.AmountPayed - info.Amount1;
+                        }
+                        else
+                        {
+                            info.Amount1 = _infoIn.AmountPayed;
+                            _infoIn.AmountPayed = 0;
+                        }
+                        if ((_infoIn.AmountPayed - info.Amount2) >= 0)
+                        {
+                            info.Amount2 = _infoIn.AmountPayed - info.Amount2;
+                            _infoIn.AmountPayed = _infoIn.AmountPayed - info.Amount2;
+                        }
+                        else
+                        {
+                            info.Amount2 = _infoIn.AmountPayed;
+                            _infoIn.AmountPayed = 0;
+                        }
+                        if ((_infoIn.AmountPayed - info.Amount3) >= 0)
+                        {
+                            info.Amount3 = _infoIn.AmountPayed - info.Amount3;
+                            _infoIn.AmountPayed = _infoIn.AmountPayed - info.Amount3;
+                        }
+                        else
+                        {
+                            info.Amount3 = _infoIn.AmountPayed;
+                            _infoIn.AmountPayed = 0;
+                        }
+
+                        info.AmountPayed = _infoIn.AmountPayed + info.Amount1 + info.Amount2 + info.Amount3;
                         infoLoss.Add(info);
+                    }
+                }
             }
 
             #endregion
 
-            ConmpletePayment(report,infoEquals);
-
+            if (infoEquals.Count > 0)
+            {
+                UpdateContributionPayment(infoEquals, report.Period);
+            }
+            if (infoNotIn.Count > 0)
+            {
+                UpdateContributionPayment(infoNotIn, report.Period);
+            }
+            if (infoLoss.Count > 0)
+            {
+                UpdateContributionPayment(infoLoss, report.Period);
+            }
+            CloseReport(report);
         }
 
-        private void ConmpletePayment(Reports report, List<Info> infoEquals)
+
+
+        #region Utilities
+        private void UpdateContributionPayment(List<Info> info, string period)
         {
-            var listOfCustomer = infoEquals.Select(x=>x.CustomerId);
+            try
+            {
+                Log.InfoFormat("Action: {0}", "Dao.UpdateContributionPayment(" + string.Join(",", info.Select(x => x.AdminCode)) + ", " + period + ")");
 
-            Sql = " UPDATE ContributionPayment  SET ProcessedDateOnUtc=@ProcessedDateOnUtc, " +
-                  " StateId=@StateId, BankName=@Source, Description=@Description " +
-                  " WHERE Id IN ( " +
-                  "     SELECT CP.Id " +
-                  "     FROM ContributionPayment CP " +
-                  "     INNER JOIN Contribution C ON C.Id=CP.ContributionId " +
-                  "     WHERE C.CustomerId IN (" + string.Join(",", listOfCustomer.ToArray()) + ") AND  " +
-                  "     YEAR (CP.ScheduledDateOnUtc) =@Year and MONTH(CP.ScheduledDateOnUtc)=@Month" +
-                  " ) ";
+                var year = period.Substring(0, 4);
+                var month = period.Substring(4, 2);
+                var xml = XmlHelper.Serialize2String(info, true);
+                xml = xml.Replace('\n', ' ');
+                xml = xml.Replace('\r', ' ');
+                xml = xml.Replace("<?xml version=\"1.0\"?>", "");
 
-            Command = new SqlCommand(Sql, Connection);
-            Command.Parameters.AddWithValue("@Source", report.Source);
-            Command.Parameters.AddWithValue("@ProcessedDateOnUtc", report.DateUtc);
-            Command.Parameters.AddWithValue("@StateId", (int)ContributionState.Pagado);
-            Command.Parameters.AddWithValue("@Description", "Proceso automática por el sistema ACMR");
-            Command.Parameters.AddWithValue("@Year", Convert.ToInt32(report.Period.Substring(0, 4)));
-            Command.Parameters.AddWithValue("@Month", Convert.ToInt32(report.Period.Substring(4, 2)));
-
-            Command.ExecuteNonQuery();
-
+                Sql = "UpdateContributionPayment @XmlPackage,@Year, @Month";
+                Command = new SqlCommand(Sql, Connection);
+                Command.Parameters.AddWithValue("@XmlPackage", xml);
+                Command.Parameters.AddWithValue("@Year", Convert.ToInt32(year));
+                Command.Parameters.AddWithValue("@Month", Convert.ToInt32(month));
+                Command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Log.FatalFormat("Action: {0} Error: {1}", "Dao.UpdateContributionPayment(" + string.Join(",", info.Select(x => x.AdminCode)) + ", " + period + ")", ex.Message);
+            }
         }
-
-
-        public void ProcessCaja(List<Info> infoIn, List<Info> infoOut)
+        private void CloseReport(Reports report)
         {
-            throw new NotImplementedException();
+            try
+            {
+                Log.InfoFormat("Action: {0}", "Dao.CloseReport(" + report.ParentKey + ")");
+
+                Sql = "UPDATE Reports SET StateId=@StateId WHERE ParentKey=@ParentKey ";
+
+                Command = new SqlCommand(Sql, Connection);
+                Command.Parameters.AddWithValue("@StateId", ReportState.Completed);
+                Command.Parameters.AddWithValue("@ParentKey", report.ParentKey);
+
+                Command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Log.FatalFormat("Action: {0} Error: {1}", "Dao.CloseReport(" + report.ParentKey + ")", ex.Message);
+            }
+
         }
+
+        #endregion
+
     }
 }

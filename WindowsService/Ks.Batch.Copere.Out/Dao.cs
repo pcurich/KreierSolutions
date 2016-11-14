@@ -28,182 +28,224 @@ namespace Ks.Batch.Copere.Out
             Batch = batch;
             try
             {
-                Log.InfoFormat("Time: {0}: Action: {1}", DateTime.Now, "Start to Select");
+                Log.InfoFormat("Action: {0}", "Dao.Process(" + batch.SystemName + ")");
 
                 List<int> customerIds;
                 ReportOut = new Dictionary<int, Info>();
+
                 GetCustomer(out customerIds);
                 GetContributionPayments(FileOut, customerIds);
 
-                if (FileOut != null)
+                if (FileOut.Count != 0)
                 {
-                    DeleteReport();
+                    DeleteReport(Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00"), Batch.SystemName);
                     CompleteCustomerName();
-                    var guid = CreateReportIn();
-                    CreateReportOut(guid);
-                    Log.InfoFormat("Time: {0}: Action: {1}", DateTime.Now, FileOut.Count + " records readed");
+                    var guid = CreateReportIn(Batch, XmlHelper.Serialize2String(new List<Info>(ReportOut.Values)));
+                    CreateReportOut(guid, Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00"), "Ks.Batch.Copere.In");
                 }
 
             }
             catch (Exception ex)
             {
-                Log.FatalFormat("Time: {0} Error: {1}", DateTime.Now, ex.Message);
-                return null;
+                Log.FatalFormat("Action: {0} Error: {1}", "Dao.Process(" + batch.SystemName + ")", ex.Message);
             }
-            return FileOut.Values.ToList();
+
+            return FileOut != null ? FileOut.Values.ToList() : null;
         }
 
         #region Util
 
         private void GetContributionPayments(Dictionary<int, string> customer, List<int> customerIds)
         {
-            var result = new List<string>();
-            Sql = "SELECT  c.CustomerId, cp.AmountTotal " +
-                  "FROM ContributionPayment cp " +
-                  "INNER JOIN  Contribution c on c.Id=cp.ContributionId " +
-                  "WHERE c.CustomerId IN (" + string.Join(",", customerIds.ToArray()) + ") AND " +
-                  "YEAR(cp.ScheduledDateOnUtc)=@Year AND " +
-                  "MONTH(cp.ScheduledDateOnUtc)=@Month  ";
-
-            Command = new SqlCommand(Sql, Connection);
-
-            var pYear = new SqlParameter
+            try
             {
-                ParameterName = "@Year",
-                SqlDbType = SqlDbType.Int,
-                Direction = ParameterDirection.Input,
-                Value = Batch.PeriodYear
-            };
-            var pMonth = new SqlParameter
-            {
-                ParameterName = "@Month",
-                SqlDbType = SqlDbType.Int,
-                Direction = ParameterDirection.Input,
-                Value = Batch.PeriodMonth
-            };
+                Log.InfoFormat("Action: {0}", "Dao.GetContributionPayments(" + string.Join(",", customerIds.ToArray()) + ")");
 
-            Command.Parameters.Add(pYear);
-            Command.Parameters.Add(pMonth);
+                Sql = "SELECT  c.CustomerId, cp.AmountTotal, cp.Amount1, cp.Amount2, cp.Amount3, cp.Number " +
+                      "FROM ContributionPayment cp " +
+                      "INNER JOIN  Contribution c on c.Id=cp.ContributionId " +
+                      "WHERE c.CustomerId IN (" + string.Join(",", customerIds.ToArray()) + ") AND " +
+                      "cp.StateId=@StateId AND " +
+                      "YEAR(cp.ScheduledDateOnUtc)=@Year AND " +
+                      "MONTH(cp.ScheduledDateOnUtc)=@Month  ";
 
-            var sqlReader = Command.ExecuteReader();
+                Command = new SqlCommand(Sql, Connection);
 
-            var reportOut2 = new Dictionary<int, Info>();
-            var fileOut2 = new Dictionary<int, string>();
-            var customerIds2 = new List<int>();
-
-            var hasValue = false;
-            while (sqlReader.Read())
-            {
-                hasValue = true;
-                var line = string.Format("{0}        {1}{2}",
-                    customer[sqlReader.GetInt32(0)].Replace(AMOUNT, (Math.Round(sqlReader.GetDecimal(1) * 100).ToString().PadLeft(13, '0'))), Batch.PeriodYear, Batch.PeriodMonth.ToString("00"));
-                Info info;
-                ReportOut.TryGetValue(sqlReader.GetInt32(0), out info);
-                if (info != null)
+                var pYear = new SqlParameter
                 {
-                    info.Year = Batch.PeriodYear;
-                    info.Month = Batch.PeriodMonth;
-                    info.Total = sqlReader.GetDecimal(1);
+                    ParameterName = "@Year",
+                    SqlDbType = SqlDbType.Int,
+                    Direction = ParameterDirection.Input,
+                    Value = Batch.PeriodYear
+                };
+                var pMonth = new SqlParameter
+                {
+                    ParameterName = "@Month",
+                    SqlDbType = SqlDbType.Int,
+                    Direction = ParameterDirection.Input,
+                    Value = Batch.PeriodMonth
+                };
+                var pStateId = new SqlParameter
+                {
+                    ParameterName = "@StateId",
+                    SqlDbType = SqlDbType.Int,
+                    Direction = ParameterDirection.Input,
+                    Value = ContributionState.Pendiente
+                };
+                Command.Parameters.Add(pYear);
+                Command.Parameters.Add(pMonth);
+                Command.Parameters.Add(pStateId);
+
+                var sqlReader = Command.ExecuteReader();
+
+                var reportOut2 = new Dictionary<int, Info>();
+                var fileOut2 = new Dictionary<int, string>();
+                var customerIds2 = new List<int>();
+
+                while (sqlReader.Read())
+                {
+                    var line = string.Format("{0}        {1}{2}",
+                        customer[sqlReader.GetInt32(0)].Replace(AMOUNT,
+                            (Math.Round(sqlReader.GetDecimal(1) * 100).ToString().PadLeft(13, '0'))), Batch.PeriodYear,
+                        Batch.PeriodMonth.ToString("00"));
+                    Info info;
+                    ReportOut.TryGetValue(sqlReader.GetInt32(0), out info);
+                    if (info != null)
+                    {
+                        info.Year = Batch.PeriodYear;
+                        info.Month = Batch.PeriodMonth;
+                        info.AmountTotal = sqlReader.GetDecimal(1);
+                        info.Amount1 = sqlReader.GetDecimal(2);
+                        info.Amount2 = sqlReader.GetDecimal(3);
+                        info.Amount3 = sqlReader.GetDecimal(4);
+                        info.Number = sqlReader.GetInt32(5);
+                        info.StateId = (int)ContributionState.Pendiente;
+                    }
+                    ReportOut.Remove(sqlReader.GetInt32(0));
+                    reportOut2.Add(sqlReader.GetInt32(0), info);
+                    fileOut2.Add(sqlReader.GetInt32(0), line);
                 }
-                ReportOut.Remove(sqlReader.GetInt32(0));
-                reportOut2.Add(sqlReader.GetInt32(0), info);
-                fileOut2.Add(sqlReader.GetInt32(0), line);
-            }
-            sqlReader.Close();
-            ReportOut.Clear();
-            FileOut.Clear();
+                sqlReader.Close();
+                ReportOut.Clear();
+                FileOut.Clear();
 
-            foreach (var pk in reportOut2)
+                foreach (var pk in reportOut2)
+                {
+                    customerIds2.Add(pk.Key);
+                    ReportOut.Add(pk.Key, pk.Value);
+                }
+
+                foreach (var pk in fileOut2)
+                {
+                    FileOut.Add(pk.Key, pk.Value);
+                }
+
+                if (customerIds2.Count > 0)
+                    UpdateData(customerIds2);
+
+            }
+            catch (Exception ex)
             {
-                customerIds2.Add(pk.Key);
-                ReportOut.Add(pk.Key, pk.Value);
+                Log.FatalFormat("Action: {0} Error: {1}", "Dao.GetContributionPayments(" + string.Join(",", customerIds.ToArray()) + ")", ex.Message);
             }
-
-            foreach (var pk in fileOut2)
-            {
-                FileOut.Add(pk.Key, pk.Value);
-            }
-
-            UpdateData(customerIds2);
         }
 
         private void GetCustomer(out List<int> customerIds)
         {
             customerIds = new List<int>();
-            FileOut = new Dictionary<int, string>();
-            Sql = "SELECT EntityId, Attribute =[Key], Value FROM GenericAttribute " +
-                  "WHERE KeyGroup='Customer' and  [Key] in ('Dni','AdmCode') AND " +
-                  "EntityId IN ( SELECT EntityId FROM GenericAttribute WHERE [Key]='MilitarySituationId' AND Value=1)";
-            Command = new SqlCommand(Sql, Connection);
-            var sqlReader = Command.ExecuteReader();
-
-            var count = 0;
-            var admCode = "";
-            var dni = "";
-
-            var entityId = 0;
-            var repeatEntityId = 0;
-
-            while (sqlReader.Read())
+            try
             {
-                if (sqlReader.GetString(1).Equals("AdmCode"))
-                {
-                    count++;
-                    admCode = sqlReader.GetString(2);
-                    entityId = sqlReader.GetInt32(0);
-                }
-                if (sqlReader.GetString(1).Equals("Dni"))
-                {
-                    count++;
-                    dni = sqlReader.GetString(2);
-                    repeatEntityId = sqlReader.GetInt32(0);
-                }
-                if (count == 2 && entityId == repeatEntityId)
-                {
-                    FileOut.Add(entityId, string.Format("8A{0}8001{1}0000000000000{2}", admCode, AMOUNT, NUMBER));
-                    customerIds.Add(entityId);
-                    ReportOut.Add(entityId, new Info { CustomerId = entityId, AdminCode = admCode, HasAdminCode = true, Dni = dni, HasDni = true });
-                    entityId = repeatEntityId = count = 0;
-                }
-            }
-            sqlReader.Close();
+                Log.InfoFormat("Action: {0}", "Dao.GetCustomer(" + string.Join(",", customerIds.ToArray()) + ")");
 
+                Sql = " SELECT EntityId, Attribute =[Key], Value FROM GenericAttribute " +
+                      " WHERE KeyGroup='Customer' and  [Key] in ('Dni','AdmCode') AND " +
+                      " EntityId IN ( SELECT EntityId FROM GenericAttribute WHERE [Key]='MilitarySituationId' AND Value=1)";
+
+                Command = new SqlCommand(Sql, Connection);
+                var sqlReader = Command.ExecuteReader();
+
+                var count = 0;
+                var admCode = "";
+                var dni = "";
+
+                var entityId = 0;
+                var repeatEntityId = 0;
+
+                while (sqlReader.Read())
+                {
+                    if (sqlReader.GetString(1).Equals("AdmCode"))
+                    {
+                        count++;
+                        admCode = sqlReader.GetString(2);
+                        entityId = sqlReader.GetInt32(0);
+                    }
+                    if (sqlReader.GetString(1).Equals("Dni"))
+                    {
+                        count++;
+                        dni = sqlReader.GetString(2);
+                        repeatEntityId = sqlReader.GetInt32(0);
+                    }
+                    if (count == 2 && entityId == repeatEntityId)
+                    {
+                        if (ReportOut == null)
+                            ReportOut = new Dictionary<int, Info>();
+
+                        if (FileOut == null)
+                            FileOut = new Dictionary<int, string>();
+
+                        FileOut.Add(entityId, string.Format("8A{0}8001{1}0000000000000{2}", admCode, AMOUNT, NUMBER));
+                        customerIds.Add(entityId);
+                        ReportOut.Add(entityId, new Info { CustomerId = entityId, AdminCode = admCode, HasAdminCode = true, Dni = dni, HasDni = true });
+                        entityId = repeatEntityId = count = 0;
+                    }
+                }
+                sqlReader.Close();
+            }
+            catch (Exception ex)
+            {
+                Log.FatalFormat("Action: {0} Error: {1}", "Dao.GetCustomer(" + string.Join(",", customerIds.ToArray()) + ")", ex.Message);
+            }
         }
 
         private void UpdateData(List<int> customerIds)
         {
-            Sql = "UPDATE ContributionPayment SET StateId =2 WHERE ID IN ( " +
+            try
+            {
+                Log.InfoFormat("Action: {0}", "Dao.UpdateData(" + string.Join(",", customerIds.ToArray()) + ")");
+
+                Sql = "UPDATE ContributionPayment SET StateId =2 WHERE ID IN ( " +
                   " SELECT  cp.Id " +
                   " FROM ContributionPayment cp " +
                   " INNER JOIN  Contribution c on c.Id=cp.ContributionId " +
                   " WHERE c.CustomerId IN (" + string.Join(",", customerIds.ToArray()) + ") AND  " +
                   " YEAR(cp.ScheduledDateOnUtc)=@Year AND  " +
-                  " MONTH(cp.ScheduledDateOnUtc)=@Month " +
-                  " ) ";
+                  " MONTH(cp.ScheduledDateOnUtc)=@Month  ) ";
 
-            Command = new SqlCommand(Sql, Connection);
+                Command = new SqlCommand(Sql, Connection);
 
-            var pYear = new SqlParameter
+                var pYear = new SqlParameter
+                {
+                    ParameterName = "@Year",
+                    SqlDbType = SqlDbType.Int,
+                    Direction = ParameterDirection.Input,
+                    Value = Batch.PeriodYear
+                };
+                var pMonth = new SqlParameter
+                {
+                    ParameterName = "@Month",
+                    SqlDbType = SqlDbType.Int,
+                    Direction = ParameterDirection.Input,
+                    Value = Batch.PeriodMonth
+                };
+
+                Command.Parameters.Add(pYear);
+                Command.Parameters.Add(pMonth);
+                Command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
             {
-                ParameterName = "@Year",
-                SqlDbType = SqlDbType.Int,
-                Direction = ParameterDirection.Input,
-                Value = Batch.PeriodYear
-            };
-            var pMonth = new SqlParameter
-            {
-                ParameterName = "@Month",
-                SqlDbType = SqlDbType.Int,
-                Direction = ParameterDirection.Input,
-                Value = Batch.PeriodMonth
-            };
-
-            Command.Parameters.Add(pYear);
-            Command.Parameters.Add(pMonth);
-
-            Command.ExecuteNonQuery();
-
-
+                Log.FatalFormat("Action: {0} Error: {1}", "Dao.UpdateData(" + string.Join(",", customerIds.ToArray()) + ")", ex.Message);
+            }
         }
 
         private void CompleteCustomerName()
@@ -223,82 +265,7 @@ namespace Ks.Batch.Copere.Out
             }
         }
 
-        private void DeleteReport()
-        {
-            try
-            {
-                Sql = " DELETE Reports WHERE Period=@Period ";
 
-                Command = new SqlCommand(Sql, Connection);
-                Command.Parameters.AddWithValue("@Period", Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00"));
-                Command.ExecuteNonQuery();
-
-            }
-            catch (Exception ex)
-            {
-                Log.FatalFormat("Time: {0} Error: {1}", DateTime.Now, ex.Message);
-            }
-        }
-        private Guid CreateReportIn()
-        {
-            var guid = Guid.NewGuid();
-            try
-            {
-                Sql = " INSERT INTO Reports " +
-                      " ([Key],Name,Value,PathBase,StateId,Period,Source, ParentKey,DateUtc)" +
-                      " VALUES " +
-                      " (@Key,@Name,@Value,@PathBase,@StateId,@Period,@Source,@ParentKey,@DateUtc)";
-
-
-                Command = new SqlCommand(Sql, Connection);
-                Command.Parameters.AddWithValue("@Key", guid);
-                Command.Parameters.AddWithValue("@Name", string.Format("Archivos para la caja en el periodo - {0}", Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00")));
-                Command.Parameters.AddWithValue("@Value", XmlHelper.Serialize2String(new List<Info>(ReportOut.Values)));
-                Command.Parameters.AddWithValue("@PathBase", Batch.PathBase);
-                Command.Parameters.AddWithValue("@StateId", 2);
-                Command.Parameters.AddWithValue("@Period", Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00"));
-                Command.Parameters.AddWithValue("@Source", Batch.SystemName);
-                Command.Parameters.AddWithValue("@ParentKey", guid);
-                Command.Parameters.AddWithValue("@DateUtc", DateTime.UtcNow);
-
-                Command.ExecuteNonQuery();
-            }
-            catch (Exception ex)
-            {
-                Log.FatalFormat("Time: {0} Error: {1}", DateTime.Now, ex.Message);
-            }
-            return guid;
-        }
-        private void CreateReportOut(Guid guid)
-        {
-            try
-            {
-                Sql = " INSERT INTO Reports " +
-                      " ([Key],Name,Value,PathBase,StateId,Period,Source, ParentKey,DateUtc)" +
-                      " VALUES " +
-                      " (@Key,@Name,@Value,@PathBase,@StateId,@Period,@Source,@ParentKey,@DateUtc)";
-
-                Guid.NewGuid();
-                Command = new SqlCommand(Sql, Connection);
-                Command.Parameters.AddWithValue("@Key", Guid.NewGuid());
-                Command.Parameters.AddWithValue("@Name", "");
-                Command.Parameters.AddWithValue("@Value", "");
-                Command.Parameters.AddWithValue("@PathBase", "");
-                Command.Parameters.AddWithValue("@StateId", 1);
-                Command.Parameters.AddWithValue("@Period", Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00"));
-                Command.Parameters.AddWithValue("@Source", "Ks.Batch.Copere.In");
-                Command.Parameters.AddWithValue("@ParentKey", guid);
-                Command.Parameters.AddWithValue("@DateUtc", DateTime.UtcNow);
-
-
-
-                Command.ExecuteNonQuery();
-            }
-            catch (Exception ex)
-            {
-                Log.FatalFormat("Time: {0} Error: {1}", DateTime.Now, ex.Message);
-            }
-        }
 
         #endregion
     }

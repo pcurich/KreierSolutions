@@ -18,20 +18,21 @@ namespace Ks.Batch.Copere.In
         public void Process(ScheduleBatch batch, List<Info> infos)
         {
             Batch = batch;
+
+            Log.InfoFormat("Action: {0}","Dao.Process(" + batch.SystemName + ")");
+
             var guid = GetParentOut();
 
             if (guid != null)
             {
                 try
                 {
-                    Sql =
-                        Sql = " UPDATE Reports set Name=@Name, StateId=@StateId, Value=@Value, PathBase=@PathBase,Source=@Source, DateUtc=@DateUtc" +
+                    Sql = " UPDATE Reports set Name=@Name, StateId=@StateId, Value=@Value, PathBase=@PathBase,Source=@Source, DateUtc=@DateUtc" +
                         " WHERE [Key]=@Key";
 
                     Command = new SqlCommand(Sql, Connection);
                     Command.Parameters.AddWithValue("@Key", guid);
-                    Command.Parameters.AddWithValue("@Name",
-                        string.Format("Archivo leido de la caja en el periodo - {0}",
+                    Command.Parameters.AddWithValue("@Name", string.Format("Archivo leido de la caja en el periodo - {0}",
                             Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00")));
                     Command.Parameters.AddWithValue("@Value", XmlHelper.Serialize2String(new List<Info>(infos)));
                     Command.Parameters.AddWithValue("@PathBase", Batch.PathBase);
@@ -43,7 +44,7 @@ namespace Ks.Batch.Copere.In
                 }
                 catch (Exception ex)
                 {
-                    Log.FatalFormat("Time: {0} Error: {1}", DateTime.Now, ex.Message);
+                    Log.FatalFormat("Action: {0} Error: {1}","Dao.Process(" + batch.SystemName + ")", ex.Message);
                 }
             }
         }
@@ -55,14 +56,15 @@ namespace Ks.Batch.Copere.In
             Guid? guid = null;
             try
             {
+                Log.InfoFormat("Action: {0}","Dao.GetParentOut()");
+
                 Sql = " SELECT [Key]  FROM Reports " +
                       " WHERE Source=@Source AND " +
                       " Period=@Period";
 
                 Command = new SqlCommand(Sql, Connection);
                 Command.Parameters.AddWithValue("@Source", Batch.SystemName);
-                Command.Parameters.AddWithValue("@Period",
-                    Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00"));
+                Command.Parameters.AddWithValue("@Period", Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00"));
 
                 var sqlReader = Command.ExecuteReader();
                 while (sqlReader.Read())
@@ -73,6 +75,7 @@ namespace Ks.Batch.Copere.In
             }
             catch (Exception ex)
             {
+                Log.FatalFormat("Action: {0} Error: {1}","Dao.GetParentOut()", ex.Message);
                 return null;
             }
             return guid;

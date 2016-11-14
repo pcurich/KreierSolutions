@@ -18,6 +18,8 @@ namespace Ks.Admin.Models.Customers
         }
         [KsResourceDisplayName("Admin.Contract.ContributionPayments.Fields.Number")]
         public int Number { get; set; }
+        [KsResourceDisplayName("Admin.Contract.ContributionPayments.Fields.NumberOld")]
+        public int NumberOld { get; set; }
         public int ContributionId { get; set; }
         public int CustomerId { get; set; }
         [UIHint("Decimal")]
@@ -26,9 +28,15 @@ namespace Ks.Admin.Models.Customers
         public decimal Amount2 { get; set; }
         [UIHint("Decimal")]
         public decimal Amount3 { get; set; }
+        [KsResourceDisplayName("Admin.Contract.ContributionPayments.Fields.AmountOld")]
+        [UIHint("Decimal")]
+        public decimal AmountOld { get; set; }
         [UIHint("Decimal")]
         [KsResourceDisplayName("Admin.Contract.ContributionPayments.Fields.AmountTotal")]
         public decimal AmountTotal { get; set; }
+
+        [KsResourceDisplayName("Admin.Contract.ContributionPayments.Fields.AmountPayed")]
+        public decimal AmountPayed { get; set; }
 
         public bool ShowAmountTotal { get;set; }
         public string NameAmount1 { get; set; }

@@ -109,14 +109,14 @@ namespace Ks.Services.Contract
             return new PagedList<Contribution>(contribution, pageIndex, pageSize);
         }
 
-        public virtual IPagedList<Contribution> SearchContributionByLetterNumber(int letterNumberbool,
+        public virtual IPagedList<Contribution> SearchContributionByAuthorizeDiscount(int authorizeDiscountBool,
             int stateId = -1, int pageIndex = 0,
             int pageSize = Int32.MaxValue)
         {
 
             var query = from c in _contributionRepository.Table
                         orderby c.CreatedOnUtc
-                        where c.AuthorizeDiscount == letterNumberbool
+                        where c.AuthorizeDiscount == authorizeDiscountBool
                         select c;
 
             if (stateId >= 0)

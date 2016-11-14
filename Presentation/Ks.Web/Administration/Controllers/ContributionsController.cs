@@ -86,7 +86,7 @@ namespace Ks.Admin.Controllers
             {
                 SearchAdmCode = "",
                 SearchDni = "",
-                SearchLetter = null,
+                SearchAuthorizeDiscount = null,
                 StateId = -1,
                 States = new List<SelectListItem>
                 {
@@ -117,8 +117,8 @@ namespace Ks.Admin.Controllers
                 contributions = _contributionService.SearchContributionByCustomerId(generic.EntityId, model.StateId);
 
             //2) Find by letter Number
-            if (contributions == null && model.SearchLetter.HasValue)
-                contributions = _contributionService.SearchContributionByLetterNumber(model.SearchLetter.Value, model.StateId);
+            if (contributions == null && model.SearchAuthorizeDiscount.HasValue)
+                contributions = _contributionService.SearchContributionByAuthorizeDiscount(model.SearchAuthorizeDiscount.Value, model.StateId);
 
             if (contributions == null)
                 contributions = new PagedList<Contribution>(new List<Contribution>(), 0, 10);
@@ -129,9 +129,9 @@ namespace Ks.Admin.Controllers
                 toModel.CustomerCompleteName = x.Customer.GetFullName();
                 toModel.CustomerDni = x.Customer.GetAttribute<string>(SystemCustomerAttributeNames.Dni);
                 toModel.CustomerAdmCode = x.Customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode);
-                toModel.CreatedOn = _dateTimeHelper.ConvertToUserTime(x.CreatedOnUtc, DateTimeKind.Local);
+                toModel.CreatedOn = _dateTimeHelper.ConvertToUserTime(x.CreatedOnUtc, DateTimeKind.Utc);
                 if (x.UpdatedOnUtc.HasValue)
-                    toModel.UpdatedOn = _dateTimeHelper.ConvertToUserTime(x.UpdatedOnUtc.Value, DateTimeKind.Local);
+                    toModel.UpdatedOn = _dateTimeHelper.ConvertToUserTime(x.UpdatedOnUtc.Value, DateTimeKind.Utc);
                 return toModel;
             });
 
@@ -227,11 +227,6 @@ namespace Ks.Admin.Controllers
                 ErrorNotification(_localizationService.GetResource("Admin.Customers.Contributions.ValidActive"));
                 return RedirectToAction("Edit", new { id = contributionPayment.Contribution.Id });
             }
-            if (contributionPayment.StateId == (int)ContributionState.Pagado)
-            {
-                ErrorNotification(_localizationService.GetResource("Admin.Customers.Contributions.ValidPayment"));
-                return RedirectToAction("Edit", new { id = contributionPayment.Contribution.Id });
-            }
 
             var model = PrepareContributionPayment(contributionPayment);
 
@@ -249,6 +244,12 @@ namespace Ks.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
+            if (contributionPayment.StateId != (int)ContributionState.Pendiente)
+            {
+                ErrorNotification(_localizationService.GetResource("Admin.Customers.Contributions.ValidPayment"));
+                return RedirectToAction("CreatePayment", new { id = contributionPayment.Id });
+            }
+
             contributionPayment.IsAutomatic = false;
             contributionPayment.StateId = (int)ContributionState.Pagado;
             contributionPayment.ContributionId = model.ContributionId;
@@ -258,8 +259,7 @@ namespace Ks.Admin.Controllers
             contributionPayment.Reference = model.Reference;
             contributionPayment.Description = model.Description;
             contributionPayment.ProcessedDateOnUtc = DateTime.UtcNow;
-
-            contributionPayment.AmountTotal = model.Amount1 + model.Amount2 + model.Amount3;
+            contributionPayment.AmountPayed = model.Amount1 + model.Amount2 + model.Amount3; 
 
             if (_contributionSettings.IsActiveAmount1)
                 contributionPayment.Amount1 = model.Amount1;
@@ -268,15 +268,15 @@ namespace Ks.Admin.Controllers
             if (_contributionSettings.IsActiveAmount3)
                 contributionPayment.Amount3 = model.Amount3;
 
-
             _contributionService.UpdateContributionPayment(contributionPayment);
 
             var contribution = _contributionService.GetContributionById(model.ContributionId);
             contribution.UpdatedOnUtc = DateTime.UtcNow;
             contribution.AmountTotal += contributionPayment.Amount1 + contributionPayment.Amount2 +
                                        contributionPayment.Amount3;
-            //TODO
-            //contribution.CycleOfDelay--;
+
+             contribution.CycleOfDelay=0;
+             contribution.IsDelay = false;
             _contributionService.UpdateContribution(contribution);
 
             SuccessNotification(_localizationService.GetResource("Admin.Customers.Customers.Contributions.Updated"));
@@ -343,41 +343,33 @@ namespace Ks.Admin.Controllers
         [NonAction]
         protected virtual ContributionPaymentsModel PrepareContributionPayment(ContributionPayment contributionPayment)
         {
-            var model = new ContributionPaymentsModel
-            {
-                Banks = PrepareBanks(),
-                ContributionId = contributionPayment.ContributionId,
-                ScheduledDateOn =
-                    _dateTimeHelper.ConvertToUserTime(contributionPayment.ScheduledDateOnUtc, DateTimeKind.Local),
-                Number = contributionPayment.Number,
-                ShowAmountTotal = false
-            };
-            var shares = 0;
+            var model = contributionPayment.ToModel();
+            model.Banks = PrepareBanks();
+            model.ScheduledDateOn =
+                _dateTimeHelper.ConvertToUserTime(contributionPayment.ScheduledDateOnUtc, DateTimeKind.Utc);
+            var state = ContributionState.Pendiente.ToSelectList()
+                .FirstOrDefault(x => x.Value == contributionPayment.StateId.ToString());
+            if (state != null)
+                model.State =state.Text;
+
             if (_contributionSettings.IsActiveAmount1)
             {
-                shares++;
                 model.IsActiveAmount1 = true;
                 model.NameAmount1 = _contributionSettings.NameAmount1;
                 model.Amount1 = _contributionSettings.Amount1;
             }
             if (_contributionSettings.IsActiveAmount2)
             {
-                shares++;
                 model.IsActiveAmount2 = true;
                 model.NameAmount2 = _contributionSettings.NameAmount2;
                 model.Amount2 = _contributionSettings.Amount2;
             }
             if (_contributionSettings.IsActiveAmount3)
             {
-                shares++;
                 model.IsActiveAmount3 = true;
                 model.NameAmount3 = _contributionSettings.NameAmount3;
                 model.Amount3 = _contributionSettings.Amount3;
             }
-
-            if (shares >= 2)
-                model.ShowAmountTotal = true;
-
             return model;
         }
 

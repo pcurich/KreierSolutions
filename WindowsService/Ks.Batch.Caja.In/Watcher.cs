@@ -15,7 +15,6 @@ namespace Ks.Batch.Caja.In
         private static ScheduleBatch Batch { get; set; }
         private static string Path { get; set; }
         private static string Connection { get; set; }
-
         public static void FileCreated(object sender, FileSystemEventArgs e)
         {
             Thread.Sleep(1000 * 10); //10 Sec because is not atomic
@@ -43,7 +42,6 @@ namespace Ks.Batch.Caja.In
             }
 
         }
-
         public void CustomCommand(int commandNumber)
         {
             //128-255
@@ -64,6 +62,7 @@ namespace Ks.Batch.Caja.In
         protected static void UpdateScheduleBatch(bool executed = true)
         {
             var dao = new Dao(Connection);
+            dao.Connect();
 
             if (executed)
             {
@@ -75,12 +74,15 @@ namespace Ks.Batch.Caja.In
 
             Batch.LastExecutionOnUtc = DateTime.UtcNow;
             dao.UpdateScheduleBatch(Batch);
+            dao.Close();
+
         }
 
         private static void MoveFile(string fullPath, string fileName)
         {
             File.Move(fullPath, System.IO.Path.Combine(System.IO.Path.Combine(Path, Batch.FolderMoveToDone), fileName));
         }
+
         #endregion
     }
 }

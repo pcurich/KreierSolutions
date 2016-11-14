@@ -20,7 +20,7 @@ namespace Ks.Batch.Copere.In
             {
                 try
                 {
-                    if (line.Length >= 100)
+                    if (line.Length >= 100 && !line.ToUpper().Contains("TOTAL"))
                     {
                         result.Add(new Info
                         {
@@ -29,7 +29,7 @@ namespace Ks.Batch.Copere.In
                             HasAdminCode = true,
                             HasDni = false,
                             AdminCode = line.Substring(34, 9),
-                            Total = Convert.ToDecimal(line.Substring(86, 10))
+                            AmountPayed = Convert.ToDecimal(line.Substring(86, 10))
                         });
                     }
                 }

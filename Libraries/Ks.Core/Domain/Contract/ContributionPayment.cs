@@ -5,9 +5,14 @@ namespace Ks.Core.Domain.Contract
     public class ContributionPayment : BaseEntity
     {
         /// <summary>
-        /// Gets or sets the number of couta.
+        /// Gets or sets the number of qouta.
         /// </summary>
         public int Number { get; set; }
+
+        /// <summary>
+        /// Gets or sets the number of old qouta.
+        /// </summary>
+        public int NumberOld { get; set; }
         /// <summary>
         /// Gets or sets the contribution identifier.
         /// </summary>
@@ -25,9 +30,18 @@ namespace Ks.Core.Domain.Contract
         /// </summary>
         public decimal Amount3 { get; set; }
         /// <summary>
+        /// Gets or sets the old amount with out cash.
+        /// </summary>
+        public decimal AmountOld { get; set; }
+
+        /// <summary>
         /// Gets or sets the amount total, amount1+amount2+amount3.
         /// </summary>
         public decimal AmountTotal { get; set; }
+        /// <summary>
+        /// Gets or sets the amount payed.
+        /// </summary>
+        public decimal AmountPayed { get; set; }
         /// <summary>
         /// Gets or sets the scheduled date on UTC.
         /// </summary>

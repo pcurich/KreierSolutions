@@ -25,10 +25,10 @@
     <table width="100%">
         <tr>
             <td class="adminTitle">
-                @Html.KsLabelFor(model => model.SearchLetter):
+                @Html.KsLabelFor(model => model.SearchAuthorizeDiscount):
             </td>
             <td class="adminData">
-                @Html.EditorFor(model => model.SearchLetter)
+                @Html.EditorFor(model => model.SearchAuthorizeDiscount)
             </td>
         </tr>
         <tr>
@@ -109,15 +109,15 @@
                               {
                                   field: "AuthorizeDiscount",
                                   title: "@T("Admin.Contract.Contribution.Fields.AuthorizeDiscount")",
-                                  width: 50
+                                  width: 10
                               }, {
                                   field: "CustomerCompleteName",
                                   title: "@T("Admin.Contract.Contribution.Fields.CustomerCompleteName")",
-                                  width: 100
+                                  width: 80
                               }, {
                                   field: "CustomerDni",
                                   title: "@T("Admin.Contract.Contribution.Fields.CustomerDni")",
-                                  width: 50
+                                  width: 40
                               }, {
                                   field: "CustomerAdmCode",
                                   title: "@T("Admin.Contract.Contribution.Fields.CustomerAdmCode")",
@@ -189,7 +189,7 @@
                                 return false;
                             }
                         });
-                        $("#@Html.FieldIdFor(model => model.SearchLetter)").keydown(function (event) {
+                        $("#@Html.FieldIdFor(model => model.SearchAuthorizeDiscount)").keydown(function (event) {
                             if (event.keyCode == 13) {
                                 $("#search-contributions").click();
                                 return false;
@@ -246,7 +246,7 @@
                         var data = {
                             SearchDni: $('#@Html.FieldIdFor(model => model.SearchDni)').val(),
                             SearchAdmCode: $('#@Html.FieldIdFor(model => model.SearchAdmCode)').val(),
-                            SearchLetter: $('#@Html.FieldIdFor(model => model.SearchLetter)').val(),
+                            SearchLetter: $('#@Html.FieldIdFor(model => model.SearchAuthorizeDiscount)').val(),
                             StateId: $('#@Html.FieldIdFor(model => model.StateId)').val()
                         };
                         addAntiForgeryToken(data);

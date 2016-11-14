@@ -7482,6 +7482,18 @@
   <LocaleResource Name="Admin.Contract.Contribution.Fields.AmountTotal.Hint">
     <Value>Representa el Total Aportado por el Personal Militar</Value>
   </LocaleResource>
+    <LocaleResource Name="Admin.Contract.Contribution.Fields.IsDelay">
+    <Value>Estado</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Contribution.Fields.IsDelay.Hint">
+    <Value>Indica si el aportante ha estado realizando sus pagos oportunamente</Value>
+  </LocaleResource>
+    <LocaleResource Name="Admin.Contract.Contribution.Fields.CycleOfDelay">
+    <Value>Meses de Retraso</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Contribution.Fields.CycleOfDelay.Hint">
+    <Value>Indica la cantidad de meses en la que el aportante no ha realizado pagos de forma consecutiva</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Contract.Contribution.Fields.CreatedOn">
     <Value>Fecha de creación</Value>
   </LocaleResource>
@@ -7537,7 +7549,7 @@
     <Value>Establece si el garante es un contribuyente en la actualidad</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Contribution.Fields.AuthorizeDiscount">
-    <Value>N° Autorizacion del Descuento</Value>
+    <Value>N° Descuento</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Contribution.Fields.AuthorizeDiscount.GreaterThanOrEqualTo1">
     <Value>Ingrese numero de carta declaratoria valido</Value>
@@ -7566,17 +7578,23 @@
   <LocaleResource Name="Admin.Contract.Contribution.Fields.SearchDni.Hint">
     <Value>Buscar por el N° de Dni</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Contract.Contribution.Fields.SearchLetter">
-    <Value>N° de Carta Declaratoria</Value>
+  <LocaleResource Name="Admin.Contract.Contribution.Fields.SearchAuthorizeDiscount">
+    <Value>N° Descuento</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Contract.Contribution.Fields.SearchLetter.Hint">
-    <Value>Buscar por el N° de carta declaratoria</Value>
+  <LocaleResource Name="Admin.Contract.Contribution.Fields.SearchAuthorizeDiscount.Hint">
+    <Value>Buscar por el N° de descuento de autorización</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Contribution.Fields.TotalCycle">
     <Value>Total de Ciclos</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Contribution.Fields.TotalCycle.Hint">
     <Value>Total de Ciclos de cobros</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Contribution.Fields.Description">
+    <Value>Nota</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Contribution.Fields.Description.Hint">
+    <Value>Nota que indica el estado de la aportación</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Contribution.Fields.UpdatedOn">
     <Value>Última Modificación</Value>
@@ -7605,6 +7623,18 @@
   <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.Number.Hint">
     <Value>N° Cuota para filtrar</Value>
   </LocaleResource> 
+  <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.StateId">
+    <Value>Estado</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.StateId.Hint">
+    <Value>Estado del cobro: Pendiente, En proceso, Pago Parcial, Pagado, Sin liquidez</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.NumberOld">
+    <Value>N° Cuota Atrasada</Value>
+  </LocaleResource> 
+  <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.NumberOld.Hint">
+    <Value>N° Cuota no no enviada por la interfaz de cobros</Value>
+  </LocaleResource> 
   <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.ProcessedDateOn">
     <Value>Fecha Procesado.</Value>
   </LocaleResource>
@@ -7612,10 +7642,22 @@
     <Value>Fecha de cobro procesada.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.AmountTotal">
-    <Value>Valor de aportación.</Value>
+    <Value>Valor Total de aportación.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.AmountTotal.Hint">
     <Value>Monto Total de la aportacion en el caso en que se tenga mas de un monto de aportación.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.AmountOld">
+    <Value>Aportación Atrasada.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.AmountOld.Hint">
+    <Value>Si una couta ha quedado sin liquidez, dicho valor se ve reflejado en esta couta.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.AmountPayed">
+    <Value>Valor Aportado.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.AmountPayed.Hint">
+    <Value>Monto Aportado.</Value>
   </LocaleResource>
 <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.ScheduledDateOn">
     <Value>Fecha Programado.</Value>
@@ -8059,10 +8101,10 @@
     <Value>Listado</Value>
   </LocaleResource>
    <LocaleResource Name="Admin.Customers.Contributions.ValidActive">
-    <Value>Error, el pago a la aporetacion que selecciono, no se encuentra valida </Value>
+    <Value>Error, la aportacion que selecciono, no se encuentra valida</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Contributions.ValidPayment">
-    <Value>Error, no se puede pagar cambiar la informacion del pago</Value>
+    <Value>Error, no se puede alterar la informacion del pago</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.CurrentShoppingCart">
     <Value>Carrito actual</Value>
@@ -11640,6 +11682,12 @@
   </LocaleResource>
   <LocaleResource Name="Common.Show">
     <Value>Mostrar</Value>
+  </LocaleResource>
+  <LocaleResource Name="Common.Summary">
+    <Value>Resumen</Value>
+  </LocaleResource>
+  <LocaleResource Name="Common.Payment">
+    <Value>Pago</Value>
   </LocaleResource>
   <LocaleResource Name="Common.Unavailable">
     <Value>No disponible</Value>

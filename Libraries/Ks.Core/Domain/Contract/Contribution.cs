@@ -49,6 +49,11 @@ namespace Ks.Core.Domain.Contract
         /// </summary>
         public DateTime? UpdatedOnUtc { get; set; }
 
+        /// <summary>
+        /// Gets or sets the description.
+        /// </summary>
+        public string Description { get; set; }
+
         public virtual Customer Customer { get; set; }
 
         public virtual ICollection<ContributionPayment> ContributionPayments
