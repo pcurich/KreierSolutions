@@ -199,9 +199,7 @@ wHERE ContributionPayment.ContributionId =#ContributionPaymentTmp.ContributionId
 
 --update the contributions payments
 UPDATE ContributionPayment 
-SET Amount1=#ContributionPaymentTmp.Amount1, Amount2=#ContributionPaymentTmp.Amount2, Amount3=#ContributionPaymentTmp.Amount3, 
-	AmountPayed=#ContributionPaymentTmp.AmountPayed,ProcessedDateOnUtc=GETUTCDATE(), StateId=#ContributionPaymentTmp.StateId,
-	BankName=#ContributionPaymentTmp.BankName,[Description]=#ContributionPaymentTmp.[Description]
+SET AmountPayed=#ContributionPaymentTmp.AmountPayed,ProcessedDateOnUtc=GETUTCDATE(), StateId=#ContributionPaymentTmp.StateId 
 FROM  #ContributionPaymentTmp
 WHERE #ContributionPaymentTmp.Id=ContributionPayment.Id 
 
@@ -214,7 +212,7 @@ FROM
 	SELECT 
 	ContributionId, 
 	COUNT(StateId) as CountState,
-	IsDelay = case when COUNT(StateId)=@TimeToDelay then 1 else 0 end,
+	IsDelay = case when COUNT(StateId)>0 then 1 else 0 end,
 	[Description]= case when COUNT(StateId)=@TimeToDelay then 'El aportante ha sido dado de baja debido a que ha pasado ' + CAST(@TimeToDelay as nvarchar(1)) + ' meses en estado de SIN LIQUIDEZ'  ELSE '' END
 	FROM 
 	ContributionPayment 
@@ -265,6 +263,7 @@ FROM
 			GROUP BY ContributionId
 	) NextPayment ON NextPayment.ContributionId=CP.ContributionId
 	INNER JOIN #ContributionPaymentTmp CPT ON CPT.ContributionId=CP.ContributionId  --This is Unique
+	GROUP BY CP.ContributionId , NextPayment.NumberNextQuota  ,	CPT.Number 
 ) as TMP
 WHERE --only the next quota to pay
 ContributionPayment.ContributionId=TMP.ContributionId AND ContributionPayment.Number=TMP.NumberNextQuota
