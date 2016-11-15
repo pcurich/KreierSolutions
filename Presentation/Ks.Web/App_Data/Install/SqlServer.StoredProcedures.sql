@@ -150,20 +150,11 @@ BEGIN
  
 CREATE TABLE #ContributionPaymentTmp
 			( 
-				[Id] [int] NOT NULL,
-				[ContributionId] [int] NOT NULL,
-				[CustomerId] [int] NOT NULL,
-				[Amount1] [decimal] NOT NULL,
-				[Amount2] [decimal] NOT NULL,
-				[Amount3] [decimal] NOT NULL,
-				[AmountTotal] [decimal] NOT NULL,
-				[AmountPayed] [decimal] NOT NULL,		
-				[StateId] [int] NOT NULL,
-				[BankName] [nvarchar](500) NOT NULL,
-				[Description] [nvarchar](1000) NOT NULL,
-				[Number] [int] NOT NULL,
-				[IsDelay] [int] NOT NULL,
-				[CycleOfDelay] [int] NOT NULL
+				[Id] [int] NOT NULL,[ContributionId] [int] NOT NULL,[CustomerId] [int] NOT NULL,
+				[Amount1] [decimal] NOT NULL,[Amount2] [decimal] NOT NULL,[Amount3] [decimal] NOT NULL,
+				[AmountTotal] [decimal] NOT NULL,[AmountPayed] [decimal] NOT NULL,[StateId] [int] NOT NULL,
+				[BankName] [nvarchar](500) NOT NULL,[Description] [nvarchar](1000) NOT NULL,
+				[Number] [int] NOT NULL,[IsDelay] [int] NOT NULL,[CycleOfDelay] [int] NOT NULL
 			)
 
  
@@ -183,30 +174,43 @@ SELECT	0, --Id
 		0,0 --Delay thinks
 		FROm @XmlPackage.nodes('//ArrayOfInfo/Info') AS R(nref)
 
---Complete whith the ContributionId 
+------------------------------------------------------------------------
+--1) Complete whith the ContributionId 
+------------------------------------------------------------------------
 UPDATE #ContributionPaymentTmp SET  ContributionId= Contribution.Id
 FROM Contribution 
 wHERE Contribution.CustomerId =#ContributionPaymentTmp.CustomerId AND Contribution.Active=1
 
- 
---Complete with the id of ContributionPayment
+------------------------------------------------------------------------ 
+--2) Complete with the id of ContributionPayment
+------------------------------------------------------------------------
 UPDATE #ContributionPaymentTmp SET  Id= ContributionPayment.Id
 FROM ContributionPayment 
 wHERE ContributionPayment.ContributionId =#ContributionPaymentTmp.ContributionId AND 
 	  YEAR(ContributionPayment.ScheduledDateOnUtc)=@Year and MONTH(ContributionPayment.ScheduledDateOnUtc)=@Month AND
 	  ContributionPayment.StateId=2 --InProcess
-	  
 
---update the contributions payments
+------------------------------------------------------------------------
+--                       UPDATE   #ContributionPaymentTmp
+------------------------------------------------------------------------	  
+------------------------------------------------------------------------
+--3) Update the ContributionsPayments
+------------------------------------------------------------------------
 UPDATE ContributionPayment 
-SET AmountPayed=#ContributionPaymentTmp.AmountPayed,ProcessedDateOnUtc=GETUTCDATE(), StateId=#ContributionPaymentTmp.StateId 
+SET 
+AmountPayed=#ContributionPaymentTmp.AmountPayed,
+ProcessedDateOnUtc=GETUTCDATE(), 
+StateId=#ContributionPaymentTmp.StateId 
 FROM  #ContributionPaymentTmp
 WHERE #ContributionPaymentTmp.Id=ContributionPayment.Id 
 
+------------------------------------------------------------------------
+--4) Update delay cycles and state
+------------------------------------------------------------------------
 Declare @TimeToDelay int= (select value from Setting where Name ='contributionsettings.cycleofdelay')
-
---Update delay cycles and state
-UPDATE #ContributionPaymentTmp SET CycleOfDelay=temp.CountState, IsDelay=temp.IsDelay
+UPDATE #ContributionPaymentTmp 
+SET CycleOfDelay=temp.CountState, 
+IsDelay=temp.IsDelay
 FROM 
 (
 	SELECT 
@@ -222,7 +226,9 @@ FROM
 WHERE 
 temp.ContributionId=#ContributionPaymentTmp.ContributionId
 
---update the contribution per customer
+------------------------------------------------------------------------
+--5) Update the contribution (per customer)
+------------------------------------------------------------------------
 Update Contribution 
 SET Contribution.AmountTotal=Contribution.AmountTotal+#ContributionPaymentTmp.AmountPayed,
 	Contribution.CycleOfDelay=#ContributionPaymentTmp.CycleOfDelay,
@@ -234,15 +240,23 @@ FROM #ContributionPaymentTmp
 WHERE #ContributionPaymentTmp.ContributionId=Contribution.Id
  
 
---Alter the next Quota to pay
---Only work with state Sin Liquidez 
-DELETE FROM #ContributionPaymentTmp WHERE StateId<>5
+ ------------------------------------------------------------------------
+ --			  	      SPLIT  5= SIN LIQUIDEZ  3=PAGO PARCIAL  
+ ------------------------------------------------------------------------
+ ------------------------------------------------------------------------
+--6) Alter the next Quota to pay
+------------------------------------------------------------------------
+SELECT * INTO #ContributionPaymentTmp5 FROM  #ContributionPaymentTmp WHERE  StateId=5
+SELECT * INTO #ContributionPaymentTmp3 FROM  #ContributionPaymentTmp WHERE  StateId=3
 
+ ------------------------------------------------------------------------
+--7) Find the next quota an update the fields NumberOld and AmountOld
+-- with data sin liquidez
+------------------------------------------------------------------------
 Declare @ValueOfQuota1 int= (select Value from Setting where Name  = 'contributionsettings.amount1')
 Declare @ValueOfQuota2 int= (select Value from Setting where Name  = 'contributionsettings.amount2')
 Declare @ValueOfQuota3 int= (select Value from Setting where Name  = 'contributionsettings.amount3')
 
---Alter the amount to the next quota
 UPDATE  ContributionPayment 
 SET 
 ContributionPayment.AmountTotal=ContributionPayment.AmountTotal+@ValueOfQuota1+@ValueOfQuota2+@ValueOfQuota3,
@@ -262,13 +276,17 @@ FROM
 			WHERE StateId = 1 --Get the next Quota in stateId=1 (Pendiente) 
 			GROUP BY ContributionId
 	) NextPayment ON NextPayment.ContributionId=CP.ContributionId
-	INNER JOIN #ContributionPaymentTmp CPT ON CPT.ContributionId=CP.ContributionId  --This is Unique
+	INNER JOIN #ContributionPaymentTmp5 CPT ON CPT.ContributionId=CP.ContributionId  --This is Unique
 	GROUP BY CP.ContributionId , NextPayment.NumberNextQuota  ,	CPT.Number 
 ) as TMP
 WHERE --only the next quota to pay
 ContributionPayment.ContributionId=TMP.ContributionId AND ContributionPayment.Number=TMP.NumberNextQuota
 
-END
+------------------------------------------------------------------------
+--8) Create table Parcial 3
+------------------------------------------------------------------------
+
+SELECT * INTO #ContributionPaymentTmp3 FROM  #ContributionPaymentTmp WHERE  StateId=3
 GO
 
 CREATE PROCEDURE [LanguagePackImport]
