@@ -68,7 +68,7 @@ namespace Ks.Batch.Merge
         }
 
 
-        public void Process(Reports report, List<Info> ListInfoIns, List<Info> listInfoOuts)
+        public void Process(Reports report, List<Info> listResponse, List<Info> listRequest)
         {
             var infoEquals = new List<Info>(); //aountIn == amountOut  Pago completo
             var infoNotIn = new List<Info>(); //aountIn >0 aountOut ==0 No tiene liquidez
@@ -76,69 +76,37 @@ namespace Ks.Batch.Merge
 
             #region SplitList
 
-            Info _infoIn;
-            foreach (var infoOut in listInfoOuts)
+            Info response;
+            foreach (var request in listRequest)
             {
-                infoOut.BankName = report.Source;
-                infoOut.Description = "Proceso automática por el sistema ACMR";
+                request.BankName = report.Source;
+                request.Description = "Proceso automática por el sistema ACMR";
 
-                var info1 = infoOut;
-                _infoIn = ListInfoIns.FirstOrDefault(x => x.AdminCode == info1.AdminCode);
-                if (_infoIn == null)
+                var info1 = request;
+                response = listResponse.FirstOrDefault(x => x.AdminCode == info1.AdminCode);
+                if (response == null)
                 {
                     #region Sin Liquidez
-                    infoOut.StateId = (int)ContributionState.SinLiquidez;
-                    infoNotIn.Add(infoOut);
+                    request.StateId = (int)ContributionState.SinLiquidez;
+                    infoNotIn.Add(request);
                     #endregion
                 }
                 else
                 {
-                    if (infoOut.AmountTotal == _infoIn.AmountPayed)
+                    if (request.AmountTotal == response.AmountPayed)
                     {
                         #region Pagado Normal
-                        infoOut.StateId = (int)ContributionState.Pagado;
-                        infoOut.AmountPayed = _infoIn.AmountPayed;
-                        infoEquals.Add(infoOut);
+                        request.StateId = (int)ContributionState.Pagado;
+                        request.AmountPayed = response.AmountPayed;
+                        infoEquals.Add(request);
                         #endregion
                     }
                     else
                     {
                         #region Pago por puchos
-                        infoOut.StateId = (int)ContributionState.PagoParcial;
-                        infoOut.AmountPayed = _infoIn.AmountPayed;
-                        if ((_infoIn.AmountPayed - infoOut.Amount1) >= 0)
-                        {
-                            infoOut.Amount1 = _infoIn.AmountPayed - infoOut.Amount1;
-                            _infoIn.AmountPayed = _infoIn.AmountPayed - infoOut.Amount1;
-                        }
-                        else
-                        {
-                            infoOut.Amount1 = _infoIn.AmountPayed;
-                            _infoIn.AmountPayed = 0;
-                        }
-                        if ((_infoIn.AmountPayed - infoOut.Amount2) >= 0)
-                        {
-                            infoOut.Amount2 = _infoIn.AmountPayed - infoOut.Amount2;
-                            _infoIn.AmountPayed = _infoIn.AmountPayed - infoOut.Amount2;
-                        }
-                        else
-                        {
-                            infoOut.Amount2 = _infoIn.AmountPayed;
-                            _infoIn.AmountPayed = 0;
-                        }
-                        if ((_infoIn.AmountPayed - infoOut.Amount3) >= 0)
-                        {
-                            infoOut.Amount3 = _infoIn.AmountPayed - infoOut.Amount3;
-                            _infoIn.AmountPayed = _infoIn.AmountPayed - infoOut.Amount3;
-                        }
-                        else
-                        {
-                            infoOut.Amount3 = _infoIn.AmountPayed;
-                            _infoIn.AmountPayed = 0;
-                        }
-
-                        infoOut.AmountPayed = _infoIn.AmountPayed + infoOut.Amount1 + infoOut.Amount2 + infoOut.Amount3;
-                        infoLoss.Add(infoOut);
+                        request.StateId = (int)ContributionState.PagoParcial;
+                        request.AmountPayed = response.AmountPayed;
+                        infoLoss.Add(request);
                         #endregion
                     }
                 }
@@ -160,7 +128,6 @@ namespace Ks.Batch.Merge
             }
             CloseReport(report);
         }
-
 
 
         #region Utilities

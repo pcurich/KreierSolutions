@@ -247,7 +247,6 @@ WHERE #ContributionPaymentTmp.ContributionId=Contribution.Id
 --6) Alter the next Quota to pay
 ------------------------------------------------------------------------
 SELECT * INTO #ContributionPaymentTmp5 FROM  #ContributionPaymentTmp WHERE  StateId=5
-SELECT * INTO #ContributionPaymentTmp3 FROM  #ContributionPaymentTmp WHERE  StateId=3
 
  ------------------------------------------------------------------------
 --7) Find the next quota an update the fields NumberOld and AmountOld
@@ -287,6 +286,34 @@ ContributionPayment.ContributionId=TMP.ContributionId AND ContributionPayment.Nu
 ------------------------------------------------------------------------
 
 SELECT * INTO #ContributionPaymentTmp3 FROM  #ContributionPaymentTmp WHERE  StateId=3
+
+SELECT * INTO #ContributionPaymentTmp3 FROM  #ContributionPaymentTmp WHERE  StateId=3
+
+UPDATE  ContributionPayment 
+SET 
+ContributionPayment.AmountTotal=ContributionPayment.AmountTotal+TMP.OffSet,
+contributionPayment.AmountOld=TMP.OffSet,
+ContributionPayment.NumberOld=TMP.Number, 
+ContributionPayment.[Description] ='Valor de la couta aumentado por el sistema ACMR debido a la falta de liquitdez de la cuota N° ' + CAST(TMP.Number as nvarchar(3))
+FROM 
+(
+	SELECT CP.ContributionId AS ContributionId, NextPayment.NumberNextQuota AS NumberNextQuota ,
+	CPT.Number AS Number, CPT.AmountTotal-CPT.AmountPayed AS OffSet
+	--The nex quota and the Actual 
+	FROM 
+	ContributionPayment CP
+	INNER JOIN (
+			SELECT ContributionId,MIN(Number) as NumberNextQuota
+			FROM ContributionPayment 
+			WHERE StateId = 1 --Get the next Quota in stateId=1 (Pendiente) 
+			GROUP BY ContributionId
+	) NextPayment ON NextPayment.ContributionId=CP.ContributionId
+	INNER JOIN #ContributionPaymentTmp3 CPT ON CPT.ContributionId=CP.ContributionId  --This is Unique
+	GROUP BY CP.ContributionId , NextPayment.NumberNextQuota ,CPT.Number ,CPT.AmountTotal-CPT.AmountPayed
+) as TMP
+WHERE --only the next quota to pay
+ContributionPayment.ContributionId=TMP.ContributionId AND ContributionPayment.Number=TMP.NumberNextQuota
+
 GO
 
 CREATE PROCEDURE [LanguagePackImport]
