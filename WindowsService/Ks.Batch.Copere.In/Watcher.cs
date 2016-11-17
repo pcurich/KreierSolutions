@@ -39,6 +39,7 @@ namespace Ks.Batch.Copere.In
                 InsertData(infos);
                 UpdateScheduleBatch();
                 MoveFile(e.FullPath, e.Name);
+                WakeUpMerge();
 
             }
             catch (Exception ex)
@@ -48,6 +49,8 @@ namespace Ks.Batch.Copere.In
             }
 
         }
+
+        
 
         public void CustomCommand(int commandNumber)
         {
@@ -86,6 +89,21 @@ namespace Ks.Batch.Copere.In
         private static void MoveFile(string fullPath, string fileName)
         {
             File.Move(fullPath, System.IO.Path.Combine(System.IO.Path.Combine(Path, Batch.FolderMoveToDone), fileName));
+        }
+
+        private static void WakeUpMerge()
+        {
+            var path = ConfigurationManager.AppSettings["WakeUp"];
+            path = System.IO.Path.Combine(path, "WakeUp.txt");
+            if (!File.Exists(path))
+            {
+                using (var myFile = File.Create(path))
+                {
+                    TextWriter tw = new StreamWriter(myFile);
+                    tw.WriteLine("WakeUp");
+                    tw.Close();
+                }
+            }
         }
 
         #endregion

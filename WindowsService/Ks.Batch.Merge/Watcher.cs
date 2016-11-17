@@ -1,27 +1,26 @@
 ﻿using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
-using System.Linq;
-using Quartz;
-using Ks.Batch.Util;
+using System.Threading;
 using Ks.Batch.Util.Model;
 
 namespace Ks.Batch.Merge
 {
-    public class Job : IJob
+    public class Watcher
     {
-        List<Info> _copereOut;
-        List<Info> _copereIn;
-        List<Info> _cajaOut;
-        List<Info> _cajaIn;
-        Reports _reportCopere;
-        Reports _reportCaja;
-        string _connection;
+        private static List<Info> _copereOut;
+        private static List<Info> _copereIn;
+        private static List<Info> _cajaOut;
+        private static List<Info> _cajaIn;
+        private static Reports _reportCopere;
+        private static Reports _reportCaja;
 
-        public void Execute(IJobExecutionContext context)
+        public static void FileCreated(object sender, FileSystemEventArgs e)
         {
-            _connection = ConfigurationManager.ConnectionStrings["ACMR"].ConnectionString;
-            var dao = new Dao(_connection);
+            Thread.Sleep(1000*3); //3 Sec because is not atomic
+            var connection = ConfigurationManager.ConnectionStrings["ACMR"].ConnectionString;
+
+            var dao = new Dao(connection);
             dao.Connect();
             var listData = dao.GetData();
 
@@ -31,13 +30,15 @@ namespace Ks.Batch.Merge
             if (_copereOut != null && _copereIn != null && _copereOut.Count > 0 && _copereIn.Count > 0)
                 dao.Process(_reportCopere, _copereIn, _copereOut);
             if (_cajaOut != null && _cajaIn != null && _cajaOut.Count > 0 && _cajaIn.Count > 0)
-                dao.Process(_reportCaja ,_cajaIn, _cajaOut);
+                dao.Process(_reportCaja, _cajaIn, _cajaOut);
             dao.Close();
+
+            File.Delete(e.FullPath);
         }
 
         #region Util
 
-        protected void SplitList(Dictionary<Reports, List<Info>> listData)
+        protected static void SplitList(Dictionary<Reports, List<Info>> listData)
         {
             foreach (var data in listData)
             {

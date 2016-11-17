@@ -26,12 +26,18 @@
         <li @Html.RenderSelectedTabIndex(1, GetSelectedTabIndex())>
             @T("Common.Payment")
         </li>
+        <li @Html.RenderSelectedTabIndex(2, GetSelectedTabIndex())>
+            @T("Historico")
+        </li>
     </ul>
     <div>
         @TabSummary()
     </div>
     <div>
         @TabPayment()
+    </div>
+    <div>
+        @TabHistory()
     </div>
 </div>
 @{
@@ -78,50 +84,50 @@
         @{
             if (Model.IsActiveAmount1)
             {
-                <tr>
-                    <td class="adminTitle">
-                        @Html.KsLabel(Model.NameAmount1):
-                    </td>
-                    <td class="adminData">
-                        @Model.Amount1.ToString("c", new CultureInfo("es-PE"))
-                        @Html.HiddenFor(model => model.Amount1)
-                    </td>
-                </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabel(Model.NameAmount1):
+            </td>
+            <td class="adminData">
+                @Model.Amount1.ToString("c", new CultureInfo("es-PE"))
+                @Html.HiddenFor(model => model.Amount1)
+            </td>
+        </tr>
             }
             if (Model.IsActiveAmount2)
             {
-                <tr>
-                    <td class="adminTitle">
-                        @Html.KsLabel(Model.NameAmount2):
-                    </td>
-                    <td class="adminData">
-                        @Model.Amount2.ToString("c", new CultureInfo("es-PE"))
-                        @Html.HiddenFor(model => model.Amount2)
-                    </td>
-                </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabel(Model.NameAmount2):
+            </td>
+            <td class="adminData">
+                @Model.Amount2.ToString("c", new CultureInfo("es-PE"))
+                @Html.HiddenFor(model => model.Amount2)
+            </td>
+        </tr>
             }
             if (Model.IsActiveAmount3)
             {
-                <tr>
-                    <td class="adminTitle">
-                        @Html.KsLabel(Model.NameAmount3):
-                    </td>
-                    <td class="adminData">
-                        @Model.Amount3.ToString("c", new CultureInfo("es-PE"))
-                        @Html.HiddenFor(model => model.Amount3)
-                    </td>
-                </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabel(Model.NameAmount3):
+            </td>
+            <td class="adminData">
+                @Model.Amount3.ToString("c", new CultureInfo("es-PE"))
+                @Html.HiddenFor(model => model.Amount3)
+            </td>
+        </tr>
             }
 
-            <tr>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.AmountTotal):
-                </td>
-                <td class="adminData">
-                    @Model.AmountTotal.ToString("c", new CultureInfo("es-PE"))
-                    @Html.HiddenFor(model => model.AmountTotal)
-                </td>
-            </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.AmountTotal):
+            </td>
+            <td class="adminData">
+                @Model.AmountTotal.ToString("c", new CultureInfo("es-PE"))
+                @Html.HiddenFor(model => model.AmountTotal)
+            </td>
+        </tr>
         }
         <tr>
             <td class="adminTitle">
@@ -201,7 +207,19 @@
                 @Html.KsLabelFor(model => model.Description):
             </td>
             <td class="adminData">
-                @Model.Description
+                @{
+                    if (Model.Description != null)
+                    {
+                        var lines = Model.Description.Split('|');
+                        foreach (var line in lines)
+                        {
+                            if (line.Length > 0)
+                            {
+                                <p>@line</p>
+                            }
+                        }
+                    }
+                }
             </td>
         </tr>
 
@@ -224,4 +242,63 @@
         });
     });
     </script>
+}
+
+@helper TabHistory()
+{
+    {
+        if (Model.DetailsOld != null)
+        {
+            var addAmountOlds = Model.DetailsOld.Split('|');
+            if (addAmountOlds.Any())
+            {
+                @T("Montos Agregados ")
+                <table>
+                    <tr>
+                        <td>Couta</td>
+                        <td>Monto</td>
+                    </tr>
+                    @{
+                foreach (var amount in addAmountOlds)
+                {
+                    if (amount.Length > 0)
+                    {
+                        <tr>
+                            <td>@amount.Split('-')[0]</td>
+                            <td>@amount.Split('-')[1]</td>
+                        </tr>
+                    }
+                }
+                    }
+                </table>
+            }
+        }
+
+        if (Model.DetailsNext!= null)
+        {
+            var addAmountNext = Model.DetailsNext.Split('|');
+            if (addAmountNext.Any())
+            {
+                @T("Montos Movidos")
+                <table>
+                    <tr>
+                        <td>Couta</td>
+                        <td>Monto</td>
+                    </tr>
+                    @{
+                foreach (var amount in addAmountNext)
+                {
+                    if (amount.Length > 0)
+                    {
+                        <tr>
+                            <td>@amount.Split('-')[0]</td>
+                            <td>@amount.Split('-')[1]</td>
+                        </tr>
+                    }
+                }
+                    }
+                </table>
+            }
+        }
+    }
 }

@@ -13,46 +13,34 @@ namespace Ks.Batch.Merge
     {
         static void Main(string[] args)
         {
-            //HostFactory.Run(serviceConfig =>
-            //{
-            //    serviceConfig.UseNLog();
-            //    serviceConfig.Service<BatchContainer>(serviceInstance =>
-            //    {
-            //        serviceInstance.ConstructUsing(name => new BatchContainer());
-            //        serviceInstance.WhenStarted(execute => execute.Start());
-            //        serviceInstance.WhenStopped(execute => execute.Stop());
-            //        serviceInstance.WhenPaused(execute => execute.Pause());
-            //        serviceInstance.WhenContinued(execute => execute.Continue());
-            //        serviceInstance.WhenCustomCommandReceived(
-            //            (execute, hostControl, commandNumber) => execute.CustomCommand(commandNumber));
+            HostFactory.Run(serviceConfig =>
+            {
+                serviceConfig.UseNLog();
+                serviceConfig.Service<BatchContainer>(serviceInstance =>
+                {
+                    serviceInstance.ConstructUsing(name => new BatchContainer());
+                    serviceInstance.WhenStarted(execute => execute.Start());
+                    serviceInstance.WhenStopped(execute => execute.Stop());
+                    serviceInstance.WhenPaused(execute => execute.Pause());
+                    serviceInstance.WhenContinued(execute => execute.Continue());
+                    serviceInstance.WhenCustomCommandReceived(
+                        (execute, hostControl, commandNumber) => execute.CustomCommand(commandNumber));
 
-            //        serviceInstance.ScheduleQuartzJob(q =>
-            //            q.WithJob(() =>
-            //                JobBuilder.Create<Job>().Build())
-            //                .AddTrigger(() =>
-            //                    TriggerBuilder.Create()
-            //                        .WithSimpleSchedule(builder => builder
-            //                            .WithIntervalInMinutes(10)
-            //                            .RepeatForever())
-            //                        .Build())
-            //            );
-            //    });
+                    
+                });
 
-            //    serviceConfig.EnableServiceRecovery(recoveryOption =>
-            //    {
-            //        recoveryOption.RestartService(1); //Un minuto para recuperarse
-            //    });
+                serviceConfig.EnableServiceRecovery(recoveryOption =>
+                {
+                    recoveryOption.RestartService(1); //Un minuto para recuperarse
+                });
 
-            //    serviceConfig.SetServiceName("Ks.Batch.Merge");
-            //    serviceConfig.SetDisplayName("Ks Batch Merge");
-            //    serviceConfig.SetDescription("Process to Merge files");
+                serviceConfig.SetServiceName("Ks.Batch.Merge");
+                serviceConfig.SetDisplayName("Ks Batch Merge");
+                serviceConfig.SetDescription("Process to Merge files");
 
-            //    serviceConfig.EnablePauseAndContinue();
-            //    serviceConfig.StartAutomatically();
-            //});
-
-            Job job = new Job();
-            job.Execute(null);
+                serviceConfig.EnablePauseAndContinue();
+                serviceConfig.StartAutomatically();
+            });
         }
     }
 }

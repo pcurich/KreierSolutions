@@ -66,5 +66,8 @@ namespace Ks.Admin.Models.Customers
         public string Reference { get; set; }
         [KsResourceDisplayName("Admin.Contract.ContributionPayments.Fields.Description")]
         public string Description { get; set; }
+
+        public string DetailsOld { get; set; }
+        public string DetailsNext { get; set; }
     }
 }

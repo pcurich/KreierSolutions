@@ -87,6 +87,14 @@ namespace Ks.Core.Domain.Contract
         /// Gets or sets the description.
         /// </summary>
         public string Description { get; set; }
+        /// <summary>
+        /// Gets or sets the details old.
+        /// </summary>
+        public string DetailsOld { get; set; }
+        /// <summary>
+        /// Gets or sets the details next.
+        /// </summary>
+        public string DetailsNext { get; set; }
 
         public virtual Contribution Contribution { get; set; }
 

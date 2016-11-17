@@ -139,6 +139,60 @@ BEGIN
 END
 GO
 
+CREATE PROCEDURE FixQuota 
+AS
+BEGIN
+
+	Declare @MaxToPay int= (select value from Setting where Name  =  'contributionsettings.maximumcharge')
+	DECLARE @ContributionPaymentId INT
+	DECLARE @NextId INT 
+	DECLARE @OffSet decimal 
+	DECLARE @LastDescription NVARCHAR(MAX)
+	DECLARE @LastNumber INT
+	DECLARE @ValueIndex INT =  0;
+	
+
+	DECLARE MY_CURSOR CURSOR 
+	  LOCAL STATIC READ_ONLY FORWARD_ONLY
+	FOR 
+	SELECT id FROM ContributionPayment WHERE AmountTotal>070
+
+	OPEN MY_CURSOR
+	FETCH NEXT FROM MY_CURSOR INTO @ContributionPaymentId
+	WHILE @@FETCH_STATUS = 0
+	BEGIN 
+		SET @ValueIndex=  0;
+		WHILE @ValueIndex <= 10
+		BEGIN
+			SET @OffSet = (select AmountTotal-@MaxToPay from ContributionPayment WHERE Id=(@ContributionPaymentId+@ValueIndex))
+			SET @LastDescription =(select ISNULL([DESCRIPTION],'')  from ContributionPayment WHERE Id=(@ContributionPaymentId+@ValueIndex))
+			SET @LastNumber =(select Number from ContributionPayment WHERE Id=(@ContributionPaymentId+@ValueIndex))
+			
+			IF(@OffSet>0)
+				BEGIN
+					UPDATE ContributionPayment 
+					SET AmountTotal=@MaxToPay						
+					WHERE  Id=@ContributionPaymentId+@ValueIndex
+					
+					UPDATE ContributionPayment 
+					SET AmountTotal=AmountTotal+@OffSet,
+						AmountOld=@OffSet, 
+						[DESCRIPTION]=ISNULL([DESCRIPTION],'')  + '|' + @LastDescription , 
+						NumberOld =@LastNumber,
+						DetailsNext=ISNULL(DetailsNext,'') + '|'+cast(@LastNumber as nvarchar(4))+'-'+ cast(@OffSet as nvarchar(10))						
+					WHERE  Id=(@ContributionPaymentId+1+@ValueIndex)
+				END
+			SET @ValueIndex = @ValueIndex + 1;
+		END	
+		FETCH NEXT FROM MY_CURSOR INTO @ContributionPaymentId
+	END
+	CLOSE MY_CURSOR
+	DEALLOCATE MY_CURSOR
+
+END
+ 
+GO
+
 CREATE PROCEDURE [UpdateContributionPayment]
 (
 	@XmlPackage xml, 
@@ -258,34 +312,34 @@ Declare @ValueOfQuota3 int= (select Value from Setting where Name  = 'contributi
 
 UPDATE  ContributionPayment 
 SET 
-ContributionPayment.AmountTotal=ContributionPayment.AmountTotal+@ValueOfQuota1+@ValueOfQuota2+@ValueOfQuota3,
+ContributionPayment.AmountTotal=ContributionPayment.AmountTotal+TMP.NoPayed,
 contributionPayment.AmountOld=@ValueOfQuota1+@ValueOfQuota2+@ValueOfQuota3,
 ContributionPayment.NumberOld=TMP.Number,
+ContributionPayment.DetailsOld=ISNULL(ContributionPayment.DetailsOld,'') +'|'+cast(TMP.Number as nvarchar(4))+'-'+ cast((@ValueOfQuota1+@ValueOfQuota2+@ValueOfQuota3) as nvarchar(10)), 
 ContributionPayment.[Description] ='Valor de la couta aumentado por el sistema ACMR debido a la falta de liquitdez de la cuota N° ' + CAST(TMP.Number as nvarchar(3))
 FROM 
 (
 	SELECT CP.ContributionId AS ContributionId, NextPayment.NumberNextQuota AS NumberNextQuota ,
-	CPT.Number AS Number
+	CPT.Number AS Number, CPT.AmountTotal AS NoPayed
 	--The nex quota and the Actual 
 	FROM 
 	ContributionPayment CP
 	INNER JOIN (
-			SELECT ContributionId,MIN(Number) as NumberNextQuota
+			SELECT ContributionId, MIN(Number) as NumberNextQuota
 			FROM ContributionPayment 
 			WHERE StateId = 1 --Get the next Quota in stateId=1 (Pendiente) 
 			GROUP BY ContributionId
 	) NextPayment ON NextPayment.ContributionId=CP.ContributionId
 	INNER JOIN #ContributionPaymentTmp5 CPT ON CPT.ContributionId=CP.ContributionId  --This is Unique
-	GROUP BY CP.ContributionId , NextPayment.NumberNextQuota  ,	CPT.Number 
+	GROUP BY CP.ContributionId , NextPayment.NumberNextQuota  ,	CPT.Number ,CPT.AmountTotal
 ) as TMP
 WHERE --only the next quota to pay
 ContributionPayment.ContributionId=TMP.ContributionId AND ContributionPayment.Number=TMP.NumberNextQuota
 
-------------------------------------------------------------------------
+
+	------------------------------------------------------------------------
 --8) Create table Parcial 3
 ------------------------------------------------------------------------
-
-SELECT * INTO #ContributionPaymentTmp3 FROM  #ContributionPaymentTmp WHERE  StateId=3
 
 SELECT * INTO #ContributionPaymentTmp3 FROM  #ContributionPaymentTmp WHERE  StateId=3
 
@@ -314,7 +368,15 @@ FROM
 WHERE --only the next quota to pay
 ContributionPayment.ContributionId=TMP.ContributionId AND ContributionPayment.Number=TMP.NumberNextQuota
 
+------------------------------------------------------------------------
+--9) fIX The next quota
+------------------------------------------------------------------------
+EXEC FixQuota
+
+END
 GO
+
+
 
 CREATE PROCEDURE [LanguagePackImport]
 (
@@ -333,7 +395,7 @@ BEGIN
 			)
 
 		INSERT INTO #LocaleStringResourceTmp (LanguageID, ResourceName, ResourceValue)
-		SELECT	@LanguageId, nref.value('@Name', 'nvarchar(200)'), 
+		SELECT	@LanguageId, nref.value('@Name', 'nvarchar(200)') ,nref.value('Value[1]', 'nvarchar(MAX)')
 		FROM	@XmlPackage.nodes('//Language/LocaleResource') AS R(nref)
 
 		DECLARE @ResourceName nvarchar(200)

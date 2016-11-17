@@ -33,6 +33,7 @@ namespace Ks.Batch.Caja.In
                 InsertData(infos);
                 UpdateScheduleBatch();
                 MoveFile(e.FullPath, e.Name);
+                WakeUpMerge();
 
             }
             catch (Exception ex)
@@ -50,6 +51,21 @@ namespace Ks.Batch.Caja.In
         }
 
         #region Util
+
+        private static void WakeUpMerge()
+        {
+            var path = ConfigurationManager.AppSettings["WakeUp"];
+            path = System.IO.Path.Combine(path, "WakeUp.txt");
+            if (!File.Exists(path))
+            {
+                using (var myFile = File.Create(path))
+                {
+                    TextWriter tw = new StreamWriter(myFile);
+                    tw.WriteLine("WakeUp");
+                    tw.Close();
+                }
+            }
+        }
 
         private static void InsertData(List<Info> infos)
         {

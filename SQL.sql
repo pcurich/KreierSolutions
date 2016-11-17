@@ -333,32 +333,16 @@ ORDER BY Number
 ---------------------------------
 --CLEAN DATA
 UPDATE Contribution SET IsDelay=0, CycleOfDelay=0, Active=1, UpdatedOnUtc=NULL, AmountTotal=0
-UPDATE ContributionPayment SET NumberOld =0, AmountOld =0, AmountPayed=0, AmountTotal=35, ProcessedDateOnUtc=null, StateId=1, IsAutomatic=1, BankName=null,Description=''
+UPDATE ContributionPayment SET detailsOld=null,detailsnext=null, NumberOld =0, AmountOld =0, AmountPayed=0, AmountTotal=35, ProcessedDateOnUtc=null, StateId=1, IsAutomatic=1, BankName=null,Description=''
 delete Reports
-
---Export Data 
-
-update ScheduleBatch set   NextExecutionOnUtc =GETUTCDATE()
-select SystemName,PeriodYear, PeriodMonth, NextExecutionOnUtc,LastExecutionOnUtc from ScheduleBatch
-where  SystemName='Ks.Batch.Copere.Out'
-
 update ScheduleBatch set PeriodMonth=11, PeriodYear=2016,  NextExecutionOnUtc =GETUTCDATE() where  SystemName IN ('Ks.Batch.Copere.Out','Ks.Batch.Caja.Out')
-update ScheduleBatch set   NextExecutionOnUtc =GETUTCDATE() where  SystemName IN ('Ks.Batch.Copere.Out','Ks.Batch.Caja.Out')
-select * from ContributionPayment
-select Period,Source,StateId,* from Reports
 
-select * from ContributionPayment where BankName is not null
-update ContributionPayment set Reference=BankName, AccountNumber=BankName, TransactionNumber=BankName
+--fuerza el quarts
 
-select * from Reports  where ParentKey='1cee5abd-c624-4e54-80bb-ae5ae0265755'
+update ScheduleBatch set   NextExecutionOnUtc =GETUTCDATE() where id>0
+ 
+SELECT * FROM ContributionPayment WHERE ID=424
+SELECT * FROM ContributionPayment WHERE detailsold is not null 
+SELECT * FROM ContributionPayment WHERE detailsnext is not null 
 
-select * from ContributionPayment WHERE StateId=5
-SELECT * FROM ScheduleBatch
-SELECT * FROM Reports
-
-
-
-UPDATE ContributionPayment SET StateId=2 WHERE ID=422
-UPDATE Reports SET StateId= 2 WHERE StateId=5
-
-SELECT * FROM ContributionPayment WHERE ID=422
+ 

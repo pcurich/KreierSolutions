@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.IO;
 using Ks.Batch.Util;
 using Topshelf.Logging;
 
@@ -8,9 +9,9 @@ namespace Ks.Batch.Merge
     public class BatchContainer : IBatchContainer
     {
         private static readonly LogWriter Log = HostLogger.Get<BatchContainer>();
-        public string Connection;
-        //public string PathValue;
-        //public ScheduleBatch Batch;
+        private FileSystemWatcher _watcher;
+        public ScheduleBatch Batch;
+        public string PathValue;
 
         public bool Start()
         {
@@ -45,9 +46,12 @@ namespace Ks.Batch.Merge
 
         private void Read()
         {
-            Connection = ConfigurationManager.ConnectionStrings["ACMR"].ConnectionString;
-            //PathValue = ConfigurationManager.AppSettings["Path"];
-            //Batch = XmlHelper.Deserialize<ScheduleBatch>(Path.Combine(PathValue, "ScheduleBatch.xml"));
+            PathValue = ConfigurationManager.AppSettings["Path"];
+
+            _watcher = new FileSystemWatcher(PathValue, "*.txt");
+            _watcher.Created += Watcher.FileCreated;
+            _watcher.IncludeSubdirectories = false;
+            _watcher.EnableRaisingEvents = true;
         }
     }
 }
