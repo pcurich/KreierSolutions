@@ -7,7 +7,7 @@ using Ks.Admin.Validators.Customers;
 using Ks.Web.Framework;
 using Ks.Web.Framework.Mvc;
 
-namespace Ks.Admin.Models.Customers
+namespace Ks.Admin.Models.Contract
 {
     [Validator(typeof(ContributionPaymentsValidator))]
     public partial class ContributionPaymentsModel : BaseKsEntityModel

@@ -1361,9 +1361,9 @@ namespace Ks.Admin.Controllers
                 CustomerDni = customer.GetAttribute<string>(SystemCustomerAttributeNames.Dni),
                 CustomerAdmCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode),
                 CustomerCompleteName = customer.GetFullName(),
-                TotalCycle = _contributionSettings.TotalCycle,
-                AmountTotal = _contributionSettings.Amount1 + _contributionSettings.Amount2 + _contributionSettings.Amount3,
-                CreatedOn = DateTime.Now,
+                TotalOfCycles= _contributionSettings.TotalCycle,
+                AmountMeta = (_contributionSettings.Amount1 + _contributionSettings.Amount2 + _contributionSettings.Amount3) * _contributionSettings.TotalCycle,
+                CreatedOn = DateTime.UtcNow,
                 AuthorizeDiscount = _sequenceIdsSettings.AuthorizeDiscount,
                 DayOfPayment = _contributionSettings.DayOfPayment,
                 MonthsList = PrepareMonthsList(),
@@ -1417,14 +1417,13 @@ namespace Ks.Admin.Controllers
                     {
                         CustomerId = model.CustomerId,
                         AuthorizeDiscount = _sequenceIdsSettings.AuthorizeDiscount,
-                        AmountTotal = 0,
                         Active = true,
                         CreatedOnUtc = DateTime.UtcNow,
                         UpdatedOnUtc = null,
-                        ContributionPayments = new List<ContributionPayment>(model.TotalCycle)
+                        ContributionPayments = new List<ContributionPayment>(model.TotalOfCycles)
                     };
 
-                for (var cycle = 0; cycle < model.TotalCycle; cycle++)
+                for (var cycle = 0; cycle < model.TotalOfCycles; cycle++)
                 {
                     contribution.ContributionPayments.Add(new ContributionPayment
                     {

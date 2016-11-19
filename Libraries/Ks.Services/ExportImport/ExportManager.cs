@@ -108,7 +108,7 @@ namespace Ks.Services.ExportImport
                 worksheet.Cells["B8"].Value = customer.GetGenericAttribute(SystemCustomerAttributeNames.AdmCode);
 
                 worksheet.Cells["D6"].Value = "Monto:";
-                worksheet.Cells["F6"].Value = contribution.AmountTotal.ToString("c", new CultureInfo("es-PE"));
+                worksheet.Cells["F6"].Value = contribution.AmountPayed.ToString("c", new CultureInfo("es-PE"));
                 worksheet.Cells["D7"].Value = "Aportante desde:";
                 worksheet.Cells["F7"].Value = _dateTimeHelper.ConvertToUserTime(contribution.CreatedOnUtc, TimeZoneInfo.Local).ToShortDateString();
                 worksheet.Cells["D8"].Value = "Ultimo Pago:";

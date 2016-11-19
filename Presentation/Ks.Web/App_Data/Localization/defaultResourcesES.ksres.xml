@@ -7476,10 +7476,16 @@
   <LocaleResource Name="Admin.Contract.Contribution.Fields.Active">
     <Value>Es activo?</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Contract.Contribution.Fields.AmountTotal">
+  <LocaleResource Name="Admin.Contract.Contribution.Fields.AmountMeta">
+    <Value>Total Esperado</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Contribution.Fields.AmountMeta.Hint">
+    <Value>Representa el Total que el Personal Militar debe aportar en la asociación</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Contribution.Fields.AmountPayed">
     <Value>Total Aportado</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Contract.Contribution.Fields.AmountTotal.Hint">
+  <LocaleResource Name="Admin.Contract.Contribution.Fields.AmountPayed.Hint">
     <Value>Representa el Total Aportado por el Personal Militar</Value>
   </LocaleResource>
     <LocaleResource Name="Admin.Contract.Contribution.Fields.IsDelay">
@@ -7584,11 +7590,17 @@
   <LocaleResource Name="Admin.Contract.Contribution.Fields.SearchAuthorizeDiscount.Hint">
     <Value>Buscar por el N° de descuento de autorización</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Contract.Contribution.Fields.TotalCycle">
-    <Value>Total de Ciclos</Value>
+  <LocaleResource Name="Admin.Contract.Contribution.Fields.TotalOfCycles">
+    <Value>Tiempo de aportación</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Contract.Contribution.Fields.TotalCycle.Hint">
-    <Value>Total de Ciclos de cobros</Value>
+  <LocaleResource Name="Admin.Contract.Contribution.Fields.TotalOfCycles.Hint">
+    <Value>Tiempo total de aportación</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Contribution.Fields.DelayCycles">
+    <Value>Tiempo sin Liquidez</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Contribution.Fields.DelayCycles.Hint">
+    <Value>Tiempo consecutivo que se queda sin liquidez</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Contribution.Fields.Description">
     <Value>Nota</Value>

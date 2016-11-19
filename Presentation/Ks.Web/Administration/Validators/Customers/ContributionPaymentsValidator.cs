@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Ks.Admin.Models.Customers;
+using Ks.Admin.Models.Contract;
 using Ks.Services.Localization;
 using Ks.Web.Framework.Validators;
 

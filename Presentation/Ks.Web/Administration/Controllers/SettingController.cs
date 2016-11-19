@@ -310,27 +310,27 @@ namespace Ks.Admin.Controllers
             {
                 model.CustumerToChange.Add(new CustumerToChange
                 {
-                    Delay = contributionsDelay.CycleOfDelay,
-                    Size = Convert.ToInt32(contributionsDelay.AmountTotal)
+                    Delay = contributionsDelay.DelayCycles,
+                    Size = Convert.ToInt32(contributionsDelay.AmountPayed)
                 });
             }
 
             #region Borrar
             contributionsDelays = new List<Contribution>
             {
-                new Contribution{CycleOfDelay = 1, AmountTotal = 1236},
-                new Contribution{CycleOfDelay = 2, AmountTotal = 1013},
-                new Contribution{CycleOfDelay = 3, AmountTotal = 892},
-                new Contribution{CycleOfDelay = 4, AmountTotal = 400},
-                new Contribution{CycleOfDelay = 5, AmountTotal = 120},
-                new Contribution{CycleOfDelay = 6, AmountTotal = 12},
+                new Contribution{DelayCycles = 1, AmountPayed = 1236},
+                new Contribution{DelayCycles = 2, AmountPayed = 1013},
+                new Contribution{DelayCycles = 3, AmountPayed = 892},
+                new Contribution{DelayCycles = 4, AmountPayed = 400},
+                new Contribution{DelayCycles = 5, AmountPayed = 120},
+                new Contribution{DelayCycles = 6, AmountPayed = 12},
             };
             foreach (var contributionsDelay in contributionsDelays)
             {
                 model.CustumerToChange.Add(new CustumerToChange
                 {
-                    Delay = contributionsDelay.CycleOfDelay,
-                    Size = Convert.ToInt32(contributionsDelay.AmountTotal)
+                    Delay = contributionsDelay.DelayCycles,
+                    Size = Convert.ToInt32(contributionsDelay.AmountPayed)
                 });
             }
 

@@ -7,6 +7,7 @@ using Ks.Admin.Validators.Customers;
 using Ks.Core.Domain.Catalog;
 using Ks.Web.Framework;
 using Ks.Web.Framework.Mvc;
+using Ks.Admin.Models.Contract;
 
 namespace Ks.Admin.Models.Customers
 {

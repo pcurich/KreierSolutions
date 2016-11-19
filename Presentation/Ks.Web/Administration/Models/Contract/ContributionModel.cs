@@ -19,6 +19,40 @@ namespace Ks.Admin.Models.Contract
             Banks = new List<SelectListItem>();
         }
 
+        [KsResourceDisplayName("Admin.Contract.Contribution.Fields.AuthorizeDiscount")]
+        public int AuthorizeDiscount { get; set; }
+
+        [KsResourceDisplayName("Admin.Contract.Contribution.Fields.AmountMeta")]
+        [UIHint("Decimal")]
+        public decimal AmountMeta { get; set; }
+
+        [KsResourceDisplayName("Admin.Contract.Contribution.Fields.AmountPayed")]
+        [UIHint("Decimal")]
+        public decimal AmountPayed { get; set; }
+
+        [KsResourceDisplayName("Admin.Contract.Contribution.Fields.TotalOfCycles")]
+        public int TotalOfCycles { get; set; }
+
+        [KsResourceDisplayName("Admin.Contract.Contribution.Fields.DelayCycles")]
+        public int DelayCycles { get; set; }
+
+        [KsResourceDisplayName("Admin.Contract.Contribution.Fields.IsDelay")]
+        public bool IsDelay { get; set; }
+
+        [KsResourceDisplayName("Admin.Contract.Contribution.Fields.Description")]
+        public string Description { get; set; }
+
+        [KsResourceDisplayName("Admin.Contract.Contribution.Fields.Active")]
+        public bool Active { get; set; }
+
+        [KsResourceDisplayName("Admin.Contract.Contribution.Fields.CreatedOn")]
+        public DateTime? CreatedOn { get; set; }
+
+        [KsResourceDisplayName("Admin.Contract.Contribution.Fields.UpdatedOn")]
+        public DateTime? UpdatedOn { get; set; }
+
+        #region Customer
+
         public int CustomerId { get; set; }
 
         [KsResourceDisplayName("Admin.Contract.Contribution.Fields.CustomerCompleteName")]
@@ -33,46 +67,18 @@ namespace Ks.Admin.Models.Contract
         [AllowHtml]
         public string CustomerAdmCode { get; set; }
 
-        [KsResourceDisplayName("Admin.Contract.Contribution.Fields.AuthorizeDiscount")]
-        public int AuthorizeDiscount { get; set; }
-
+        #endregion
+        
         [KsResourceDisplayName("Admin.Contract.Contribution.Fields.DayOfPayment")]
         public int DayOfPayment { get; set; }
         
-
-        [KsResourceDisplayName("Admin.Contract.Contribution.Fields.CreatedOn")]
-        public DateTime? CreatedOn { get; set; }
-
-        [KsResourceDisplayName("Admin.Contract.Contribution.Fields.UpdatedOn")]
-        public DateTime? UpdatedOn { get; set; }
-
-        [KsResourceDisplayName("Admin.Contract.Contribution.Fields.Description")]
-        public string Description { get; set; }
-
-        [KsResourceDisplayName("Admin.Contract.Contribution.Fields.AmountTotal")]
-        [UIHint("Decimal")]
-        public decimal AmountTotal { get; set; }
-        [KsResourceDisplayName("Admin.Contract.Contribution.Fields.IsDelay")]
-        public bool IsDelay { get; set; }
-        [KsResourceDisplayName("Admin.Contract.Contribution.Fields.CycleOfDelay")]
-        public int CycleOfDelay { get; set; }
-
-        [KsResourceDisplayName("Admin.Contract.Contribution.Fields.TotalCycle")]
-        public int TotalCycle { get; set; }
-
-        [KsResourceDisplayName("Admin.Contract.Contribution.Fields.Active")]
-        public bool Active { get; set; }
-
         [KsResourceDisplayName("Admin.Contract.Contribution.Fields.MonthId")]
         public int MonthId { get; set; }
         [KsResourceDisplayName("Admin.Contract.Contribution.Fields.YearId")]
         public int YearId { get; set; }
+        
         public List<SelectListItem> MonthsList { get; set; }
         public List<SelectListItem> YearsList { get; set; }
-
-        
-        
-
         public List<SelectListItem> Banks { get; set; }
 
     }

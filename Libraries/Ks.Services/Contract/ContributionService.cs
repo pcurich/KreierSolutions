@@ -76,19 +76,19 @@ namespace Ks.Services.Contract
         {
             var query = from c in _contributionRepository.Table
                         where c.IsDelay
-                        group c by new { c.CycleOfDelay } into temp
+                        group c by new { c.DelayCycles } into temp
                         select new
                         {
                             CycleOfDelay = temp.Key,
-                            AmountTotal = temp.Count()
+                            AmountPayed = temp.Count()
                         };
 
             var contributions = query.ToList();
 
             return contributions.Select(contribution => new Contribution
             {
-                CycleOfDelay = Convert.ToInt32(contribution.CycleOfDelay),
-                AmountTotal = Convert.ToInt32(contribution.AmountTotal)
+                DelayCycles= Convert.ToInt32(contribution.CycleOfDelay),
+                AmountPayed = Convert.ToInt32(contribution.AmountPayed)
             }).ToList();
         }
 
@@ -248,11 +248,11 @@ namespace Ks.Services.Contract
         }
 
         public virtual IList<ReportContributionPayment> GetReportContributionPayment
-            (int contributionId,int pageIndex = 0,
-            int pageSize =  Int32.MaxValue)
+            (int contributionId, int pageIndex = 0,
+            int pageSize = Int32.MaxValue)
         {
-            if(contributionId==0)
-                return new  List<ReportContributionPayment>();
+            if (contributionId == 0)
+                return new List<ReportContributionPayment>();
 
             var pContributionId = _dataProvider.GetParameter();
             pContributionId.ParameterName = "ContributionId";
@@ -264,12 +264,12 @@ namespace Ks.Services.Contract
             pTotalRecords.Direction = ParameterDirection.Output;
             pTotalRecords.DbType = DbType.Int32;
 
-             //invoke stored procedure
+            //invoke stored procedure
             var data = _dbContext.ExecuteStoredProcedureList<ReportContributionPayment>("SummaryReportContributionPayment",
                 pContributionId, pTotalRecords);
 
             //return products
-            var  totalRecords = (pTotalRecords.Value != DBNull.Value) ? Convert.ToInt32(pTotalRecords.Value) : 0;
+            var totalRecords = (pTotalRecords.Value != DBNull.Value) ? Convert.ToInt32(pTotalRecords.Value) : 0;
             return new PagedList<ReportContributionPayment>(data, pageIndex, pageSize, totalRecords);
 
         }

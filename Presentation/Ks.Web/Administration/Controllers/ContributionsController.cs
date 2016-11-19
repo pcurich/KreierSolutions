@@ -272,10 +272,10 @@ namespace Ks.Admin.Controllers
 
             var contribution = _contributionService.GetContributionById(model.ContributionId);
             contribution.UpdatedOnUtc = DateTime.UtcNow;
-            contribution.AmountTotal += contributionPayment.Amount1 + contributionPayment.Amount2 +
+            contribution.AmountPayed += contributionPayment.Amount1 + contributionPayment.Amount2 +
                                        contributionPayment.Amount3;
 
-             contribution.CycleOfDelay=0;
+             contribution.DelayCycles=0;
              contribution.IsDelay = false;
             _contributionService.UpdateContribution(contribution);
 

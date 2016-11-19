@@ -323,7 +323,7 @@
     <Compile Include="Models\Contract\ContributionListModel.cs" />
     <Compile Include="Models\Contract\ContributionModel.cs" />
     <Compile Include="Models\Contract\LoanModel.cs" />
-    <Compile Include="Models\Customers\ContributionPaymentsModel.cs" />
+    <Compile Include="Models\Contract\ContributionPaymentsModel.cs" />
     <Compile Include="Models\Customers\CustomerAddressModel.cs" />
     <Compile Include="Models\Customers\CustomerAttributeModel.cs" />
     <Compile Include="Models\Customers\CustomerAttributeValueModel.cs" />

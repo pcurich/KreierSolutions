@@ -10,19 +10,29 @@ namespace Ks.Core.Domain.Contract
         private ICollection<ContributionPayment> _contributionPayments;
 
         /// <summary>
-        /// Gets or sets the customer identifier.
-        /// </summary>
-        public int CustomerId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the letter number.
+        /// Gets or sets the Authorized Discount
         /// </summary>
         public int AuthorizeDiscount { get; set; }
 
         /// <summary>
+        /// Gets or sets the amount meta
+        /// </summary>
+        public decimal AmountMeta { get; set; }
+
+        /// <summary>
         /// Gets or sets the amount total.
         /// </summary>
-        public decimal AmountTotal { get; set; }
+        public decimal AmountPayed { get; set; }
+
+        /// <summary>
+        /// Gets or sets the total Of Cycles
+        /// </summary>
+        public int TotalOfCycles { get; set; }
+
+        /// <summary>
+        /// Gets or sets the cycle of delay.
+        /// </summary>
+        public int DelayCycles { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is delay.
@@ -30,10 +40,10 @@ namespace Ks.Core.Domain.Contract
         public bool IsDelay { get; set; }
 
         /// <summary>
-        /// Gets or sets the cycle of delay.
+        /// Gets or sets the description.
         /// </summary>
-        public int CycleOfDelay { get; set; }
-
+        public string Description { get; set; }
+        
         /// <summary>
         /// Gets or sets a value indicating whether this <see cref="Contribution"/> is active.
         /// </summary>
@@ -50,10 +60,9 @@ namespace Ks.Core.Domain.Contract
         public DateTime? UpdatedOnUtc { get; set; }
 
         /// <summary>
-        /// Gets or sets the description.
+        /// Gets or sets the customer identifier.
         /// </summary>
-        public string Description { get; set; }
-
+        public int CustomerId { get; set; }
         public virtual Customer Customer { get; set; }
 
         public virtual ICollection<ContributionPayment> ContributionPayments
