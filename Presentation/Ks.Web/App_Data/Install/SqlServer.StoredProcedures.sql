@@ -595,7 +595,7 @@ FROM
 GROUP BY YEARS  ,IsAutomatic, StateId 
 
 DECLARE @newId uniqueidentifier =NEWID();
-DECLARE @value XML=(SELECT * FROM  #tmp_reports order by 1 desc FOR XML PATH ('ReportContributionPaymentModel'), root ('ArrayOfReportContributionPaymentModel'))
+DECLARE @value XML=(SELECT * FROM  #tmp_reports order by 1 desc FOR XML PATH ('ReportContributionPayment'), root ('ArrayOfReportContributionPayment'))
 
 DELETE FROM Report WHERE source=@Source
 INSERT INTO Report VALUES (@newId,@NameReport,@value,'',@ReportState,'',@Source,@newId,GETUTCDATE())
