@@ -10,7 +10,7 @@ namespace Ks.Core.Domain.Contract
         public int Number { get; set; }
 
         /// <summary>
-        /// Gets or sets the number of old qouta.
+        /// Gets or sets the number of old quota.
         /// </summary>
         public int NumberOld { get; set; }
         /// <summary>
@@ -87,14 +87,6 @@ namespace Ks.Core.Domain.Contract
         /// Gets or sets the description.
         /// </summary>
         public string Description { get; set; }
-        /// <summary>
-        /// Gets or sets the details old.
-        /// </summary>
-        public string DetailsOld { get; set; }
-        /// <summary>
-        /// Gets or sets the details next.
-        /// </summary>
-        public string DetailsNext { get; set; }
 
         public virtual Contribution Contribution { get; set; }
 

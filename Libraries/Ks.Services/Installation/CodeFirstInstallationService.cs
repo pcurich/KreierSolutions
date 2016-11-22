@@ -705,7 +705,8 @@ namespace Ks.Services.Installation
             {
                 AuthorizeDiscount = 1583,
                 DeclaratoryLetter = 11671,
-                RegistrationForm = 54651
+                RegistrationForm = 54651,
+                AuthorizeLoan=1000
             });
 
             settingService.SaveSetting(new ContributionSettings

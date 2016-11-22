@@ -18,11 +18,10 @@ namespace Ks.Services.Contract
         ///     Key for caching
         /// </summary>
         /// <remarks>
-        ///     {0} : loan Id
+        ///     {0} :  Id
         ///     {1} : customer Id
-        ///     {2} : active
         /// </remarks>
-        private const string LOANS_BY_KEY = "ks.loans.{0}-{1}-{2}";
+        private const string LOANS_BY_KEY = "ks.loans.{0}-{1}";
 
         /// <summary>
         ///     Key pattern to clear cache
@@ -33,7 +32,7 @@ namespace Ks.Services.Contract
 
         #region Fields
 
-        private readonly IRepository<Customer> _customerRepository;
+        private readonly IRepository<LoanPayment> _loanPaymentRepository;
         private readonly IRepository<Loan> _loanRepository;
         private readonly ICacheManager _cacheManager;
         private readonly IEventPublisher _eventPublisher;
@@ -42,10 +41,10 @@ namespace Ks.Services.Contract
 
         #region Constructor
 
-        public LoanService(IRepository<Customer> customerRepository,
+        public LoanService(IRepository<LoanPayment> loanPaymentRepository,
             IRepository<Loan> loanRepository, ICacheManager cacheManager, IEventPublisher eventPublisher)
         {
-            _customerRepository = customerRepository;
+            _loanPaymentRepository = loanPaymentRepository;
             _loanRepository = loanRepository;
             _cacheManager = cacheManager;
             _eventPublisher = eventPublisher;
@@ -64,79 +63,80 @@ namespace Ks.Services.Contract
             UpdateLoan(loan);
         }
 
-        public virtual IPagedList<Loan> SearchLoanByCustomerId(int customerId, bool isActive = false, int pageIndex = 0, int pageSize = Int32.MaxValue)
+        public virtual IPagedList<Loan> SearchLoanByCustomerId(int customerId, int stateId = -1, int pageIndex = 0, int pageSize = Int32.MaxValue)
         {
             var query = from c in _loanRepository.Table
                         orderby c.CreatedOnUtc
-                        where c.CustomerId == customerId && c.Active == isActive
+                        where c.CustomerId == customerId
                         select c;
-
-            var contribution = query.ToList();
-
-            return new PagedList<Loan>(contribution, pageIndex, pageSize);
-        }
-
-        public virtual IPagedList<Loan> SearchLoanByLoanNumber(Guid loanNumber, bool isActive = false, int pageIndex = 0, int pageSize = Int32.MaxValue)
-        {
-            var query = from c in _loanRepository.Table
-                        orderby c.CreatedOnUtc
-                        where c.LoanNumber == loanNumber && c.Active == isActive
-                        select c;
-
-            var contribution = query.ToList();
-
-            return new PagedList<Loan>(contribution, pageIndex, pageSize);
-        }
-
-        public virtual IPagedList<Loan> SearchLoanByCreatedOnUtc(DateTime? dateFrom = null, DateTime? dateTo = null, bool isActive = false,
-            int pageIndex = 0, int pageSize = Int32.MaxValue)
-        {
-            if (dateFrom.HasValue && dateTo.HasValue)
+            if (stateId >= 0)
             {
-                var query = from c in _loanRepository.Table
-                            orderby c.CreatedOnUtc
-                            where c.CreatedOnUtc.Date >= dateFrom.Value &&
-                                  c.CreatedOnUtc.Date <= dateTo.Value &&
-                                  c.Active == isActive
-                            select c;
-                var contribution = query.ToList();
-
-                return new PagedList<Loan>(contribution, pageIndex, pageSize);
+                query = stateId == 0 ? query.Where(x => x.Active == false) : query.Where(x => x.Active == true);
             }
 
-            return new PagedList<Loan>(new List<Loan>(), pageIndex, pageSize);
+            var loans = query.ToList();
+
+            return new PagedList<Loan>(loans, pageIndex, pageSize);
         }
 
-        public virtual Loan GetLoanById(int loanId = 0, int customerId = 0, bool active = true)
+        public virtual IPagedList<Loan> SearchLoanByLoanNumber(int loanNumber, int stateId = -1, int pageIndex = 0, int pageSize = Int32.MaxValue)
         {
-            if (loanId == 0 && customerId == 0)
+            var query = from c in _loanRepository.Table
+                        orderby c.CreatedOnUtc
+                        where c.LoanNumber == loanNumber
+                        select c;
+
+            if (stateId >= 0)
+            {
+                query = stateId == 0 ? query.Where(x => x.Active == false) : query.Where(x => x.Active == true);
+            }
+
+            var loans = query.ToList();
+
+            return new PagedList<Loan>(loans, pageIndex, pageSize);
+        }
+        
+        public virtual List<Loan> GetLoansByCustomer(int customerId = 0,bool onlyActive=true)
+        {
+            if (customerId == 0)
                 return null;
 
-            var key = string.Format(LOANS_BY_KEY, loanId, customerId, active);
+            var key = string.Format(LOANS_BY_KEY, 0,customerId);
             return _cacheManager.Get(key, () =>
             {
                 var query = from c in _loanRepository.Table
-                            where c.Active == active
+                            where c.CustomerId == customerId
                             select c;
 
-                if (loanId != 0)
-                {
-                    query = query.Where(x => x.Id == loanId);
-                }
-                if (customerId != 0)
-                {
-                    query = query.Where(x => x.CustomerId == customerId);
-                }
-                return query.FirstOrDefault();
+                if (onlyActive)
+                    query = query.Where(x => x.Active);
+
+                return query.ToList();
             });
         }
 
-        public virtual IPagedList<LoanPayment> GetAllPayments(int loanId = 0, int customerId = 0, bool active = true, int pageIndex = 0,
-            int pageSize = Int32.MaxValue)
+        public virtual Loan GetLoanById(int loanId = 0, int customerId = 0, int stateId = -1)
         {
-            var source = GetLoanById(loanId, customerId, active);
+            if (customerId == 0 && loanId == 0)
+                return null;
 
-            return new PagedList<LoanPayment>(source.LoanPayments.ToList(), pageIndex, pageSize);
+            var key = string.Format(LOANS_BY_KEY, loanId, customerId);
+            return _cacheManager.Get(key, () =>
+            {
+                var query = from c in _loanRepository.Table
+                            select c;
+                if (stateId >= 0)
+                {
+                    query = stateId == 0 ? query.Where(x => x.Active == false) : query.Where(x => x.Active == true);
+                }
+                if (loanId != 0)
+                    query = query.Where(x => x.Id == loanId);
+
+                if (customerId != 0)
+                    query = query.Where(x => x.CustomerId == customerId);
+
+                return query.FirstOrDefault();
+            });
         }
 
         public virtual void InsertLoan(Loan loan)
@@ -165,6 +165,53 @@ namespace Ks.Services.Contract
 
             //event notification
             _eventPublisher.EntityUpdated(loan);
+        }
+
+        public virtual IPagedList<LoanPayment> GetAllPayments(int loanId = 0, int quota = 0,
+            int stateId = -1, string accountNumber = "0", bool? type = null,
+            bool active = true, int pageIndex = 0,
+            int pageSize = Int32.MaxValue)
+        {
+            var query = from c in _loanPaymentRepository.Table
+                        select c;
+
+            if (loanId != 0)
+                query = query.Where(x => x.LoanId == loanId);
+            if (quota != 0)
+                query = query.Where(x => x.Quota == quota);
+            if (stateId != 0)
+                query = query.Where(x => x.StateId == stateId);
+            if (!"0".Equals(accountNumber))
+                query = query.Where(x => x.AccountNumber == accountNumber);
+            if (type != null)
+                query = query.Where(x => x.IsAutomatic == type.Value);
+
+
+            return new PagedList<LoanPayment>(query.ToList(), pageIndex, pageSize);
+        }
+
+        public virtual LoanPayment GetPaymentById(int loanPaymentId)
+        {
+            var query = from c in _loanPaymentRepository.Table
+                        where c.Id == loanPaymentId
+                        select c;
+
+            var result = query.FirstOrDefault();
+            return result;
+        }
+
+        public virtual void UpdateLoanPayment(LoanPayment loanPayment)
+        {
+            if (loanPayment == null)
+                throw new ArgumentNullException("loanPayment");
+
+            _loanPaymentRepository.Update(loanPayment);
+
+            //cache
+            _cacheManager.RemoveByPattern(LOANS_PATTERN_KEY);
+
+            //event notification
+            _eventPublisher.EntityUpdated(loanPayment);
         }
 
         #endregion

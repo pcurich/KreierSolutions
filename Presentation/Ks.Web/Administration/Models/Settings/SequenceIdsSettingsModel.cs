@@ -9,6 +9,8 @@ namespace Ks.Admin.Models.Settings
         public int DeclaratoryLetter { get; set; }
         [KsResourceDisplayName("Admin.Configuration.Settings.SequenceIds.AuthorizeDiscount")]
         public int AuthorizeDiscount { get; set; }
+        [KsResourceDisplayName("Admin.Configuration.Settings.SequenceIds.AuthorizeLoan")]
+        public int AuthorizeLoan { get; set; }
         [KsResourceDisplayName("Admin.Configuration.Settings.SequenceIds.RegistrationForm")]
         public int RegistrationForm { get; set; }
     }

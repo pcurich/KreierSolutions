@@ -30,6 +30,8 @@ namespace Ks.Admin.Models.Customers
             this.AvailableNewsletterSubscriptionStores = new List<StoreModel>();
             
             this.ContributionPayments = new List<ContributionPaymentsModel>();
+
+            Contribution= new ContributionModel();
         }
 
         public bool AllowUsersToChangeUsernames { get; set; }
@@ -218,12 +220,9 @@ namespace Ks.Admin.Models.Customers
 
         public bool HasLoans { get; set; }
 
-        [KsResourceDisplayName("Admin.Customers.Customers.Fields.AuthorizeDiscount")]
-        public int AuthorizeDiscount { get; set; }
-        [KsResourceDisplayName("Admin.Customers.Customers.Fields.TotalCycle")]
-        public int TotalCycle { get; set; }
-        [KsResourceDisplayName("Admin.Customers.Customers.Fields.TotalPayed")]
-        public decimal TotalPayed { get; set; }
+        public List<LoanModel> LoanModels { get; set; }
+
+        public ContributionModel Contribution { get; set; }
 
         #region Nested classes
 

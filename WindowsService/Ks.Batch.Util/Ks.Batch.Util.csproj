@@ -57,7 +57,7 @@
     <Compile Include="IDaoBase.cs" />
     <Compile Include="Model\ContributionState.cs" />
     <Compile Include="Model\Info.cs" />
-    <Compile Include="Model\Reports.cs" />
+    <Compile Include="Model\Report.cs" />
     <Compile Include="Model\ReportState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScheduleBatch.cs" />

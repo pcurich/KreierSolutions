@@ -1,0 +1,93 @@
+﻿@model  ContributionModel
+@{
+    Html.AppendCssFileParts("~/Administration/Content/Kendo/2015.3.1111/kendo.common.min.css");
+    Html.AppendCssFileParts("~/Administration/Content/Kendo/2015.3.1111/kendo.rtl.min.css");
+    Html.AppendCssFileParts("~/Administration/Content/Kendo/2015.3.1111/kendo.default.min.css");
+    Html.AppendCssFileParts("~/Administration/Content/Kendo/2015.3.1111/kendo.dataviz.min.css");
+    Html.AppendCssFileParts("~/Administration/Content/Kendo/2015.3.1111/kendo.dataviz.default.min.css");
+    Html.AppendScriptParts("~/Administration/Scripts/Kendo/2015.3.1111/kendo.all.min.js");
+
+    const int MIN = 0;
+    var mediun = Model.AmountPayed;
+    var max = Model.AmountMeta;
+}
+
+<div id="example">
+    <div class="demo-section k-content">
+        <table class="history">
+            <tr>
+                <td class="item">Monto</td>
+                <td class="chart"><div id="chart-amount"></div></td>
+            </tr>
+        </table>
+    </div>
+    <script>
+        function createChart() {
+            $("#chart-amount").kendoChart({
+                legend: {
+                    visible: false
+                },
+                series: [{
+                    type: "bullet",
+                    data: [[@mediun]]
+                }],
+                chartArea: {
+                    margin: {
+                        left: 0
+                    }
+                },
+                categoryAxis: {
+                    majorGridLines: {
+                        visible: false
+                    },
+                    majorTicks: {
+                        visible: false
+                    }
+                },
+                valueAxis: [{
+                    plotBands: [{
+                        from: @MIN, to: @mediun, color: "#ccc", opacity: .6
+                    }, {
+                        from: @mediun, to: @max, color: "#ccc", opacity: .3
+                    }],
+                    majorGridLines: {
+                        visible: false
+                    },
+                    min: @MIN,
+                    max: @max,
+                    minorTicks: {
+                        visible: true
+                    },
+                    labels: {
+                        format: "S/ {0}"
+                    }
+                }],
+                tooltip: {
+                    visible: true,
+                    template: 'Aportado: #= kendo.toString(value.current,"c","es-PE") #'
+                }
+            });
+        }
+
+        $(document).ready(createChart);
+        $(document).bind("kendo:skinChange", createChart);
+    </script>
+    <style>
+        .history {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+            .history .k-chart {
+                height: 65px;
+            }
+
+            .history td.item {
+                line-height: 65px;
+                width: 20px;
+                text-align: right;
+                padding-bottom: 22px;
+            }
+    </style>
+</div>

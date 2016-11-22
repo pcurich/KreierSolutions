@@ -15,9 +15,13 @@ namespace Ks.Core.Domain.Contract
         public int AuthorizeDiscount { get; set; }
 
         /// <summary>
+        /// Gets or sets the authorize loan.
+        /// </summary>
+        public int AuthorizeLoan { get; set; }
+
+        /// <summary>
         /// Gets or sets the registration form.
         /// </summary>
         public int RegistrationForm { get; set; }
-
-    }
+     }
 }

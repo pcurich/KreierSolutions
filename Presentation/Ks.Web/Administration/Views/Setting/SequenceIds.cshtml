@@ -10,7 +10,7 @@
     <div class="section-header">
         <div class="title">
             <img src="@Url.Content("~/Administration/Content/images/ico-configuration.png")" alt="" />
-            @T("Admin.Configuration.Settings.LetterSettings")
+            @T("Admin.Configuration.Settings.SequenceIds")
         </div>
         <div class="options">
             <input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")" />
@@ -40,6 +40,9 @@
                 @T("Admin.Configuration.Settings.SequenceIds.AuthorizeDiscount.Header")
             </li>
             <li @Html.RenderSelectedTabIndex(2, GetSelectedTabIndex())>
+                @T("Admin.Configuration.Settings.SequenceIds.AuthorizeLoan.Header")
+            </li>
+            <li @Html.RenderSelectedTabIndex(3, GetSelectedTabIndex())>
                 @T("Admin.Configuration.Settings.SequenceIds.RegistrationForm.Header")
             </li>
         </ul>
@@ -48,6 +51,9 @@
         </div>
         <div>
             @TabAuthorizeDiscountSettings()
+        </div>
+        <div>
+            @TabAuthorizeLoanSettings()
         </div>
         <div>
             @TabRegistrationFormSettings()
@@ -98,5 +104,19 @@
             </td>
         </tr>
     </table>
+}
+    @helper TabAuthorizeLoanSettings()
+    {
+        <table class="adminContent">
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.AuthorizeLoan):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.AuthorizeLoan)
+                    @Html.ValidationMessageFor(model => model.AuthorizeLoan)
+                </td>
+            </tr>
+        </table>
 }
 }

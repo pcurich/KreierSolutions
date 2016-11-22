@@ -12,8 +12,8 @@ namespace Ks.Batch.Merge
         private static List<Info> _copereIn;
         private static List<Info> _cajaOut;
         private static List<Info> _cajaIn;
-        private static Reports _reportCopere;
-        private static Reports _reportCaja;
+        private static Report _reportCopere;
+        private static Report _reportCaja;
 
         public static void FileCreated(object sender, FileSystemEventArgs e)
         {
@@ -28,9 +28,9 @@ namespace Ks.Batch.Merge
                 SplitList(listData);
 
             if (_copereOut != null && _copereIn != null && _copereOut.Count > 0 && _copereIn.Count > 0)
-                dao.Process(_reportCopere, _copereIn, _copereOut);
+                dao.Process(_reportCopere, _copereIn, _copereOut,"Copere");
             if (_cajaOut != null && _cajaIn != null && _cajaOut.Count > 0 && _cajaIn.Count > 0)
-                dao.Process(_reportCaja, _cajaIn, _cajaOut);
+                dao.Process(_reportCaja, _cajaIn, _cajaOut,"Caja");
             dao.Close();
 
             File.Delete(e.FullPath);
@@ -38,7 +38,7 @@ namespace Ks.Batch.Merge
 
         #region Util
 
-        protected static void SplitList(Dictionary<Reports, List<Info>> listData)
+        protected static void SplitList(Dictionary<Report, List<Info>> listData)
         {
             foreach (var data in listData)
             {

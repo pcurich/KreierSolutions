@@ -120,22 +120,22 @@ namespace Ks.Services.ExportImport
 
                 worksheet.Cells["M3:M8"].Style.Font.Bold = true;
                 worksheet.Cells["L3"].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                worksheet.Cells["L3"].Style.Fill.BackgroundColor.SetColor(getColor(true,((int)ContributionState.Pendiente),1));
+                worksheet.Cells["L3"].Style.Fill.BackgroundColor.SetColor(getColor(1,((int)ContributionState.Pendiente),1));
                 worksheet.Cells["M3"].Value = ContributionState.Pendiente.ToString();
                 worksheet.Cells["L4"].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                worksheet.Cells["L4"].Style.Fill.BackgroundColor.SetColor(getColor(true, ((int)ContributionState.EnProceso), 1));
+                worksheet.Cells["L4"].Style.Fill.BackgroundColor.SetColor(getColor(1, ((int)ContributionState.EnProceso), 1));
                 worksheet.Cells["M4"].Value = ContributionState.EnProceso.ToString();
                 worksheet.Cells["L5"].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                worksheet.Cells["L5"].Style.Fill.BackgroundColor.SetColor(getColor(true,((int)ContributionState.PagoParcial),1));
+                worksheet.Cells["L5"].Style.Fill.BackgroundColor.SetColor(getColor(1,((int)ContributionState.PagoParcial),1));
                 worksheet.Cells["M5"].Value = ContributionState.PagoParcial.ToString();
                 worksheet.Cells["L6"].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                worksheet.Cells["L6"].Style.Fill.BackgroundColor.SetColor(getColor(true, ((int)ContributionState.Pagado), 1)); 
+                worksheet.Cells["L6"].Style.Fill.BackgroundColor.SetColor(getColor(1, ((int)ContributionState.Pagado), 1)); 
                 worksheet.Cells["M6"].Value = ContributionState.Pagado.ToString() + " Automático";
                 worksheet.Cells["L7"].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                worksheet.Cells["L7"].Style.Fill.BackgroundColor.SetColor(getColor(false, ((int)ContributionState.Pagado), 1)); 
+                worksheet.Cells["L7"].Style.Fill.BackgroundColor.SetColor(getColor(0, ((int)ContributionState.Pagado), 1)); 
                 worksheet.Cells["M7"].Value = ContributionState.Pagado.ToString() + " Manual";
                 worksheet.Cells["L8"].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                worksheet.Cells["L8"].Style.Fill.BackgroundColor.SetColor(getColor(false, ((int)ContributionState.SinLiquidez), 1)); 
+                worksheet.Cells["L8"].Style.Fill.BackgroundColor.SetColor(getColor(0, ((int)ContributionState.SinLiquidez), 1)); 
                 worksheet.Cells["M8"].Value = ContributionState.SinLiquidez.ToString();
                 #endregion
 
@@ -409,7 +409,7 @@ namespace Ks.Services.ExportImport
         #endregion
 
         #region Utilities
-        private Color getColor(bool isAutomatic, int stateId,decimal amount)
+        private Color getColor(int isAutomatic, int stateId,decimal amount)
         {
             //ContributionState.Pendiente => Color.Gainsboro
             //ContributionState.EnProceso => Color.LightBlue
@@ -432,9 +432,9 @@ namespace Ks.Services.ExportImport
                 return ColorTranslator.FromHtml("#FFFFd8");
             if ((stateId == (int)ContributionState.PagoParcial))
                 return ColorTranslator.FromHtml("#FFDAB4");
-            if ((stateId == (int)ContributionState.Pagado) && isAutomatic)
+            if ((stateId == (int)ContributionState.Pagado) && isAutomatic==1)
                 return ColorTranslator.FromHtml("#BDD7EE");
-            if ((stateId == (int)ContributionState.Pagado) && !isAutomatic)
+            if ((stateId == (int)ContributionState.Pagado) && isAutomatic==0)
                 return ColorTranslator.FromHtml("#DAFFB4");
             
             return ColorTranslator.FromHtml("#D5D5D5");

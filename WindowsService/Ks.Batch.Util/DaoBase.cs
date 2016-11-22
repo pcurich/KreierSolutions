@@ -245,7 +245,7 @@ namespace Ks.Batch.Util
             {
                 Log.InfoFormat("Action: {0}", "DaoBase.DeleteReport()");
 
-                Sql = " DELETE Reports WHERE Period=@Period AND [Source]=@Source";
+                Sql = " DELETE Report WHERE Period=@Period AND [Source]=@Source";
 
                 Command = new SqlCommand(Sql, Connection);
                 Command.Parameters.AddWithValue("@Period", period);
@@ -265,7 +265,7 @@ namespace Ks.Batch.Util
             {
                 Log.InfoFormat("Action: {0}", "DaoBase.CreateReportIn()");
 
-                Sql = " INSERT INTO Reports " +
+                Sql = " INSERT INTO Report " +
                       " ([Key],Name,Value,PathBase,StateId,Period,Source, ParentKey,DateUtc)" +
                       " VALUES " +
                       " (@Key,@Name,@Value,@PathBase,@StateId,@Period,@Source,@ParentKey,@DateUtc)";
@@ -296,7 +296,7 @@ namespace Ks.Batch.Util
             {
                 Log.InfoFormat("Action: {0}", "DaoBase.CreateReportOut(" + guid + ")");
 
-                Sql = " INSERT INTO Reports " +
+                Sql = " INSERT INTO Report " +
                       " ([Key],Name,Value,PathBase,StateId,Period,Source, ParentKey,DateUtc)" +
                       " VALUES " +
                       " (@Key,@Name,@Value,@PathBase,@StateId,@Period,@Source,@ParentKey,@DateUtc)";

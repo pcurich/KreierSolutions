@@ -9,7 +9,7 @@
     <div class="section-header">
         <div class="title">
             <img src="@Url.Content("~/Administration/Content/images/ico-catalog.png")" alt="" />
-            @T("Admin.Contract.Contribution.AddNew") @Html.ActionLink("(" + T("Admin.Contract.Contribution.BackToList") + ")", "List")
+            @T("Admin.Contract.Contribution.AddNew") @Html.ActionLink("(" + T("Admin.Contract.Contribution.BackToPayment") + ")", "Edit/" + Model.ContributionId)
         </div>
         <div class="options">
             <input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")" />

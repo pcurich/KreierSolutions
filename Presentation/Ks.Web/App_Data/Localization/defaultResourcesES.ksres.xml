@@ -1132,7 +1132,7 @@
     <Value>El afiliado se ha actualizado correctamente.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog">
-    <Value>Catálogo</Value>
+    <Value>Servicios</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Attributes">
     <Value>Atributos</Value>
@@ -3248,6 +3248,9 @@
   </LocaleResource>
   <LocaleResource Name="Admin.Contributions">
     <Value>Aportaciones</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Loans">
+    <Value>Apoyo Económico</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.ACL">
     <Value>Accede a la lista de control</Value>
@@ -5577,6 +5580,9 @@
   <LocaleResource Name="Admin.Configuration.Settings.SequenceIds.AuthorizeDiscount.Header">
     <Value>Configuración del descuento de autorización</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.SequenceIds.AuthorizeLoan.Header">
+    <Value>Configuración del apoyo económico</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.SequenceIds.RegistrationForm.Header">
     <Value>Configuración de la ficha de inscripción</Value>
   </LocaleResource>
@@ -5591,6 +5597,12 @@
   </LocaleResource>
    <LocaleResource Name="Admin.Configuration.Settings.SequenceIds.AuthorizeDiscount.Hint">
     <Value>N° Autorización de Descuento</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.SequenceIds.AuthorizeLoan">
+    <Value>N° Apoyo Económico</Value>
+  </LocaleResource>
+   <LocaleResource Name="Admin.Configuration.Settings.SequenceIds.AuthorizeLoan.Hint">
+    <Value>N° Apoyo Económico</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.SequenceIds.RegistrationForm">
     <Value>N° de la ficha de inscripción</Value>
@@ -7473,6 +7485,9 @@
   <LocaleResource Name="Admin.Contract.Contribution.BackToList">
     <Value>Volver a la lista de Contribuciones</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Contribution.BackToPayment">
+    <Value>Volver a los pagos Realizados</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Contract.Contribution.Fields.Active">
     <Value>Es activo?</Value>
   </LocaleResource>
@@ -7716,25 +7731,79 @@
   <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.Description">
     <Value>Nota</Value>
   </LocaleResource>
-     <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.Description.Hint">
+  <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.Description.Hint">
     <Value>Descripcion adicional creada por el sistema.</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.AddNew">
+    <Value>Nuevo Apoyo Económico.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.BackToList">
+    <Value>Volver a la lista de apoyo económico.</Value>
+  </LocaleResource>  
   <LocaleResource Name="Admin.Contract.Loan.CashFlow">
     <Value>Liquidez</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Loan.CashFlow.Amount.Error">
     <Value>El valor del Importe sobrepasa el limite de liquidez. Aumente su liquidez</Value>
   </LocaleResource>
-  <LocaleResource Name="admin.contract.loan.cashflow.error">
+  <LocaleResource Name="admin.contract.Loan.cashflow.error">
     <Value>No cuenta con liquidez suficiente para solicitar un Apoyo Social Económico</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Contract.Loan.Fields.Amount">
+  <LocaleResource Name="Admin.Contract.Loan.Fields.SearchLoanNumber">
+    <Value>N° Contrato</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.SearchLoanNumber.Hint">
+    <Value>Numero unico de contrato</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.SearchDni">
+    <Value>N° Dni</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.SearchDni.Hint">
+    <Value>Buscar por dni</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.SearchAdmCode">
+    <Value>N° Administrativo</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.SearchAdmCode.Hint">
+    <Value>Busqueda por el codigo administrativo</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.Active">
+    <Value>Activo</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.Active.Hint">
+    <Value>Activo</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.LoanNumber">
+    <Value>N° Contrato</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.LoanNumber.Hint">
+    <Value>Indica el N° Contrato del apoyo ecónomico</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.CreatedOn">
+    <Value>Fecha Creación</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.CreatedOn.Hint">
+    <Value>Fecha en que incio el contrato</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.UpdatedOn">
+    <Value>Fecha de la ultima actualización</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.UpdatedOn.Hint">
+    <Value>Indica si esta activo el apoyo ecónomico</Value>
+  </LocaleResource>
+   <LocaleResource Name="Admin.Contract.Loan.Fields.State">
+    <Value>Estado</Value>
+  </LocaleResource>
+   <LocaleResource Name="Admin.Contract.Loan.Fields.State.Hint">
+    <Value>Indica el estado en el que se encuentra un contrato de apoyo economico</Value>
+  </LocaleResource>  
+  <LocaleResource Name="Admin.Contract.Loan.Fields.LoanAmount">
     <Value>Importe</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Contract.Loan.Fields.Amount.GreaterThanOrEqualTo1">
+  <LocaleResource Name="Admin.Contract.Loan.Fields.LoanAmount.GreaterThanOrEqualTo1">
     <Value>Ingrese un Importe mayor a cero</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Contract.Loan.Fields.Amount.Hint">
+  <LocaleResource Name="Admin.Contract.Loan.Fields.LoanAmount.Hint">
     <Value>Importe que se solicita</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Loan.Fields.CashFlow">
@@ -7770,7 +7839,7 @@
   <LocaleResource Name="Admin.Contract.Loan.Fields.Tea.Hint">
     <Value>Tasa de Interes Efectiva Anual</Value>
   </LocaleResource>
-  <LocaleResource Name="admin.contract.loan.fields.totalamount">
+  <LocaleResource Name="admin.contract.loan.fields.TotalAmount">
     <Value>Importe Total del Apoyo Social Económico</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Loan.Fields.TotalAmount.Hint">
@@ -7812,6 +7881,72 @@
   <LocaleResource Name="Admin.Contract.Loan.Summary">
     <Value>Pre Evaluación</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Contract.LoanPayments.Fields.Quota">
+    <Value>N° de Cuota</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.LoanPayments.Fields.Quota.Hint">
+    <Value>N° de Cuota del apoyo económico</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.LoanPayments.Fields.State">
+    <Value>Estado</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.LoanPayments.Fields.State.Hint">
+    <Value>Estado del apoyo económico</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.LoanPayments.Fields.BankName">
+    <Value>Banco</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.LoanPayments.Fields.BankName.Hint">
+    <Value>Nombre del Banco donde se hizo el abono del apoyo económico</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.LoanPayments.Fields.Type">
+    <Value>Tipo</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.LoanPayments.Fields.Type.Hint">
+    <Value>Tipo del apoyo económico {Automático o Manual}</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.LoanPayments.Fields.MonthlyQuota">
+    <Value>Cuota Mensual</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.LoanPayments.Fields.MonthlyQuota.Hint">
+    <Value>Cuota Mensual</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.LoanPayments.Fields.MonthlyFee">
+    <Value>Impuestos</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.LoanPayments.Fields.MonthlyFee.Hint">
+    <Value>Valor del a couta en Impuestos</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.LoanPayments.Fields.MonthlyCapital">
+    <Value>Capital</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.LoanPayments.Fields.MonthlyCapital.Hint">
+    <Value>Valor del a couta en Capital</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.LoanPayments.Fields.MonthlyPayed">
+    <Value>Pagado</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.LoanPayments.Fields.MonthlyPayed.Hint">
+    <Value>Valor Pagado</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.LoanPayments.Fields.Description">
+    <Value>Descripcion</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.LoanPayments.Fields.Description.Hint">
+    <Value>Descripcion</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.LoanPayments.Fields.ScheduledDateOn">
+    <Value>Programado</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.LoanPayments.Fields.ScheduledDateOn.Hint">
+    <Value>Fecha Programado</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.LoanPayments.Fields.ProcessedDateOn">
+    <Value>Procesado</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.LoanPayments.Fields.ProcessedDateOn.Hint">
+    <Value>Fecha de procesado</Value>
+  </LocaleResource>  
   <LocaleResource Name="Admin.CurrentCarts">
     <Value>Carritos actuales</Value>
   </LocaleResource>
@@ -8089,7 +8224,10 @@
     <Value>Aportaciones</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.Contributions.Updated">
-    <Value>Se actualizo satisfactoriamente</Value>
+    <Value>Se actualizo satisfactoriamente la aportación</Value>
+  </LocaleResource>
+   <LocaleResource Name="Admin.Customers.Customers.Loans.Updated">
+    <Value>Se actualizo satisfactoriamente el apoyo economico</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.Contributions.Fields.AccountNumber.Required">
     <Value>Numero de cuenta Requerido</Value>
@@ -8112,8 +8250,11 @@
   <LocaleResource Name="Admin.Customers.Contributions.Details">
     <Value>Listado</Value>
   </LocaleResource>
-   <LocaleResource Name="Admin.Customers.Contributions.ValidActive">
+  <LocaleResource Name="Admin.Customers.Contributions.ValidActive">
     <Value>Error, la aportacion que selecciono, no se encuentra valida</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Loans.ValidActive">
+    <Value>Error, la cuota del apoyo económico que selecciono, no se encuentra valida</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Contributions.ValidPayment">
     <Value>Error, no se puede alterar la informacion del pago</Value>

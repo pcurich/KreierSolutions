@@ -19,11 +19,15 @@ namespace Ks.Core.Domain.Contract
         /// <summary>
         ///     Gets or sets the letter number.
         /// </summary>
-        public Guid LoanNumber { get; set; }
+        public int LoanNumber { get; set; }
         /// <summary>
         ///     Gets or sets the period.
         /// </summary>
         public int Period { get; set; }
+        /// <summary>
+        /// Gets or sets the total of cycle.
+        /// </summary>
+        public int TotalOfCycle { get; set; }
         /// <summary>
         ///     Gets or sets the tea.
         /// </summary>

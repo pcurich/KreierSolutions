@@ -8,12 +8,12 @@ namespace Ks.Data.Mapping.Contract
         {
             ToTable("ContributionPayment");
             HasKey(sp => sp.Id);
-            Property(sp => sp.Amount1).HasPrecision(6, 2);
-            Property(sp => sp.Amount2).HasPrecision(6, 2);
-            Property(sp => sp.Amount3).HasPrecision(6, 2);
-            Property(sp => sp.AmountOld).HasPrecision(6, 2);
-            Property(sp => sp.AmountTotal).HasPrecision(6, 2);
-            Property(sp => sp.AmountPayed).HasPrecision(6, 2);
+            Property(sp => sp.Amount1).HasPrecision(12, 2);
+            Property(sp => sp.Amount2).HasPrecision(12, 2);
+            Property(sp => sp.Amount3).HasPrecision(12, 2);
+            Property(sp => sp.AmountOld).HasPrecision(12, 2);
+            Property(sp => sp.AmountTotal).HasPrecision(12, 2);
+            Property(sp => sp.AmountPayed).HasPrecision(12, 2);
 
             Ignore(sp => sp.ContributionState);
 

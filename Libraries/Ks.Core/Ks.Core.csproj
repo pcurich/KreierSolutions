@@ -123,6 +123,7 @@
     <Compile Include="Domain\Contract\Contribution.cs" />
     <Compile Include="Domain\Contract\ContributionPayment.cs" />
     <Compile Include="Domain\Contract\ContributionSatates.cs" />
+    <Compile Include="Domain\Contract\LoanState.cs" />
     <Compile Include="Domain\Contract\SequenceIdsSettings.cs" />
     <Compile Include="Domain\Contract\Loan.cs" />
     <Compile Include="Domain\Contract\LoanPayment.cs" />

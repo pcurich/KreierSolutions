@@ -282,6 +282,44 @@ namespace Ks.Admin.Extensions
 
         #endregion
 
+        #region Loan
+
+        public static LoanModel ToModel(this Loan entity)
+        {
+            return entity.MapTo<Loan, LoanModel>();
+        }
+
+        public static Loan ToEntity(this LoanModel model)
+        {
+            return model.MapTo<LoanModel, Loan>();
+        }
+
+        public static Loan ToEntity(this LoanModel model, Loan destination)
+        {
+            return model.MapTo(destination);
+        }
+
+        #endregion
+
+        #region LoanPayments
+
+        public static LoanPaymentsModel ToModel(this LoanPayment entity)
+        {
+            return entity.MapTo<LoanPayment, LoanPaymentsModel>();
+        }
+
+        public static LoanPayment ToEntity(this LoanPaymentsModel model)
+        {
+            return model.MapTo<LoanPaymentsModel, LoanPayment>();
+        }
+
+        public static LoanPayment ToEntity(this LoanPaymentsModel model, LoanPayment destination)
+        {
+            return model.MapTo(destination);
+        }
+
+        #endregion
+
         #region Log
 
         public static LogModel ToModel(this Log entity)

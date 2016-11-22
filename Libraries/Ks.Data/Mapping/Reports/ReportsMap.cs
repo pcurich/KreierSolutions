@@ -6,7 +6,7 @@ namespace Ks.Data.Mapping.Reports
     {
         public ReportMap()
         {
-            ToTable("Reports");
+            ToTable("Report");
             HasKey(r => r.Id);
 
             Property(r => r.Value).HasColumnType("xml");

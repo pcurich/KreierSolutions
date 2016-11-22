@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using FluentValidation.Attributes;
@@ -10,34 +11,71 @@ using Ks.Web.Framework.Mvc;
 namespace Ks.Admin.Models.Contract
 {
     [Validator(typeof(LoanValidator))]
-    public class LoanModel : BaseKsModel
+    public class LoanModel : BaseKsEntityModel
     {
         public LoanModel()
         {
             Periods = new List<SelectListItem>();
         }
+        #region Customer
+
         public int CustomerId { get; set; }
 
+        [KsResourceDisplayName("Admin.Contract.Contribution.Fields.CustomerCompleteName")]
+        [AllowHtml]
+        public string CustomerCompleteName { get; set; }
+
+        [KsResourceDisplayName("Admin.Contract.Contribution.Fields.CustomerDni")]
+        [AllowHtml]
+        public string CustomerDni { get; set; }
+
         [KsResourceDisplayName("Admin.Contract.Contribution.Fields.CustomerAdmCode")]
-        public string AdminCode { get; set; }
+        [AllowHtml]
+        public string CustomerAdmCode { get; set; }
+
+        #endregion
 
         [KsResourceDisplayName("Admin.Contract.Loan.Fields.TotalOfCycle")]
         public int TotalOfCycle { get; set; }
-        [KsResourceDisplayName("Admin.Contract.Loan.Fields.Amount")]
+        [KsResourceDisplayName("Admin.Contract.Loan.Fields.LoanAmount")]
         [UIHint("Decimal")]
-        public decimal Amount { get; set; }
+        public decimal LoanAmount { get; set; }
         [KsResourceDisplayName("Admin.Contract.Loan.Fields.CashFlow")]
         [UIHint("Decimal")]
         public decimal CashFlow { get; set; }
         [KsResourceDisplayName("Admin.Contract.Loan.Fields.Period")]
         public int Period { get; set; }
-        public List<SelectListItem> Periods { get; set; }
-
+        [KsResourceDisplayName("Admin.Contract.Loan.Fields.Active")]
+        public bool Active { get; set; }
         public bool IsPostBack { get; set; }
+        [KsResourceDisplayName("Admin.Contract.Loan.Fields.LoanNumber")]
+        public int LoanNumber { get; set; }
+        [KsResourceDisplayName("Admin.Contract.Loan.Fields.Tea")]
+        public double Tea { get; set; }
+        [KsResourceDisplayName("Admin.Contract.Loan.Fields.Safe")]
+        public double Safe { get; set; }
+        [KsResourceDisplayName("Admin.Contract.Loan.Fields.TotalFeed")]
+        public decimal TotalFeed { get; set; } // Amount*Period*Tea/12    
+        [KsResourceDisplayName("Admin.Contract.Loan.Fields.TotalSafe")]
+        public decimal TotalSafe { get; set; } // Amount*Safe     
+        [KsResourceDisplayName("Admin.Contract.Loan.Fields.MonthlyQuota")]
+        public decimal MonthlyQuota { get; set; } // (Amount +TotalFeed)/Period
+        [KsResourceDisplayName("Admin.Contract.Loan.Fields.TotalAmount")]
+        public decimal TotalAmount { get; set; } // Amount +  TotalFeed   
+        [KsResourceDisplayName("Admin.Contract.Loan.Fields.TotalToPay")]
+        [UIHint("Decimal")]
+        public decimal TotalToPay { get; set; } // Amount-TotalSafe
+
+        public bool IsAuthorized { get; set; }
         public StateActivityModel StateActivityModels { get; set; } //SyngleSignature Warranty
         public CashFlowModel CashFlowModels { get; set; }
-
         public PreCashFlowModel PreCashFlow { get; set; }
+        public List<SelectListItem> Periods { get; set; }
+
+        [KsResourceDisplayName("Admin.Contract.Loan.Fields.CreatedOn")]
+        public DateTime CreatedOn { get; set; }
+        [KsResourceDisplayName("Admin.Contract.Loan.Fields.UpdatedOn")]
+        public DateTime? UpdatedOn { get; set; }
 
     }
 
@@ -80,7 +118,7 @@ namespace Ks.Admin.Models.Contract
         [KsResourceDisplayName("Admin.Configuration.Settings.StateActivitySettings.MaxAmountWithWarranty")]
         public decimal MaxAmountWithWarranty { get; set; }
         public CustomerWarranty CustomerWarranty { get; set; }
-        
+
         #endregion
     }
 

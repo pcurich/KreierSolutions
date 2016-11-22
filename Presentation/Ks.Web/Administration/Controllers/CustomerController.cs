@@ -336,16 +336,24 @@ namespace Ks.Admin.Controllers
                 model.Id = customer.Id;
                 var contribution = _contributionService.GetContributionById(customerId: model.Id, stateId: 1);
                 model.HasContributions = contribution != null;
-                var loan = _loanService.GetLoanById(customerId: model.Id);
-                model.HasLoans = loan != null;
+                var loans = _loanService.GetLoansByCustomer(model.Id);
+                if (loans != null)
+                {
+                    model.HasLoans = true;
+                    model.LoanModels = loans.Select(x => x.ToModel()).ToList();
+                }
 
                 if (model.HasContributions && contribution != null)
                 {
-                    model.AuthorizeDiscount = contribution.AuthorizeDiscount;
-                    model.TotalPayed =
-                        contribution.ContributionPayments.Where(x => x.StateId == (int)ContributionState.Pagado)
-                            .Sum(x => x.AmountTotal);
-                    model.TotalCycle = contribution.ContributionPayments.Count(x => x.StateId == (int)ContributionState.Pagado);
+                    model.Contribution.AuthorizeDiscount = contribution.AuthorizeDiscount;
+                    model.Contribution.AmountPayed = contribution.AmountPayed;
+                    model.Contribution.AmountMeta = contribution.AmountMeta;
+                    model.Contribution.DelayCycles = contribution.DelayCycles;
+                    model.Contribution.TotalOfCycles = contribution.TotalOfCycles;
+                    model.Contribution.CreatedOn = _dateTimeHelper.ConvertToUserTime(contribution.CreatedOnUtc, DateTimeKind.Utc);
+                    if (contribution.UpdatedOnUtc.HasValue)
+                        model.Contribution.UpdatedOn = _dateTimeHelper.ConvertToUserTime(contribution.UpdatedOnUtc.Value, DateTimeKind.Utc);
+                    model.Contribution.Description = contribution.Description;
                 }
 
                 if (!excludeProperties)
@@ -1361,7 +1369,7 @@ namespace Ks.Admin.Controllers
                 CustomerDni = customer.GetAttribute<string>(SystemCustomerAttributeNames.Dni),
                 CustomerAdmCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode),
                 CustomerCompleteName = customer.GetFullName(),
-                TotalOfCycles= _contributionSettings.TotalCycle,
+                TotalOfCycles = _contributionSettings.TotalCycle,
                 AmountMeta = (_contributionSettings.Amount1 + _contributionSettings.Amount2 + _contributionSettings.Amount3) * _contributionSettings.TotalCycle,
                 CreatedOn = DateTime.UtcNow,
                 AuthorizeDiscount = _sequenceIdsSettings.AuthorizeDiscount,
@@ -1420,6 +1428,8 @@ namespace Ks.Admin.Controllers
                         Active = true,
                         CreatedOnUtc = DateTime.UtcNow,
                         UpdatedOnUtc = null,
+                        AmountMeta = (_contributionSettings.Amount1 + _contributionSettings.Amount2 + _contributionSettings.Amount3) * _contributionSettings.TotalCycle,
+                        TotalOfCycles = _contributionSettings.TotalCycle,
                         ContributionPayments = new List<ContributionPayment>(model.TotalOfCycles)
                     };
 
@@ -1431,9 +1441,14 @@ namespace Ks.Admin.Controllers
                         Amount1 = _contributionSettings.Amount1,
                         Amount2 = _contributionSettings.Amount2,
                         Amount3 = _contributionSettings.Amount3,
-                        AmountTotal = _contributionSettings.Amount1+_contributionSettings.Amount2+_contributionSettings.Amount3,
-                        StateId = 1,BankName = "",AccountNumber = "",TransactionNumber ="",
-                        Reference = "",Description = "",IsAutomatic = true,
+                        AmountTotal = _contributionSettings.Amount1 + _contributionSettings.Amount2 + _contributionSettings.Amount3,
+                        StateId = 1,
+                        BankName = "",
+                        AccountNumber = "",
+                        TransactionNumber = "",
+                        Reference = "",
+                        Description = "",
+                        IsAutomatic = true,
                         ScheduledDateOnUtc = _dateTimeHelper.ConvertToUtcTime(estimated.AddMonths(cycle)),
                         ProcessedDateOnUtc = null
                     });
@@ -1464,38 +1479,6 @@ namespace Ks.Admin.Controllers
             return View(model);
         }
 
-        [HttpPost]
-        public ActionResult ListContributions(DataSourceRequest command, int customerId)
-        {
-            if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
-                return Content("");
-
-            var contributionPayments = _contributionService.GetAllPayments(customerId: customerId, pageIndex: command.Page - 1, pageSize: command.PageSize);
-            //volver a hacer
-
-            var gridModel = new DataSourceResult
-            {
-                Data = contributionPayments.Select(x =>
-                {
-                    var m = new ContributionPaymentsModel
-                    {
-                        Number = x.Number,
-                        Amount1 = x.Amount1,
-                        Amount2 = x.Amount2,
-                        Amount3 = x.Amount3,
-                        ScheduledDateOn = _dateTimeHelper.ConvertToUserTime(x.ScheduledDateOnUtc, DateTimeKind.Local),
-                        ProcessedDateOn = x.ProcessedDateOnUtc.HasValue ? _dateTimeHelper.ConvertToUserTime(x.ProcessedDateOnUtc.Value, DateTimeKind.Local) : x.ProcessedDateOnUtc,
-                        State = x.ContributionState.ToSelectList().FirstOrDefault(r => r.Value == x.StateId.ToString()).Text
-                    };
-                    return m;
-
-                }),
-                Total = contributionPayments.TotalCount
-            };
-
-            return Json(gridModel);
-        }
-
         #endregion
 
         #region Loan
@@ -1512,7 +1495,8 @@ namespace Ks.Admin.Controllers
 
             var periods = CommonHelper.ConvertToSelectListItem(_stateActivitySettings.Periods, ',');
             periods.Insert(0, new SelectListItem { Value = "0", Text = "----" });
-            var totalOfContribution = _contributionService.GetAllPayments(customerId: customerId);
+            //var totalOfContribution = _contributionService.GetAllPayments(customerId: customerId);
+            var totalOfContribution = _contributionService.GetAllPayments(   customerId);
             var totalOfCyclesPayments = totalOfContribution.Count(x => x.StateId == (int)ContributionState.Pagado);
             var model = (LoanModel)Session["loanModel"];
             if (model == null || !model.IsPostBack)
@@ -1555,18 +1539,18 @@ namespace Ks.Admin.Controllers
                 ErrorNotification(_localizationService.GetResource("Admin.Contract.Loan.CashFlow.Error"));
                 model.IsPostBack = false;
             }
-            if (!(model.CashFlowModels != null && model.CashFlowModels.To >= model.Amount))
+            if (!(model.CashFlowModels != null && model.CashFlowModels.To >= model.LoanAmount))
             {
                 ErrorNotification(_localizationService.GetResource("Admin.Contract.Loan.CashFlow.Amount.Error"));
                 model.IsPostBack = false;
             }
             if (model.StateActivityModels == null)
             {
-                ErrorNotification(string.Format(_localizationService.GetResource("Admin.Contract.Loan.StateActivity.Error"), model.Amount.ToString("c", new CultureInfo("es-PE"))));
+                ErrorNotification(string.Format(_localizationService.GetResource("Admin.Contract.Loan.StateActivity.Error"), model.LoanAmount.ToString("c", new CultureInfo("es-PE"))));
                 model.IsPostBack = false;
             }
 
-            if (model.StateActivityModels != null && model.StateActivityModels.HasWarranty && model.AdminCode == null)
+            if (model.StateActivityModels != null && model.StateActivityModels.HasWarranty && model.CustomerAdmCode == null)
             {
                 ErrorNotification(_localizationService.GetResource("Admin.Contract.Loan.StateActivity.Warranty.Error"));
                 model.IsPostBack = false;
@@ -1591,11 +1575,11 @@ namespace Ks.Admin.Controllers
                 {
                     CustomerId = model.CustomerId,
                     WarrantyId = model.StateActivityModels.CustomerWarranty != null ? model.StateActivityModels.CustomerWarranty.CustomerId : 0,
-                    LoanNumber = Guid.NewGuid(),
+                    LoanNumber = _sequenceIdsSettings.AuthorizeLoan,
                     Period = model.Period,
                     Tea = model.PreCashFlow.Tea,
                     Safe = model.PreCashFlow.Safe,
-                    LoanAmount = model.Amount,
+                    LoanAmount = model.LoanAmount,
                     MonthlyQuota = model.PreCashFlow.MonthlyQuota,
                     TotalFeed = model.PreCashFlow.TotalFeed,
                     TotalSafe = model.PreCashFlow.TotalSafe,
@@ -1612,16 +1596,26 @@ namespace Ks.Admin.Controllers
                 {
                     loan.LoanPayments.Add(new LoanPayment
                     {
-                        Active = false,
+                        //Active = false,
                         Quota = cycle,
                         MonthlyFee = Math.Round(loan.TotalFeed / loan.Period, 2),
                         MonthlyCapital = Math.Round(loan.MonthlyQuota - loan.TotalFeed / loan.Period, 2),
                         MonthlyQuota = Math.Round(loan.MonthlyQuota, 2),
                         ScheduledDateOnUtc = _dateTimeHelper.ConvertToUtcTime(DateTime.UtcNow.AddMonths(cycle)),
-                        ProcessedDateOnUtc = null
+                        ProcessedDateOnUtc = null,
+                        StateId = 1
                     });
                 }
                 _loanService.InsertLoan(loan);
+
+                var storeScope = GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
+                var sequenceIdsSettings = _settingService.LoadSetting<SequenceIdsSettings>(storeScope);
+
+                sequenceIdsSettings.AuthorizeLoan += 1;
+                _settingService.SaveSetting(sequenceIdsSettings);
+                //now clear settings cache
+                _settingService.ClearCache();
+
                 _customerActivityService.InsertActivity("AddNewLoan", _localizationService.GetResource("ActivityLog.AddNewLoan"), loan.LoanNumber, loan.Id);
             }
 
@@ -1634,7 +1628,8 @@ namespace Ks.Admin.Controllers
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
                 return Content("");
 
-            var loanPayments = _loanService.GetAllPayments(customerId: customerId, pageIndex: command.Page - 1, pageSize: command.PageSize);
+            //var loanPayments = _loanService.GetAllPayments(customerId: customerId, pageIndex: command.Page - 1, pageSize: command.PageSize);
+            var loanPayments = _loanService.GetAllPayments(  pageIndex: command.Page - 1, pageSize: command.PageSize);
             var gridModel = new DataSourceResult
             {
                 Data = loanPayments.Select(x =>
@@ -1645,9 +1640,9 @@ namespace Ks.Admin.Controllers
                         MonthlyQuota = x.MonthlyQuota,
                         MonthlyFee = x.MonthlyFee,
                         MonthlyCapital = x.MonthlyCapital,
-                        ScheduledDateOnUtc = _dateTimeHelper.ConvertToUserTime(x.ScheduledDateOnUtc, DateTimeKind.Local),
-                        ProcessedDateOnUtc = x.ProcessedDateOnUtc.HasValue ? _dateTimeHelper.ConvertToUserTime(x.ProcessedDateOnUtc.Value, DateTimeKind.Local) : x.ProcessedDateOnUtc,
-                        State = x.Active ? "Completado" : "Pendiente"
+                        ScheduledDateOn = _dateTimeHelper.ConvertToUserTime(x.ScheduledDateOnUtc, DateTimeKind.Local),
+                        ProcessedDateOn = x.ProcessedDateOnUtc.HasValue ? _dateTimeHelper.ConvertToUserTime(x.ProcessedDateOnUtc.Value, DateTimeKind.Local) : x.ProcessedDateOnUtc,
+                        //State = x.Active ? "Completado" : "Pendiente"
                     };
                     return m;
 
@@ -1911,32 +1906,33 @@ namespace Ks.Admin.Controllers
         {
             model.IsPostBack = true;
             var customer = new Customer();
-            if (!string.IsNullOrWhiteSpace(model.AdminCode))
+            if (!string.IsNullOrWhiteSpace(model.CustomerAdmCode))
             {
-                var entity = _genericAttributeService.GetAttributeForKeyValue("AdmCode", model.AdminCode);
+                var entity = _genericAttributeService.GetAttributeForKeyValue("AdmCode", model.CustomerAdmCode);
                 customer = _customerService.GetCustomerById(entity.EntityId);
             }
 
-            var totalOfContribution = _contributionService.GetAllPayments(customerId: model.CustomerId);
+            //var totalOfContribution = _contributionService.GetAllPayments(customerId: model.CustomerId);
+            var totalOfContribution = _contributionService.GetAllPayments();
             var totalOfCyclesPayments = totalOfContribution.Count(x => x.StateId == (int)ContributionState.Pagado);
             //1 ) Get ABCDE 
-            model.StateActivityModels = PrepareClassState(model.Amount, totalOfCyclesPayments, customer, model.AdminCode);
+            model.StateActivityModels = PrepareClassState(model.LoanAmount, totalOfCyclesPayments, customer, model.CustomerAdmCode);
             //2) Get CashFlow
             model.CashFlowModels = PrepareCashFlow(model.CashFlow);
             //3) Calcule PreCashFlow
-            var totalfeed = model.Amount * Convert.ToDecimal(model.Period * _stateActivitySettings.Tea / 12);
-            var totalSafe = model.Amount * Convert.ToDecimal(_stateActivitySettings.Safe);
+            var totalfeed = model.LoanAmount * Convert.ToDecimal(model.Period * _stateActivitySettings.Tea / 12);
+            var totalSafe = model.LoanAmount * Convert.ToDecimal(_stateActivitySettings.Safe);
             model.PreCashFlow = new PreCashFlowModel
             {
                 Period = model.Period,
-                Amount = model.Amount,
+                Amount = model.LoanAmount,
                 Tea = _stateActivitySettings.Tea * 100,
                 Safe = _stateActivitySettings.Safe * 100,
                 TotalFeed = Math.Round(totalfeed, 2),
                 TotalSafe = Math.Round(totalSafe),
-                MonthlyQuota = Math.Round((model.Amount + totalfeed) / model.Period, 2),
-                TotalAmount = Math.Round(totalfeed + model.Amount, 2),
-                TotalToPay = Math.Round(model.Amount - totalSafe, 2)
+                MonthlyQuota = Math.Round((model.LoanAmount + totalfeed) / model.Period, 2),
+                TotalAmount = Math.Round(totalfeed + model.LoanAmount, 2),
+                TotalToPay = Math.Round(model.LoanAmount - totalSafe, 2)
             };
 
             return model;

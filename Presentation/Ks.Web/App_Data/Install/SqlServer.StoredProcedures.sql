@@ -155,14 +155,15 @@ BEGIN
 	DECLARE MY_CURSOR CURSOR 
 	  LOCAL STATIC READ_ONLY FORWARD_ONLY
 	FOR 
-	SELECT id FROM ContributionPayment WHERE AmountTotal>070
+	SELECT id FROM ContributionPayment WHERE AmountTotal>@MaxToPay
 
 	OPEN MY_CURSOR
 	FETCH NEXT FROM MY_CURSOR INTO @ContributionPaymentId
 	WHILE @@FETCH_STATUS = 0
 	BEGIN 
 		SET @ValueIndex=  0;
-		WHILE @ValueIndex <= 10
+
+		WHILE @ValueIndex <= 20
 		BEGIN
 			SET @OffSet = (select AmountTotal-@MaxToPay from ContributionPayment WHERE Id=(@ContributionPaymentId+@ValueIndex))
 			SET @LastDescription =(select ISNULL([DESCRIPTION],'')  from ContributionPayment WHERE Id=(@ContributionPaymentId+@ValueIndex))
@@ -171,16 +172,15 @@ BEGIN
 			IF(@OffSet>0)
 				BEGIN
 					UPDATE ContributionPayment 
-					SET AmountTotal=@MaxToPay						
-					WHERE  Id=@ContributionPaymentId+@ValueIndex
+					SET AmountTotal=@MaxToPay, [DESCRIPTION]=ISNULL([DESCRIPTION],'')  + '|' + 'El valor de la couta a alcanzado el valor máximo, el saldo se va a prorratear en la siguiente couta pendiente de envio (S/ ' + @OffSet + ')'  
+					WHERE  Id=@ContributionPaymentId+@ValueIndex  
 					
 					UPDATE ContributionPayment 
 					SET AmountTotal=AmountTotal+@OffSet,
 						AmountOld=@OffSet, 
-						[DESCRIPTION]=ISNULL([DESCRIPTION],'')  + '|' + @LastDescription , 
-						NumberOld =@LastNumber,
-						DetailsNext=ISNULL(DetailsNext,'') + '|'+cast(@LastNumber as nvarchar(4))+'-'+ cast(@OffSet as nvarchar(10))						
-					WHERE  Id=(@ContributionPaymentId+1+@ValueIndex)
+						[DESCRIPTION]=ISNULL([DESCRIPTION],'')  + '|' + 'El valor de la couta a aumentado debido a un prorrateo de una couta anterior N° '+@LastNumber, 
+						NumberOld =@LastNumber						
+					WHERE  Id=(@ContributionPaymentId+1+@ValueIndex) 
 				END
 			SET @ValueIndex = @ValueIndex + 1;
 		END	
@@ -205,22 +205,22 @@ BEGIN
 CREATE TABLE #ContributionPaymentTmp
 			( 
 				[Id] [int] NOT NULL,[ContributionId] [int] NOT NULL,[CustomerId] [int] NOT NULL,
-				[Amount1] [decimal] NOT NULL,[Amount2] [decimal] NOT NULL,[Amount3] [decimal] NOT NULL,
-				[AmountTotal] [decimal] NOT NULL,[AmountPayed] [decimal] NOT NULL,[StateId] [int] NOT NULL,
+				[Amount1] decimal(6,2) NOT NULL,[Amount2] decimal(6,2) NOT NULL,[Amount3] decimal(6,2) NOT NULL,
+				[AmountTotal] decimal(6,2) NOT NULL,[AmountPayed] decimal(6,2) NOT NULL,[StateId] [int] NOT NULL,
 				[BankName] [nvarchar](500) NOT NULL,[Description] [nvarchar](1000) NOT NULL,
-				[Number] [int] NOT NULL,[IsDelay] [int] NOT NULL,[CycleOfDelay] [int] NOT NULL
+				[Number] [int] NOT NULL,[IsDelay] [int] NOT NULL,[DelayCycles] [int] NOT NULL
 			)
 
  
-INSERT INTO #ContributionPaymentTmp (Id,ContributionId,CustomerId, Amount1,Amount2,Amount3,AmountTotal,AmountPayed,StateId,BankName,[Description],Number,CycleOfDelay,IsDelay)
+INSERT INTO #ContributionPaymentTmp (Id,ContributionId,CustomerId, Amount1,Amount2,Amount3,AmountTotal,AmountPayed,StateId,BankName,[Description],Number,DelayCycles,IsDelay)
 SELECT	0, --Id
 		0, --ContributionId
 		nref.value('CustomerId[1]', 'int'), --CustomerId
-		nref.value('Amount1[1]', 'decimal'),--Amount1
-		nref.value('Amount2[1]', 'decimal'),--Amount2
-		nref.value('Amount3[1]', 'decimal'),--Amount3
-		nref.value('AmountTotal[1]', 'decimal'),--AmountTotal
-		nref.value('AmountPayed[1]', 'decimal'),--AmountPayed
+		nref.value('Amount1[1]', 'decimal(6,2)'),--Amount1
+		nref.value('Amount2[1]', 'decimal(6,2)'),--Amount2
+		nref.value('Amount3[1]', 'decimal(6,2)'),--Amount3
+		nref.value('AmountTotal[1]', 'decimal(6,2)'),--AmountTotal
+		nref.value('AmountPayed[1]', 'decimal(6,2)'),--AmountPayed
 		nref.value('StateId[1]', 'int'), --StateId
 		nref.value('BankName[1]', 'nvarchar(500)'), --BankName
 		nref.value('Description[1]', 'nvarchar(1000)'), --[Description]
@@ -228,6 +228,7 @@ SELECT	0, --Id
 		0,0 --Delay thinks
 		FROm @XmlPackage.nodes('//ArrayOfInfo/Info') AS R(nref)
 
+	 
 ------------------------------------------------------------------------
 --1) Complete whith the ContributionId 
 ------------------------------------------------------------------------
@@ -254,16 +255,17 @@ UPDATE ContributionPayment
 SET 
 AmountPayed=#ContributionPaymentTmp.AmountPayed,
 ProcessedDateOnUtc=GETUTCDATE(), 
-StateId=#ContributionPaymentTmp.StateId 
+StateId=#ContributionPaymentTmp.StateId,
+BankName=#ContributionPaymentTmp.BankName
 FROM  #ContributionPaymentTmp
 WHERE #ContributionPaymentTmp.Id=ContributionPayment.Id 
 
 ------------------------------------------------------------------------
 --4) Update delay cycles and state
 ------------------------------------------------------------------------
-Declare @TimeToDelay int= (select value from Setting where Name ='contributionsettings.cycleofdelay')
+Declare @TimeToDelay int= (select value from Setting where Name ='contributionsettings.DelayCycles')
 UPDATE #ContributionPaymentTmp 
-SET CycleOfDelay=temp.CountState, 
+SET DelayCycles=temp.CountState, 
 IsDelay=temp.IsDelay
 FROM 
 (
@@ -284,9 +286,9 @@ temp.ContributionId=#ContributionPaymentTmp.ContributionId
 --5) Update the contribution (per customer)
 ------------------------------------------------------------------------
 Update Contribution 
-SET Contribution.AmountTotal=Contribution.AmountTotal+#ContributionPaymentTmp.AmountPayed,
-	Contribution.CycleOfDelay=#ContributionPaymentTmp.CycleOfDelay,
-	Contribution.Active = case when #ContributionPaymentTmp.CycleOfDelay=@TimeToDelay then 0 else 1 end,
+SET Contribution.AmountPayed=Contribution.AmountPayed+#ContributionPaymentTmp.AmountPayed,
+	Contribution.DelayCycles=#ContributionPaymentTmp.DelayCycles,
+	Contribution.Active = case when #ContributionPaymentTmp.DelayCycles=@TimeToDelay then 0 else 1 end,
 	Contribution.IsDelay=#ContributionPaymentTmp.IsDelay,
 	Contribution.UpdatedOnUtc=GETUTCDATE(),
 	Contribution.[Description]= #ContributionPaymentTmp.[Description]
@@ -315,7 +317,6 @@ SET
 ContributionPayment.AmountTotal=ContributionPayment.AmountTotal+TMP.NoPayed,
 contributionPayment.AmountOld=@ValueOfQuota1+@ValueOfQuota2+@ValueOfQuota3,
 ContributionPayment.NumberOld=TMP.Number,
-ContributionPayment.DetailsOld=ISNULL(ContributionPayment.DetailsOld,'') +'|'+cast(TMP.Number as nvarchar(4))+'-'+ cast((@ValueOfQuota1+@ValueOfQuota2+@ValueOfQuota3) as nvarchar(10)), 
 ContributionPayment.[Description] ='Valor de la couta aumentado por el sistema ACMR debido a la falta de liquitdez de la cuota N° ' + CAST(TMP.Number as nvarchar(3))
 FROM 
 (
@@ -557,16 +558,19 @@ GO
 CREATE PROCEDURE [dbo].[SummaryReportContributionPayment]
 (
 	@ContributionId int,
-	@TotalRecordsDeleted int = null OUTPUT
+	@NameReport nvarchar(255),
+	@ReportState int,
+	@Source nvarchar(250),
+	@TotalRecords int = null OUTPUT
 )
 AS
 BEGIN
 
-SELECT convert(int,ROW_NUMBER()  OVER(ORDER BY YEARS DESC))  AS Id, YEARS AS 'YEAR',IsAutomatic, StateId,
-SUM(ENE) AS 'ENE',SUM(FEB) AS 'FEB',SUM(MAR) AS 'MAR',
-SUM(ABR) AS 'ABR',SUM(MAY) AS 'MAY',SUM(JUN) AS 'JUN',
-SUM(JUL) AS 'JUL',SUM(AGO) AS 'AGO',SUM(SEP) AS 'SEP',
-SUM(OCT) AS 'OCT',SUM(NOV) AS 'NOV',SUM(DIC) AS 'DIC' 
+SELECT convert(int,ROW_NUMBER()  OVER(ORDER BY YEARS DESC))  AS Id, YEARS AS 'Year', StateId, IsAutomatic, 
+SUM(ENE) AS 'Ene',SUM(FEB) AS 'Feb',SUM(MAR) AS 'Mar',
+SUM(ABR) AS 'Abr',SUM(MAY) AS 'May',SUM(JUN) AS 'Jun',
+SUM(JUL) AS 'Jul',SUM(AGO) AS 'Ago',SUM(SEP) AS 'Sep',
+SUM(OCT) AS 'Oct',SUM(NOV) AS 'Nov',SUM(DIC) AS 'Dic' 
 INTO  #tmp_reports
 FROM 
 (
@@ -586,11 +590,18 @@ FROM
 	FROM contributionPayment  CD
 	INNER JOIN Contribution C ON C.Id=CD.contributionId
 	WHERE  C.Id=@ContributionId and CD.ContributionId=@ContributionId 
-	GROUP BY YEAR(CD.ScheduledDateOnUtc ), MONTH(CD.ScheduledDateOnUtc ),  CD.IsAutomatic, CD.StateId
+	GROUP BY YEAR(CD.ScheduledDateOnUtc ), MONTH(CD.ScheduledDateOnUtc ), CD.StateId, CD.IsAutomatic
 ) AS ReportContributionPayment
 GROUP BY YEARS  ,IsAutomatic, StateId 
 
-SELECT @TotalRecordsDeleted = COUNT(1) FROM #tmp_reports
-SELECT * FROM  #tmp_reports order by 1 desc
+DECLARE @newId uniqueidentifier =NEWID();
+DECLARE @value XML=(SELECT * FROM  #tmp_reports order by 1 desc FOR XML PATH ('ReportContributionPaymentModel'), root ('ArrayOfReportContributionPaymentModel'))
+
+DELETE FROM Report WHERE source=@Source
+INSERT INTO Report VALUES (@newId,@NameReport,@value,'',@ReportState,'',@Source,@newId,GETUTCDATE())
+SELECT @TotalRecords = COUNT(1) FROM #tmp_reports
+SELECT * FROM Report WHERE [key]=@newId
+
 END
+
 GO

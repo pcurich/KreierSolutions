@@ -1,7 +1,13 @@
-﻿@model Ks.Admin.Models.Contract.ContributionModel
+﻿@using System.Globalization
+@model Ks.Admin.Models.Contract.ContributionModel
 @Html.ValidationSummary(true)
 @Html.HiddenFor(x=>x.CustomerId)
 @Html.HiddenFor(x => x.Id)
+@Html.HiddenFor(x => x.AuthorizeDiscount)
+@Html.HiddenFor(x => x.DayOfPayment)
+@Html.HiddenFor(x => x.AmountMeta)
+@Html.HiddenFor(x => x.TotalOfCycles)
+
 <table class="adminContent">
     <tr>
         <td class="adminTitle">
@@ -35,8 +41,7 @@
             @Html.KsLabelFor(model => model.AuthorizeDiscount):
         </td>
         <td class="adminData">
-            @Html.EditorFor(model => model.AuthorizeDiscount)
-            @Html.ValidationMessageFor(model => model.AuthorizeDiscount)
+            @Model.AuthorizeDiscount
         </td>
     </tr>
     <tr>
@@ -44,23 +49,23 @@
             @Html.KsLabelFor(model => model.DayOfPayment):
         </td>
         <td class="adminData">
-            @Html.EditorFor(model => model.DayOfPayment)
+            @Model.DayOfPayment
         </td>
     </tr>
     <tr>
         <td class="adminTitle">
-            @Html.KsLabelFor(model => model.AmountTotal):
+            @Html.KsLabelFor(model => model.AmountMeta):
         </td>
         <td class="adminData">
-            @Html.EditorFor(model => model.AmountTotal)
+            @Model.AmountMeta.ToString("c", new CultureInfo("es-PE"))
         </td>
     </tr>
     <tr>
         <td class="adminTitle">
-            @Html.KsLabelFor(model => model.TotalCycle):
+            @Html.KsLabelFor(model => model.TotalOfCycles):
         </td>
         <td class="adminData">
-            @Html.EditorFor(model => model.TotalCycle)
+            @(Model.TotalOfCycles / 12) <small>@T("Common.Year")</small> - @(Model.TotalOfCycles % 12) <small>@T("Common.Month")</small>
         </td>
     </tr>
     <tr>

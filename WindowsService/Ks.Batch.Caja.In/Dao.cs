@@ -26,7 +26,7 @@ namespace Ks.Batch.Caja.In
             {
                 try
                 {
-                    Sql = " UPDATE Reports set Name=@Name, StateId=@StateId, Value=@Value, PathBase=@PathBase,Source=@Source, DateUtc=@DateUtc" +
+                    Sql = " UPDATE Report set Name=@Name, StateId=@StateId, Value=@Value, PathBase=@PathBase,Source=@Source, DateUtc=@DateUtc" +
                           " WHERE [Key]=@Key";
 
                     Command = new SqlCommand(Sql, Connection);
@@ -56,7 +56,7 @@ namespace Ks.Batch.Caja.In
             {
                 Log.InfoFormat("Action: {0}","Dao.GetParentOut()");
 
-                Sql = " SELECT [Key]  FROM Reports " +
+                Sql = " SELECT [Key]  FROM Report " +
                       " WHERE Source=@Source AND " +
                       " Period=@Period";
 

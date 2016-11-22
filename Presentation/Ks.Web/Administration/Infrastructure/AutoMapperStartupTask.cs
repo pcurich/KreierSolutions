@@ -290,11 +290,30 @@ namespace Ks.Admin.Infrastructure
                 .ForMember(dest => dest.UpdatedOnUtc, mo => mo.Ignore());
             #endregion
 
-            #region contribution
+            #region contributionPayment
             Mapper.CreateMap<ContributionPayment, ContributionPaymentsModel>()
                 .ForMember(dest => dest.ScheduledDateOn, mo => mo.Ignore())
                 .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
             Mapper.CreateMap<ContributionPaymentsModel, ContributionPayment>()
+                .ForMember(dest => dest.ScheduledDateOnUtc, mo => mo.Ignore())
+                .ForMember(dest => dest.ProcessedDateOnUtc, mo => mo.Ignore());
+            #endregion
+
+            #region loan
+            Mapper.CreateMap<Loan, LoanModel>()
+                .ForMember(dest => dest.CreatedOn, mo => mo.Ignore())
+                .ForMember(dest => dest.UpdatedOn, mo => mo.Ignore())
+                .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
+            Mapper.CreateMap<ContributionModel, Contribution>()
+                .ForMember(dest => dest.CreatedOnUtc, mo => mo.Ignore())
+                .ForMember(dest => dest.UpdatedOnUtc, mo => mo.Ignore());
+            #endregion
+
+            #region loanPayment
+            Mapper.CreateMap<LoanPayment, LoanPaymentsModel>()
+                .ForMember(dest => dest.ScheduledDateOn, mo => mo.Ignore())
+                .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
+            Mapper.CreateMap<LoanPaymentsModel, LoanPayment>()
                 .ForMember(dest => dest.ScheduledDateOnUtc, mo => mo.Ignore())
                 .ForMember(dest => dest.ProcessedDateOnUtc, mo => mo.Ignore());
             #endregion

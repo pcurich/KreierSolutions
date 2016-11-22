@@ -20,18 +20,18 @@ namespace Ks.Batch.Merge
         {
         }
 
-        public Dictionary<Reports, List<Info>> GetData()
+        public Dictionary<Report, List<Info>> GetData()
         {
             Log.InfoFormat("Time: {0}: Action: {1}", DateTime.Now, "Ks.Batch.Merge.Dao.GetData()");
 
-            var infoList = new Dictionary<Reports, List<Info>>();
+            var infoList = new Dictionary<Report, List<Info>>();
             try
             {
                 Connect();
                 if (IsConnected)
                 {
-                    Sql = "SELECT * FROM Reports WHERE ParentKey in " +
-                          " (SELECT TOP 1 ParentKey  FROM Reports WHERE StateId=" + (int)ReportState.InProcess +
+                    Sql = "SELECT * FROM Report WHERE ParentKey in " +
+                          " (SELECT TOP 1 ParentKey  FROM Report WHERE StateId=" + (int)ReportState.InProcess +
                           "  and len(name)<>0  " +
                           "group by ParentKey having count(ParentKey)=2) ";
 
@@ -39,7 +39,7 @@ namespace Ks.Batch.Merge
                     var sqlReader = Command.ExecuteReader();
                     while (sqlReader.Read())
                     {
-                        infoList.Add(new Reports
+                        infoList.Add(new Report
                         {
                             Id = sqlReader.GetInt32(0),
                             Key = sqlReader.GetGuid(1),
@@ -68,7 +68,7 @@ namespace Ks.Batch.Merge
         }
 
 
-        public void Process(Reports report, List<Info> listResponse, List<Info> listRequest)
+        public void Process(Report report, List<Info> listResponse, List<Info> listRequest, string bankName)
         {
             var infoEquals = new List<Info>(); //aountIn == amountOut  Pago completo
             var infoNotIn = new List<Info>(); //aountIn >0 aountOut ==0 No tiene liquidez
@@ -79,7 +79,7 @@ namespace Ks.Batch.Merge
             Info response;
             foreach (var request in listRequest)
             {
-                request.BankName = report.Source;
+                request.BankName = bankName;
                 request.Description = "Proceso automática por el sistema ACMR";
 
                 var info1 = request;
@@ -156,13 +156,13 @@ namespace Ks.Batch.Merge
                 Log.FatalFormat("Action: {0} Error: {1}", "Dao.UpdateContributionPayment(" + string.Join(",", info.Select(x => x.AdminCode)) + ", " + period + ")", ex.Message);
             }
         }
-        private void CloseReport(Reports report)
+        private void CloseReport(Report report)
         {
             try
             {
                 Log.InfoFormat("Action: {0}", "Dao.CloseReport(" + report.ParentKey + ")");
 
-                Sql = "UPDATE Reports SET StateId=@StateId WHERE ParentKey=@ParentKey ";
+                Sql = "UPDATE Report SET StateId=@StateId WHERE ParentKey=@ParentKey ";
 
                 Command = new SqlCommand(Sql, Connection);
                 Command.Parameters.AddWithValue("@StateId", ReportState.Completed);

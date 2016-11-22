@@ -91,8 +91,7 @@ namespace Ks.Services.Contract
                 AmountPayed = Convert.ToInt32(contribution.AmountPayed)
             }).ToList();
         }
-
-
+        
         public virtual IPagedList<Contribution> SearchContributionByCustomerId(int customerId, int stateId = -1,
             int pageIndex = 0, int pageSize = Int32.MaxValue)
         {
@@ -204,7 +203,7 @@ namespace Ks.Services.Contract
         }
 
         public virtual IPagedList<ContributionPayment> GetAllPayments(int contributionId = 0,
-            int customerId = 0, int number = 0, int stateId = -1, string accountNumber = "0",
+            int number = 0, int stateId = -1, string accountNumber = "0",
             bool? type = null, int pageIndex = 0, int pageSize = Int32.MaxValue)
         {
             var query = from c in _contributionPaymentRepository.Table
@@ -259,19 +258,37 @@ namespace Ks.Services.Contract
             pContributionId.Value = contributionId;
             pContributionId.DbType = DbType.Int32;
 
+            var pNameReport = _dataProvider.GetParameter();
+            pNameReport.ParameterName = "NameReport";
+            pNameReport.Value = "SummaryReportContributionPayment";
+            pNameReport.DbType = DbType.String;
+
+            var pReportState= _dataProvider.GetParameter();
+            pReportState.ParameterName = "ReportState";
+            pReportState.Value = (int)ReportState.Completed;
+            pReportState.DbType = DbType.Int32;
+
+            var pSource = _dataProvider.GetParameter();
+            pSource.ParameterName = "Source";
+            pSource.Value = "Ks.Services.Contract.ContributionService";
+            pSource.DbType = DbType.String;
+
             var pTotalRecords = _dataProvider.GetParameter();
             pTotalRecords.ParameterName = "TotalRecords";
             pTotalRecords.Direction = ParameterDirection.Output;
             pTotalRecords.DbType = DbType.Int32;
 
             //invoke stored procedure
-            var data = _dbContext.ExecuteStoredProcedureList<ReportContributionPayment>("SummaryReportContributionPayment",
-                pContributionId, pTotalRecords);
+            var data = _dbContext.ExecuteStoredProcedureList<Report>(
+                "SummaryReportContributionPayment",pContributionId, pNameReport, pReportState, pSource,pTotalRecords);
 
             //return products
             var totalRecords = (pTotalRecords.Value != DBNull.Value) ? Convert.ToInt32(pTotalRecords.Value) : 0;
-            return new PagedList<ReportContributionPayment>(data, pageIndex, pageSize, totalRecords);
+            var firstOrDefault = data.FirstOrDefault();
+            if (firstOrDefault != null)
+                return new PagedList<ReportContributionPayment>(XmlHelper.XmlToObject<List<ReportContributionPayment>>(firstOrDefault.Value), pageIndex, pageSize, totalRecords);
 
+            return null;
         }
 
         #endregion

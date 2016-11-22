@@ -4,7 +4,7 @@
     {
         public int Year { get; set; }
         public int StateId { get; set; }
-        public bool IsAutomatic { get; set; }
+        public int IsAutomatic { get; set; }
         public decimal Ene { get; set; }
         public decimal Feb { get; set; }
         public decimal Mar { get; set; }

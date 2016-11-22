@@ -5,7 +5,6 @@ using System.Linq;
 using System.Web.Mvc;
 using Ks.Admin.Extensions;
 using Ks.Admin.Models.Contract;
-using Ks.Admin.Models.Customers;
 using Ks.Core;
 using Ks.Core.Domain.Common;
 using Ks.Core.Domain.Contract;
@@ -143,8 +142,7 @@ namespace Ks.Admin.Controllers
 
             return Json(gridModel);
         }
-
-
+        
         public ActionResult Edit(int id)
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributions))
@@ -241,14 +239,14 @@ namespace Ks.Admin.Controllers
 
             var contributionPayment = _contributionService.GetPaymentById(model.Id);
 
-            if (!ModelState.IsValid)
-                return View(model);
-
             if (contributionPayment.StateId != (int)ContributionState.Pendiente)
             {
                 ErrorNotification(_localizationService.GetResource("Admin.Customers.Contributions.ValidPayment"));
                 return RedirectToAction("CreatePayment", new { id = contributionPayment.Id });
             }
+
+            if (!ModelState.IsValid)
+                return View(model);
 
             contributionPayment.IsAutomatic = false;
             contributionPayment.StateId = (int)ContributionState.Pagado;
@@ -259,7 +257,7 @@ namespace Ks.Admin.Controllers
             contributionPayment.Reference = model.Reference;
             contributionPayment.Description = model.Description;
             contributionPayment.ProcessedDateOnUtc = DateTime.UtcNow;
-            contributionPayment.AmountPayed = model.Amount1 + model.Amount2 + model.Amount3; 
+            contributionPayment.AmountPayed = model.Amount1 + model.Amount2 + model.Amount3;
 
             if (_contributionSettings.IsActiveAmount1)
                 contributionPayment.Amount1 = model.Amount1;
@@ -275,8 +273,8 @@ namespace Ks.Admin.Controllers
             contribution.AmountPayed += contributionPayment.Amount1 + contributionPayment.Amount2 +
                                        contributionPayment.Amount3;
 
-             contribution.DelayCycles=0;
-             contribution.IsDelay = false;
+            contribution.DelayCycles = 0;
+            contribution.IsDelay = false;
             _contributionService.UpdateContribution(contribution);
 
             SuccessNotification(_localizationService.GetResource("Admin.Customers.Customers.Contributions.Updated"));
@@ -316,6 +314,7 @@ namespace Ks.Admin.Controllers
                 return RedirectToAction("List");
             }
         }
+
         #endregion
 
         #region Utilities
@@ -345,31 +344,14 @@ namespace Ks.Admin.Controllers
         {
             var model = contributionPayment.ToModel();
             model.Banks = PrepareBanks();
-            model.ScheduledDateOn =
-                _dateTimeHelper.ConvertToUserTime(contributionPayment.ScheduledDateOnUtc, DateTimeKind.Utc);
+            model.ScheduledDateOn = _dateTimeHelper.ConvertToUserTime(contributionPayment.ScheduledDateOnUtc, DateTimeKind.Utc);
+            if (contributionPayment.ProcessedDateOnUtc.HasValue)
+                model.ProcessedDateOn = _dateTimeHelper.ConvertToUserTime(contributionPayment.ProcessedDateOnUtc.Value, DateTimeKind.Utc);
             var state = ContributionState.Pendiente.ToSelectList()
                 .FirstOrDefault(x => x.Value == contributionPayment.StateId.ToString());
             if (state != null)
-                model.State =state.Text;
+                model.State = state.Text;
 
-            if (_contributionSettings.IsActiveAmount1)
-            {
-                model.IsActiveAmount1 = true;
-                model.NameAmount1 = _contributionSettings.NameAmount1;
-                model.Amount1 = _contributionSettings.Amount1;
-            }
-            if (_contributionSettings.IsActiveAmount2)
-            {
-                model.IsActiveAmount2 = true;
-                model.NameAmount2 = _contributionSettings.NameAmount2;
-                model.Amount2 = _contributionSettings.Amount2;
-            }
-            if (_contributionSettings.IsActiveAmount3)
-            {
-                model.IsActiveAmount3 = true;
-                model.NameAmount3 = _contributionSettings.NameAmount3;
-                model.Amount3 = _contributionSettings.Amount3;
-            }
             return model;
         }
 

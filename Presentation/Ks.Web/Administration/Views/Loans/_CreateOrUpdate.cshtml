@@ -1,0 +1,206 @@
+﻿@model  LoanPaymentListModel
+@Html.HiddenFor(model => model.LoanId)
+@Html.HiddenFor(model => model.CustomerId)
+@{
+    var defaultGridPageSize = EngineContext.Current.Resolve<Ks.Core.Domain.Common.AdminAreaSettings>().DefaultGridPageSize;
+    var gridPageSizes = EngineContext.Current.Resolve<Ks.Core.Domain.Common.AdminAreaSettings>().GridPageSizes;
+}
+
+<table width="100%">
+    <tr>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.Quota):
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.Quota)
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.StateId):
+        </td>
+        <td class="adminData">
+            @Html.DropDownListFor(model => model.StateId, Model.States)
+            <script>
+                $(document).ready(function() {
+                    $('#StateId').kendoDropDownList();
+                });
+            </script>
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.BankName):
+        </td>
+        <td class="adminData">
+            @Html.DropDownListFor(model => model.BankName, Model.Banks)
+            <script>
+                $(document).ready(function() {
+                    $('#BankName').kendoDropDownList();
+                });
+            </script>
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.Type):
+        </td>
+        <td class="adminData">
+            @Html.DropDownListFor(model => model.Type, Model.Types)
+            <script>
+                $(document).ready(function() {
+                    $('#Type').kendoDropDownList();
+                });
+            </script>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <input type="button" id="search-payment" class="k-button" value="@T("Admin.Common.Search")"/>
+        </td>
+    </tr>
+</table>
+
+<table class="adminContent">
+    <tr>
+        <td>
+            <div id="loanpayment-grid"></div>
+
+            <script>
+                $(document).ready(function () {
+                    $("#loanpayment-grid").kendoGrid({
+                        dataSource: {
+                            type: "json",
+                            transport: {
+                                read: {
+                                    url: "@Html.Raw(Url.Action("ListLoansPayments", "Loans" ))",
+                                    type: "POST",
+                                    dataType: "json",
+                                    data: additionalData
+                                }
+                            },
+                            schema: {
+                                data: "Data",
+                                total: "Total",
+                                errors: "Errors"
+                            },
+                            error: function(e) {
+                                display_kendoui_grid_error(e);
+                                // Cancel the changes
+                                this.cancelChanges();
+                            },
+                            pageSize: @(defaultGridPageSize),
+                            serverPaging: true,
+                            serverFiltering: true,
+                            serverSorting: true
+                        },
+                        pageable: {
+                            refresh: true,
+                            pageSizes: [@(gridPageSizes)]
+                        },
+                        editable: {
+                            confirmation: false,
+                            mode: "inline"
+                        },
+                        scrollable: false,
+                        filterable: true,
+                        sortable: true,
+                        columns: [
+                            {
+                                field: "Quota",
+                                title: "@T("Admin.Contract.LoanPayments.Fields.Quota")",
+                                width: 30
+                            },{
+                                field: "MonthlyQuota",
+                                title:"@T("Admin.Contract.LoanPayments.Fields.MonthlyQuota")",
+                                width: 30,
+                                template:'#= kendo.toString(MonthlyQuota,"c","es-PE") #',
+                                format:"{0:c2}"
+                            },{
+                                field: "MonthlyFee",
+                                title:"@T("Admin.Contract.LoanPayments.Fields.MonthlyFee")",
+                                width: 30,
+                                template:'#= kendo.toString(MonthlyFee,"c","es-PE") #',
+                                format:"{0:c2}"
+                            },{
+                                field: "MonthlyCapital",
+                                title:"@T("Admin.Contract.LoanPayments.Fields.MonthlyCapital")",
+                                width: 30,
+                                template:'#= kendo.toString(MonthlyCapital,"c","es-PE") #',
+                                format:"{0:c2}"
+                            },{
+                                field: "BankName",
+                                title:"@T("Admin.Contract.LoanPayments.Fields.BankName")",
+                                width: 100
+                            }, {
+                                field: "ScheduledDateOn",
+                                title:"@T("Admin.Contract.LoanPayments.Fields.ScheduledDateOn")",
+                                width: 30,
+                                filterable: { ui: "datetimepicker" },
+                                template:'#= ScheduledDateOn!=null ? kendo.toString(ScheduledDateOn,"dd/MM/yyyy","es-PE"): " "#',
+                                type: "date",
+                                format: "{0:G}"
+                            }, {
+                                field: "ProcessedDateOn",
+                                title:"@T("Admin.Contract.LoanPayments.Fields.ProcessedDateOn")",
+                                width: 30,
+                                filterable: { ui: "datetimepicker" },
+                                template:'#= ProcessedDateOn!=null ? kendo.toString(ProcessedDateOn,"dd/MM/yyyy","es-PE"): " "#',
+                                type: "date",
+                                format: "{0:G}"
+                            },{
+                                field: "State",
+                                title: "@T("Admin.Contract.LoanPayments.Fields.State")",
+                                width: 20
+                            },{
+                                field: "Type",
+                                title: "@T("Admin.Contract.LoanPayments.Fields.Type")",
+                            width: 20
+                            },  {
+                                field: "Id",
+                                title: "@T("Admin.Common.Edit")",
+                                width: 50,
+                                template: '<a href="@Url.Content("~/Admin/Loans/CreatePayment/#=Id#")">@T("Admin.Common.Edit")</a>'
+                            }
+                        ]
+                    });
+                });
+
+                function additionalData() {
+                    var data = {
+                        Quota: $('#@Html.FieldIdFor(model => model.Quota)').val(),
+                        StateId: $('#@Html.FieldIdFor(model => model.StateId)').val(),
+                        BankName: $('#@Html.FieldIdFor(model => model.BankName)').val(),
+                        Type: $('#@Html.FieldIdFor(model => model.Type)').val(),
+                        LoanId: $('#@Html.FieldIdFor(model => model.LoanId)').val()
+                    };
+                    addAntiForgeryToken(data);
+                    return data;
+                }
+            </script>
+        </td>
+
+    </tr>
+</table>
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+
+        //search button
+        $('#search-payment').click(function() {
+            //search
+            var grid = $('#contributions-grid').data('kendoGrid');
+            grid.dataSource.page(1); //new search. Set page size to 1
+            //grid.dataSource.read(); we already loaded the grid above using "page" function
+            return false;
+        });
+
+        $("#@Html.FieldIdFor(model => model.Quota)").keydown(function(event) {
+            if (event.keyCode == 13) {
+                $("#search-payment").click();
+                return false;
+            }
+        });
+    });
+</script>

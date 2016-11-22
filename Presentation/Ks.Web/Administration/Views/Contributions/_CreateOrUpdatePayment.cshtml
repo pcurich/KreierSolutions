@@ -26,18 +26,12 @@
         <li @Html.RenderSelectedTabIndex(1, GetSelectedTabIndex())>
             @T("Common.Payment")
         </li>
-        <li @Html.RenderSelectedTabIndex(2, GetSelectedTabIndex())>
-            @T("Historico")
-        </li>
     </ul>
     <div>
         @TabSummary()
     </div>
     <div>
         @TabPayment()
-    </div>
-    <div>
-        @TabHistory()
     </div>
 </div>
 @{
@@ -159,41 +153,55 @@
                 @Html.KsLabelFor(model => model.BankName):
             </td>
             <td class="adminData">
-                @Html.DropDownListFor(model => model.BankName, Model.Banks)
-                <script>
-                    $(document).ready(function () {
-                        $('#@Html.FieldIdFor(model=>model.BankName)').width(250).kendoDropDownList();
-                    });
-                </script>
+                @{
+                    if (Model.AmountPayed > 0)
+                    {
+                        @Model.BankName
+                    }
+                    else
+                    {
+                        @Html.DropDownListFor(model => model.BankName, Model.Banks)
+                        <script>
+                            $(document).ready(function () {
+                                $('#@Html.FieldIdFor(model=>model.BankName)').width(250).kendoDropDownList();
+                            });
+                        </script>
+                    }
+                }
             </td>
         </tr>
-        <tr>
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.AccountNumber):
-            </td>
-            <td class="adminData">
-                @Html.TextBoxFor(model => model.AccountNumber, new { @readonly = "readonly", @class = "text-box single-line" })
-                @Html.ValidationMessageFor(model => model.AccountNumber)
-            </td>
-        </tr>
-        <tr>
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.TransactionNumber):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.TransactionNumber)
-                @Html.ValidationMessageFor(model => model.TransactionNumber)
-            </td>
-        </tr>
-        <tr>
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.Reference):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.Reference)
-                @Html.ValidationMessageFor(model => model.Reference)
-            </td>
-        </tr>
+        @{
+            if (Model.AmountPayed == 0)
+            {
+                <tr>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.AccountNumber):
+                    </td>
+                    <td class="adminData">
+                        @Html.TextBoxFor(model => model.AccountNumber, new { @readonly = "readonly", @class = "text-box single-line" })
+                        @Html.ValidationMessageFor(model => model.AccountNumber)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.TransactionNumber):
+                    </td>
+                    <td class="adminData">
+                        @Html.EditorFor(model => model.TransactionNumber)
+                        @Html.ValidationMessageFor(model => model.TransactionNumber)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.Reference):
+                    </td>
+                    <td class="adminData">
+                        @Html.EditorFor(model => model.Reference)
+                        @Html.ValidationMessageFor(model => model.Reference)
+                    </td>
+                </tr>
+            }
+        }
         <tr>
             <td class="adminTitle">
                 @Html.KsLabelFor(model => model.ProcessedDateOn):
@@ -244,61 +252,3 @@
     </script>
 }
 
-@helper TabHistory()
-{
-    {
-        if (Model.DetailsOld != null)
-        {
-            var addAmountOlds = Model.DetailsOld.Split('|');
-            if (addAmountOlds.Any())
-            {
-                @T("Montos Agregados ")
-                <table>
-                    <tr>
-                        <td>Couta</td>
-                        <td>Monto</td>
-                    </tr>
-                    @{
-                foreach (var amount in addAmountOlds)
-                {
-                    if (amount.Length > 0)
-                    {
-                        <tr>
-                            <td>@amount.Split('-')[0]</td>
-                            <td>@amount.Split('-')[1]</td>
-                        </tr>
-                    }
-                }
-                    }
-                </table>
-            }
-        }
-
-        if (Model.DetailsNext!= null)
-        {
-            var addAmountNext = Model.DetailsNext.Split('|');
-            if (addAmountNext.Any())
-            {
-                @T("Montos Movidos")
-                <table>
-                    <tr>
-                        <td>Couta</td>
-                        <td>Monto</td>
-                    </tr>
-                    @{
-                foreach (var amount in addAmountNext)
-                {
-                    if (amount.Length > 0)
-                    {
-                        <tr>
-                            <td>@amount.Split('-')[0]</td>
-                            <td>@amount.Split('-')[1]</td>
-                        </tr>
-                    }
-                }
-                    }
-                </table>
-            }
-        }
-    }
-}

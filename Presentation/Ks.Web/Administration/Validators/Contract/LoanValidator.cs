@@ -10,10 +10,10 @@ namespace Ks.Admin.Validators.Contract
         public LoanValidator(ILocalizationService localizationService)
         {
 
-            RuleFor(x => x.Amount)
+            RuleFor(x => x.LoanAmount)
                 .GreaterThan(0)
                 .WithMessage(
-                    localizationService.GetResource("Admin.Contract.Loan.Fields.Amount.GreaterThanOrEqualTo1"));
+                    localizationService.GetResource("Admin.Contract.Loan.Fields.LoanAmount.GreaterThanOrEqualTo1"));
 
             RuleFor(x => x.CashFlow)
                 .GreaterThan(0)

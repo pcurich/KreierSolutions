@@ -1,4 +1,4 @@
-﻿@model Ks.Admin.Models.Contract.ContributionListModel
+﻿@model  ContributionListModel
 @{
     var defaultGridPageSize = EngineContext.Current.Resolve<Ks.Core.Domain.Common.AdminAreaSettings>().DefaultGridPageSize;
     var gridPageSizes = EngineContext.Current.Resolve<Ks.Core.Domain.Common.AdminAreaSettings>().GridPageSizes;
@@ -124,9 +124,9 @@
                                   width: 50
                               }, {
                                   field: "AmountTotal",
-                                  title: "@T("Admin.Contract.Contribution.Fields.AmountTotal")",
+                                  title: "@T("Admin.Contract.Contribution.Fields.AmountMeta")",
                                   width: 50,
-                                  template:'#= kendo.toString(AmountTotal,"c","es-PE") #',
+                                  template:'#= kendo.toString(AmountMeta,"c","es-PE") #',
                                   format:"{0:c2}"
                               }, {
                                   field: "Active",

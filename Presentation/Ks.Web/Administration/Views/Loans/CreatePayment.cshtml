@@ -1,0 +1,20 @@
+﻿@model LoanPaymentsModel
+@{
+    //page title
+    ViewBag.Title = T("Admin.Contract.Loan.AddNew").Text;
+}
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "Contribution-form" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="section-header">
+        <div class="title">
+            <img src="@Url.Content("~/Administration/Content/images/ico-catalog.png")" alt="" />
+            @T("Admin.Contract.Loan.AddNew") @Html.ActionLink("(" + T("Admin.Contract.Loan.BackToPayment") + ")", "Edit/" + Model.LoanId)
+        </div>
+        <div class="options">
+            <input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")" />
+        </div>
+    </div>
+    @Html.Partial("_CreateOrUpdatePayment", Model)
+}
+

@@ -82,7 +82,7 @@ namespace Ks.Services.Contract
         /// <param name="pageSize">Size of the page.</param>
         /// <returns></returns>
         IPagedList<ContributionPayment> GetAllPayments(int contributionId = 0,
-            int customerId = 0, int number = 0, int stateId = -1, string accountNumber = "",
+            int number = 0, int stateId = -1, string accountNumber = "",
             bool? type = null, int pageIndex = 0, int pageSize = Int32.MaxValue);
 
         /// <summary>
