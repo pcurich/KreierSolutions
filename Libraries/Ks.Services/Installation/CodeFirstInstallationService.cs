@@ -946,24 +946,31 @@ namespace Ks.Services.Installation
 
         public void InstallData(string defaultUserEmail, string defaultUserPassword, bool installSampleData = true)
         {
-            InstallSystem();
-            InstallMeasures();
-            InstallLanguages();
-            InstallCurrencies();
-            InstallCountriesAndStatesAndCities();
-            InstallCustomersAndUsers(defaultUserEmail, defaultUserPassword);
-            InstallCustomerAttribute();
-            InstallEmailAccounts();
-            InstallMessageTemplates();
-            InstallSettings();
-            InstallLocaleResources();
-            InstallActivityLogTypes();
-            HashDefaultCustomerPassword(defaultUserEmail, defaultUserPassword);
-            InstallScheduleTasks();
-
-            if (installSampleData)
+            try
             {
+                InstallSystem();
+                InstallMeasures();
+                InstallLanguages();
+                InstallCurrencies();
+                InstallCountriesAndStatesAndCities();
+                InstallCustomersAndUsers(defaultUserEmail, defaultUserPassword);
+                InstallCustomerAttribute();
+                InstallEmailAccounts();
+                InstallMessageTemplates();
+                InstallSettings();
+                InstallLocaleResources();
+                InstallActivityLogTypes();
+                HashDefaultCustomerPassword(defaultUserEmail, defaultUserPassword);
+                InstallScheduleTasks();
 
+                if (installSampleData)
+                {
+
+                }
+            }
+            catch (Exception es)
+            {
+                var ess = es.Message;
             }
         }
 

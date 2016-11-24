@@ -20,6 +20,7 @@ namespace Ks.Services.ExportImport
         string ExportStatesToTxt(IList<StateProvince> states);
 
         void ExportReportContributionPaymentToXlsx(Stream stream, Customer customer, Contribution contribution, IList<ReportContributionPayment> reportContributionPayment);
-        
+
+        void ExportReportLoanPaymentToXlsx(Stream stream, Customer customer, Loan loan, IList<ReportLoanPayment> reportLoanPayment);
     }
 }

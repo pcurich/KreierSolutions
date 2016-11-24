@@ -6,7 +6,10 @@ using Ks.Core.Caching;
 using Ks.Core.Data;
 using Ks.Core.Domain.Contract;
 using Ks.Core.Domain.Customers;
+using Ks.Core.Domain.Reports;
 using Ks.Services.Events;
+using System.Data;
+using Ks.Data;
 
 namespace Ks.Services.Contract
 {
@@ -36,18 +39,21 @@ namespace Ks.Services.Contract
         private readonly IRepository<Loan> _loanRepository;
         private readonly ICacheManager _cacheManager;
         private readonly IEventPublisher _eventPublisher;
+        private readonly IDataProvider _dataProvider;
+        private readonly IDbContext _dbContext;
 
         #endregion
 
         #region Constructor
 
-        public LoanService(IRepository<LoanPayment> loanPaymentRepository,
-            IRepository<Loan> loanRepository, ICacheManager cacheManager, IEventPublisher eventPublisher)
+        public LoanService(IRepository<LoanPayment> loanPaymentRepository, IRepository<Loan> loanRepository, ICacheManager cacheManager, IEventPublisher eventPublisher, IDataProvider dataProvider, IDbContext dbContext)
         {
             _loanPaymentRepository = loanPaymentRepository;
             _loanRepository = loanRepository;
             _cacheManager = cacheManager;
             _eventPublisher = eventPublisher;
+            _dataProvider = dataProvider;
+            _dbContext = dbContext;
         }
 
         #endregion
@@ -212,6 +218,48 @@ namespace Ks.Services.Contract
 
             //event notification
             _eventPublisher.EntityUpdated(loanPayment);
+        }
+
+        public virtual IList<ReportLoanPayment> GetReportLoanPayment(int loanId, int pageIndex = 0, int pageSize = Int32.MaxValue)
+        {
+            if (loanId == 0)
+                return new List<ReportLoanPayment>();
+
+            var pContributionId = _dataProvider.GetParameter();
+            pContributionId.ParameterName = "LoanId";
+            pContributionId.Value = loanId;
+            pContributionId.DbType = DbType.Int32;
+
+            var pNameReport = _dataProvider.GetParameter();
+            pNameReport.ParameterName = "NameReport";
+            pNameReport.Value = "SummaryReportLoanPayment";
+            pNameReport.DbType = DbType.String;
+
+            var pReportState = _dataProvider.GetParameter();
+            pReportState.ParameterName = "ReportState";
+            pReportState.Value = (int)ReportState.Completed;
+            pReportState.DbType = DbType.Int32;
+
+            var pSource = _dataProvider.GetParameter();
+            pSource.ParameterName = "Source";
+            pSource.Value = "Ks.Services.Contract.LoanService";
+            pSource.DbType = DbType.String;
+
+            var pTotalRecords = _dataProvider.GetParameter();
+            pTotalRecords.ParameterName = "TotalRecords";
+            pTotalRecords.Direction = ParameterDirection.Output;
+            pTotalRecords.DbType = DbType.Int32;
+
+            //invoke stored procedure
+            var data = _dbContext.ExecuteStoredProcedureList<Report>("SummaryReportLoanPayment", pContributionId, pNameReport, pReportState, pSource, pTotalRecords);
+
+            //return products
+            var totalRecords = (pTotalRecords.Value != DBNull.Value) ? Convert.ToInt32(pTotalRecords.Value) : 0;
+            var firstOrDefault = data.FirstOrDefault();
+            if (firstOrDefault != null)
+                return new PagedList<ReportLoanPayment>(XmlHelper.XmlToObject<List<ReportLoanPayment>>(firstOrDefault.Value), pageIndex, pageSize, totalRecords);
+
+            return new List<ReportLoanPayment>();
         }
 
         #endregion

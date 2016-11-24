@@ -16,6 +16,7 @@ namespace Ks.Data.Mapping.Contract
             Property(sp => sp.TotalSafe).HasPrecision(12, 2);
             Property(sp => sp.TotalAmount).HasPrecision(12, 2);
             Property(sp => sp.TotalToPay).HasPrecision(12, 2);
+            Property(sp => sp.TotalPayed).HasPrecision(12, 2);
         }
     }
 }

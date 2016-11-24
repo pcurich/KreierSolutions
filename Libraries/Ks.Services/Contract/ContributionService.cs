@@ -247,8 +247,7 @@ namespace Ks.Services.Contract
         }
 
         public virtual IList<ReportContributionPayment> GetReportContributionPayment
-            (int contributionId, int pageIndex = 0,
-            int pageSize = Int32.MaxValue)
+            (int contributionId, int pageIndex = 0, int pageSize = Int32.MaxValue)
         {
             if (contributionId == 0)
                 return new List<ReportContributionPayment>();
@@ -279,8 +278,7 @@ namespace Ks.Services.Contract
             pTotalRecords.DbType = DbType.Int32;
 
             //invoke stored procedure
-            var data = _dbContext.ExecuteStoredProcedureList<Report>(
-                "SummaryReportContributionPayment",pContributionId, pNameReport, pReportState, pSource,pTotalRecords);
+            var data = _dbContext.ExecuteStoredProcedureList<Report>("SummaryReportContributionPayment",pContributionId, pNameReport, pReportState, pSource,pTotalRecords);
 
             //return products
             var totalRecords = (pTotalRecords.Value != DBNull.Value) ? Convert.ToInt32(pTotalRecords.Value) : 0;
@@ -288,7 +286,7 @@ namespace Ks.Services.Contract
             if (firstOrDefault != null)
                 return new PagedList<ReportContributionPayment>(XmlHelper.XmlToObject<List<ReportContributionPayment>>(firstOrDefault.Value), pageIndex, pageSize, totalRecords);
 
-            return null;
+            return new List<ReportContributionPayment>();
         }
 
         #endregion

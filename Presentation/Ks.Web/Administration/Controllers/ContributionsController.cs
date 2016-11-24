@@ -245,6 +245,12 @@ namespace Ks.Admin.Controllers
                 return RedirectToAction("CreatePayment", new { id = contributionPayment.Id });
             }
 
+            //if (contributionPayment.AmountPayed != model.AmountPayed)
+            //{
+            //    ErrorNotification(_localizationService.GetResource("Admin.Customers.Contributions.AmountPayed"));
+            //    return RedirectToAction("CreatePayment", new { id = contributionPayment.Id });
+            //}
+
             if (!ModelState.IsValid)
                 return View(model);
 
@@ -270,8 +276,7 @@ namespace Ks.Admin.Controllers
 
             var contribution = _contributionService.GetContributionById(model.ContributionId);
             contribution.UpdatedOnUtc = DateTime.UtcNow;
-            contribution.AmountPayed += contributionPayment.Amount1 + contributionPayment.Amount2 +
-                                       contributionPayment.Amount3;
+            contribution.AmountPayed += model.AmountPayed;
 
             contribution.DelayCycles = 0;
             contribution.IsDelay = false;

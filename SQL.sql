@@ -332,9 +332,9 @@ ORDER BY Number
 
 ---------------------------------
 --CLEAN DATA
-UPDATE Contribution SET IsDelay=0, CycleOfDelay=0, Active=1, UpdatedOnUtc=NULL, AmountTotal=0
-UPDATE ContributionPayment SET detailsOld=null,detailsnext=null, NumberOld =0, AmountOld =0, AmountPayed=0, AmountTotal=35, ProcessedDateOnUtc=null, StateId=1, IsAutomatic=1, BankName=null,Description=''
-delete Reports
+UPDATE Contribution SET IsDelay=0, DelayCycles=0, Active=1, UpdatedOnUtc=NULL, AmountPayed=0
+UPDATE ContributionPayment SET  NumberOld =0, AmountOld =0, AmountPayed=0, AmountTotal=35, ProcessedDateOnUtc=null, StateId=1, IsAutomatic=1, BankName=null,Description=''
+delete Report
 update ScheduleBatch set PeriodMonth=11, PeriodYear=2016,  NextExecutionOnUtc =GETUTCDATE() where  SystemName IN ('Ks.Batch.Copere.Out','Ks.Batch.Caja.Out')
 
 --fuerza el quarts
@@ -345,4 +345,13 @@ SELECT * FROM ContributionPayment WHERE ID=424
 SELECT * FROM ContributionPayment WHERE detailsold is not null 
 SELECT * FROM ContributionPayment WHERE detailsnext is not null 
 
+select* from Reports
+
+select * from ContributionPayment where ContributionId=2
+update ContributionPayment set BankName='Copere' where AccountNumber is not null
  
+ select  * from Contribution
+ update Contribution set AmountPayed=11000  where id=10
+
+ update loan set TotalPayed=0
+  

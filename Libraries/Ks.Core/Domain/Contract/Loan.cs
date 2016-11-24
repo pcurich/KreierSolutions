@@ -65,6 +65,11 @@ namespace Ks.Core.Domain.Contract
         public decimal TotalToPay { get; set; } // Amount-TotalSafe
 
         /// <summary>
+        /// Gets or sets the total payed by the customer.
+        /// </summary>
+        public decimal TotalPayed { get; set; } // Amount-TotalSafe
+
+        /// <summary>
         ///     Gets or sets a value indicating whether this instance is RequiereAuthorized.
         /// </summary>
         public bool IsAuthorized { get; set; }

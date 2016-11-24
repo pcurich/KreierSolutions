@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Ks.Core;
 using Ks.Core.Domain.Contract;
+using Ks.Core.Domain.Reports;
 
 namespace Ks.Services.Contract
 {
@@ -78,8 +79,12 @@ namespace Ks.Services.Contract
         /// <param name="loanPaymentId">The loan payment identifier.</param>
         /// <returns></returns>
         LoanPayment GetPaymentById(int loanPaymentId);
-
+        /// <summary>
+        /// Updates the loan payment.
+        /// </summary>
+        /// <param name="loanPayment">The loan payment.</param>
         void UpdateLoanPayment(LoanPayment loanPayment);
-        
+
+        IList<ReportLoanPayment> GetReportLoanPayment(int loanId, int pageIndex = 0, int pageSize = Int32.MaxValue);
     }
 }

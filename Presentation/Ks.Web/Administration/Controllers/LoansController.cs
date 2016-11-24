@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 using Ks.Admin.Extensions;
@@ -227,6 +228,12 @@ namespace Ks.Admin.Controllers
                 return RedirectToAction("CreatePayment", new { id = loanPayment.Id });
             }
 
+            //if (loanPayment.MonthlyPayed != model.MonthlyPayed)
+            //{
+            //    ErrorNotification(_localizationService.GetResource("Admin.Customers.Loans.MonthlyPayed"));
+            //    return RedirectToAction("CreatePayment", new { id = loanPayment.Id });
+            //}
+
             if (!ModelState.IsValid)
                 return View(model);
 
@@ -245,6 +252,7 @@ namespace Ks.Admin.Controllers
 
             var loan = _loanService.GetLoanById(model.LoanId);
             loan.UpdatedOnUtc = DateTime.UtcNow;
+            loan.TotalPayed += model.MonthlyPayed;
             loan.IsDelay = false;
 
             _loanService.UpdateLoan(loan);
@@ -258,6 +266,34 @@ namespace Ks.Admin.Controllers
             return RedirectToAction("Edit", new { id = loanPayment.LoanId });
         }
 
+        [HttpPost, ActionName("Edit")]
+        [FormValueRequired("exportexcel-all")]
+        public ActionResult ExportExcelAll(LoanPaymentListModel model)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageLoans))
+                return AccessDeniedView();
+
+            var customer = _customerService.GetCustomerById(model.CustomerId);
+            var loan = _loanService.GetLoanById(model.LoanId);
+            var reportContributionPayment = _loanService.GetReportLoanPayment(model.LoanId);
+            try
+            {
+                byte[] bytes;
+                using (var stream = new MemoryStream())
+                {
+                    _exportManager.ExportReportLoanPaymentToXlsx(stream, customer, loan, reportContributionPayment);
+                    bytes = stream.ToArray();
+                }
+                //Response.ContentType = "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                //Response.AddHeader("content-disposition", "attachment; filename=Aportaciones.xlsx");
+                return File(bytes, "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Apoyo Economico.xlsx");
+            }
+            catch (Exception exc)
+            {
+                ErrorNotification(exc);
+                return RedirectToAction("List");
+            }
+        }
 
         #endregion
 

@@ -189,8 +189,7 @@ BEGIN
 	CLOSE MY_CURSOR
 	DEALLOCATE MY_CURSOR
 
-END
- 
+END 
 GO
 
 CREATE PROCEDURE [UpdateContributionPayment]
@@ -603,5 +602,42 @@ SELECT @TotalRecords = COUNT(1) FROM #tmp_reports
 SELECT * FROM Report WHERE [key]=@newId
 
 END
+GO
 
+CREATE PROCEDURE [dbo].[SummaryReportLoanPayment]
+(
+	@LoanId int,
+	@NameReport nvarchar(255),
+	@ReportState int,
+	@Source nvarchar(250),
+	@TotalRecords int = null OUTPUT
+)
+AS
+BEGIN
+
+SET LANGUAGE Spanish
+
+SELECT 
+DATENAME(mm,LP.ScheduledDateOnUtc)  as MonthName,
+YEAR(LP.ScheduledDateOnUtc) as Year,
+lp.Quota as Quota,
+lp.MonthlyCapital as MonthlyCapital,
+lp.MonthlyFee as MonthlyFee,
+lp.MonthlyQuota as MonthlyQuota ,
+lp.StateId as StateId,
+lp.description as Description
+INTO #tmp_reports
+FROM  LoanPayment LP
+INNER JOIN Loan L ON L.Id=LP.LoanId
+WHERE L.Id=@LoanId
+
+DECLARE @newId uniqueidentifier =NEWID();
+DECLARE @value XML=(SELECT * FROM  #tmp_reports order by Quota  FOR XML PATH ('ReportLoanPayment'), root ('ArrayOfReportLoanPayment'))
+
+DELETE FROM Report WHERE source=@Source
+INSERT INTO Report VALUES (@newId,@NameReport,@value,'',@ReportState,'',@Source,@newId,GETUTCDATE())
+SELECT @TotalRecords = COUNT(1) FROM #tmp_reports
+SELECT * FROM Report WHERE [key]=@newId
+ 
+END
 GO
