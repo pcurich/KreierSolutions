@@ -7734,12 +7734,21 @@
   <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.Description.Hint">
     <Value>Descripcion adicional creada por el sistema.</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.TransactionNumber.IsRequired">
+    <Value>El numero de la transaccion es Obligatorio</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.TransactionNumber.NoValid">
+    <Value>El comprobante de pago que esta registrando ya se encuentra en el sistema</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Contract.Loan.AddNew">
     <Value>Nuevo Apoyo Económico.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Loan.BackToList">
     <Value>Volver a la lista de apoyo económico.</Value>
   </LocaleResource>  
+  <LocaleResource Name="Admin.Contract.Loan.BackToPayment">
+    <Value>Volver al cronograma.</Value>
+  </LocaleResource> 
   <LocaleResource Name="Admin.Contract.Loan.CashFlow">
     <Value>Liquidez</Value>
   </LocaleResource>
@@ -7798,7 +7807,7 @@
     <Value>Indica el estado en el que se encuentra un contrato de apoyo economico</Value>
   </LocaleResource>  
   <LocaleResource Name="Admin.Contract.Loan.Fields.LoanAmount">
-    <Value>Importe</Value>
+    <Value>Solicitado</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Loan.Fields.LoanAmount.GreaterThanOrEqualTo1">
     <Value>Ingrese un Importe mayor a cero</Value>
@@ -7809,16 +7818,22 @@
   <LocaleResource Name="Admin.Contract.Loan.Fields.CashFlow">
     <Value>Liquidez</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Contract.Loan.Fields.CashFlow.GreaterThanOrEqualTo1">
-    <Value>Ingrese una liquidez mayor a cero</Value>
-  </LocaleResource>
   <LocaleResource Name="Admin.Contract.Loan.Fields.CashFlow.Hint">
     <Value>Valor de la liquidez del solicitante</Value>
   </LocaleResource>
+    <LocaleResource Name="Admin.Contract.Loan.Fields.CashFlow.GreaterThanOrEqualTo1">
+    <Value>Ingrese una liquidez mayor a cero</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Contract.Loan.Fields.MonthlyFee">
-    <Value>Cuota Mensual</Value>
+    <Value>Impuesto</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Loan.Fields.MonthlyFee.Hint">
+    <Value>Valor del Impuesto mensual </Value>
+  </LocaleResource>
+   <LocaleResource Name="Admin.Contract.Loan.Fields.MonthlyQuota">
+    <Value>Cuota Mensual</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.MonthlyQuota.Hint">
     <Value>Valor de la cuota mensual,( Importe + Intereses)/Periodo </Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Loan.Fields.Period">
@@ -7840,13 +7855,13 @@
     <Value>Tasa de Interes Efectiva Anual</Value>
   </LocaleResource>
   <LocaleResource Name="admin.contract.loan.fields.TotalAmount">
-    <Value>Importe Total del Apoyo Social Económico</Value>
+    <Value>Importe Total</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Loan.Fields.TotalAmount.Hint">
     <Value>Valor del importe total,( Importe + Intereses) </Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Loan.Fields.TotalFeed">
-    <Value>Total de Intereses</Value>
+    <Value>Intereses</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Loan.Fields.TotalFeed.Hint">
     <Value>Total de Interese,Importe * Periodo * tea (mensual) </Value>
@@ -7867,7 +7882,13 @@
     <Value>Importe a Prestar</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Loan.Fields.TotalToPay.Hint">
-    <Value>Valor del importe a prestar,( Importe total - Imp desgravamen) </Value>
+    <Value>Total de Seg. Desgravamen, Importe * Seg desgravamen </Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.TotalPayed">
+    <Value>Pagado</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.TotalPayed.Hint">
+    <Value>Valor de lo pagado hasta el momento </Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Loan.StateActivity">
     <Value>Categorización</Value>
@@ -7880,6 +7901,30 @@
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Loan.Summary">
     <Value>Pre Evaluación</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.LoanPayments.ExportToExcel.Kardex">
+    <Value>Exportar a Excel (Kardex)</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.LoanPayments.CustomPayment">
+    <Value>Pago Variable</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.LoanPayments.Fields.AccountNumber">
+    <Value>N° de Cuenta</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.LoanPayments.Fields.AccountNumber.Hint">
+    <Value>N° de Cuenta</Value>
+  </LocaleResource>
+   <LocaleResource Name="Admin.Contract.LoanPayments.Fields.TransactionNumber">
+    <Value>N° Transaccion.</Value>
+  </LocaleResource>
+     <LocaleResource Name="Admin.Contract.LoanPayments.Fields.TransactionNumber.Hint">
+    <Value>Numero de transaccion del pago.</Value>
+  </LocaleResource>
+   <LocaleResource Name="Admin.Contract.LoanPayments.Fields.Reference">
+    <Value>Referencia.</Value>
+  </LocaleResource>
+     <LocaleResource Name="Admin.Contract.LoanPayments.Fields.Reference.Hint">
+    <Value>Descripcion de referencia.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.LoanPayments.Fields.Quota">
     <Value>N° de Cuota</Value>
@@ -7926,6 +7971,9 @@
   <LocaleResource Name="Admin.Contract.LoanPayments.Fields.MonthlyPayed">
     <Value>Pagado</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Contract.LoanPayments.Fields.AmountToCancel">
+    <Value>Pendiente</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Contract.LoanPayments.Fields.MonthlyPayed.Hint">
     <Value>Valor Pagado</Value>
   </LocaleResource>
@@ -7947,6 +7995,12 @@
   <LocaleResource Name="Admin.Contract.LoanPayments.Fields.ProcessedDateOn.Hint">
     <Value>Fecha de procesado</Value>
   </LocaleResource>  
+  <LocaleResource Name="Admin.Contract.LoanPayments.Fields.TransactionNumber.IsRequired">
+    <Value>El numero de la transaccion es Obligatorio</Value>
+  </LocaleResource>   
+  <LocaleResource Name="Admin.Contract.LoanPayments.Fields.TransactionNumber.NoValid">
+    <Value>El comprobante de pago que esta registrando ya se encuentra en el sistema</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.CurrentCarts">
     <Value>Carritos actuales</Value>
   </LocaleResource>
@@ -8262,6 +8316,9 @@
   <LocaleResource Name="Admin.Customers.Loans.MonthlyPayed">
     <Value>Error, el monto ingresado no es igual al pago mensual que se esperaba</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Loans.PayedIsGrantherThanDebt">
+    <Value>Error, el monto ingresado es mayor a lo que se adeuda</Value>
+  </LocaleResource>  
   <LocaleResource Name="Admin.Customers.Contributions.ValidPayment">
     <Value>Error, no se puede alterar la informacion del pago</Value>
   </LocaleResource>
@@ -8274,7 +8331,7 @@
   <LocaleResource Name="Admin.Customers.Customers.CurrentWishlist">
     <Value>Lista de deseos actual.</Value>
   </LocaleResource>
-  <LocaleResource Name="admin.customers.customers.customerroles">
+  <LocaleResource Name="Admin.Customers.Customers.CustomerRoles">
     <Value>Roles Usuario - Asociado</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.CustomerRoles.NoRoles">

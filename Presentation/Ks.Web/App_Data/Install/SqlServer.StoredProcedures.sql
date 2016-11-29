@@ -624,6 +624,7 @@ lp.Quota as Quota,
 lp.MonthlyCapital as MonthlyCapital,
 lp.MonthlyFee as MonthlyFee,
 lp.MonthlyQuota as MonthlyQuota ,
+lp.MonthlyPayed as MonthlyPayed,
 lp.StateId as StateId,
 lp.description as Description
 INTO #tmp_reports
@@ -633,6 +634,47 @@ WHERE L.Id=@LoanId
 
 DECLARE @newId uniqueidentifier =NEWID();
 DECLARE @value XML=(SELECT * FROM  #tmp_reports order by Quota  FOR XML PATH ('ReportLoanPayment'), root ('ArrayOfReportLoanPayment'))
+
+DELETE FROM Report WHERE source=@Source
+INSERT INTO Report VALUES (@newId,@NameReport,@value,'',@ReportState,'',@Source,@newId,GETUTCDATE())
+SELECT @TotalRecords = COUNT(1) FROM #tmp_reports
+SELECT * FROM Report WHERE [key]=@newId
+ 
+END
+GO
+
+CREATE PROCEDURE [dbo].[SummaryReportLoanPaymentKardex]
+(
+	@LoanId int,
+	@NameReport nvarchar(255),
+	@ReportState int,
+	@Source nvarchar(250),
+	@TotalRecords int = null OUTPUT
+)
+AS
+BEGIN
+
+SET LANGUAGE Spanish
+SELECT 
+YEAR(LP.ProcessedDateOnUtc) as Year,
+MONTH(LP.ProcessedDateOnUtc) as MONTH,
+DATENAME(mm,LP.ProcessedDateOnUtc)  as MonthName,
+SUM(lp.MonthlyPayed) as MonthlyPayed ,
+LP.StateId as StateId,
+LP.IsAutomatic AS IsAutomatic
+INTO #tmp_reports_t
+FROM  LoanPayment LP
+INNER JOIN Loan L ON L.Id=LP.LoanId
+WHERE L.Id=@LoanId   AND LP.MonthlyPayed>0
+GROUP BY lp.TransactionNumber, YEAR(lp.ProcessedDateOnUtc),MONTH(lp.ProcessedDateOnUtc), DATENAME(mm,LP.ProcessedDateOnUtc), LP.StateId, LP.IsAutomatic
+ORDER BY 1,2
+
+SELECT Year,MonthName,MonthlyPayed,StateId, IsAutomatic
+INTO  #tmp_reports 
+FROM #tmp_reports_t
+
+DECLARE @newId uniqueidentifier =NEWID();
+DECLARE @value XML=(SELECT * FROM  #tmp_reports   FOR XML PATH ('ReportLoanPaymentKardex'), root ('ArrayOfReportLoanPaymentKardex'))
 
 DELETE FROM Report WHERE source=@Source
 INSERT INTO Report VALUES (@newId,@NameReport,@value,'',@ReportState,'',@Source,@newId,GETUTCDATE())

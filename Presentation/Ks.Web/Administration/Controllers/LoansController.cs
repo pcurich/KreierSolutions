@@ -23,7 +23,7 @@ using Ks.Web.Framework.Kendoui;
 
 namespace Ks.Admin.Controllers
 {
-    public partial class LoansController: BaseAdminController
+    public partial class LoansController : BaseAdminController
     {
         #region Fields
 
@@ -85,7 +85,7 @@ namespace Ks.Admin.Controllers
                 }
 
             };
-            return  View(model);
+            return View(model);
         }
 
         [HttpPost]
@@ -138,12 +138,12 @@ namespace Ks.Admin.Controllers
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageLoans))
                 return AccessDeniedView();
 
-            var customer = _loanService.GetLoanById(id);
+            var loan = _loanService.GetLoanById(id);
             var model = new LoanPaymentListModel
             {
                 LoanId = id,
-                CustomerId = customer.Id,
-                States = ContributionState.EnProceso.ToSelectList(false).ToList(),
+                CustomerId = loan.CustomerId,
+                States = LoanState.EnProceso.ToSelectList(false).ToList(),
                 Banks = PrepareBanks(),
                 Types = new List<SelectListItem>
                 {
@@ -197,6 +197,8 @@ namespace Ks.Admin.Controllers
             return Json(gridModel);
         }
 
+        #region CreatePayment
+
         public ActionResult CreatePayment(int id)
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributions))
@@ -210,6 +212,7 @@ namespace Ks.Admin.Controllers
             }
 
             var model = PrepareLoanPayment(contributionPayment);
+            model.MonthlyPayed = model.MonthlyQuota;
 
             return View(model);
         }
@@ -217,28 +220,22 @@ namespace Ks.Admin.Controllers
         [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
         public ActionResult CreatePayment(LoanPaymentsModel model, bool continueEditing)
         {
-            if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributions))
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageLoans))
                 return AccessDeniedView();
 
             var loanPayment = _loanService.GetPaymentById(model.Id);
 
-            if (loanPayment.StateId != (int)ContributionState.Pendiente)
+            if (loanPayment.StateId != (int)LoanState.Pendiente)
             {
                 ErrorNotification(_localizationService.GetResource("Admin.Customers.Loans.ValidPayment"));
                 return RedirectToAction("CreatePayment", new { id = loanPayment.Id });
             }
 
-            //if (loanPayment.MonthlyPayed != model.MonthlyPayed)
-            //{
-            //    ErrorNotification(_localizationService.GetResource("Admin.Customers.Loans.MonthlyPayed"));
-            //    return RedirectToAction("CreatePayment", new { id = loanPayment.Id });
-            //}
-
             if (!ModelState.IsValid)
                 return View(model);
 
             loanPayment.IsAutomatic = false;
-            loanPayment.StateId = (int)ContributionState.Pagado;
+            loanPayment.StateId = (int)LoanState.Pagado;
             loanPayment.LoanId = model.LoanId;
             loanPayment.BankName = GetBank(model.BankName);
             loanPayment.AccountNumber = model.AccountNumber;
@@ -246,7 +243,7 @@ namespace Ks.Admin.Controllers
             loanPayment.Reference = model.Reference;
             loanPayment.Description = model.Description;
             loanPayment.ProcessedDateOnUtc = DateTime.UtcNow;
-            loanPayment.MonthlyPayed = model.MonthlyPayed;
+            loanPayment.MonthlyPayed = loanPayment.MonthlyQuota;
 
             _loanService.UpdateLoanPayment(loanPayment);
 
@@ -266,9 +263,13 @@ namespace Ks.Admin.Controllers
             return RedirectToAction("Edit", new { id = loanPayment.LoanId });
         }
 
+        #endregion
+
+        #region Reports
+
         [HttpPost, ActionName("Edit")]
-        [FormValueRequired("exportexcel-all")]
-        public ActionResult ExportExcelAll(LoanPaymentListModel model)
+        [FormValueRequired("exportexcel")]
+        public ActionResult ExportExcel(LoanPaymentListModel model)
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageLoans))
                 return AccessDeniedView();
@@ -294,6 +295,220 @@ namespace Ks.Admin.Controllers
                 return RedirectToAction("List");
             }
         }
+
+        [HttpPost, ActionName("Edit")]
+        [FormValueRequired("exportexcelKardex")]
+        public ActionResult ExportExcelKardex(LoanPaymentListModel model)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageLoans))
+                return AccessDeniedView();
+
+            var customer = _customerService.GetCustomerById(model.CustomerId);
+            var loan = _loanService.GetLoanById(model.LoanId);
+            var reportLoanPayment = _loanService.GetReportLoanPaymentKardex(model.LoanId);
+            try
+            {
+                byte[] bytes;
+                using (var stream = new MemoryStream())
+                {
+                    _exportManager.ExportReportLoanPaymentKardexToXlsx(stream, customer, loan, reportLoanPayment);
+                    bytes = stream.ToArray();
+                }
+                //Response.ContentType = "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                //Response.AddHeader("content-disposition", "attachment; filename=Aportaciones.xlsx");
+                return File(bytes, "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Apoyo Economico.xlsx");
+            }
+            catch (Exception exc)
+            {
+                ErrorNotification(exc);
+                return RedirectToAction("List");
+            }
+        }
+
+        #endregion
+
+        #region CustomPayment
+
+        public ActionResult CreateCustomPayment(int id)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageLoans))
+                return AccessDeniedView();
+
+            var allPayment = _loanService.GetAllPayments(loanId: id, stateId: (int)LoanState.Pendiente);
+            var amountToCancel=allPayment.Sum(x => x.MonthlyQuota);
+            var loanPaymentModel = new LoanPaymentsModel
+            {
+                Banks = PrepareBanks(), LoanId = id,
+                AmountToCancel = amountToCancel
+            };
+
+            return View(loanPaymentModel);
+        }
+
+        [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
+        public ActionResult CreateCustomPayment(LoanPaymentsModel model, bool continueEditing)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageLoans))
+                return AccessDeniedView();
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var loan = _loanService.GetLoanById(model.LoanId);
+            var allPayment = _loanService.GetAllPayments(loanId: model.LoanId, stateId: (int)LoanState.Pendiente);
+
+            var noPayedAmount = allPayment.Sum(x=>x.MonthlyQuota);
+            if (model.MonthlyPayed > noPayedAmount)
+            {
+                ErrorNotification(_localizationService.GetResource("Admin.Customers.Loans.PayedIsGrantherThanDebt"));
+                return RedirectToAction("CreateCustomPayment", new { id = model.LoanId });
+            }
+
+            LoanPayment lastLoanPayment;
+            if (noPayedAmount == model.MonthlyPayed)
+            {
+                #region Finish the loan
+
+                lastLoanPayment = new LoanPayment
+                {
+                    IsAutomatic = false,
+                    StateId = (int)LoanState.PagoPersonal,
+                    LoanId = model.LoanId,
+                    Quota = loan.Period + 1,
+                    MonthlyPayed = model.MonthlyPayed,
+                    BankName = GetBank(model.BankName),
+                    AccountNumber = model.AccountNumber,
+                    TransactionNumber = model.TransactionNumber,
+                    Reference = model.Reference,
+                    Description = model.Description,
+                    ProcessedDateOnUtc = DateTime.UtcNow,
+                    ScheduledDateOnUtc = DateTime.UtcNow,
+                };
+
+                CloseLoanPayment(allPayment.ToList());
+                _loanService.InsertLoanPayment(lastLoanPayment);
+
+                loan.UpdatedOnUtc = DateTime.UtcNow;
+                loan.TotalPayed += model.MonthlyPayed;
+                loan.IsDelay = false;
+                loan.Active = false;
+
+                _loanService.UpdateLoan(loan);
+
+                SuccessNotification(_localizationService.GetResource("Admin.Customers.Customers.Loans.Updated"));
+
+                if (continueEditing)
+                {
+                    return RedirectToAction("CreateCustomPayment", new { id = model.LoanId });
+                }
+                return RedirectToAction("List");
+
+                #endregion
+            }
+
+            #region Payed more then One Quota
+
+            var accumulate = 0M;
+            var countQuotas = 1;
+            var updateComplement = true;
+            var scheduledDateOnUtc = DateTime.UtcNow;
+            var minQuota = allPayment.Min(x => x.Quota);
+            var maxQuota = allPayment.Max(x => x.Quota);
+            foreach (var payment in allPayment)
+            {
+                accumulate += payment.MonthlyQuota;
+                if (updateComplement && accumulate <= model.MonthlyPayed)
+                {
+                    countQuotas++;
+                    payment.IsAutomatic = false;
+                    payment.MonthlyPayed = payment.MonthlyQuota;
+                    payment.StateId = (int)LoanState.PagoPersonal;
+                    payment.BankName = GetBank(model.BankName);
+                    payment.AccountNumber = model.AccountNumber;
+                    payment.TransactionNumber = model.TransactionNumber;
+                    payment.Reference = model.Reference;
+                    payment.Description = "Couta liquidada por el adelanto realizado en la couta N° " + minQuota;
+                    payment.ProcessedDateOnUtc = DateTime.UtcNow;
+
+                    _loanService.UpdateLoanPayment(payment);
+
+                    loan = _loanService.GetLoanById(model.LoanId);
+
+                    loan.UpdatedOnUtc = DateTime.UtcNow;
+                    loan.TotalPayed += loan.MonthlyQuota;
+                    loan.IsDelay = false;
+
+                    _loanService.UpdateLoan(loan);
+                }
+                else
+                {
+                    if (updateComplement)
+                    {
+                        //just one time, 
+                        accumulate -= payment.MonthlyQuota;
+                        accumulate = model.MonthlyPayed - accumulate;
+                        updateComplement = false;
+
+                        payment.IsAutomatic = false;
+                        payment.MonthlyPayed = accumulate;
+                        payment.StateId = (int)LoanState.PagoPersonal;
+                        payment.BankName = GetBank(model.BankName);
+                        payment.AccountNumber = model.AccountNumber;
+                        payment.TransactionNumber = model.TransactionNumber;
+                        payment.Reference = model.Reference;
+                        payment.Description = "Couta pagada parcialmente por el adelanto realizado en la couta N° " +minQuota;
+                        payment.ProcessedDateOnUtc = DateTime.UtcNow;
+
+                        _loanService.UpdateLoanPayment(payment);
+
+                        loan = _loanService.GetLoanById(model.LoanId);
+
+                        loan.UpdatedOnUtc = DateTime.UtcNow;
+                        loan.TotalPayed += accumulate;
+                        loan.IsDelay = false;
+                    }
+                    else
+                    {
+                        //here just update the Scheduled
+                        accumulate -= payment.MonthlyQuota; //fixed
+                        payment.ScheduledDateOnUtc = payment.ScheduledDateOnUtc.AddMonths(countQuotas * -1);
+                        payment.IsAutomatic = true;
+                        payment.Description = "Couta adelantada debido al pago parcial realizado en el cuota N° "+minQuota;
+                        scheduledDateOnUtc = payment.ScheduledDateOnUtc;
+                        _loanService.UpdateLoanPayment(payment);
+                    }
+                }
+            }
+
+            //create the last quota
+            lastLoanPayment = new LoanPayment
+            {
+                IsAutomatic = true,
+                StateId = (int)LoanState.Pendiente,
+                LoanId = model.LoanId,
+                Quota = maxQuota + 1,
+                MonthlyCapital = Math.Round((1 - Convert.ToDecimal(loan.Tea) / 100) * (loan.MonthlyQuota - accumulate), 2),
+                MonthlyFee = Math.Round(Convert.ToDecimal(loan.Tea) / 100 * (loan.MonthlyQuota - accumulate), 2),
+                MonthlyPayed = 0,
+                MonthlyQuota = loan.MonthlyQuota - accumulate,
+                ScheduledDateOnUtc = scheduledDateOnUtc.AddMonths(1),
+                Description = "Nueva Couta creada debido al pago parcial realizado con el monto: " + (loan.MonthlyQuota - accumulate).ToString("c")
+            };
+            _loanService.InsertLoanPayment(lastLoanPayment);
+
+            #endregion
+
+            SuccessNotification(_localizationService.GetResource("Admin.Customers.Customers.Loans.Updated"));
+
+            if (continueEditing)
+            {
+                return RedirectToAction("CreateCustomPayment", new { id = model.LoanId });
+            }
+            return RedirectToAction("Edit", new { id = model.LoanId });
+
+        }
+
+        #endregion
 
         #endregion
 
@@ -327,13 +542,27 @@ namespace Ks.Admin.Controllers
             model.ScheduledDateOn = _dateTimeHelper.ConvertToUserTime(loanPayment.ScheduledDateOnUtc, DateTimeKind.Utc);
             if (loanPayment.ProcessedDateOnUtc.HasValue)
                 model.ProcessedDateOn = _dateTimeHelper.ConvertToUserTime(loanPayment.ProcessedDateOnUtc.Value, DateTimeKind.Utc);
-            var state = ContributionState.Pendiente.ToSelectList()
+            var state = LoanState.Pendiente.ToSelectList()
                 .FirstOrDefault(x => x.Value == loanPayment.StateId.ToString());
             if (state != null)
                 model.State = state.Text;
 
             return model;
         }
+
+        [NonAction]
+        protected virtual void CloseLoanPayment(IList<LoanPayment> allPayment)
+        {
+            foreach (var payment in allPayment)
+            {
+                payment.IsAutomatic = false;
+                payment.StateId = (int)LoanState.Anulado;
+                payment.ProcessedDateOnUtc = DateTime.UtcNow;
+                payment.Description = "El monto fue cancelado debido a un pago de personal";
+                _loanService.UpdateLoanPayment(payment);
+            }
+        }
+
 
         [NonAction]
         protected virtual string GetBank(string account)

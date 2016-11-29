@@ -1312,6 +1312,8 @@
     <Content Include="Views\Loans\_CreateOrUpdate.cshtml" />
     <Content Include="Views\Loans\CreatePayment.cshtml" />
     <Content Include="Views\Loans\_CreateOrUpdatePayment.cshtml" />
+    <Content Include="Views\Loans\CreateCustomPayment.cshtml" />
+    <Content Include="Views\Loans\_CreateOrUpdateCustomPayment.cshtml" />
     <None Include="Views\Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1419,9 +1421,10 @@
     <Compile Include="Validators\Common\AddressAttributeValidator.cs" />
     <Compile Include="Validators\Common\AddressAttributeValueValidator.cs" />
     <Compile Include="Validators\Common\AddressValidator.cs" />
+    <Compile Include="Validators\Contract\ContributionPaymentValidator.cs" />
     <Compile Include="Validators\Contract\ContributionValidator.cs" />
+    <Compile Include="Validators\Contract\LoanPaymentValidator.cs" />
     <Compile Include="Validators\Contract\LoanValidator.cs" />
-    <Compile Include="Validators\Customers\ContributionPaymentsValidator.cs" />
     <Compile Include="Validators\Customers\CustomerAttributeValidator.cs" />
     <Compile Include="Validators\Customers\CustomerAttributeValueValidator.cs" />
     <Compile Include="Validators\Customers\CustomerRoleValidator.cs" />

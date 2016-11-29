@@ -9,6 +9,7 @@ namespace Ks.Core.Domain.Reports
         public decimal MonthlyCapital { get; set; }
         public decimal MonthlyFee { get; set; }
         public decimal MonthlyQuota { get; set; }
+        public decimal MonthlyPayed { get; set; }
         public int StateId { get; set; }
         public string Description { get; set; }
     }

@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using FluentValidation.Attributes;
-using Ks.Admin.Validators.Customers;
+using Ks.Admin.Validators.Contract;
 using Ks.Web.Framework;
 using Ks.Web.Framework.Mvc;
 
 namespace Ks.Admin.Models.Contract
 {
-    [Validator(typeof(ContributionPaymentsValidator))]
+    [Validator(typeof(ContributionPaymentValidator))]
     public partial class ContributionPaymentsModel : BaseKsEntityModel
     {
         public ContributionPaymentsModel()

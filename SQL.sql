@@ -354,4 +354,48 @@ update ContributionPayment set BankName='Copere' where AccountNumber is not null
  update Contribution set AmountPayed=11000  where id=10
 
  update loan set TotalPayed=0
+
+ select * from Report
+
+ select * from ContributionPayment
+ select * from LoanPayment
+
+ SELECT  c.CustomerId, cp.AmountTotal, cp.Amount1, cp.Amount2, cp.Amount3, cp.Number  
+                      FROM ContributionPayment cp  
+                      INNER JOIN  Contribution c on c.Id=cp.ContributionId  
+                      WHERE c.CustomerId IN (  1 ) AND  
+                      cp.StateId=@StateId AND  
+                      YEAR(cp.ScheduledDateOnUtc)=@Year AND  
+                      MONTH(cp.ScheduledDateOnUtc)=@Month  
+
+ SELECT c.CustomerId, cp.Id, cp.Number,cp.NumberOld, c.Id,  
+		cp.Amount1, cp.Amount2, cp.Amount3,cp.AmountOld, cp.AmountTotal, 
+		cp.AmountTotal,cp.AmountPayed, cp.StateId,cp.IsAutomatic,Cp.BankName,cp.AccountNumber,
+		cp.TransactionNumber, cp.Reference, cp.Description
+FROM ContributionPayment cp  
+                      INNER JOIN  Contribution c on c.Id=cp.ContributionId  
+                      WHERE c.CustomerId IN (  1 )   
+  
+
+ SELECT 
+ l.CustomerId as CustomerId,
+ LP.Id as LoanPaymentId,
+ L.Id as LoanId,
+ LP.Quota as Quota,
+ LP.MonthlyQuota as MonthlyQuota,
+ LP.MonthlyFee as MonthlyFee,
+ LP.MonthlyCapital as MonthlyCapital,
+ LP.MonthlyPayed AS MonthlyPayed,
+ LP.StateId as StateId,
+ LP.IsAutomatic as IsAutomatic,
+ LP.BankName as BankName,
+ LP.AccountNumber as AccountNumber,
+ LP.TransactionNumber as TransactionNumber,
+ LP.Reference as Reference,
+ LP.Description as Description
+ FROM 
+ LoanPayment LP 
+ INNER JOIN Loan L on L.Id=lp.LoanId 
+ WHERE L.CustomerId in (1,2,3,4,2) and LP.StateId=1
+ ORDER BY 1
   

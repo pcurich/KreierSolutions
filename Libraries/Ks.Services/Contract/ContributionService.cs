@@ -11,6 +11,7 @@ using Ks.Core.Domain.Customers;
 using Ks.Core.Domain.Reports;
 using Ks.Data;
 using Ks.Services.Events;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 
 namespace Ks.Services.Contract
 {
@@ -287,6 +288,16 @@ namespace Ks.Services.Contract
                 return new PagedList<ReportContributionPayment>(XmlHelper.XmlToObject<List<ReportContributionPayment>>(firstOrDefault.Value), pageIndex, pageSize, totalRecords);
 
             return new List<ReportContributionPayment>();
+        }
+
+        public virtual bool IsPaymentValid(string accountNumber, string transactionNumber)
+        {
+            var query = from q in _contributionPaymentRepository.Table
+                        where q.AccountNumber==accountNumber && q.TransactionNumber==transactionNumber
+                        select q;
+            var result = query.ToList();
+
+            return result.Count <= 0;
         }
 
         #endregion

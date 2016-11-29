@@ -39,7 +39,7 @@
             @Html.DropDownListFor(model => model.Period, Model.Periods)
             @Html.ValidationMessageFor(model => model.Period)
             <script>
-                $(document).ready(function () {
+                $(document).ready(function() {
                     $("#@Html.FieldIdFor(model => model.Period)").kendoDropDownList();
                 });
             </script>

@@ -73,7 +73,7 @@ namespace Ks.Core.Domain.Contract
         ///     Gets or sets a value indicating whether this instance is RequiereAuthorized.
         /// </summary>
         public bool IsAuthorized { get; set; }
-
+         
         /// <summary>
         ///     Gets or sets a value indicating whether this instance is delay.
         /// </summary>

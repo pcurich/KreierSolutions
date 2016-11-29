@@ -1494,9 +1494,8 @@ namespace Ks.Admin.Controllers
                 return RedirectToAction("List");
 
             var periods = CommonHelper.ConvertToSelectListItem(_stateActivitySettings.Periods, ',');
-            periods.Insert(0, new SelectListItem { Value = "0", Text = "----" });
-            //var totalOfContribution = _contributionService.GetAllPayments(customerId: customerId);
-            var totalOfContribution = _contributionService.GetAllPayments(   customerId);
+            periods.Insert(0, new SelectListItem { Value = "0", Text = "------------------" });
+            var totalOfContribution = _contributionService.GetAllPayments(customerId);
             var totalOfCyclesPayments = totalOfContribution.Count(x => x.StateId == (int)ContributionState.Pagado);
             var model = (LoanModel)Session["loanModel"];
             if (model == null || !model.IsPostBack)
@@ -1598,9 +1597,9 @@ namespace Ks.Admin.Controllers
                     {
                         //Active = false,
                         Quota = cycle,
-                        MonthlyFee = Math.Round(loan.TotalFeed / loan.Period, 2),
-                        MonthlyCapital = Math.Round(loan.MonthlyQuota - loan.TotalFeed / loan.Period, 2),
-                        MonthlyQuota = Math.Round(loan.MonthlyQuota, 2),
+                        MonthlyFee = (loan.TotalFeed / loan.Period),
+                        MonthlyCapital = (loan.MonthlyQuota - loan.TotalFeed / loan.Period),
+                        MonthlyQuota = (loan.MonthlyQuota),
                         ScheduledDateOnUtc = _dateTimeHelper.ConvertToUtcTime(DateTime.UtcNow.AddMonths(cycle)),
                         ProcessedDateOnUtc = null,
                         StateId = 1
@@ -1615,7 +1614,7 @@ namespace Ks.Admin.Controllers
                 _settingService.SaveSetting(sequenceIdsSettings);
                 //now clear settings cache
                 _settingService.ClearCache();
-
+                SaveSelectedTabIndex(5);
                 _customerActivityService.InsertActivity("AddNewLoan", _localizationService.GetResource("ActivityLog.AddNewLoan"), loan.LoanNumber, loan.Id);
             }
 
@@ -1629,7 +1628,7 @@ namespace Ks.Admin.Controllers
                 return Content("");
 
             //var loanPayments = _loanService.GetAllPayments(customerId: customerId, pageIndex: command.Page - 1, pageSize: command.PageSize);
-            var loanPayments = _loanService.GetAllPayments(  pageIndex: command.Page - 1, pageSize: command.PageSize);
+            var loanPayments = _loanService.GetAllPayments(pageIndex: command.Page - 1, pageSize: command.PageSize);
             var gridModel = new DataSourceResult
             {
                 Data = loanPayments.Select(x =>
@@ -1712,7 +1711,8 @@ namespace Ks.Admin.Controllers
                     };
                     return classState;
                 }
-            };
+            }
+
             #endregion
 
             #region Class B
@@ -1757,7 +1757,7 @@ namespace Ks.Admin.Controllers
                             _contributionService.GetContributionsByCustomer(customerId: warranty.Id).Count > 0
                     };
                     return classState;
-                };
+                }
             };
             #endregion
 
@@ -1803,8 +1803,8 @@ namespace Ks.Admin.Controllers
                             _contributionService.GetContributionsByCustomer(customerId: warranty.Id).Count > 0
                     };
                     return classState;
-                };
-            };
+                }
+            }
             #endregion
 
             #region Class D
@@ -1849,8 +1849,8 @@ namespace Ks.Admin.Controllers
                             _contributionService.GetContributionsByCustomer(customerId: warranty.Id).Count > 0
                     };
                     return classState;
-                };
-            };
+                }
+            }
             #endregion
 
             #region Class E
@@ -1895,8 +1895,8 @@ namespace Ks.Admin.Controllers
                             _contributionService.GetContributionsByCustomer(customerId: warranty.Id).Count > 0
                     };
                     return classState;
-                };
-            };
+                }
+            }
             #endregion
 
             return null;
@@ -1928,11 +1928,11 @@ namespace Ks.Admin.Controllers
                 Amount = model.LoanAmount,
                 Tea = _stateActivitySettings.Tea * 100,
                 Safe = _stateActivitySettings.Safe * 100,
-                TotalFeed = Math.Round(totalfeed, 2),
-                TotalSafe = Math.Round(totalSafe),
-                MonthlyQuota = Math.Round((model.LoanAmount + totalfeed) / model.Period, 2),
-                TotalAmount = Math.Round(totalfeed + model.LoanAmount, 2),
-                TotalToPay = Math.Round(model.LoanAmount - totalSafe, 2)
+                TotalFeed = (totalfeed),
+                TotalSafe = (totalSafe),
+                MonthlyQuota = ((model.LoanAmount + totalfeed) / model.Period),
+                TotalAmount = (totalfeed + model.LoanAmount),
+                TotalToPay = (model.LoanAmount - totalSafe)
             };
 
             return model;

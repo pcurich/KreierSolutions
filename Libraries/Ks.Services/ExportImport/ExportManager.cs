@@ -445,9 +445,9 @@ namespace Ks.Services.ExportImport
                 worksheet.Cells["E9"].Value = loan.TotalToPay.ToString("c", new CultureInfo("es-PE"));
 
                 worksheet.Cells["G6"].Value = "T.E.A:";
-                worksheet.Cells["H6"].Value = (loan.Tea/100).ToString("p", new CultureInfo("es-PE"));
+                worksheet.Cells["H6"].Value = (loan.Tea / 100).ToString("p", new CultureInfo("es-PE"));
                 worksheet.Cells["G7"].Value = "Seg Desgravamen:";
-                worksheet.Cells["H7"].Value = (loan.Safe/100).ToString("p", new CultureInfo("es-PE"));
+                worksheet.Cells["H7"].Value = (loan.Safe / 100).ToString("p", new CultureInfo("es-PE"));
                 worksheet.Cells["G8"].Value = "Total Intereses:";
                 worksheet.Cells["H8"].Value = loan.TotalFeed.ToString("c", new CultureInfo("es-PE"));
                 worksheet.Cells["G9"].Value = "Total Desgravamen:";
@@ -458,7 +458,7 @@ namespace Ks.Services.ExportImport
                 //Create Headers and format them 
                 var properties = new[]
                     {
-                        "Mes","Año","Cuota","Capital","Interes","Cuota Mensual","Estado"
+                        "Mes","Año","Cuota","Capital","Interes","Cuota Mensual","Monto Pagado","Estado"
                     };
                 for (var i = 0; i < properties.Length; i++)
                 {
@@ -473,6 +473,7 @@ namespace Ks.Services.ExportImport
                 var totalMonthlyCapital = 0M;
                 var totalMonthlyFee = 0M;
                 var totalMonthlyQuota = 0M;
+                var totalMonthlyPayed = 0M;
 
                 foreach (var p in reportLoanPayment)
                 {
@@ -483,30 +484,127 @@ namespace Ks.Services.ExportImport
                     col++;
                     worksheet.Cells[row, col].Value = p.Quota;
                     col++;
-                    worksheet.Cells[row, col].Value = p.MonthlyCapital;
+                    worksheet.Cells[row, col].Value = p.MonthlyCapital.ToString("c", new CultureInfo("es-PE"));
                     col++;
-                    worksheet.Cells[row, col].Value = p.MonthlyFee;
+                    worksheet.Cells[row, col].Value = p.MonthlyFee.ToString("c", new CultureInfo("es-PE"));
                     col++;
-                    worksheet.Cells[row, col].Value = p.MonthlyQuota;
+                    worksheet.Cells[row, col].Value = p.MonthlyQuota.ToString("c", new CultureInfo("es-PE"));
+                    col++;
+                    worksheet.Cells[row, col].Value = p.MonthlyPayed.ToString("c", new CultureInfo("es-PE"));
                     col++;
                     worksheet.Cells[row, col].Value = GetStateName(p.StateId);
 
                     totalMonthlyCapital += p.MonthlyCapital;
                     totalMonthlyFee += p.MonthlyFee;
                     totalMonthlyQuota += p.MonthlyQuota;
-
+                    totalMonthlyPayed += p.MonthlyPayed;
                     row++;
                 }
 
                 worksheet.Cells[row, 1].Value = "Total";
                 worksheet.Cells[row, 1].Style.Font.Bold = true;
-                worksheet.Cells[row, 4].Value = totalMonthlyCapital;
+                worksheet.Cells[row, 4].Value = totalMonthlyCapital.ToString("c", new CultureInfo("es-PE"));
                 worksheet.Cells[row, 4].Style.Font.Bold = true;
-                worksheet.Cells[row, 5].Value = totalMonthlyFee;
+                worksheet.Cells[row, 5].Value = totalMonthlyFee.ToString("c", new CultureInfo("es-PE"));
                 worksheet.Cells[row, 5].Style.Font.Bold = true;
-                worksheet.Cells[row, 6].Value = totalMonthlyQuota;
+                worksheet.Cells[row, 6].Value = totalMonthlyQuota.ToString("c", new CultureInfo("es-PE"));
                 worksheet.Cells[row, 6].Style.Font.Bold = true;
+                worksheet.Cells[row, 7].Value = totalMonthlyPayed.ToString("c", new CultureInfo("es-PE"));
+                worksheet.Cells[row, 7].Style.Font.Bold = true;
+                xlPackage.Save();
+            }
+        }
 
+        public virtual void ExportReportLoanPaymentKardexToXlsx(Stream stream, Customer customer, Loan loan, IList<ReportLoanPaymentKardex> reportLoanPaymentKardex)
+        {
+            if (stream == null)
+                throw new ArgumentNullException("stream");
+
+            using (var xlPackage = new ExcelPackage(stream))
+            {
+                // get handle to the existing worksheet
+                var worksheet = xlPackage.Workbook.Worksheets.Add("Apoyo Social Económico Kardex");
+                var imagePath = _webHelper.MapPath("/Administration/Content/images/logo.png");
+                //Stream binary = new MemoryStream(File.ReadAllBytes(sampleImagesPath + "logo.png"));
+
+                //var logo = Image.FromStream(binary);
+                //var picture = worksheet.Drawings.AddPicture("", logo);
+                var image = new Bitmap(imagePath);
+                var excelImage = worksheet.Drawings.AddPicture("ACMR", image);
+                excelImage.From.Column = 0;
+                excelImage.From.Row = 0;
+
+                #region Summary
+
+                worksheet.Cells["A6:A9"].Style.Font.Bold = true;
+                worksheet.Cells["D6:D9"].Style.Font.Bold = true;
+                worksheet.Cells["G6:G9"].Style.Font.Bold = true;
+
+                worksheet.Cells["A6"].Value = "Nombre:";
+                worksheet.Cells["B6"].Value = customer.GetFullName();
+                worksheet.Cells["A7"].Value = "Dni:";
+                worksheet.Cells["B7"].Value = customer.GetGenericAttribute(SystemCustomerAttributeNames.Dni);
+                worksheet.Cells["A8"].Value = "N° Adm:";
+                worksheet.Cells["B8"].Value = customer.GetGenericAttribute(SystemCustomerAttributeNames.AdmCode);
+                worksheet.Cells["A9"].Value = "Fecha de Solicitud:";
+                worksheet.Cells["B9"].Value = _dateTimeHelper.ConvertToUserTime(loan.CreatedOnUtc, DateTimeKind.Utc).ToString(CultureInfo.InvariantCulture);
+
+                worksheet.Cells["D6"].Value = "Plazo:";
+                worksheet.Cells["E6"].Value = string.Format("{0} Meses", loan.Period);
+                worksheet.Cells["D7"].Value = "Cuota Mensual:";
+                worksheet.Cells["E7"].Value = loan.MonthlyQuota.ToString("c", new CultureInfo("es-PE"));
+                worksheet.Cells["D8"].Value = "Importe:";
+                worksheet.Cells["E8"].Value = loan.LoanAmount.ToString("c", new CultureInfo("es-PE"));
+                worksheet.Cells["D9"].Value = "Total a Girar:";
+                worksheet.Cells["E9"].Value = loan.TotalToPay.ToString("c", new CultureInfo("es-PE"));
+
+                worksheet.Cells["G6"].Value = "T.E.A:";
+                worksheet.Cells["H6"].Value = (loan.Tea / 100).ToString("p", new CultureInfo("es-PE"));
+                worksheet.Cells["G7"].Value = "Seg Desgravamen:";
+                worksheet.Cells["H7"].Value = (loan.Safe / 100).ToString("p", new CultureInfo("es-PE"));
+                worksheet.Cells["G8"].Value = "Total Intereses:";
+                worksheet.Cells["H8"].Value = loan.TotalFeed.ToString("c", new CultureInfo("es-PE"));
+                worksheet.Cells["G9"].Value = "Total Desgravamen:";
+                worksheet.Cells["H9"].Value = loan.TotalSafe.ToString("c", new CultureInfo("es-PE"));
+
+                #endregion
+
+                //Create Headers and format them 
+                var properties = new[]
+                    {
+                        "Estado","Tipo","Año","Mes","Monto Pagado",
+                    };
+                for (var i = 0; i < properties.Length; i++)
+                {
+                    worksheet.Cells[11, i + 1].Value = properties[i];
+                    worksheet.Cells[11, i + 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    worksheet.Cells[11, i + 1].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(128, 235, 142));
+                    worksheet.Cells[11, i + 1].Style.Fill.BackgroundColor.Tint = 0.599993896298105M;
+                    worksheet.Cells[11, i + 1].Style.Font.Bold = true;
+                }
+
+                var row = 12;
+
+                foreach (var p in reportLoanPaymentKardex)
+                {
+                    var col = 1;
+                    worksheet.Cells[row, col].Value = GetStateName(p.StateId);
+                    col++;
+                    worksheet.Cells[row, col].Value = p.IsAutomatic == 1 ? "Automático" : "Manual";
+                    col++;
+                    worksheet.Cells[row, col].Value = p.Year;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.MonthName;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.MonthlyPayed.ToString("c", new CultureInfo("es-PE"));
+
+                    row++;
+                }
+
+                worksheet.Cells[row, 1].Value = "Total Amortizado";
+                worksheet.Cells[row, 1].Style.Font.Bold = true;
+                worksheet.Cells[row, 5].Value = loan.TotalPayed.ToString("c", new CultureInfo("es-PE"));
+                worksheet.Cells[row, 5].Style.Font.Bold = true;
                 xlPackage.Save();
             }
         }
@@ -515,7 +613,7 @@ namespace Ks.Services.ExportImport
 
         #region Utilities
 
-        private Color GetColor(int isAutomatic, int stateId )
+        private Color GetColor(int isAutomatic, int stateId)
         {
             //ContributionState.Pendiente => Color.Gainsboro
             //ContributionState.EnProceso => Color.LightBlue
@@ -555,6 +653,8 @@ namespace Ks.Services.ExportImport
                 case (int)LoanState.PagoParcial: return "Pago Parcial";
                 case (int)LoanState.Pagado: return "Pagado";
                 case (int)LoanState.SinLiquidez: return "Sin Liquidez";
+                case (int)LoanState.Anulado: return "Anulado";
+                case (int)LoanState.PagoPersonal: return "Pago Personal";
             }
             return "";
         }

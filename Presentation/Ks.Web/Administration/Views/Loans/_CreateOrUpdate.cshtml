@@ -56,7 +56,7 @@
     </tr>
     <tr>
         <td colspan="2">
-            <input type="button" id="search-payment" class="k-button" value="@T("Admin.Common.Search")"/>
+            <input type="button" id="search-payment" class="k-button" value="@T("Admin.Common.Search")" />
         </td>
     </tr>
 </table>
@@ -129,6 +129,12 @@
                                 template:'#= kendo.toString(MonthlyCapital,"c","es-PE") #',
                                 format:"{0:c2}"
                             },{
+                                field: "MonthlyPayed",
+                                title:"@T("Admin.Contract.LoanPayments.Fields.MonthlyPayed")",
+                                width: 30,
+                                template:'#= kendo.toString(MonthlyPayed,"c","es-PE") #',
+                                format:"{0:c2}"
+                            },{
                                 field: "BankName",
                                 title:"@T("Admin.Contract.LoanPayments.Fields.BankName")",
                                 width: 100
@@ -155,7 +161,7 @@
                             },{
                                 field: "Type",
                                 title: "@T("Admin.Contract.LoanPayments.Fields.Type")",
-                            width: 20
+                                width: 20
                             },  {
                                 field: "Id",
                                 title: "@T("Admin.Common.Edit")",

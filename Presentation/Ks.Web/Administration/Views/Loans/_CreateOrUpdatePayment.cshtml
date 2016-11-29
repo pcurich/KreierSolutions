@@ -1,4 +1,5 @@
 ﻿@using System.Globalization
+@using Ks.Core.Domain.Contract
 @model LoanPaymentsModel
 @Html.ValidationSummary(true)
 @Html.HiddenFor(x => x.Id)
@@ -99,8 +100,6 @@
             </td>
         </tr>
     </table>
-
-
 }
 @helper TabPayment()
 {
@@ -110,7 +109,7 @@
                 @Html.KsLabelFor(model => model.MonthlyPayed):
             </td>
             <td class="adminData">
-                @Html.EditorFor(model => model.MonthlyPayed)
+                @Model.MonthlyPayed.ToString("c", new CultureInfo("es-PE"))
                 @Html.ValidationMessageFor(model => model.MonthlyPayed)
             </td>
         </tr>
@@ -120,7 +119,7 @@
             </td>
             <td class="adminData">
                 @{
-                    if (Model.MonthlyPayed > 0)
+                    if (Model.StateId !=(int)(LoanState.Pendiente))
                     {
                         @Model.BankName
                     }
@@ -136,9 +135,7 @@
                 }
             </td>
         </tr>
-        @{
-            if (Model.MonthlyPayed == 0)
-            {
+         
                 <tr>
                     <td class="adminTitle">
                         @Html.KsLabelFor(model => model.AccountNumber):
@@ -166,8 +163,7 @@
                         @Html.ValidationMessageFor(model => model.Reference)
                     </td>
                 </tr>
-            }
-        }
+            
         <tr>
             <td class="adminTitle">
                 @Html.KsLabelFor(model => model.ProcessedDateOn):

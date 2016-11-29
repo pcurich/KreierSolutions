@@ -148,11 +148,11 @@ namespace Ks.Admin.Controllers
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributions))
                 return AccessDeniedView();
 
-            var customer = _contributionService.GetContributionById(id);
+            var contribution = _contributionService.GetContributionById(id);
             var model = new ContributionPaymentListModel
             {
                 ContributionId = id,
-                CustomerId = customer.Id,
+                CustomerId = contribution.CustomerId,
                 States = ContributionState.EnProceso.ToSelectList(false).ToList(),
                 Banks = PrepareBanks(),
                 Types = new List<SelectListItem>

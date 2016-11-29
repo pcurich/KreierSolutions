@@ -84,7 +84,33 @@ namespace Ks.Services.Contract
         /// </summary>
         /// <param name="loanPayment">The loan payment.</param>
         void UpdateLoanPayment(LoanPayment loanPayment);
-
+        /// <summary>
+        /// Gets the report loan payment.
+        /// </summary>
+        /// <param name="loanId">The loan identifier.</param>
+        /// <param name="pageIndex">Index of the page.</param>
+        /// <param name="pageSize">Size of the page.</param>
+        /// <returns></returns>
         IList<ReportLoanPayment> GetReportLoanPayment(int loanId, int pageIndex = 0, int pageSize = Int32.MaxValue);
+        /// <summary>
+        /// Gets the report loan payment kardex.
+        /// </summary>
+        /// <param name="loanId">The loan identifier.</param>
+        /// <param name="pageIndex">Index of the page.</param>
+        /// <param name="pageSize">Size of the page.</param>
+        /// <returns></returns>
+        IList<ReportLoanPaymentKardex> GetReportLoanPaymentKardex(int loanId, int pageIndex = 0, int pageSize = Int32.MaxValue);
+        /// <summary>
+        /// Inserts the loan payment.
+        /// </summary>
+        /// <param name="loanPayment">The loan payment.</param>
+        void InsertLoanPayment(LoanPayment loanPayment);
+        /// <summary>
+        /// Determines whether [is payment valid] [the specified account number].
+        /// </summary>
+        /// <param name="accountNumber">The account number.</param>
+        /// <param name="transactionNumber">The transaction number.</param>
+        /// <returns></returns>
+        bool IsPaymentValid(string accountNumber, string transactionNumber);
     }
 }

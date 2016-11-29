@@ -38,7 +38,8 @@ namespace Ks.Batch.Caja.Out
                     DeleteReport(Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00"), Batch.SystemName);
                     CompleteCustomerName();
                     var guid = CreateReportIn(Batch, XmlHelper.Serialize2String(new List<Info>(ReportOut.Values)));
-                    CreateReportOut(guid, Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00"), "Ks.Batch.Caja.In");
+                    CreateReportOut(guid, Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00"),
+                        "Ks.Batch.Caja.In");
                 }
             }
             catch (Exception ex)
@@ -55,15 +56,34 @@ namespace Ks.Batch.Caja.Out
         {
             try
             {
-                Log.InfoFormat("Action: {0}", "Dao.GetContributionPayments(" + string.Join(",", customerIds.ToArray()) + ")");
+                Log.InfoFormat("Action: {0}",
+                    "Dao.GetContributionPayments(" + string.Join(",", customerIds.ToArray()) + ")");
 
-                Sql = "SELECT  c.CustomerId, cp.AmountTotal, cp.Amount1, cp.Amount2, cp.Amount3, cp.Number " +
-                  "FROM ContributionPayment cp " +
-                  "INNER JOIN  Contribution c on c.Id=cp.ContributionId " +
-                  "WHERE c.CustomerId IN (" + string.Join(",", customerIds.ToArray()) + ") AND " +
-                  "cp.StateId=@StateId AND " +
-                  "YEAR(cp.ScheduledDateOnUtc)=@Year AND " +
-                  "MONTH(cp.ScheduledDateOnUtc)=@Month  ";
+                Sql = "SELECT  " +
+                      "c.CustomerId as CustomerId,  " +
+                      "cp.Id as ContributionPaymentId, " +
+                      "cp.Number as Number, " +
+                      "cp.NumberOld as NumberOld,  " +
+                      "c.Id as ContributionId,  " +
+                      "cp.Amount1 as Amount1, " +
+                      "cp.Amount2 as Amount2, " +
+                      "cp.Amount3 as Amount3, " +
+                      "cp.AmountOld, as AmountOld " +
+                      "cp.AmountTotal, as AmountTotal " +
+                      "cp.AmountPayed, as AmountPayed " +
+                      "cp.StateId as StateId, " +
+                      "cp.IsAutomatic as IsAutomatic, " +
+                      "cp.BankName as BankName, " +
+                      "cp.AccountNumber as AccountNumber, " +
+                      "cp.TransactionNumber as TransactionNumber, " +
+                      "cp.Reference as Reference, " +
+                      "cp.Description as Description" +
+                      "FROM ContributionPayment cp " +
+                      "INNER JOIN  Contribution c on c.Id=cp.ContributionId " +
+                      "WHERE c.CustomerId IN (" + string.Join(",", customerIds.ToArray()) + ") AND " +
+                      "cp.StateId=@StateId AND " +
+                      "YEAR(cp.ScheduledDateOnUtc)=@Year AND " +
+                      "MONTH(cp.ScheduledDateOnUtc)=@Month  ";
 
                 Command = new SqlCommand(Sql, Connection);
 
@@ -101,21 +121,38 @@ namespace Ks.Batch.Caja.Out
                 while (sqlReader.Read())
                 {
                     var line = string.Format("{0}  {1}{2}{3}", customer[sqlReader.GetInt32(0)],
-                                                                Batch.PeriodYear,
-                                                                Batch.PeriodMonth.ToString("00"),
-                                                                (sqlReader.GetDecimal(1).ToString("n")).PadLeft(10, '0'));
+                        Batch.PeriodYear,
+                        Batch.PeriodMonth.ToString("00"),
+                        (sqlReader.GetDecimal(10).ToString("n")).PadLeft(10, '0'));
                     Info info;
-                    ReportOut.TryGetValue(sqlReader.GetInt32(0), out info);
+                    ReportOut.TryGetValue(sqlReader.GetInt32(sqlReader.GetOrdinal("CustomerId")), out info);
+
                     if (info != null)
                     {
                         info.Year = Batch.PeriodYear;
                         info.Month = Batch.PeriodMonth;
-                        info.AmountTotal = sqlReader.GetDecimal(1);
-                        info.Amount1 = sqlReader.GetDecimal(2);
-                        info.Amount2 = sqlReader.GetDecimal(3);
-                        info.Amount3 = sqlReader.GetDecimal(4);
-                        info.Number = sqlReader.GetInt32(5);
-                        info.StateId = (int)ContributionState.Pendiente;
+                        info.CustomerId = sqlReader.GetInt32(0);
+                        info.InfoContribution = new InfoContribution
+                        {
+                            ContributionPaymentId = sqlReader.GetInt32(sqlReader.GetOrdinal("ContributionPaymentId")),
+                            Number = sqlReader.GetInt32(sqlReader.GetOrdinal("Number")),
+                            NumberOld = sqlReader.GetInt32(sqlReader.GetOrdinal("NumberOld")),
+                            ContributionId = sqlReader.GetInt32(sqlReader.GetOrdinal("ContributionId")),
+                            Amount1 = sqlReader.GetDecimal(sqlReader.GetOrdinal("Amount1")),
+                            Amount2 = sqlReader.GetDecimal(sqlReader.GetOrdinal("Amount2")),
+                            Amount3 = sqlReader.GetDecimal(sqlReader.GetOrdinal("Amount3")),
+                            AmountOld = sqlReader.GetDecimal(sqlReader.GetOrdinal("AmountOld")),
+                            AmountTotal = sqlReader.GetDecimal(sqlReader.GetOrdinal("AmountTotal")),
+                            AmountPayed = sqlReader.GetDecimal(sqlReader.GetOrdinal("AmountPayed")),
+                            StateId = (int)ContributionState.Pendiente,
+                            IsAutomatic = sqlReader.GetBoolean(sqlReader.GetOrdinal("BankName")),
+                            AccountNumber = sqlReader.GetString(sqlReader.GetOrdinal("AccountNumber")),
+                            TransactionNumber = sqlReader.GetString(sqlReader.GetOrdinal("TransactionNumber")),
+                            Reference = sqlReader.GetString(sqlReader.GetOrdinal("Reference")),
+                            Description = sqlReader.GetString(sqlReader.GetOrdinal("Description")),
+                        };
+
+                        info.TotalContribution = sqlReader.GetDecimal(sqlReader.GetOrdinal("AmountTotal"));
                     }
                     ReportOut.Remove(sqlReader.GetInt32(0));
                     reportOut2.Add(sqlReader.GetInt32(0), info);
@@ -142,7 +179,8 @@ namespace Ks.Batch.Caja.Out
             }
             catch (Exception ex)
             {
-                Log.FatalFormat("Action: {0} Error: {1}", "Dao.GetContributionPayments(" + string.Join(",", customerIds.ToArray()) + ")", ex.Message);
+                Log.FatalFormat("Action: {0} Error: {1}",
+                    "Dao.GetContributionPayments(" + string.Join(",", customerIds.ToArray()) + ")", ex.Message);
             }
         }
 

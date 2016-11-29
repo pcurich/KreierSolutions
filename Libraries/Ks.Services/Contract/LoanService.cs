@@ -191,7 +191,7 @@ namespace Ks.Services.Contract
                 query = query.Where(x => x.AccountNumber == accountNumber);
             if (type != null)
                 query = query.Where(x => x.IsAutomatic == type.Value);
-
+            query.OrderBy(x => x.Quota);
 
             return new PagedList<LoanPayment>(query.ToList(), pageIndex, pageSize);
         }
@@ -260,6 +260,73 @@ namespace Ks.Services.Contract
                 return new PagedList<ReportLoanPayment>(XmlHelper.XmlToObject<List<ReportLoanPayment>>(firstOrDefault.Value), pageIndex, pageSize, totalRecords);
 
             return new List<ReportLoanPayment>();
+        }
+
+        public virtual IList<ReportLoanPaymentKardex> GetReportLoanPaymentKardex(int loanId, int pageIndex = 0, int pageSize = Int32.MaxValue)
+        {
+            if (loanId == 0)
+                return new List<ReportLoanPaymentKardex>();
+
+            var pContributionId = _dataProvider.GetParameter();
+            pContributionId.ParameterName = "LoanId";
+            pContributionId.Value = loanId;
+            pContributionId.DbType = DbType.Int32;
+
+            var pNameReport = _dataProvider.GetParameter();
+            pNameReport.ParameterName = "NameReport";
+            pNameReport.Value = "SummaryReportLoanPaymentKardex";
+            pNameReport.DbType = DbType.String;
+
+            var pReportState = _dataProvider.GetParameter();
+            pReportState.ParameterName = "ReportState";
+            pReportState.Value = (int)ReportState.Completed;
+            pReportState.DbType = DbType.Int32;
+
+            var pSource = _dataProvider.GetParameter();
+            pSource.ParameterName = "Source";
+            pSource.Value = "Ks.Services.Contract.LoanService";
+            pSource.DbType = DbType.String;
+
+            var pTotalRecords = _dataProvider.GetParameter();
+            pTotalRecords.ParameterName = "TotalRecords";
+            pTotalRecords.Direction = ParameterDirection.Output;
+            pTotalRecords.DbType = DbType.Int32;
+
+            //invoke stored procedure
+            var data = _dbContext.ExecuteStoredProcedureList<Report>("SummaryReportLoanPaymentKardex", pContributionId, pNameReport, pReportState, pSource, pTotalRecords);
+
+            //return products
+            var totalRecords = (pTotalRecords.Value != DBNull.Value) ? Convert.ToInt32(pTotalRecords.Value) : 0;
+            var firstOrDefault = data.FirstOrDefault();
+            if (firstOrDefault != null)
+                return new PagedList<ReportLoanPaymentKardex>(XmlHelper.XmlToObject<List<ReportLoanPaymentKardex>>(firstOrDefault.Value), pageIndex, pageSize, totalRecords);
+
+            return new List<ReportLoanPaymentKardex>();
+        }
+
+        public virtual void InsertLoanPayment(LoanPayment loanPayment)
+        {
+            if (loanPayment == null)
+                throw new ArgumentNullException("loanPayment");
+
+            _loanPaymentRepository.Insert(loanPayment);
+
+            //cache
+            _cacheManager.RemoveByPattern(LOANS_PATTERN_KEY);
+
+            //event notification
+            _eventPublisher.EntityInserted(loanPayment);
+        }
+
+
+        public virtual bool IsPaymentValid(string accountNumber, string transactionNumber)
+        {
+            var query = from q in _loanPaymentRepository.Table
+                        where q.AccountNumber == accountNumber && q.TransactionNumber == transactionNumber
+                        select q;
+            var result = query.ToList();
+
+            return result.Count <= 0;
         }
 
         #endregion

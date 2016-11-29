@@ -43,14 +43,6 @@ namespace Ks.Core.Domain.Contract
         /// </summary>
         public decimal AmountPayed { get; set; }
         /// <summary>
-        /// Gets or sets the scheduled date on UTC.
-        /// </summary>
-        public DateTime ScheduledDateOnUtc { get; set; }
-        /// <summary>
-        /// Gets or sets the processed date on UTC.
-        /// </summary>
-        public DateTime? ProcessedDateOnUtc { get; set; }
-        /// <summary>
         /// Gets or sets a value indicating whether is active.
         /// </summary>
         public int StateId { get; set; }
@@ -87,6 +79,14 @@ namespace Ks.Core.Domain.Contract
         /// Gets or sets the description.
         /// </summary>
         public string Description { get; set; }
+        /// <summary>
+        /// Gets or sets the scheduled date on UTC.
+        /// </summary>
+        public DateTime ScheduledDateOnUtc { get; set; }
+        /// <summary>
+        /// Gets or sets the processed date on UTC.
+        /// </summary>
+        public DateTime? ProcessedDateOnUtc { get; set; }
 
         public virtual Contribution Contribution { get; set; }
 

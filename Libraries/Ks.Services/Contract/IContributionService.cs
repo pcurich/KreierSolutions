@@ -55,7 +55,7 @@ namespace Ks.Services.Contract
         /// <param name="customerId">The customer identifier.</param>
         /// <param name="stateId">The state identifier.</param>
         /// <returns></returns>
-        Contribution GetContributionById(int contributionId=0, int customerId=0, int stateId = -1);
+        Contribution GetContributionById(int contributionId = 0, int customerId = 0, int stateId = -1);
 
         /// <summary>
         /// Inserts the contribution.
@@ -105,6 +105,15 @@ namespace Ks.Services.Contract
         /// <param name="pageIndex">Index of the page.</param>
         /// <param name="pageSize">Size of the page.</param>
         /// <returns></returns>
-        IList<ReportContributionPayment> GetReportContributionPayment(int contributionId, int pageIndex = 0,int pageSize = Int32.MaxValue);
+        IList<ReportContributionPayment> GetReportContributionPayment(int contributionId, int pageIndex = 0, int pageSize = Int32.MaxValue);
+
+        /// <summary>
+        /// Determines whether [is payment valid] [the specified account number].
+        /// </summary>
+        /// <param name="accountNumber">The account number.</param>
+        /// <param name="transactionNumber">The transaction number.</param>
+        /// <returns></returns>
+        bool IsPaymentValid(string accountNumber, string transactionNumber);
+
     }
 }

@@ -128,24 +128,42 @@
                                   width: 50,
                                   template:'#= kendo.toString(LoanAmount,"c","es-PE") #',
                                   format:"{0:c2}"
-                              }, {
+                              },  {
+                                  field: "TotalFeed",
+                                  title: "@T("Admin.Contract.Loan.Fields.TotalFeed")",
+                                  width: 50,
+                                  template:'#= kendo.toString(TotalFeed,"c","es-PE") #',
+                                  format:"{0:c2}"
+                              },{
+                                  field: "TotalAmount",
+                                  title: "@T("Admin.Contract.Loan.Fields.TotalAmount")",
+                                  width: 50,
+                                  template:'#= kendo.toString(TotalAmount,"c","es-PE") #',
+                                  format:"{0:c2}"
+                              },{
+                                  field: "TotalPayed",
+                                  title: "@T("Admin.Contract.Loan.Fields.TotalPayed")",
+                                  width: 50,
+                                  template:'#= kendo.toString(TotalPayed,"c","es-PE") #',
+                                  format:"{0:c2}"
+                              },{
                                   field: "Active",
                                   title: "@T("Admin.Contract.Loan.Fields.Active")",
-                                  width: 100,
+                                  width: 20,
                                   headerAttributes: { style: "text-align:center" },
                                   attributes: { style: "text-align:center" },
                                   template: '<img src="@Url.Content("~/Administration/Content/images/")active-#=Active#.gif" />'
                               }, {
                                   field: "CreatedOn",
                                   title: "@T("Admin.Contract.Loan.Fields.CreatedOn")",
-                                  width: 100,
+                                  width: 50,
                                   template:'#= CreatedOn!=null ? kendo.toString(CreatedOn,"dd/MM/yyyy","es-PE"): " "#',
                                   type: "date",
                                   format: "{0:G}"
                               }, {
                                   field: "UpdatedOn",
                                   title: "@T("Admin.Contract.Loan.Fields.UpdatedOn")",
-                                  width: 100,
+                                  width: 50,
                                   template:'#= UpdatedOn!=null ? kendo.toString(UpdatedOn,"dd/MM/yyyy","es-PE"): " "#',
                                   type: "date",
                                   format: "{0:G}"
@@ -250,7 +268,7 @@
                             StateId: $('#@Html.FieldIdFor(model => model.StateId)').val()
                         };
                         addAntiForgeryToken(data);
-                        return data;    
+                        return data;
                     }
                 </script>
             </td>

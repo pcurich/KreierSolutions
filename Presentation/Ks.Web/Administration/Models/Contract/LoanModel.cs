@@ -17,6 +17,7 @@ namespace Ks.Admin.Models.Contract
         {
             Periods = new List<SelectListItem>();
         }
+
         #region Customer
 
         public int CustomerId { get; set; }
@@ -65,7 +66,9 @@ namespace Ks.Admin.Models.Contract
         [KsResourceDisplayName("Admin.Contract.Loan.Fields.TotalToPay")]
         [UIHint("Decimal")]
         public decimal TotalToPay { get; set; } // Amount-TotalSafe
-
+        [KsResourceDisplayName("Admin.Contract.Loan.Fields.TotalPayed")]
+        [UIHint("Decimal")]
+        public decimal TotalPayed { get; set; }
         public bool IsAuthorized { get; set; }
         public StateActivityModel StateActivityModels { get; set; } //SyngleSignature Warranty
         public CashFlowModel CashFlowModels { get; set; }

@@ -12,9 +12,8 @@
             @T("Admin.Contract.Loan.AddNew") @Html.ActionLink("(" + T("Admin.Contract.Loan.BackToPayment") + ")", "Edit/" + Model.LoanId)
         </div>
         <div class="options">
-            <input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")" />
+            <input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")"/>
         </div>
     </div>
-    @Html.Partial("_CreateOrUpdatePayment", Model)
+    @Html.Partial("_CreateOrUpdateCustomPayment", Model)
 }
-

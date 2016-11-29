@@ -2,16 +2,19 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
+using FluentValidation.Attributes;
+using Ks.Admin.Validators.Contract;
 using Ks.Web.Framework;
 using Ks.Web.Framework.Mvc;
 
 namespace Ks.Admin.Models.Contract
 {
-    public partial class LoanPaymentsModel:BaseKsEntityModel
+    [Validator(typeof(LoanPaymentValidator))]
+    public partial class LoanPaymentsModel : BaseKsEntityModel
     {
         public LoanPaymentsModel()
         {
-            Banks= new List<SelectListItem>();
+            Banks = new List<SelectListItem>();
         }
 
         public int LoanId { get; set; }
@@ -30,7 +33,9 @@ namespace Ks.Admin.Models.Contract
         [KsResourceDisplayName("Admin.Contract.LoanPayments.Fields.MonthlyPayed")]
         [UIHint("Decimal")]
         public decimal MonthlyPayed { get; set; }
-
+        [KsResourceDisplayName("Admin.Contract.LoanPayments.Fields.AmountToCancel")]
+        [UIHint("Decimal")]
+        public decimal AmountToCancel { get; set; }
         public int StateId { get; set; }
         public bool IsAutomatic { get; set; }
         [KsResourceDisplayName("Admin.Contract.LoanPayments.Fields.Type")]
