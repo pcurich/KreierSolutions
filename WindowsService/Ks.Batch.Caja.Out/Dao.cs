@@ -68,20 +68,21 @@ namespace Ks.Batch.Caja.Out
                       "cp.Amount1 as Amount1, " +
                       "cp.Amount2 as Amount2, " +
                       "cp.Amount3 as Amount3, " +
-                      "cp.AmountOld, as AmountOld " +
-                      "cp.AmountTotal, as AmountTotal " +
-                      "cp.AmountPayed, as AmountPayed " +
+                      "cp.AmountOld as AmountOld, " +
+                      "cp.AmountTotal as AmountTotal, " +
+                      "cp.AmountPayed as AmountPayed, " +
                       "cp.StateId as StateId, " +
                       "cp.IsAutomatic as IsAutomatic, " +
-                      "cp.BankName as BankName, " +
-                      "cp.AccountNumber as AccountNumber, " +
-                      "cp.TransactionNumber as TransactionNumber, " +
-                      "cp.Reference as Reference, " +
-                      "cp.Description as Description" +
+                      "isnull(cp.BankName,'') as BankName, " +
+                      "isnull(cp.AccountNumber,'') as AccountNumber, " +
+                      "isnull(cp.TransactionNumber,'') as TransactionNumber, " +
+                      "isnull(cp.Reference,'') as Reference, " +
+                      "isnull(cp.Description,'') as Description " +
                       "FROM ContributionPayment cp " +
                       "INNER JOIN  Contribution c on c.Id=cp.ContributionId " +
                       "WHERE c.CustomerId IN (" + string.Join(",", customerIds.ToArray()) + ") AND " +
                       "cp.StateId=@StateId AND " +
+                      "c.active=1 AND " +
                       "YEAR(cp.ScheduledDateOnUtc)=@Year AND " +
                       "MONTH(cp.ScheduledDateOnUtc)=@Month  ";
 
@@ -106,7 +107,7 @@ namespace Ks.Batch.Caja.Out
                     ParameterName = "@StateId",
                     SqlDbType = SqlDbType.Int,
                     Direction = ParameterDirection.Input,
-                    Value = ContributionState.Pendiente
+                    Value = (int)ContributionState.Pendiente
                 };
                 Command.Parameters.Add(pYear);
                 Command.Parameters.Add(pMonth);
@@ -145,7 +146,8 @@ namespace Ks.Batch.Caja.Out
                             AmountTotal = sqlReader.GetDecimal(sqlReader.GetOrdinal("AmountTotal")),
                             AmountPayed = sqlReader.GetDecimal(sqlReader.GetOrdinal("AmountPayed")),
                             StateId = (int)ContributionState.Pendiente,
-                            IsAutomatic = sqlReader.GetBoolean(sqlReader.GetOrdinal("BankName")),
+                            IsAutomatic = sqlReader.GetBoolean(sqlReader.GetOrdinal("IsAutomatic")),
+                            BankName = sqlReader.GetString(sqlReader.GetOrdinal("BankName")),
                             AccountNumber = sqlReader.GetString(sqlReader.GetOrdinal("AccountNumber")),
                             TransactionNumber = sqlReader.GetString(sqlReader.GetOrdinal("TransactionNumber")),
                             Reference = sqlReader.GetString(sqlReader.GetOrdinal("Reference")),

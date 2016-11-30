@@ -36,6 +36,9 @@ namespace Ks.Batch.Copere.Out
 
                 GetCustomer(out customerIds);
                 GetContributionPayments(FileOut, customerIds);
+                GetLoanPayment(customerIds);
+
+                //falta hacer que se sume
 
                 if (FileOut.Count != 0)
                 {
@@ -71,20 +74,21 @@ namespace Ks.Batch.Copere.Out
                       "cp.Amount1 as Amount1, " +
                       "cp.Amount2 as Amount2, " +
                       "cp.Amount3 as Amount3, " +
-                      "cp.AmountOld, as AmountOld " +
-                      "cp.AmountTotal, as AmountTotal " +
-                      "cp.AmountPayed, as AmountPayed " +
+                      "cp.AmountOld as AmountOld, " +
+                      "cp.AmountTotal as AmountTotal, " +
+                      "cp.AmountPayed as AmountPayed, " +
                       "cp.StateId as StateId, " +
                       "cp.IsAutomatic as IsAutomatic, " +
-                      "cp.BankName as BankName, " +
-                      "cp.AccountNumber as AccountNumber, " +
-                      "cp.TransactionNumber as TransactionNumber, " +
-                      "cp.Reference as Reference, " +
-                      "cp.Description as Description" +
+                      "isnull(cp.BankName,'') as BankName, " +
+                      "isnull(cp.AccountNumber,'') as AccountNumber, " +
+                      "isnull(cp.TransactionNumber,'') as TransactionNumber, " +
+                      "isnull(cp.Reference,'') as Reference, " +
+                      "isnull(cp.Description,'') as Description " +
                       "FROM ContributionPayment cp " +
                       "INNER JOIN  Contribution c on c.Id=cp.ContributionId " +
                       "WHERE c.CustomerId IN (" + string.Join(",", customerIds.ToArray()) + ") AND " +
                       "cp.StateId=@StateId AND " +
+                      "c.active=1 AND "+
                       "YEAR(cp.ScheduledDateOnUtc)=@Year AND " +
                       "MONTH(cp.ScheduledDateOnUtc)=@Month  ";
 
@@ -109,7 +113,7 @@ namespace Ks.Batch.Copere.Out
                     ParameterName = "@StateId",
                     SqlDbType = SqlDbType.Int,
                     Direction = ParameterDirection.Input,
-                    Value = ContributionState.Pendiente
+                    Value = (int)ContributionState.Pendiente
                 };
                 Command.Parameters.Add(pYear);
                 Command.Parameters.Add(pMonth);
@@ -149,7 +153,8 @@ namespace Ks.Batch.Copere.Out
                             AmountTotal = sqlReader.GetDecimal(sqlReader.GetOrdinal("AmountTotal")),
                             AmountPayed = sqlReader.GetDecimal(sqlReader.GetOrdinal("AmountPayed")),
                             StateId = (int)ContributionState.Pendiente,
-                            IsAutomatic = sqlReader.GetBoolean(sqlReader.GetOrdinal("BankName")),
+                            IsAutomatic = sqlReader.GetBoolean(sqlReader.GetOrdinal("IsAutomatic")),
+                            BankName = sqlReader.GetString(sqlReader.GetOrdinal("BankName")),
                             AccountNumber = sqlReader.GetString(sqlReader.GetOrdinal("AccountNumber")),
                             TransactionNumber = sqlReader.GetString(sqlReader.GetOrdinal("TransactionNumber")),
                             Reference = sqlReader.GetString(sqlReader.GetOrdinal("Reference")),
@@ -187,8 +192,9 @@ namespace Ks.Batch.Copere.Out
             }
         }
 
-        private void GetLoanPayment(Dictionary<int, string> customer, List<int> customerIds)
+        private void GetLoanPayment(List<int> customerIds)
         {
+            var reportOut2 = new Dictionary<int, Info>();
             try
             {
                 Log.InfoFormat("Action: {0}", "Dao.GetLoanPayments(" + string.Join(",", customerIds.ToArray()) + ")");
@@ -204,15 +210,15 @@ namespace Ks.Batch.Copere.Out
                       " LP.MonthlyPayed AS MonthlyPayed, " +
                       " LP.StateId as StateId, " +
                       " LP.IsAutomatic as IsAutomatic, " +
-                      " LP.BankName as BankName, " +
-                      " LP.AccountNumber as AccountNumber, " +
-                      " LP.TransactionNumber as TransactionNumber, " +
-                      " LP.Reference as Reference, " +
-                      " LP.Description as Description " +
+                      " ISNULL(LP.BankName,'') as BankName, " +
+                      " ISNULL(LP.AccountNumber,'') as AccountNumber, " +
+                      " ISNULL(LP.TransactionNumber,'') as TransactionNumber, " +
+                      " ISNULL(LP.Reference,'') as Reference, " +
+                      " ISNULL(LP.Description,'') as Description " +
                       " FROM LoanPayment LP INNER JOIN Loan L on L.Id=lp.LoanId " +
                       " WHERE " +
                       " L.CustomerId IN (" + string.Join(",", customerIds.ToArray()) + ") and " +
-                      " L.Active=1 " + //Just Active 
+                      " L.Active=1 AND" + //Just Active 
                       " LP.StateId=@StateId and " +
                       " YEAR(lp.ScheduledDateOnUtc)=@Year and " +
                       " MONTH(lp.ScheduledDateOnUtc)=@Month " +
@@ -239,7 +245,7 @@ namespace Ks.Batch.Copere.Out
                     ParameterName = "@StateId",
                     SqlDbType = SqlDbType.Int,
                     Direction = ParameterDirection.Input,
-                    Value = ContributionState.Pendiente
+                    Value = (int)ContributionState.Pendiente
                 };
                 Command.Parameters.Add(pYear);
                 Command.Parameters.Add(pMonth);
@@ -247,22 +253,80 @@ namespace Ks.Batch.Copere.Out
 
                 var sqlReader = Command.ExecuteReader();
 
-                var reportOut2 = new Dictionary<int, Info>();
-                var fileOut2 = new Dictionary<int, string>();
-                var customerIds2 = new List<int>();
+                Info info = null;
 
                 while (sqlReader.Read())
                 {
-                    Info info;
-                    ReportOut.TryGetValue(sqlReader.GetInt32(sqlReader.GetOrdinal("CustomerId")), out info);
-                    //pensar bien esto
-                }
+                    if (info == null)
+                    {
+                        ReportOut.TryGetValue(sqlReader.GetInt32(sqlReader.GetOrdinal("CustomerId")), out info);
+                        if (info != null) info.InfoLoans = new List<InfoLoan>();
+                    }
 
+                    if (info != null && info.CustomerId == sqlReader.GetInt32(sqlReader.GetOrdinal("CustomerId")))
+                    {
+                        info.InfoLoans.Add(AddNewLoan(sqlReader));
+                        info.TotalLoan += sqlReader.GetDecimal(sqlReader.GetOrdinal("MonthlyQuota"));
+
+                        if (ReportOut.ContainsKey(info.CustomerId))
+                        {
+                            ReportOut.Remove(info.CustomerId);
+                            reportOut2.Add(info.CustomerId, info);
+                        }
+                    }
+                    else
+                    {
+                        //another customer so we should save the last one and get the new customer and put the same infoloans
+                        if (info != null)
+                        {
+                            ReportOut.Remove(info.CustomerId);
+                            reportOut2.Add(info.CustomerId, info);
+
+                            ReportOut.TryGetValue(sqlReader.GetInt32(sqlReader.GetOrdinal("CustomerId")), out info);
+                            if (info != null) info.InfoLoans = new List<InfoLoan>();
+
+                            if (info != null &&
+                                info.CustomerId == sqlReader.GetInt32(sqlReader.GetOrdinal("CustomerId")))
+                            {
+                                info.InfoLoans.Add(AddNewLoan(sqlReader));
+                                info.TotalLoan += sqlReader.GetDecimal(sqlReader.GetOrdinal("MonthlyQuota"));
+                            }
+                        }
+                    }
+                }
+                sqlReader.Close();
+                ReportOut.Clear();
+
+                foreach (var pk in reportOut2)
+                {
+                    ReportOut.Add(pk.Key, pk.Value);
+                }
             }
             catch (Exception ex)
             {
                 Log.FatalFormat("Action: {0} Error: {1}", "Dao.GetLoanPayments(" + string.Join(",", customerIds.ToArray()) + ")", ex.Message);
             }
+        }
+
+        private InfoLoan AddNewLoan(SqlDataReader sqlReader)
+        {
+            return new InfoLoan
+            {
+                LoanPaymentId = sqlReader.GetInt32(sqlReader.GetOrdinal("LoanPaymentId")),
+                LoanId = sqlReader.GetInt32(sqlReader.GetOrdinal("LoanId")),
+                Quota = sqlReader.GetInt32(sqlReader.GetOrdinal("Quota")),
+                MonthlyQuota = sqlReader.GetDecimal(sqlReader.GetOrdinal("MonthlyQuota")),
+                MonthlyFee = sqlReader.GetDecimal(sqlReader.GetOrdinal("MonthlyFee")),
+                MonthlyCapital = sqlReader.GetDecimal(sqlReader.GetOrdinal("MonthlyCapital")),
+                MonthlyPayed = sqlReader.GetDecimal(sqlReader.GetOrdinal("MonthlyPayed")),
+                StateId = sqlReader.GetInt32(sqlReader.GetOrdinal("StateId")),
+                IsAutomatic = sqlReader.GetBoolean(sqlReader.GetOrdinal("IsAutomatic")),
+                BankName = sqlReader.GetString(sqlReader.GetOrdinal("BankName")),
+                AccountNumber = sqlReader.GetString(sqlReader.GetOrdinal("AccountNumber")),
+                TransactionNumber = sqlReader.GetString(sqlReader.GetOrdinal("TransactionNumber")),
+                Reference = sqlReader.GetString(sqlReader.GetOrdinal("Reference")),
+                Description = sqlReader.GetString(sqlReader.GetOrdinal("Description"))
+            };
         }
 
         private void GetCustomer(out List<int> customerIds)
