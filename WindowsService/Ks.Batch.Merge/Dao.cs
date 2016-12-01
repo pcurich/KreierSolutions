@@ -79,33 +79,75 @@ namespace Ks.Batch.Merge
             Info response;
             foreach (var request in listRequest)
             {
-                request.BankName = bankName;
-                request.Description = "Proceso automática por el sistema ACMR";
+                request.InfoContribution.BankName = bankName;
+                request.InfoContribution.Description = "Proceso automática por el sistema ACMR";
 
                 var info1 = request;
                 response = listResponse.FirstOrDefault(x => x.AdminCode == info1.AdminCode);
                 if (response == null)
                 {
-                    #region Sin Liquidez
-                    request.StateId = (int)ContributionState.SinLiquidez;
+                    #region Sin Liquidez en aportaciones y en prestamos
+                    request.InfoContribution.StateId = (int)ContributionState.SinLiquidez;
+                    foreach (var infoLoan in request.InfoLoans)
+                        infoLoan.StateId = (int)ContributionState.SinLiquidez;
+                     
                     infoNotIn.Add(request);
                     #endregion
                 }
                 else
                 {
-                    if (request.AmountTotal == response.AmountPayed)
+                    if (request.TotalContribution == response.TotalPayed)
                     {
-                        #region Pagado Normal
-                        request.StateId = (int)ContributionState.Pagado;
-                        request.AmountPayed = response.AmountPayed;
+                        #region Pagado Total en Aportaciones y sin liquidez en prestamos
+                        request.InfoContribution.StateId = (int)ContributionState.Pagado;
+                        request.InfoContribution.AmountPayed = response.TotalPayed;
+                        foreach (var infoLoan in request.InfoLoans)
+                            infoLoan.StateId = (int)ContributionState.SinLiquidez;
                         infoEquals.Add(request);
                         #endregion
                     }
-                    else
+                    if(request.TotalContribution > response.TotalPayed))
                     {
-                        #region Pago por puchos
-                        request.StateId = (int)ContributionState.PagoParcial;
-                        request.AmountPayed = response.AmountPayed;
+                        #region Pago por puchos en aportacion y sin pago en prestamos
+                        request.InfoContribution.StateId = (int)ContributionState.PagoParcial;
+                        request.InfoContribution.AmountPayed = response.TotalPayed;
+                        foreach (var infoLoan in request.InfoLoans)
+                            infoLoan.StateId = (int)ContributionState.SinLiquidez;
+                        infoLoss.Add(request);
+                        #endregion
+                    } 
+                    if(request.TotalContribution < response.TotalPayed))
+                    {
+                        #region Pago por puchos en aportacion y sin pago en prestamos
+                        request.InfoContribution.StateId = (int)ContributionState.Pagado;
+                        request.InfoContribution.AmountPayed = request.InfoContribution.AmountTotal;
+                        response.TotalPayed -= request.InfoContribution.AmountTotal;
+
+                        foreach (var infoLoan in request.InfoLoans)
+                        {
+                            if (response.TotalPayed >= infoLoan.MonthlyQuota)
+                            {
+                                infoLoan.StateId = (int)ContributionState.Pagado;
+                                infoLoan.MonthlyPayed=infoLoan.MonthlyQuota;
+                                response.TotalPayed -= infoLoan.MonthlyQuota;
+                            }
+                            else
+                            {
+                                if (response.TotalPayed > 0)
+                                {
+                                    infoLoan.StateId = (int) ContributionState.PagoParcial;
+                                    infoLoan.MonthlyPayed = response.TotalPayed;
+                                    response.TotalPayed = 0;
+                                }
+                                else
+                                {
+                                    infoLoan.StateId = (int) ContributionState.SinLiquidez;
+                                    infoLoan.MonthlyPayed = 0;
+                                }
+                            }
+                        }
+                        
+                            
                         infoLoss.Add(request);
                         #endregion
                     }

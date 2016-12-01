@@ -14,6 +14,8 @@ namespace Ks.Batch.Copere.Out
         private Dictionary<int, Info> ReportOut { get; set; }
         private Dictionary<int, string> FileOut { get; set; }
 
+        private List<string> Result { get; set; }
+
         private ScheduleBatch Batch { get; set; }
 
         private const string AMOUNT = "AMOUNT";
@@ -35,13 +37,11 @@ namespace Ks.Batch.Copere.Out
                 ReportOut = new Dictionary<int, Info>();
 
                 GetCustomer(out customerIds);
-                GetContributionPayments(FileOut, customerIds);
+                GetContributionPayments(customerIds);
                 GetLoanPayment(customerIds);
-
-                //contribution and loan separate
-
-
-
+                //copere send contribution and loan in separates
+                MergeData(customerIds);
+                
                 if (FileOut.Count != 0)
                 {
                     DeleteReport(Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00"), Batch.SystemName);
@@ -56,12 +56,12 @@ namespace Ks.Batch.Copere.Out
                 Log.FatalFormat("Action: {0} Error: {1}", "Dao.Process(" + batch.SystemName + ")", ex.Message);
             }
 
-            return FileOut != null ? FileOut.Values.ToList() : null;
+            return Result != null ? Result.ToList() : null;
         }
 
         #region Util
 
-        private void GetContributionPayments(Dictionary<int, string> customer, List<int> customerIds)
+        private void GetContributionPayments(List<int> customerIds)
         {
             try
             {
@@ -90,7 +90,7 @@ namespace Ks.Batch.Copere.Out
                       "INNER JOIN  Contribution c on c.Id=cp.ContributionId " +
                       "WHERE c.CustomerId IN (" + string.Join(",", customerIds.ToArray()) + ") AND " +
                       "cp.StateId=@StateId AND " +
-                      "c.active=1 AND "+
+                      "c.active=1 AND " +
                       "YEAR(cp.ScheduledDateOnUtc)=@Year AND " +
                       "MONTH(cp.ScheduledDateOnUtc)=@Month  ";
 
@@ -124,16 +124,11 @@ namespace Ks.Batch.Copere.Out
                 var sqlReader = Command.ExecuteReader();
 
                 var reportOut2 = new Dictionary<int, Info>();
-                var fileOut2 = new Dictionary<int, string>();
                 var customerIds2 = new List<int>();
 
                 while (sqlReader.Read())
                 {
-                    var line = string.Format("{0}        {1}{2}",
-                        customer[sqlReader.GetInt32(0)].Replace(AMOUNT,
-                            (Math.Round(sqlReader.GetDecimal(10) * 100).
-                            ToString(CultureInfo.InvariantCulture).PadLeft(13, '0'))), Batch.PeriodYear,
-                            Batch.PeriodMonth.ToString("00"));
+
                     Info info;
                     ReportOut.TryGetValue(sqlReader.GetInt32(sqlReader.GetOrdinal("CustomerId")), out info);
 
@@ -167,11 +162,9 @@ namespace Ks.Batch.Copere.Out
                     }
                     ReportOut.Remove(sqlReader.GetInt32(0));
                     reportOut2.Add(sqlReader.GetInt32(0), info);
-                    fileOut2.Add(sqlReader.GetInt32(0), line);
                 }
                 sqlReader.Close();
                 ReportOut.Clear();
-                FileOut.Clear();
 
                 foreach (var pk in reportOut2)
                 {
@@ -179,10 +172,20 @@ namespace Ks.Batch.Copere.Out
                     ReportOut.Add(pk.Key, pk.Value);
                 }
 
-                foreach (var pk in fileOut2)
+                var fileOutTem = new Dictionary<int, string>();
+                foreach (var customerId in customerIds2)
                 {
-                    FileOut.Add(pk.Key, pk.Value);
+                    string data;
+                    FileOut.TryGetValue(customerId, out data);
+                    if (data != null)
+                        fileOutTem.Add(customerId, data);
                 }
+
+                FileOut.Clear();
+
+                foreach (var customerId in customerIds2)
+                    FileOut.Add(customerId, fileOutTem[customerId]);
+
 
                 if (customerIds2.Count > 0)
                     UpdateData(customerIds2);
@@ -271,18 +274,14 @@ namespace Ks.Batch.Copere.Out
                         info.TotalLoan += sqlReader.GetDecimal(sqlReader.GetOrdinal("MonthlyQuota"));
 
                         if (ReportOut.ContainsKey(info.CustomerId))
-                        {
-                            ReportOut.Remove(info.CustomerId);
-                            reportOut2.Add(info.CustomerId, info);
-                        }
+                            ReportOut[info.CustomerId] = info;
                     }
                     else
                     {
                         //another customer so we should save the last one and get the new customer and put the same infoloans
                         if (info != null)
                         {
-                            ReportOut.Remove(info.CustomerId);
-                            reportOut2.Add(info.CustomerId, info);
+                            ReportOut[info.CustomerId] = info;
 
                             ReportOut.TryGetValue(sqlReader.GetInt32(sqlReader.GetOrdinal("CustomerId")), out info);
                             if (info != null) info.InfoLoans = new List<InfoLoan>();
@@ -297,12 +296,7 @@ namespace Ks.Batch.Copere.Out
                     }
                 }
                 sqlReader.Close();
-                ReportOut.Clear();
 
-                foreach (var pk in reportOut2)
-                {
-                    ReportOut.Add(pk.Key, pk.Value);
-                }
             }
             catch (Exception ex)
             {
@@ -310,7 +304,49 @@ namespace Ks.Batch.Copere.Out
             }
         }
 
-        private InfoLoan AddNewLoan(SqlDataReader sqlReader)
+        private void MergeData(IEnumerable<int> customerIds)
+        {
+            var contributions = new List<string>();
+            var loans = new List<string>();
+
+            foreach (var customerId in customerIds)
+            {
+                if (FileOut.ContainsKey(customerId))
+                {
+                    var lineContribution = string.Format("{0}        {1}{2}",
+                    FileOut[customerId].Replace(AMOUNT,
+                        (Math.Round(ReportOut[customerId].TotalContribution * 100)).
+                            ToString(CultureInfo.InvariantCulture).PadLeft(13, '0')).Replace(".",""),
+                            Batch.PeriodYear, Batch.PeriodMonth);
+
+                    string lineLoan = null;
+                    if (ReportOut[customerId].TotalLoan > 0)
+                    {
+                        lineLoan = string.Format("{0}        {1}{2}",
+                        FileOut[customerId].Replace(AMOUNT,
+                            (Math.Round(ReportOut[customerId].TotalLoan * 100)).
+                                ToString(CultureInfo.InvariantCulture).PadLeft(13, '0')).Replace(".", ""),
+                                Batch.PeriodYear, Batch.PeriodMonth);
+                    }
+
+                    contributions.Add(lineContribution);
+                    if (lineLoan!=null)
+                    {
+                        loans.Add(lineLoan);
+                    }
+                }
+            }
+
+            Result= new List<string>();
+
+            foreach (var contribution in contributions)
+                Result.Add(contribution);
+
+            foreach (var loan in loans)
+                Result.Add(loan);
+        }
+
+        private static InfoLoan AddNewLoan(IDataRecord sqlReader)
         {
             return new InfoLoan
             {
@@ -445,8 +481,6 @@ namespace Ks.Batch.Copere.Out
                 ReportOut.Add(pair.Key, info);
             }
         }
-
-
 
         #endregion
     }

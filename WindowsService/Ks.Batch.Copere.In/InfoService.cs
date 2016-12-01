@@ -29,7 +29,7 @@ namespace Ks.Batch.Copere.In
                             HasAdminCode = true,
                             HasDni = false,
                             AdminCode = line.Substring(34, 9),
-                            AmountPayed = Convert.ToDecimal(line.Substring(86, 10))
+                            TotalPayed = Convert.ToDecimal(line.Substring(86, 10))
                         });
                     }
                 }

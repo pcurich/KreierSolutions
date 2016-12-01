@@ -47,10 +47,7 @@ namespace Ks.Batch.Copere.In
                 Log.ErrorFormat("Error in Reading file:'{0}'", e.FullPath);
                 Log.ErrorFormat("Exception: '{0}'", ex.Message);
             }
-
         }
-
-        
 
         public void CustomCommand(int commandNumber)
         {
