@@ -38,7 +38,9 @@ namespace Ks.Batch.Copere.Out
                 GetContributionPayments(FileOut, customerIds);
                 GetLoanPayment(customerIds);
 
-                //falta hacer que se sume
+                //contribution and loan separate
+
+
 
                 if (FileOut.Count != 0)
                 {
