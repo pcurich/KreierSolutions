@@ -70,9 +70,14 @@ namespace Ks.Batch.Merge
 
         public void Process(Report report, List<Info> listResponse, List<Info> listRequest, string bankName)
         {
-            var infoEquals = new List<Info>(); //aountIn == amountOut  Pago completo
-            var infoNotIn = new List<Info>(); //aountIn >0 aountOut ==0 No tiene liquidez
-            var infoLoss = new List<Info>(); //aountIn >0 aountOut >0 pago por puchos 
+            var infoContributionNoCash = new List<InfoContribution>(); // sin liquidez
+            var infoContributionPayedComplete = new List<InfoContribution>(); // los pagos completos
+            var infoContributionIncomplete = new List<InfoContribution>(); // los puchos
+
+            var infoLoanNoCash = new List<InfoLoan>(); // sin liquidez
+            var infoLoanPayedComplete = new List<InfoLoan>(); // los pagos completos
+            var infoLoanIncomplete = new List<InfoLoan>(); // los puchos
+
 
             #region SplitList
 
@@ -86,69 +91,136 @@ namespace Ks.Batch.Merge
                 response = listResponse.FirstOrDefault(x => x.AdminCode == info1.AdminCode);
                 if (response == null)
                 {
-                    #region Sin Liquidez en aportaciones y en prestamos
+                    #region Sin liquidez en Contribution y Loan
+
+                    #region Sin Liquidez en aportaciones
+
                     request.InfoContribution.StateId = (int)ContributionState.SinLiquidez;
+                    infoContributionNoCash.Add(request.InfoContribution);
+
+                    #endregion
+
+                    #region Sin Liquides en Prestamos
+
                     foreach (var infoLoan in request.InfoLoans)
+                    {
                         infoLoan.StateId = (int)ContributionState.SinLiquidez;
-                     
-                    infoNotIn.Add(request);
+                        infoLoanNoCash.Add(infoLoan);
+                    }
+
+                    #endregion
+
                     #endregion
                 }
                 else
                 {
                     if (request.TotalContribution == response.TotalPayed)
                     {
-                        #region Pagado Total en Aportaciones y sin liquidez en prestamos
+                        #region Pagado completo en aportaciones y sin liquidez en prestamos
+
+                        #region Pago completo de la aportacion
+
                         request.InfoContribution.StateId = (int)ContributionState.Pagado;
                         request.InfoContribution.AmountPayed = response.TotalPayed;
+                        infoContributionPayedComplete.Add(request.InfoContribution);
+
+                        #endregion
+
+                        #region Sin Liquides en Prestamos
+
                         foreach (var infoLoan in request.InfoLoans)
+                        {
                             infoLoan.StateId = (int)ContributionState.SinLiquidez;
-                        infoEquals.Add(request);
+                            infoLoanNoCash.Add(infoLoan);
+                        }
+
+                        #endregion
+
                         #endregion
                     }
-                    if(request.TotalContribution > response.TotalPayed))
+
+                    if (request.TotalContribution > response.TotalPayed)
                     {
-                        #region Pago por puchos en aportacion y sin pago en prestamos
+                        #region Pago por puchos en aportacion  y sin liquidez en prestamos
+
+                        #region Pago por puchos en aportaciones
+
                         request.InfoContribution.StateId = (int)ContributionState.PagoParcial;
                         request.InfoContribution.AmountPayed = response.TotalPayed;
-                        foreach (var infoLoan in request.InfoLoans)
-                            infoLoan.StateId = (int)ContributionState.SinLiquidez;
-                        infoLoss.Add(request);
+
+                        infoContributionIncomplete.Add(request.InfoContribution);
+
                         #endregion
-                    } 
-                    if(request.TotalContribution < response.TotalPayed))
+
+                        #region Sin Liquides en Prestamos
+
+                        foreach (var infoLoan in request.InfoLoans)
+                        {
+                            infoLoan.StateId = (int)ContributionState.SinLiquidez;
+                            infoLoanNoCash.Add(infoLoan);
+                        }
+
+                        #endregion
+
+                        #endregion
+                    }
+
+                    if (request.TotalContribution < response.TotalPayed)
                     {
-                        #region Pago por puchos en aportacion y sin pago en prestamos
+                        #region Pago total en aportacion y en puchos en prestamos
+
+                        #region Pago total en aportacion
+
                         request.InfoContribution.StateId = (int)ContributionState.Pagado;
                         request.InfoContribution.AmountPayed = request.InfoContribution.AmountTotal;
+                        infoContributionPayedComplete.Add(request.InfoContribution);
+
+                        #endregion
+
                         response.TotalPayed -= request.InfoContribution.AmountTotal;
 
                         foreach (var infoLoan in request.InfoLoans)
                         {
                             if (response.TotalPayed >= infoLoan.MonthlyQuota)
                             {
+                                #region Pago completo en prestamo
+                                
                                 infoLoan.StateId = (int)ContributionState.Pagado;
-                                infoLoan.MonthlyPayed=infoLoan.MonthlyQuota;
+                                infoLoan.MonthlyPayed = infoLoan.MonthlyQuota;
+                                infoLoanPayedComplete.Add(infoLoan);
+
+                                #endregion 
+
                                 response.TotalPayed -= infoLoan.MonthlyQuota;
                             }
                             else
                             {
                                 if (response.TotalPayed > 0)
                                 {
-                                    infoLoan.StateId = (int) ContributionState.PagoParcial;
+                                    #region Pago Parcial del prestamo
+
+                                    infoLoan.StateId = (int)ContributionState.PagoParcial;
                                     infoLoan.MonthlyPayed = response.TotalPayed;
+                                    infoLoanIncomplete.Add(infoLoan);
+
+                                    #endregion
+
                                     response.TotalPayed = 0;
+
                                 }
                                 else
                                 {
-                                    infoLoan.StateId = (int) ContributionState.SinLiquidez;
+                                    #region No hay liquidez para el pago
+
+                                    infoLoan.StateId = (int)ContributionState.SinLiquidez;
                                     infoLoan.MonthlyPayed = 0;
+                                    infoLoanNoCash.Add(infoLoan);
+
+                                    #endregion
                                 }
                             }
                         }
-                        
-                            
-                        infoLoss.Add(request);
+
                         #endregion
                     }
                 }
@@ -156,18 +228,18 @@ namespace Ks.Batch.Merge
 
             #endregion
 
-            if (infoEquals.Count > 0)
-            {
-                UpdateContributionPayment(infoEquals, report.Period);
-            }
-            if (infoNotIn.Count > 0)
-            {
-                UpdateContributionPayment(infoNotIn, report.Period);
-            }
-            if (infoLoss.Count > 0)
-            {
-                UpdateContributionPayment(infoLoss, report.Period);
-            }
+            //if (infoEquals.Count > 0)
+            //{
+            //    UpdateContributionPayment(infoEquals, report.Period);
+            //}
+            //if (infoNotIn.Count > 0)
+            //{
+            //    UpdateContributionPayment(infoNotIn, report.Period);
+            //}
+            //if (infoLoss.Count > 0)
+            //{
+            //    UpdateContributionPayment(infoLoss, report.Period);
+            //}
             CloseReport(report);
         }
 

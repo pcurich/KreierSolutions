@@ -212,20 +212,20 @@ CREATE TABLE #ContributionPaymentTmp
 
  
 INSERT INTO #ContributionPaymentTmp (Id,ContributionId,CustomerId, Amount1,Amount2,Amount3,AmountTotal,AmountPayed,StateId,BankName,[Description],Number,DelayCycles,IsDelay)
-SELECT	0, --Id
-		0, --ContributionId
-		nref.value('CustomerId[1]', 'int'), --CustomerId
-		nref.value('Amount1[1]', 'decimal(6,2)'),--Amount1
-		nref.value('Amount2[1]', 'decimal(6,2)'),--Amount2
-		nref.value('Amount3[1]', 'decimal(6,2)'),--Amount3
-		nref.value('AmountTotal[1]', 'decimal(6,2)'),--AmountTotal
-		nref.value('AmountPayed[1]', 'decimal(6,2)'),--AmountPayed
-		nref.value('StateId[1]', 'int'), --StateId
-		nref.value('BankName[1]', 'nvarchar(500)'), --BankName
-		nref.value('Description[1]', 'nvarchar(1000)'), --[Description]
-		nref.value('Number[1]', 'nvarchar(1000)'), --[Number]
-		0,0 --Delay thinks
-		FROm @XmlPackage.nodes('//ArrayOfInfo/Info') AS R(nref)
+	SELECT	0, --Id
+			0, --ContributionId
+			nref.value('CustomerId[1]', 'int'), --CustomerId
+			nref.value('Amount1[1]', 'decimal(6,2)'),--Amount1
+			nref.value('Amount2[1]', 'decimal(6,2)'),--Amount2
+			nref.value('Amount3[1]', 'decimal(6,2)'),--Amount3
+			nref.value('AmountTotal[1]', 'decimal(6,2)'),--AmountTotal
+			nref.value('AmountPayed[1]', 'decimal(6,2)'),--AmountPayed
+			nref.value('StateId[1]', 'int'), --StateId
+			nref.value('BankName[1]', 'nvarchar(500)'), --BankName
+			nref.value('Description[1]', 'nvarchar(1000)'), --[Description]
+			nref.value('Number[1]', 'nvarchar(1000)'), --[Number]
+			0,0 --Delay thinks
+			FROm @XmlPackage.nodes('//ArrayOfInfo/Info') AS R(nref)
 
 	 
 ------------------------------------------------------------------------
