@@ -200,113 +200,74 @@ CREATE PROCEDURE [UpdateContributionPayment]
 )
 AS
 BEGIN
- 
+
 CREATE TABLE #ContributionPaymentTmp
-			( 
-				[Id] [int] NOT NULL,[ContributionId] [int] NOT NULL,[CustomerId] [int] NOT NULL,
-				[Amount1] decimal(6,2) NOT NULL,[Amount2] decimal(6,2) NOT NULL,[Amount3] decimal(6,2) NOT NULL,
-				[AmountTotal] decimal(6,2) NOT NULL,[AmountPayed] decimal(6,2) NOT NULL,[StateId] [int] NOT NULL,
-				[BankName] [nvarchar](500) NOT NULL,[Description] [nvarchar](1000) NOT NULL,
-				[Number] [int] NOT NULL,[IsDelay] [int] NOT NULL,[DelayCycles] [int] NOT NULL
-			)
-
- 
-INSERT INTO #ContributionPaymentTmp (Id,ContributionId,CustomerId, Amount1,Amount2,Amount3,AmountTotal,AmountPayed,StateId,BankName,[Description],Number,DelayCycles,IsDelay)
-	SELECT	0, --Id
-			0, --ContributionId
-			nref.value('CustomerId[1]', 'int'), --CustomerId
-			nref.value('Amount1[1]', 'decimal(6,2)'),--Amount1
-			nref.value('Amount2[1]', 'decimal(6,2)'),--Amount2
-			nref.value('Amount3[1]', 'decimal(6,2)'),--Amount3
-			nref.value('AmountTotal[1]', 'decimal(6,2)'),--AmountTotal
-			nref.value('AmountPayed[1]', 'decimal(6,2)'),--AmountPayed
-			nref.value('StateId[1]', 'int'), --StateId
-			nref.value('BankName[1]', 'nvarchar(500)'), --BankName
-			nref.value('Description[1]', 'nvarchar(1000)'), --[Description]
-			nref.value('Number[1]', 'nvarchar(1000)'), --[Number]
-			0,0 --Delay thinks
-			FROm @XmlPackage.nodes('//ArrayOfInfo/Info') AS R(nref)
-
-	 
-------------------------------------------------------------------------
---1) Complete whith the ContributionId 
-------------------------------------------------------------------------
-UPDATE #ContributionPaymentTmp SET  ContributionId= Contribution.Id
-FROM Contribution 
-wHERE Contribution.CustomerId =#ContributionPaymentTmp.CustomerId AND Contribution.Active=1
-
------------------------------------------------------------------------- 
---2) Complete with the id of ContributionPayment
-------------------------------------------------------------------------
-UPDATE #ContributionPaymentTmp SET  Id= ContributionPayment.Id
-FROM ContributionPayment 
-wHERE ContributionPayment.ContributionId =#ContributionPaymentTmp.ContributionId AND 
-	  YEAR(ContributionPayment.ScheduledDateOnUtc)=@Year and MONTH(ContributionPayment.ScheduledDateOnUtc)=@Month AND
-	  ContributionPayment.StateId=2 --InProcess
+( 
+	[ContributionPaymentId] [int] NOT NULL,
+	[Number] [int] NOT NULL,
+	[NumberOld] [int] NOT NULL,
+	[ContributionId] [int] NOT NULL,
+	[Amount1] decimal(6,2) NOT NULL,
+	[Amount2] decimal(6,2) NOT NULL,
+	[Amount3] decimal(6,2) NOT NULL,
+	[AmountOld] decimal(6,2) NOT NULL,
+	[AmountTotal] decimal(6,2) NOT NULL,
+	[AmountPayed] decimal(6,2) NOT NULL,
+	[StateId] int NOT NULL,
+	[IsAutomatic] int NOT NULL,
+	[BankName] [nvarchar](500) NOT NULL,
+	[AccountNumber] [nvarchar](500) NOT NULL,
+	[TransactionNumber] [nvarchar](500) NOT NULL,
+	[Reference] [nvarchar](500) NOT NULL,
+	[Description] [nvarchar](500) NOT NULL
+)
+			
+SELECT	
+nref.value('ContributionPaymentId[1]', 'int'), --ContributionPaymentId
+nref.value('Number[1]', 'int'), --Number
+nref.value('NumberOld[1]', 'int'), --NumberOld
+nref.value('ContributionId[1]', 'int'), --ContributionId
+nref.value('Amount1[1]', 'decimal(6,2)'),--Amount1
+nref.value('Amount2[1]', 'decimal(6,2)'),--Amount2
+nref.value('Amount3[1]', 'decimal(6,2)'),--Amount3
+nref.value('AmountOld[1]', 'decimal(6,2)'),--AmountOld
+nref.value('AmountTotal[1]', 'decimal(6,2)'),--AmountTotal
+nref.value('AmountPayed[1]', 'decimal(6,2)'),--AmountPayed
+nref.value('StateId[1]', 'int'), --StateId
+nref.value('IsAutomatic[1]', 'int'), --IsAutomatic	
+nref.value('BankName[1]', 'nvarchar(500)'), --BankName
+nref.value('AccountNumber[1]', 'nvarchar(500)'), --AccountNumber
+nref.value('TransactionNumber[1]', 'nvarchar(500)'), --TransactionNumber
+nref.value('Reference[1]', 'nvarchar(500)'), --Reference
+nref.value('Description[1]', 'nvarchar(1000)') --[Description]
+FROm @XmlPackage.nodes('//ArrayOfInfoContribution/InfoContribution') AS R(nref)
 
 ------------------------------------------------------------------------
---                       UPDATE   #ContributionPaymentTmp
-------------------------------------------------------------------------	  
+--1) Split int 3 types {PagoParcial = 3,Pagado = 4,SinLiquidez=5}
 ------------------------------------------------------------------------
---3) Update the ContributionsPayments
+
+select  * into #ContributionPaymentTmp3 from #ContributionPaymentTmp where stateId=3
+select  * into #ContributionPaymentTmp4 from #ContributionPaymentTmp where stateId=4
+select  * into #ContributionPaymentTmp5 from #ContributionPaymentTmp where stateId=5
+
 ------------------------------------------------------------------------
+--2) Update Data 4 {PagoParcial = 3, Pagado = 4, SinLiquidez=5}
+------------------------------------------------------------------------
+
 UPDATE ContributionPayment 
 SET 
-AmountPayed=#ContributionPaymentTmp.AmountPayed,
+AmountPayed=#ContributionPaymentTmp4.AmountPayed,
 ProcessedDateOnUtc=GETUTCDATE(), 
-StateId=#ContributionPaymentTmp.StateId,
-BankName=#ContributionPaymentTmp.BankName
-FROM  #ContributionPaymentTmp
-WHERE #ContributionPaymentTmp.Id=ContributionPayment.Id 
+StateId=#ContributionPaymentTmp4.StateId,
+BankName=#ContributionPaymentTmp4.BankName,
+AccountNumber  = cast(convert(NVARCHAR, getutcdate(), 112) +REPLACE(convert(NVARCHAR, getutcdate(), 114) ,':','') as nvarchar(50))
+FROM  #ContributionPaymentTmp4
+WHERE #ContributionPaymentTmp4.ContributionPaymentId=ContributionPayment.Id 
 
 ------------------------------------------------------------------------
---4) Update delay cycles and state
+--2) Update Data 5 {PagoParcial = 3, Pagado = 4, SinLiquidez=5}
 ------------------------------------------------------------------------
-Declare @TimeToDelay int= (select value from Setting where Name ='contributionsettings.DelayCycles')
-UPDATE #ContributionPaymentTmp 
-SET DelayCycles=temp.CountState, 
-IsDelay=temp.IsDelay
-FROM 
-(
-	SELECT 
-	ContributionId, 
-	COUNT(StateId) as CountState,
-	IsDelay = case when COUNT(StateId)>0 then 1 else 0 end,
-	[Description]= case when COUNT(StateId)=@TimeToDelay then 'El aportante ha sido dado de baja debido a que ha pasado ' + CAST(@TimeToDelay as nvarchar(1)) + ' meses en estado de SIN LIQUIDEZ'  ELSE '' END
-	FROM 
-	ContributionPayment 
-	WHERE ContributionPayment.StateId =5 -- sin liquidez
-	GROUP BY ContributionId
-) as temp 
-WHERE 
-temp.ContributionId=#ContributionPaymentTmp.ContributionId
 
-------------------------------------------------------------------------
---5) Update the contribution (per customer)
-------------------------------------------------------------------------
-Update Contribution 
-SET Contribution.AmountPayed=Contribution.AmountPayed+#ContributionPaymentTmp.AmountPayed,
-	Contribution.DelayCycles=#ContributionPaymentTmp.DelayCycles,
-	Contribution.Active = case when #ContributionPaymentTmp.DelayCycles=@TimeToDelay then 0 else 1 end,
-	Contribution.IsDelay=#ContributionPaymentTmp.IsDelay,
-	Contribution.UpdatedOnUtc=GETUTCDATE(),
-	Contribution.[Description]= #ContributionPaymentTmp.[Description]
-FROM #ContributionPaymentTmp 
-WHERE #ContributionPaymentTmp.ContributionId=Contribution.Id
- 
-
- ------------------------------------------------------------------------
- --			  	      SPLIT  5= SIN LIQUIDEZ  3=PAGO PARCIAL  
- ------------------------------------------------------------------------
- ------------------------------------------------------------------------
---6) Alter the next Quota to pay
-------------------------------------------------------------------------
-SELECT * INTO #ContributionPaymentTmp5 FROM  #ContributionPaymentTmp WHERE  StateId=5
-
- ------------------------------------------------------------------------
---7) Find the next quota an update the fields NumberOld and AmountOld
--- with data sin liquidez
-------------------------------------------------------------------------
 Declare @ValueOfQuota1 int= (select Value from Setting where Name  = 'contributionsettings.amount1')
 Declare @ValueOfQuota2 int= (select Value from Setting where Name  = 'contributionsettings.amount2')
 Declare @ValueOfQuota3 int= (select Value from Setting where Name  = 'contributionsettings.amount3')
@@ -316,7 +277,8 @@ SET
 ContributionPayment.AmountTotal=ContributionPayment.AmountTotal+TMP.NoPayed,
 contributionPayment.AmountOld=@ValueOfQuota1+@ValueOfQuota2+@ValueOfQuota3,
 ContributionPayment.NumberOld=TMP.Number,
-ContributionPayment.[Description] ='Valor de la couta aumentado por el sistema ACMR debido a la falta de liquitdez de la cuota N° ' + CAST(TMP.Number as nvarchar(3))
+ContributionPayment.[Description] ='Valor de la couta aumentado por el sistema ACMR debido a la falta de liquitdez de la cuota N° ' + CAST(TMP.Number as nvarchar(3)),
+ContributionPayment.AccountNumber  = cast(convert(NVARCHAR, getutcdate(), 112) +REPLACE(convert(NVARCHAR, getutcdate(), 114) ,':','') as nvarchar(50))
 FROM 
 (
 	SELECT CP.ContributionId AS ContributionId, NextPayment.NumberNextQuota AS NumberNextQuota ,
@@ -336,18 +298,20 @@ FROM
 WHERE --only the next quota to pay
 ContributionPayment.ContributionId=TMP.ContributionId AND ContributionPayment.Number=TMP.NumberNextQuota
 
+UPDATE Contribution set IsDelay=1 , DelayCycles =DelayCycles+1
+FROM  #ContributionPaymentTmp5 
+WHERE #ContributionPaymentTmp5.ContributionId = Contribution.Id
 
-	------------------------------------------------------------------------
---8) Create table Parcial 3
 ------------------------------------------------------------------------
-
-SELECT * INTO #ContributionPaymentTmp3 FROM  #ContributionPaymentTmp WHERE  StateId=3
+--3) Update Data 3 {PagoParcial = 3, Pagado = 4, SinLiquidez=5}
+------------------------------------------------------------------------
 
 UPDATE  ContributionPayment 
 SET 
 ContributionPayment.AmountTotal=ContributionPayment.AmountTotal+TMP.OffSet,
 contributionPayment.AmountOld=TMP.OffSet,
 ContributionPayment.NumberOld=TMP.Number, 
+ContributionPayment.AccountNumber  = cast(convert(NVARCHAR, getutcdate(), 112) +REPLACE(convert(NVARCHAR, getutcdate(), 114) ,':','') as nvarchar(50)),
 ContributionPayment.[Description] ='Valor de la couta aumentado por el sistema ACMR debido a la falta de liquitdez de la cuota N° ' + CAST(TMP.Number as nvarchar(3))
 FROM 
 (
@@ -368,15 +332,138 @@ FROM
 WHERE --only the next quota to pay
 ContributionPayment.ContributionId=TMP.ContributionId AND ContributionPayment.Number=TMP.NumberNextQuota
 
-------------------------------------------------------------------------
---9) fIX The next quota
-------------------------------------------------------------------------
 EXEC FixQuota
 
 END
 GO
 
+CREATE PROCEDURE [UpdateLoanPayment]
+(
+	@XmlPackage xml, 
+	@Year int, 
+	@Month int
+)
+AS
+BEGIN
 
+CREATE TABLE #LoanPaymentTmp
+( 
+	[LoanPaymentId] [int] NOT NULL,
+	[LoanId] [int] NOT NULL,	
+	[Quota] [int] NOT NULL,
+	[MonthlyQuota] decimal(6,2) NOT NULL,
+	[MonthlyFee] decimal(6,2) NOT NULL,
+	[MonthlyCapital] decimal(6,2) NOT NULL,
+	[MonthlyPayed] decimal(6,2) NOT NULL,
+	[StateId] int NOT NULL,
+	[IsAutomatic] int NOT NULL,
+	[BankName] [nvarchar](500) NOT NULL,
+	[AccountNumber] [nvarchar](500) NOT NULL,
+	[TransactionNumber] [nvarchar](500) NOT NULL,
+	[Reference] [nvarchar](500) NOT NULL,
+	[Description] [nvarchar](500) NOT NULL
+)
+			
+SELECT	
+nref.value('LoanPaymentId[1]', 'int'), --LoanPaymentId
+nref.value('LoanId[1]', 'int'), --LoanId
+nref.value('Quota[1]', 'int'), --Quota
+nref.value('MonthlyQuota[1]', 'decimal(6,2)'),--MonthlyQuota
+nref.value('MonthlyFee[1]', 'decimal(6,2)'),--MonthlyFee
+nref.value('MonthlyCapital[1]', 'decimal(6,2)'),--MonthlyCapital
+nref.value('MonthlyPayed[1]', 'decimal(6,2)'),--MonthlyPayed
+nref.value('StateId[1]', 'int'), --StateId
+nref.value('IsAutomatic[1]', 'int'), --IsAutomatic	
+nref.value('BankName[1]', 'nvarchar(500)'), --BankName
+nref.value('AccountNumber[1]', 'nvarchar(500)'), --AccountNumber
+nref.value('TransactionNumber[1]', 'nvarchar(500)'), --TransactionNumber
+nref.value('Reference[1]', 'nvarchar(500)'), --Reference
+nref.value('Description[1]', 'nvarchar(1000)') --[Description]
+FROm @XmlPackage.nodes('//ArrayOfInfoLoan/InfoLoan') AS R(nref)
+
+------------------------------------------------------------------------
+--1) Split int 3 types {PagoParcial = 3,Pagado = 4,SinLiquidez=5}
+------------------------------------------------------------------------
+
+select  * into #LoanPaymentTmp3 from #LoanPaymentTmp where stateId=3
+select  * into #LoanPaymentTmp4 from #LoanPaymentTmp where stateId=4
+select  * into #LoanPaymentTmp5 from #LoanPaymentTmp where stateId=5
+
+------------------------------------------------------------------------
+--2) Update Data 4 {PagoParcial = 3, Pagado = 4, SinLiquidez=5}
+------------------------------------------------------------------------
+
+UPDATE LoanPayment 
+SET 
+MonthlyPayed=#LoanPaymentTmp4.MonthlyPayed,
+ProcessedDateOnUtc=GETUTCDATE(), 
+StateId=#LoanPaymentTmp4.StateId,
+BankName=#LoanPaymentTmp4.BankName,
+AccountNumber = cast(convert(NVARCHAR, getutcdate(), 112) +REPLACE(convert(NVARCHAR, getutcdate(), 114) ,':','') as nvarchar(50)),
+Description='Cobro realizado correctamente por la interfaz de cobros de ACMR'
+FROM  #LoanPaymentTmp4
+WHERE #LoanPaymentTmp4.LoanPaymentId=LoanPayment.Id 
+
+------------------------------------------------------------------------
+--2) Update Data 5 {PagoParcial = 3, Pagado = 4, SinLiquidez=5}
+------------------------------------------------------------------------
+
+--Update LoanPayment
+UPDATE  LoanPayment 
+SET 
+LoanPayment.StateId=#LoanPaymentTmp5.StateId,
+LoanPayment.AccountNumber = cast(convert(NVARCHAR, getutcdate(), 112) +REPLACE(convert(NVARCHAR, getutcdate(), 114) ,':','') as nvarchar(50))
+FROM #LoanPaymentTmp5 
+WHERE #LoanPaymentTmp5.LoanPaymentId=LoanPayment.Id
+
+--Insert New LoanPayment
+SELECT L.LoanId,(MAX(L.Quota)+1 ) as Quota into #tempMax
+FROM  LoanPayment L
+INNER JOIN  #LoanPaymentTmp5 T ON T.LoanId=L.LoanId
+GROUP BY L.LoanId
+
+INSERT INTO LoanPayment  
+select t.*,L.MonthlyQuota,L.MonthlyFee,
+L.MonthlyCapital,0, L.StateId, L.IsAutomatic,L.BankName,L.AccountNumber, L.TransactionNumber,L.Reference,
+'Cuota Agregada por falta de liquidez en el pago del periodo ' +cast(2016 as nvarchar(4)) + cast(15 as nvarchar(2)),
+GETUTCDATE(), null 
+FROM  LoanPayment L
+INNER JOIN  #tempMax T ON T.LoanId=L.LoanId
+
+
+------------------------------------------------------------------------
+--3) Update Data 3 {PagoParcial = 3, Pagado = 4, SinLiquidez=5}
+------------------------------------------------------------------------
+
+--Update LoanPayment
+UPDATE  LoanPayment 
+SET 
+LoanPayment.StateId=#LoanPaymentTmp5.StateId,
+LoanPayment.MonthlyPayed = #LoanPaymentTmp5.MonthlyPayed,
+LoanPayment.BankName = #LoanPaymentTmp5.BankName,
+LoanPayment.AccountNumber = cast(convert(NVARCHAR, getutcdate(), 112) +REPLACE(convert(NVARCHAR, getutcdate(), 114) ,':','') as nvarchar(50))
+FROM #LoanPaymentTmp5 
+WHERE #LoanPaymentTmp5.LoanPaymentId=LoanPayment.Id
+
+--Insert New LoanPayment
+SELECT L.LoanId,(MAX(L.Quota)+1 ) as Quota into #tempMax2
+FROM  LoanPayment L
+INNER JOIN  #LoanPaymentTmp3 T ON T.LoanId=L.LoanId
+GROUP BY L.LoanId
+
+INSERT INTO LoanPayment  
+select t.*,L.MonthlyQuota-LT.MonthlyQuota,
+L.MonthlyFee*(1-((L.MonthlyQuota-LT.MonthlyQuota)/L.MonthlyQuota)),
+L.MonthlyCapital*(1-((L.MonthlyQuota-LT.MonthlyQuota)/L.MonthlyQuota)),
+0, L.StateId, L.IsAutomatic,L.BankName,L.AccountNumber, L.TransactionNumber,L.Reference,
+'Cuota Agregada por pago parcial en el pago del periodo ' +cast(2016 as nvarchar(4)) + cast(15 as nvarchar(2)),
+GETUTCDATE(), null 
+FROM  LoanPayment L
+INNER JOIN  #tempMax2 T ON T.LoanId=L.LoanId
+INNER JOIN #LoanPaymentTmp3 LT ON LT.LoanId=L.LoanId
+
+END
+GO
 
 CREATE PROCEDURE [LanguagePackImport]
 (

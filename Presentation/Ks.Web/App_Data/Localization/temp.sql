@@ -73,21 +73,68 @@ WHERE #ContributionPaymentTmp4.ContributionPaymentId=ContributionPayment.Id
 --2) Update Data 5 {PagoParcial = 3, Pagado = 4, SinLiquidez=5}
 ------------------------------------------------------------------------
 
-UPDATE ContributionPayment 
+Declare @ValueOfQuota1 int= (select Value from Setting where Name  = 'contributionsettings.amount1')
+Declare @ValueOfQuota2 int= (select Value from Setting where Name  = 'contributionsettings.amount2')
+Declare @ValueOfQuota3 int= (select Value from Setting where Name  = 'contributionsettings.amount3')
+
+UPDATE  ContributionPayment 
 SET 
-AmountPayed=#ContributionPaymentTmp5.AmountPayed,
-ProcessedDateOnUtc=GETUTCDATE(), 
-StateId=#ContributionPaymentTmp5.StateId,
-BankName=#ContributionPaymentTmp5.BankName
-FROM  #ContributionPaymentTmp5
-WHERE #ContributionPaymentTmp5.ContributionPaymentId=ContributionPayment.Id 
+ContributionPayment.AmountTotal=ContributionPayment.AmountTotal+TMP.NoPayed,
+contributionPayment.AmountOld=@ValueOfQuota1+@ValueOfQuota2+@ValueOfQuota3,
+ContributionPayment.NumberOld=TMP.Number,
+ContributionPayment.[Description] ='Valor de la couta aumentado por el sistema ACMR debido a la falta de liquitdez de la cuota N° ' + CAST(TMP.Number as nvarchar(3))
+FROM 
+(
+	SELECT CP.ContributionId AS ContributionId, NextPayment.NumberNextQuota AS NumberNextQuota ,
+	CPT.Number AS Number, CPT.AmountTotal AS NoPayed
+	--The nex quota and the Actual 
+	FROM 
+	ContributionPayment CP
+	INNER JOIN (
+			SELECT ContributionId, MIN(Number) as NumberNextQuota
+			FROM ContributionPayment 
+			WHERE StateId = 1 --Get the next Quota in stateId=1 (Pendiente) 
+			GROUP BY ContributionId
+	) NextPayment ON NextPayment.ContributionId=CP.ContributionId
+	INNER JOIN #ContributionPaymentTmp5 CPT ON CPT.ContributionId=CP.ContributionId  --This is Unique
+	GROUP BY CP.ContributionId , NextPayment.NumberNextQuota  ,	CPT.Number ,CPT.AmountTotal
+) as TMP
+WHERE --only the next quota to pay
+ContributionPayment.ContributionId=TMP.ContributionId AND ContributionPayment.Number=TMP.NumberNextQuota
 
+UPDATE Contribution set IsDelay=1  DelayCycles =DelayCycles+1
+FROM  #ContributionPaymentTmp5 
+WHERE #ContributionPaymentTmp5.ContributionId = Contribution.Id
 
+------------------------------------------------------------------------
+--2) Update Data 3 {PagoParcial = 3, Pagado = 4, SinLiquidez=5}
+------------------------------------------------------------------------
 
+UPDATE  ContributionPayment 
+SET 
+ContributionPayment.AmountTotal=ContributionPayment.AmountTotal+TMP.OffSet,
+contributionPayment.AmountOld=TMP.OffSet,
+ContributionPayment.NumberOld=TMP.Number, 
+ContributionPayment.[Description] ='Valor de la couta aumentado por el sistema ACMR debido a la falta de liquitdez de la cuota N° ' + CAST(TMP.Number as nvarchar(3))
+FROM 
+(
+	SELECT CP.ContributionId AS ContributionId, NextPayment.NumberNextQuota AS NumberNextQuota ,
+	CPT.Number AS Number, CPT.AmountTotal-CPT.AmountPayed AS OffSet
+	--The nex quota and the Actual 
+	FROM 
+	ContributionPayment CP
+	INNER JOIN (
+			SELECT ContributionId,MIN(Number) as NumberNextQuota
+			FROM ContributionPayment 
+			WHERE StateId = 1 --Get the next Quota in stateId=1 (Pendiente) 
+			GROUP BY ContributionId
+	) NextPayment ON NextPayment.ContributionId=CP.ContributionId
+	INNER JOIN #ContributionPaymentTmp3 CPT ON CPT.ContributionId=CP.ContributionId  --This is Unique
+	GROUP BY CP.ContributionId , NextPayment.NumberNextQuota ,CPT.Number ,CPT.AmountTotal-CPT.AmountPayed
+) as TMP
+WHERE --only the next quota to pay
+ContributionPayment.ContributionId=TMP.ContributionId AND ContributionPayment.Number=TMP.NumberNextQuota
 
-
-
-
-
+EXEC FixQuota
 
 END

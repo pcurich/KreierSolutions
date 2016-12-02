@@ -8,10 +8,10 @@ namespace Ks.Data.Mapping.Contract
         {
             ToTable("LoanPayment");
             HasKey(sp => sp.Id);
-            Property(sp => sp.MonthlyQuota).HasPrecision(12, 4);
-            Property(sp => sp.MonthlyFee).HasPrecision(12, 4);
-            Property(sp => sp.MonthlyCapital).HasPrecision(12, 4);
-            Property(sp => sp.MonthlyPayed).HasPrecision(12, 4);
+            Property(sp => sp.MonthlyQuota).HasPrecision(12, 2);
+            Property(sp => sp.MonthlyFee).HasPrecision(12, 2);
+            Property(sp => sp.MonthlyCapital).HasPrecision(12, 2);
+            Property(sp => sp.MonthlyPayed).HasPrecision(12, 2);
 
             Ignore(sp => sp.LoanState);
 
