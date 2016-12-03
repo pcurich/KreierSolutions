@@ -266,7 +266,6 @@ namespace Ks.Batch.Merge
             CloseReport(report);
         }
 
-
         #region Utilities
         private void UpdateContributionPayment(List<InfoContribution> info, string period)
         {

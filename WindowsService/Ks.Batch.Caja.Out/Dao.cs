@@ -185,7 +185,7 @@ namespace Ks.Batch.Caja.Out
                     FileOut.Add(customerId, fileOutTem[customerId]);
 
                 if (customerIds2.Count > 0)
-                    UpdateData(customerIds2);
+                    UpdateDataContribution(customerIds2);
             }
             catch (Exception ex)
             {
@@ -294,6 +294,17 @@ namespace Ks.Batch.Caja.Out
                 }
                 sqlReader.Close();
 
+                var customerIds2 = new List<int>();
+
+                foreach (var repo in ReportOut)
+                {
+                    if (repo.Value.TotalLoan > 0)
+                        customerIds2.Add(repo.Value.CustomerId);
+                }
+
+                if (customerIds2.Count > 0)
+                    UpdateDataLoan(customerIds2);
+
             }
             catch (Exception ex)
             {
@@ -395,11 +406,11 @@ namespace Ks.Batch.Caja.Out
             }
         }
 
-        private void UpdateData(List<int> customerIds)
+        private void UpdateDataContribution(List<int> customerIds)
         {
             try
             {
-                Log.InfoFormat("Action: {0}", "Dao.UpdateData(" + string.Join(",", customerIds.ToArray()) + ")");
+                Log.InfoFormat("Action: {0}", "Dao.UpdateDataContribution(" + string.Join(",", customerIds.ToArray()) + ")");
 
                 Sql = "UPDATE ContributionPayment SET StateId =2 WHERE ID IN ( " +
                   " SELECT  cp.Id " +
@@ -407,8 +418,7 @@ namespace Ks.Batch.Caja.Out
                   " INNER JOIN  Contribution c on c.Id=cp.ContributionId " +
                   " WHERE c.CustomerId IN (" + string.Join(",", customerIds.ToArray()) + ") AND  " +
                   " YEAR(cp.ScheduledDateOnUtc)=@Year AND  " +
-                  " MONTH(cp.ScheduledDateOnUtc)=@Month " +
-                  " ) ";
+                  " MONTH(cp.ScheduledDateOnUtc)=@Month  ) ";
 
                 Command = new SqlCommand(Sql, Connection);
 
@@ -433,10 +443,49 @@ namespace Ks.Batch.Caja.Out
             }
             catch (Exception ex)
             {
-                Log.FatalFormat("Action: {0} Error: {1}", "Dao.UpdateData(" + string.Join(",", customerIds.ToArray()) + ")", ex.Message);
+                Log.FatalFormat("Action: {0} Error: {1}", "Dao.UpdateDataContribution(" + string.Join(",", customerIds.ToArray()) + ")", ex.Message);
             }
+        }
 
+        private void UpdateDataLoan(List<int> customerIds)
+        {
+            try
+            {
+                Log.InfoFormat("Action: {0}", "Dao.UpdateDataLoan(" + string.Join(",", customerIds.ToArray()) + ")");
 
+                Sql = "UPDATE LoanPayment SET StateId =2 WHERE ID IN ( " +
+                  " SELECT  cp.Id " +
+                  " FROM LoanPayment cp " +
+                  " INNER JOIN  Loan c on c.Id=cp.LoanId " +
+                  " WHERE c.CustomerId IN (" + string.Join(",", customerIds.ToArray()) + ") AND  " +
+                  " YEAR(cp.ScheduledDateOnUtc)=@Year AND  " +
+                  " MONTH(cp.ScheduledDateOnUtc)=@Month  ) ";
+
+                Command = new SqlCommand(Sql, Connection);
+
+                var pYear = new SqlParameter
+                {
+                    ParameterName = "@Year",
+                    SqlDbType = SqlDbType.Int,
+                    Direction = ParameterDirection.Input,
+                    Value = Batch.PeriodYear
+                };
+                var pMonth = new SqlParameter
+                {
+                    ParameterName = "@Month",
+                    SqlDbType = SqlDbType.Int,
+                    Direction = ParameterDirection.Input,
+                    Value = Batch.PeriodMonth
+                };
+
+                Command.Parameters.Add(pYear);
+                Command.Parameters.Add(pMonth);
+                Command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Log.FatalFormat("Action: {0} Error: {1}", "Dao.UpdateDataLoan(" + string.Join(",", customerIds.ToArray()) + ")", ex.Message);
+            }
         }
 
         private void CompleteCustomerName()
