@@ -172,13 +172,13 @@ BEGIN
 			IF(@OffSet>0)
 				BEGIN
 					UPDATE ContributionPayment 
-					SET AmountTotal=@MaxToPay, [DESCRIPTION]=ISNULL([DESCRIPTION],'')  + '|' + 'El valor de la couta a alcanzado el valor máximo, el saldo se va a prorratear en la siguiente couta pendiente de envio (S/ ' + @OffSet + ')'  
+					SET AmountTotal=@MaxToPay, [DESCRIPTION]=ISNULL([DESCRIPTION],'')  + '|' + 'El valor de la couta a alcanzado el valor máximo, el saldo se va a prorratear en la siguiente couta pendiente de envio (S/ ' + CAST(@OffSet AS NVARCHAR(50)) + ')'  
 					WHERE  Id=@ContributionPaymentId+@ValueIndex  
 					
 					UPDATE ContributionPayment 
 					SET AmountTotal=AmountTotal+@OffSet,
 						AmountOld=@OffSet, 
-						[DESCRIPTION]=ISNULL([DESCRIPTION],'')  + '|' + 'El valor de la couta a aumentado debido a un prorrateo de una couta anterior N° '+@LastNumber, 
+						[DESCRIPTION]=ISNULL([DESCRIPTION],'')  + '|' + 'El valor de la couta a aumentado debido a un prorrateo de una couta anterior N° '+CAST(@LastNumber AS NVARCHAR(50)), 
 						NumberOld =@LastNumber						
 					WHERE  Id=(@ContributionPaymentId+1+@ValueIndex) 
 				END
@@ -189,6 +189,17 @@ BEGIN
 	CLOSE MY_CURSOR
 	DEALLOCATE MY_CURSOR
 
+	
+	UPDATE Contribution
+	set Contribution.AmountPayed = T.AmountPayedTotal
+	FROM 
+	(
+	SELECT  ContributionId, sum(AmountPayed) AS AmountPayedTotal
+	FROM ContributionPayment 
+	Group BY ContributionId
+	)  T 
+	WHERE T.ContributionId=Contribution.Id
+	
 END 
 GO
 
@@ -214,14 +225,14 @@ CREATE TABLE #ContributionPaymentTmp
 	[AmountTotal] decimal(6,2) NOT NULL,
 	[AmountPayed] decimal(6,2) NOT NULL,
 	[StateId] int NOT NULL,
-	[IsAutomatic] int NOT NULL,
 	[BankName] [nvarchar](500) NOT NULL,
 	[AccountNumber] [nvarchar](500) NOT NULL,
 	[TransactionNumber] [nvarchar](500) NOT NULL,
 	[Reference] [nvarchar](500) NOT NULL,
 	[Description] [nvarchar](500) NOT NULL
 )
-			
+
+INSERT INTO #ContributionPaymentTmp			
 SELECT	
 nref.value('ContributionPaymentId[1]', 'int'), --ContributionPaymentId
 nref.value('Number[1]', 'int'), --Number
@@ -234,7 +245,6 @@ nref.value('AmountOld[1]', 'decimal(6,2)'),--AmountOld
 nref.value('AmountTotal[1]', 'decimal(6,2)'),--AmountTotal
 nref.value('AmountPayed[1]', 'decimal(6,2)'),--AmountPayed
 nref.value('StateId[1]', 'int'), --StateId
-nref.value('IsAutomatic[1]', 'int'), --IsAutomatic	
 nref.value('BankName[1]', 'nvarchar(500)'), --BankName
 nref.value('AccountNumber[1]', 'nvarchar(500)'), --AccountNumber
 nref.value('TransactionNumber[1]', 'nvarchar(500)'), --TransactionNumber
@@ -258,19 +268,31 @@ UPDATE ContributionPayment
 SET 
 AmountPayed=#ContributionPaymentTmp4.AmountPayed,
 ProcessedDateOnUtc=GETUTCDATE(), 
-StateId=#ContributionPaymentTmp4.StateId,
+StateId=4,
 BankName=#ContributionPaymentTmp4.BankName,
 AccountNumber  = cast(convert(NVARCHAR, getutcdate(), 112) +REPLACE(convert(NVARCHAR, getutcdate(), 114) ,':','') as nvarchar(50))
 FROM  #ContributionPaymentTmp4
 WHERE #ContributionPaymentTmp4.ContributionPaymentId=ContributionPayment.Id 
 
 ------------------------------------------------------------------------
---2) Update Data 5 {PagoParcial = 3, Pagado = 4, SinLiquidez=5}
+--3) Update Data 5 {PagoParcial = 3, Pagado = 4, SinLiquidez=5}
 ------------------------------------------------------------------------
 
 Declare @ValueOfQuota1 int= (select Value from Setting where Name  = 'contributionsettings.amount1')
 Declare @ValueOfQuota2 int= (select Value from Setting where Name  = 'contributionsettings.amount2')
 Declare @ValueOfQuota3 int= (select Value from Setting where Name  = 'contributionsettings.amount3')
+
+UPDATE  ContributionPayment 
+set 
+ContributionPayment.StateId=5,
+ContributionPayment.AmountPayed=#ContributionPaymentTmp5.AmountPayed,
+ContributionPayment.ProcessedDateOnUtc=GETUTCDATE(),
+ContributionPayment.BankName=#ContributionPaymentTmp5.BankName,
+ContributionPayment.Description='No se ha enviado informacion de pagos en la interfaz del ' + #ContributionPaymentTmp5.BankName
+FROM #ContributionPaymentTmp5 
+WHERE #ContributionPaymentTmp5.ContributionPaymentId=ContributionPayment.Id
+
+ 
 
 UPDATE  ContributionPayment 
 SET 
@@ -307,10 +329,21 @@ WHERE #ContributionPaymentTmp5.ContributionId = Contribution.Id
 ------------------------------------------------------------------------
 
 UPDATE  ContributionPayment 
+set 
+ContributionPayment.StateId=3,
+ContributionPayment.AmountPayed=#ContributionPaymentTmp3.AmountPayed,
+ContributionPayment.ProcessedDateOnUtc=GETUTCDATE(),
+ContributionPayment.BankName=#ContributionPaymentTmp3.BankName,
+ContributionPayment.Description='Pago parcial realizado del copere, el saldo se va a cargar en la siguiente couta con estado pendiente'
+FROM #ContributionPaymentTmp3 
+WHERE #ContributionPaymentTmp3 .ContributionPaymentId=ContributionPayment.Id
+
+UPDATE  ContributionPayment 
 SET 
 ContributionPayment.AmountTotal=ContributionPayment.AmountTotal+TMP.OffSet,
 contributionPayment.AmountOld=TMP.OffSet,
 ContributionPayment.NumberOld=TMP.Number, 
+ContributionPayment.StateId=3,
 ContributionPayment.AccountNumber  = cast(convert(NVARCHAR, getutcdate(), 112) +REPLACE(convert(NVARCHAR, getutcdate(), 114) ,':','') as nvarchar(50)),
 ContributionPayment.[Description] ='Valor de la couta aumentado por el sistema ACMR debido a la falta de liquitdez de la cuota N° ' + CAST(TMP.Number as nvarchar(3))
 FROM 
@@ -356,14 +389,13 @@ CREATE TABLE #LoanPaymentTmp
 	[MonthlyCapital] decimal(6,2) NOT NULL,
 	[MonthlyPayed] decimal(6,2) NOT NULL,
 	[StateId] int NOT NULL,
-	[IsAutomatic] int NOT NULL,
 	[BankName] [nvarchar](500) NOT NULL,
 	[AccountNumber] [nvarchar](500) NOT NULL,
 	[TransactionNumber] [nvarchar](500) NOT NULL,
 	[Reference] [nvarchar](500) NOT NULL,
 	[Description] [nvarchar](500) NOT NULL
 )
-			
+insert into #LoanPaymentTmp					
 SELECT	
 nref.value('LoanPaymentId[1]', 'int'), --LoanPaymentId
 nref.value('LoanId[1]', 'int'), --LoanId
@@ -373,7 +405,6 @@ nref.value('MonthlyFee[1]', 'decimal(6,2)'),--MonthlyFee
 nref.value('MonthlyCapital[1]', 'decimal(6,2)'),--MonthlyCapital
 nref.value('MonthlyPayed[1]', 'decimal(6,2)'),--MonthlyPayed
 nref.value('StateId[1]', 'int'), --StateId
-nref.value('IsAutomatic[1]', 'int'), --IsAutomatic	
 nref.value('BankName[1]', 'nvarchar(500)'), --BankName
 nref.value('AccountNumber[1]', 'nvarchar(500)'), --AccountNumber
 nref.value('TransactionNumber[1]', 'nvarchar(500)'), --TransactionNumber
@@ -397,7 +428,7 @@ UPDATE LoanPayment
 SET 
 MonthlyPayed=#LoanPaymentTmp4.MonthlyPayed,
 ProcessedDateOnUtc=GETUTCDATE(), 
-StateId=#LoanPaymentTmp4.StateId,
+StateId=4,
 BankName=#LoanPaymentTmp4.BankName,
 AccountNumber = cast(convert(NVARCHAR, getutcdate(), 112) +REPLACE(convert(NVARCHAR, getutcdate(), 114) ,':','') as nvarchar(50)),
 Description='Cobro realizado correctamente por la interfaz de cobros de ACMR'
@@ -405,30 +436,33 @@ FROM  #LoanPaymentTmp4
 WHERE #LoanPaymentTmp4.LoanPaymentId=LoanPayment.Id 
 
 ------------------------------------------------------------------------
---2) Update Data 5 {PagoParcial = 3, Pagado = 4, SinLiquidez=5}
+--3) Update Data 5 {PagoParcial = 3, Pagado = 4, SinLiquidez=5}
 ------------------------------------------------------------------------
 
 --Update LoanPayment
 UPDATE  LoanPayment 
 SET 
-LoanPayment.StateId=#LoanPaymentTmp5.StateId,
-LoanPayment.AccountNumber = cast(convert(NVARCHAR, getutcdate(), 112) +REPLACE(convert(NVARCHAR, getutcdate(), 114) ,':','') as nvarchar(50))
+LoanPayment.StateId=5,
+LoanPayment.AccountNumber = cast(convert(NVARCHAR, getutcdate(), 112) +REPLACE(convert(NVARCHAR, getutcdate(), 114) ,':','') as nvarchar(50)),
+ProcessedDateOnUtc=GETUTCDATE(), 
+BankName=#LoanPaymentTmp5.BankName
 FROM #LoanPaymentTmp5 
 WHERE #LoanPaymentTmp5.LoanPaymentId=LoanPayment.Id
 
 --Insert New LoanPayment
-SELECT L.LoanId,(MAX(L.Quota)+1 ) as Quota into #tempMax
-FROM  LoanPayment L
-INNER JOIN  #LoanPaymentTmp5 T ON T.LoanId=L.LoanId
-GROUP BY L.LoanId
+SELECT LP.LoanId,(MAX(LP.Quota)+1 ) as Quota, MAX(LP.ScheduledDateOnUtc) AS ScheduledDateOnUtc  into         #tempMax
+FROM  LoanPayment LP
+INNER JOIN  #LoanPaymentTmp5 T ON T.LoanId=LP.LoanId
+GROUP BY LP.LoanId
 
 INSERT INTO LoanPayment  
-select t.*,L.MonthlyQuota,L.MonthlyFee,
-L.MonthlyCapital,0, L.StateId, L.IsAutomatic,L.BankName,L.AccountNumber, L.TransactionNumber,L.Reference,
+select T.LoanId,T.Quota,L.MonthlyQuota,L.MonthlyFee,
+L.MonthlyCapital,0, 1, L.IsAutomatic,'','', '','',
 'Cuota Agregada por falta de liquidez en el pago del periodo ' +cast(2016 as nvarchar(4)) + cast(15 as nvarchar(2)),
-GETUTCDATE(), null 
+DATEADD (month , 1 ,T.ScheduledDateOnUtc), null 
 FROM  LoanPayment L
 INNER JOIN  #tempMax T ON T.LoanId=L.LoanId
+INNER JOIN #LoanPaymentTmp5 LT ON LT.LoanPaymentId=L.Id
 
 
 ------------------------------------------------------------------------
@@ -438,29 +472,40 @@ INNER JOIN  #tempMax T ON T.LoanId=L.LoanId
 --Update LoanPayment
 UPDATE  LoanPayment 
 SET 
-LoanPayment.StateId=#LoanPaymentTmp5.StateId,
-LoanPayment.MonthlyPayed = #LoanPaymentTmp5.MonthlyPayed,
-LoanPayment.BankName = #LoanPaymentTmp5.BankName,
+LoanPayment.StateId=3,
+LoanPayment.MonthlyPayed = #LoanPaymentTmp3.MonthlyPayed,
+LoanPayment.BankName = #LoanPaymentTmp3.BankName,
 LoanPayment.AccountNumber = cast(convert(NVARCHAR, getutcdate(), 112) +REPLACE(convert(NVARCHAR, getutcdate(), 114) ,':','') as nvarchar(50))
-FROM #LoanPaymentTmp5 
-WHERE #LoanPaymentTmp5.LoanPaymentId=LoanPayment.Id
+FROM #LoanPaymentTmp3 
+WHERE #LoanPaymentTmp3.LoanPaymentId=LoanPayment.Id
 
 --Insert New LoanPayment
-SELECT L.LoanId,(MAX(L.Quota)+1 ) as Quota into #tempMax2
-FROM  LoanPayment L
-INNER JOIN  #LoanPaymentTmp3 T ON T.LoanId=L.LoanId
-GROUP BY L.LoanId
+SELECT LP.LoanId,(MAX(LP.Quota)+1 ) as Quota, MAX(LP.ScheduledDateOnUtc) AS ScheduledDateOnUtc  into     #tempMax2
+FROM  LoanPayment LP
+INNER JOIN  #LoanPaymentTmp3 T ON T.LoanId=LP.LoanId
+GROUP BY LP.LoanId
 
 INSERT INTO LoanPayment  
-select t.*,L.MonthlyQuota-LT.MonthlyQuota,
-L.MonthlyFee*(1-((L.MonthlyQuota-LT.MonthlyQuota)/L.MonthlyQuota)),
-L.MonthlyCapital*(1-((L.MonthlyQuota-LT.MonthlyQuota)/L.MonthlyQuota)),
-0, L.StateId, L.IsAutomatic,L.BankName,L.AccountNumber, L.TransactionNumber,L.Reference,
+select   T.LoanId,T.Quota,L.MonthlyQuota-LT.MonthlyPayed,
+L.MonthlyFee*(1-((L.MonthlyQuota-LT.MonthlyPayed)/L.MonthlyQuota)),
+L.MonthlyCapital*(1-((L.MonthlyQuota-LT.MonthlyPayed)/L.MonthlyQuota)),
+0, 1, L.IsAutomatic,'','', '','',
 'Cuota Agregada por pago parcial en el pago del periodo ' +cast(2016 as nvarchar(4)) + cast(15 as nvarchar(2)),
-GETUTCDATE(), null 
+DATEADD (month , 1 ,T.ScheduledDateOnUtc)  , null 
 FROM  LoanPayment L
 INNER JOIN  #tempMax2 T ON T.LoanId=L.LoanId
-INNER JOIN #LoanPaymentTmp3 LT ON LT.LoanId=L.LoanId
+INNER JOIN #LoanPaymentTmp3 LT ON LT.LoanPaymentId=L.Id
+
+UPDATE Loan
+SET Loan.TotalPayed = T.AmountTotalPayed
+FROM 
+(
+	SELECT  LoanId, sum(MonthlyPayed) AS AmountTotalPayed
+	FROM LoanPayment 
+	Group BY LoanId
+)  T 
+WHERE T.LoanId=Loan.Id
+
 
 END
 GO

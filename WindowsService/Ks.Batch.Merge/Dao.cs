@@ -67,7 +67,6 @@ namespace Ks.Batch.Merge
 
         }
 
-
         public void Process(Report report, List<Info> listResponse, List<Info> listRequest, string bankName)
         {
             var infoContributionNoCash = new List<InfoContribution>(); // sin liquidez
@@ -96,7 +95,7 @@ namespace Ks.Batch.Merge
                     #region Sin Liquidez en aportaciones
 
                     request.InfoContribution.StateId = (int)ContributionState.SinLiquidez;
-                    infoContributionNoCash.Add(request.InfoContribution);
+                    infoContributionNoCash.Add(MappingContribution(request.InfoContribution));
 
                     #endregion
 
@@ -105,7 +104,8 @@ namespace Ks.Batch.Merge
                     foreach (var infoLoan in request.InfoLoans)
                     {
                         infoLoan.StateId = (int)ContributionState.SinLiquidez;
-                        infoLoanNoCash.Add(infoLoan);
+                        infoLoan.BankName = bankName;
+                        infoLoanNoCash.Add(MappingLoan(infoLoan));
                     }
 
                     #endregion
@@ -122,7 +122,7 @@ namespace Ks.Batch.Merge
 
                         request.InfoContribution.StateId = (int)ContributionState.Pagado;
                         request.InfoContribution.AmountPayed = response.TotalPayed;
-                        infoContributionPayedComplete.Add(request.InfoContribution);
+                        infoContributionPayedComplete.Add(MappingContribution(request.InfoContribution));
 
                         #endregion
 
@@ -131,7 +131,8 @@ namespace Ks.Batch.Merge
                         foreach (var infoLoan in request.InfoLoans)
                         {
                             infoLoan.StateId = (int)ContributionState.SinLiquidez;
-                            infoLoanNoCash.Add(infoLoan);
+                            infoLoan.BankName = bankName;
+                            infoLoanNoCash.Add(MappingLoan(infoLoan));
                         }
 
                         #endregion
@@ -148,7 +149,7 @@ namespace Ks.Batch.Merge
                         request.InfoContribution.StateId = (int)ContributionState.PagoParcial;
                         request.InfoContribution.AmountPayed = response.TotalPayed;
 
-                        infoContributionIncomplete.Add(request.InfoContribution);
+                        infoContributionIncomplete.Add(MappingContribution(request.InfoContribution));
 
                         #endregion
 
@@ -157,7 +158,8 @@ namespace Ks.Batch.Merge
                         foreach (var infoLoan in request.InfoLoans)
                         {
                             infoLoan.StateId = (int)ContributionState.SinLiquidez;
-                            infoLoanNoCash.Add(infoLoan);
+                            infoLoan.BankName = bankName;
+                            infoLoanNoCash.Add(MappingLoan(infoLoan));
                         }
 
                         #endregion
@@ -173,7 +175,7 @@ namespace Ks.Batch.Merge
 
                         request.InfoContribution.StateId = (int)ContributionState.Pagado;
                         request.InfoContribution.AmountPayed = request.InfoContribution.AmountTotal;
-                        infoContributionPayedComplete.Add(request.InfoContribution);
+                        infoContributionPayedComplete.Add(MappingContribution(request.InfoContribution));
 
                         #endregion
 
@@ -187,7 +189,8 @@ namespace Ks.Batch.Merge
 
                                 infoLoan.StateId = (int)ContributionState.Pagado;
                                 infoLoan.MonthlyPayed = infoLoan.MonthlyQuota;
-                                infoLoanPayedComplete.Add(infoLoan);
+                                infoLoan.BankName = bankName;
+                                infoLoanPayedComplete.Add(MappingLoan(infoLoan));
 
                                 #endregion
 
@@ -201,7 +204,8 @@ namespace Ks.Batch.Merge
 
                                     infoLoan.StateId = (int)ContributionState.PagoParcial;
                                     infoLoan.MonthlyPayed = response.TotalPayed;
-                                    infoLoanIncomplete.Add(infoLoan);
+                                    infoLoan.BankName = bankName;
+                                    infoLoanIncomplete.Add(MappingLoan(infoLoan));
 
                                     #endregion
 
@@ -214,7 +218,8 @@ namespace Ks.Batch.Merge
 
                                     infoLoan.StateId = (int)ContributionState.SinLiquidez;
                                     infoLoan.MonthlyPayed = 0;
-                                    infoLoanNoCash.Add(infoLoan);
+                                    infoLoan.BankName = bankName;
+                                    infoLoanNoCash.Add(MappingLoan(infoLoan));
 
                                     #endregion
                                 }
@@ -267,6 +272,50 @@ namespace Ks.Batch.Merge
         }
 
         #region Utilities
+
+        private InfoContribution MappingContribution(InfoContribution info)
+        {
+            return new InfoContribution
+            {
+                ContributionPaymentId = info.ContributionPaymentId,
+                Number = info.Number,
+                NumberOld = info.NumberOld,
+                ContributionId = info.ContributionId,
+                Amount1 = info.Amount1,
+                Amount2 = info.Amount2,
+                Amount3 = info.Amount3,
+                AmountOld = info.AmountOld,
+                AmountTotal = info.AmountTotal,
+                AmountPayed = info.AmountPayed,
+                StateId = info.StateId,
+                IsAutomatic = info.IsAutomatic,
+                BankName = info.BankName,
+                AccountNumber = info.AccountNumber,
+                TransactionNumber = info.TransactionNumber,
+                Reference = info.Reference,
+                Description = info.Description
+            };
+        }
+        private InfoLoan MappingLoan(InfoLoan info)
+        {
+            return new InfoLoan
+            {
+                LoanPaymentId = info.LoanPaymentId,
+                Quota = info.Quota,
+                LoanId = info.LoanId,
+                MonthlyQuota = info.MonthlyQuota,
+                MonthlyFee = info.MonthlyFee,
+                MonthlyCapital = info.MonthlyCapital,
+                MonthlyPayed = info.MonthlyPayed,
+                StateId = info.StateId,
+                IsAutomatic = info.IsAutomatic,
+                BankName = info.BankName,
+                AccountNumber = info.AccountNumber,
+                TransactionNumber = info.TransactionNumber,
+                Reference = info.Reference,
+                Description = info.Description
+            };
+        }
         private void UpdateContributionPayment(List<InfoContribution> info, string period)
         {
             try
@@ -292,7 +341,6 @@ namespace Ks.Batch.Merge
                 Log.FatalFormat("Action: {0} Error: {1}", "Dao.UpdateContributionPayment(" + string.Join(",", info.Select(x => x.ContributionPaymentId)) + ", " + period + ")", ex.Message);
             }
         }
-
         private void UpdateLoanPayment(List<InfoLoan> info, string period)
         {
             try
@@ -318,7 +366,6 @@ namespace Ks.Batch.Merge
                 Log.FatalFormat("Action: {0} Error: {1}", "Dao.UpdateContributionPayment(" + string.Join(",", info.Select(x => x.LoanPaymentId)) + ", " + period + ")", ex.Message);
             }
         }
-
         private void CloseReport(Report report)
         {
             try

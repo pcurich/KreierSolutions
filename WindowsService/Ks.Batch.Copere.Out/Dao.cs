@@ -41,7 +41,7 @@ namespace Ks.Batch.Copere.Out
                 GetLoanPayment(customerIds);
                 //copere send contribution and loan in separates
                 MergeData(customerIds);
-                
+
                 if (FileOut.Count != 0)
                 {
                     DeleteReport(Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00"), Batch.SystemName);
@@ -188,8 +188,8 @@ namespace Ks.Batch.Copere.Out
 
 
                 if (customerIds2.Count > 0)
-                   UpdateDataContribution(customerIds2);
-                 
+                    UpdateDataContribution(customerIds2);
+
 
             }
             catch (Exception ex)
@@ -200,7 +200,7 @@ namespace Ks.Batch.Copere.Out
 
         private void GetLoanPayment(List<int> customerIds)
         {
-            var reportOut2 = new Dictionary<int, Info>();
+
             try
             {
                 Log.InfoFormat("Action: {0}", "Dao.GetLoanPayments(" + string.Join(",", customerIds.ToArray()) + ")");
@@ -300,7 +300,7 @@ namespace Ks.Batch.Copere.Out
 
                 var customerIds2 = new List<int>();
 
-                foreach (var repo in ReportOut) 
+                foreach (var repo in ReportOut)
                 {
                     if (repo.Value.TotalLoan > 0)
                         customerIds2.Add(repo.Value.CustomerId);
@@ -328,28 +328,31 @@ namespace Ks.Batch.Copere.Out
                     var lineContribution = string.Format("{0}        {1}{2}",
                     FileOut[customerId].Replace(AMOUNT,
                         (Math.Round(ReportOut[customerId].TotalContribution * 100)).
-                            ToString(CultureInfo.InvariantCulture).PadLeft(13, '0')).Replace(".",""),
+                            ToString(CultureInfo.InvariantCulture).PadLeft(13, '0')).Replace(".", ""),
                             Batch.PeriodYear, Batch.PeriodMonth.ToString("00"));
 
                     string lineLoan = null;
                     if (ReportOut[customerId].TotalLoan > 0)
                     {
-                        lineLoan = string.Format("{0}        {1}{2}",
-                        FileOut[customerId].Replace(AMOUNT,
-                            (Math.Round(ReportOut[customerId].TotalLoan * 100)).
-                                ToString(CultureInfo.InvariantCulture).PadLeft(13, '0')).Replace(".", ""),
+                        foreach (var infoLoan in ReportOut[customerId].InfoLoans)
+                        {
+                            lineLoan = string.Format("{0}        {1}{2}",
+                            FileOut[customerId].Replace(AMOUNT,
+                            (Math.Round(infoLoan.MonthlyQuota * 100)).
+                                ToString(CultureInfo.InvariantCulture).PadLeft(13, '0')).Replace(".", "").Replace(",", ""),
                                 Batch.PeriodYear, Batch.PeriodMonth.ToString("00"));
+                        }
                     }
 
                     contributions.Add(lineContribution);
-                    if (lineLoan!=null)
+                    if (lineLoan != null)
                     {
                         loans.Add(lineLoan);
                     }
                 }
             }
 
-            Result= new List<string>();
+            Result = new List<string>();
 
             foreach (var contribution in contributions)
                 Result.Add(contribution);

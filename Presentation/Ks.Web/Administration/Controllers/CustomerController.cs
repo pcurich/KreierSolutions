@@ -1591,6 +1591,8 @@ namespace Ks.Admin.Controllers
                     UpdatedOnUtc = null
                 };
 
+                var estimated = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, _contributionSettings.DayOfPayment);
+
                 for (var cycle = 1; cycle <= model.Period; cycle++)
                 {
                     loan.LoanPayments.Add(new LoanPayment
@@ -1600,7 +1602,7 @@ namespace Ks.Admin.Controllers
                         MonthlyFee = (loan.TotalFeed / loan.Period),
                         MonthlyCapital = (loan.MonthlyQuota - loan.TotalFeed / loan.Period),
                         MonthlyQuota = (loan.MonthlyQuota),
-                        ScheduledDateOnUtc = _dateTimeHelper.ConvertToUtcTime(DateTime.UtcNow.AddMonths(cycle)),
+                        ScheduledDateOnUtc = (estimated.AddMonths(cycle)),
                         ProcessedDateOnUtc = null,
                         StateId = 1
                     });
