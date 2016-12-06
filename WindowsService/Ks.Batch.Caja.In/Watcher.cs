@@ -21,9 +21,9 @@ namespace Ks.Batch.Caja.In
             Path = ConfigurationManager.AppSettings["Path"];
             Connection = ConfigurationManager.ConnectionStrings["ACMR"].ConnectionString;
             Batch = XmlHelper.Deserialize<ScheduleBatch>(System.IO.Path.Combine(Path, "ScheduleBatch.xml"));
-            
-            Batch.PeriodYear = Convert.ToInt32( e.Name.Split(' ')[1]);
-            Batch.PeriodMonth = Convert.ToInt32( e.Name.Split(' ')[2].Substring(0,2));
+
+            Batch.PeriodYear = Convert.ToInt32(e.Name.Split(' ')[1]);
+            Batch.PeriodMonth = Convert.ToInt32(e.Name.Split(' ')[2].Substring(0, 2));
 
             try
             {
