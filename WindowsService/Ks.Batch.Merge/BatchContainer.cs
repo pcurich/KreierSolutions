@@ -46,12 +46,15 @@ namespace Ks.Batch.Merge
 
         private void Read()
         {
-            PathValue = ConfigurationManager.AppSettings["Path"];
+            lock (this)
+            {
+                PathValue = ConfigurationManager.AppSettings["Path"];
 
-            _watcher = new FileSystemWatcher(PathValue, "*.txt");
-            _watcher.Created += Watcher.FileCreated;
-            _watcher.IncludeSubdirectories = false;
-            _watcher.EnableRaisingEvents = true;
+                _watcher = new FileSystemWatcher(PathValue, "*.txt");
+                _watcher.Created += Watcher.FileCreated;
+                _watcher.IncludeSubdirectories = false;
+                _watcher.EnableRaisingEvents = true;
+            }
         }
     }
 }

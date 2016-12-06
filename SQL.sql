@@ -334,18 +334,24 @@ ORDER BY Number
 --CLEAN DATA
 UPDATE Contribution SET IsDelay=0, DelayCycles=0, Active=1, UpdatedOnUtc=NULL, AmountPayed=0
 UPDATE ContributionPayment SET  NumberOld =0, AmountOld =0, AmountPayed=0, AmountTotal=35, ProcessedDateOnUtc=null, StateId=1, IsAutomatic=1, BankName=null,Description=''
+UPDATE Loan SET IsDelay=0,  Active=1, UpdatedOnUtc=NULL, TotalPayed=0
+UPDATE LoanPayment SET  MonthlyPayed =0,  ProcessedDateOnUtc=null, StateId=1, IsAutomatic=1, BankName=null,AccountNumber='',Description=''
 delete Report
-update ScheduleBatch set PeriodMonth=11, PeriodYear=2016,  NextExecutionOnUtc =GETUTCDATE() where  SystemName IN ('Ks.Batch.Copere.Out','Ks.Batch.Caja.Out')
+update ScheduleBatch set PeriodMonth=12, PeriodYear=2016,  NextExecutionOnUtc =GETUTCDATE() where  SystemName IN ('Ks.Batch.Copere.Out','Ks.Batch.Copere.In')
+update ScheduleBatch set PeriodMonth=12, PeriodYear=2016,  NextExecutionOnUtc =GETUTCDATE() where  SystemName IN ('Ks.Batch.Caja.In','Ks.Batch.Caja.Out')
 
 --fuerza el quarts
 
 update ScheduleBatch set   NextExecutionOnUtc =GETUTCDATE() where id>0
  
+
+
+ select LastExecutionOnUtc from ScheduleBatch
 SELECT * FROM ContributionPayment WHERE ID=424
 SELECT * FROM ContributionPayment WHERE detailsold is not null 
 SELECT * FROM ContributionPayment WHERE detailsnext is not null 
 
-select* from Reports
+select* from Report
 
 select * from ContributionPayment where ContributionId=2
 update ContributionPayment set BankName='Copere' where AccountNumber is not null
@@ -378,7 +384,7 @@ FROM ContributionPayment cp
   
 
  SELECT 
- l.CustomerId as CustomerId,
+ L.CustomerId as CustomerId,
  LP.Id as LoanPaymentId,
  L.Id as LoanId,
  LP.Quota as Quota,
@@ -396,6 +402,50 @@ FROM ContributionPayment cp
  FROM 
  LoanPayment LP 
  INNER JOIN Loan L on L.Id=lp.LoanId 
- WHERE L.CustomerId in (1,2,3,4,2) and LP.StateId=1
+ WHERE 
+ L.CustomerId in (1,2,3,4,2) and 
+ LP.StateId=1 and
+ YEAR(lp.ScheduledDateOnUtc)=1 and 
+ MONTH(lp.ScheduledDateOnUtc)=25
  ORDER BY 1
-  
+
+ select   * from LoanPayment 
+  select   * from Loan 
+ update loan set totalPayed=217.78, Active=1 where id=1
+ update LoanPayment Set MonthlyPayed= 3247.22 where id=103
+
+ select sum(MonthlyQuota)-(600+217.78) from LoanPayment where LoanId= (select id from loan where LoanNumber=10013) and stateid=1
+ select 600+217.78
+
+ update LoanPayment set stateId=2 where Id=267
+ delete from LoanPayment where id>=104
+
+  SET LANGUAGE Spanish
+--ESTO NO VA A FUNCIONAR. HAY Q REVISAR EL GROUP BY 
+SELECT 
+YEAR(LP.ProcessedDateOnUtc) as Year,
+MONTH(LP.ProcessedDateOnUtc) as MONTH,
+DATENAME(mm,LP.ProcessedDateOnUtc)  as MonthName, --DATENAME(mm,LP.ProcessedDateOnUtc)  as MonthName,
+SUM(lp.MonthlyPayed) as MonthlyPayed ,
+LP.StateId as StateId
+INTO   #tmp_reports_t
+FROM  LoanPayment LP
+INNER JOIN Loan L ON L.Id=LP.LoanId
+WHERE L.Id=9   AND LP.MonthlyPayed>0
+GROUP BY lp.TransactionNumber, YEAR(lp.ProcessedDateOnUtc),MONTH(lp.ProcessedDateOnUtc), DATENAME(mm,LP.ProcessedDateOnUtc), LP.StateId
+ORDER BY 1,2
+
+SELECT Year,MonthName,MonthlyPayed,StateId
+INTO  #tmp_reports 
+FROM #tmp_reports_t
+
+select * from #tmp_reports
+
+
+
+ select SUM(MonthlyQuota) from LoanPayment where LoanId= (select id from loan where LoanNumber=10014) and stateid=1
+
+ update LoanPayment set stateid=2 where id=247
+
+ select * from loan where LoanNumber=10014
+ select * from LoanPayment where LoanId = (select id from Loan where LoanNumber=10014)
