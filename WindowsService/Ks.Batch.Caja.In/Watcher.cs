@@ -17,7 +17,7 @@ namespace Ks.Batch.Caja.In
         private static string Connection { get; set; }
         public static void FileCreated(object sender, FileSystemEventArgs e)
         {
-            Thread.Sleep(1000 * 10); //10 Sec because is not atomic
+            Thread.Sleep(1000 * 3); //10 Sec because is not atomic
             Path = ConfigurationManager.AppSettings["Path"];
             Connection = ConfigurationManager.ConnectionStrings["ACMR"].ConnectionString;
             Batch = XmlHelper.Deserialize<ScheduleBatch>(System.IO.Path.Combine(Path, "ScheduleBatch.xml"));
@@ -55,13 +55,13 @@ namespace Ks.Batch.Caja.In
         private static void WakeUpMerge()
         {
             var path = ConfigurationManager.AppSettings["WakeUp"];
-            path = System.IO.Path.Combine(path, "WakeUp.txt");
+            path = System.IO.Path.Combine(path, "CajaWakeUp.txt");
             if (!File.Exists(path))
             {
                 using (var myFile = File.Create(path))
                 {
                     TextWriter tw = new StreamWriter(myFile);
-                    tw.WriteLine("WakeUp");
+                    tw.WriteLine("CajaWakeUp");
                     tw.Close();
                 }
             }

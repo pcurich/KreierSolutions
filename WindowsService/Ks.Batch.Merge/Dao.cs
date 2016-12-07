@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using Ks.Batch.Util;
@@ -11,7 +10,7 @@ namespace Ks.Batch.Merge
 {
     public class Dao : DaoBase
     {
-        private static readonly LogWriter Log = HostLogger.Get<Dao>();
+        private new static readonly LogWriter Log = HostLogger.Get<Dao>();
         private List<Info> _listInfo = new List<Info>();
 
 
@@ -66,8 +65,9 @@ namespace Ks.Batch.Merge
             }
 
         }
-
-        public void Process(Report report, List<Info> listResponse, List<Info> listRequest, string bankName)
+        
+        #region Copere
+        public void ProcessCopere(Report report, List<Info> listResponse, List<Info> listRequest, string bankName)
         {
             var infoContributionNoCash = new List<InfoContribution>(); // sin liquidez
             var infoContributionPayedComplete = new List<InfoContribution>(); // los pagos completos
@@ -237,39 +237,342 @@ namespace Ks.Batch.Merge
 
             if (infoContributionPayedComplete.Count > 0)
             {
-                UpdateContributionPayment(infoContributionPayedComplete, report.Period);
+                UpdateContributionPaymentCopere(infoContributionPayedComplete, report.Period);
             }
             if (infoContributionIncomplete.Count > 0)
             {
-                UpdateContributionPayment(infoContributionIncomplete, report.Period);
+                UpdateContributionPaymentCopere(infoContributionIncomplete, report.Period);
             }
             if (infoContributionNoCash.Count > 0)
             {
-                UpdateContributionPayment(infoContributionNoCash, report.Period);
+                UpdateContributionPaymentCopere(infoContributionNoCash, report.Period);
             }
 
             #endregion
 
-             
-                #region LoanPayment
+            #region LoanPayment
+            if (infoLoanPayedComplete.Count > 0)
+            {
+                UpdateLoanPaymentCopere(infoLoanPayedComplete, report.Period);
+            }
+            if (infoLoanIncomplete.Count > 0)
+            {
+                UpdateLoanPaymentCopere(infoLoanIncomplete, report.Period);
+            }
+            if (infoLoanNoCash.Count > 0)
+            {
+                UpdateLoanPaymentCopere(infoLoanNoCash, report.Period);
+            }
 
-                if (infoLoanPayedComplete.Count > 0)
-                {
-                    UpdateLoanPayment(infoLoanPayedComplete, report.Period);
-                }
-                if (infoLoanIncomplete.Count > 0)
-                {
-                    UpdateLoanPayment(infoLoanIncomplete, report.Period);
-                }
-                if (infoLoanNoCash.Count > 0)
-                {
-                    UpdateLoanPayment(infoLoanNoCash, report.Period);
-                }
+            #endregion
 
-                #endregion
-            
             CloseReport(report);
         }
+        private void UpdateContributionPaymentCopere(List<InfoContribution> info, string period)
+        {
+            try
+            {
+                Log.InfoFormat("Action: {0}", "Dao.UpdateContributionPaymentCopere(" + string.Join(",", info.Select(x => x.ContributionPaymentId)) + ", " + period + ")");
+
+                var year = period.Substring(0, 4);
+                var month = period.Substring(4, 2);
+                var xml = XmlHelper.Serialize2String(info, true);
+                xml = xml.Replace('\n', ' ');
+                xml = xml.Replace('\r', ' ');
+                xml = xml.Replace("<?xml version=\"1.0\"?>", "");
+
+                Sql = "UpdateContributionPaymentCopere @XmlPackage,@Year, @Month";
+                Command = new SqlCommand(Sql, Connection);
+                Command.Parameters.AddWithValue("@XmlPackage", xml);
+                Command.Parameters.AddWithValue("@Year", Convert.ToInt32(year));
+                Command.Parameters.AddWithValue("@Month", Convert.ToInt32(month));
+                Command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Log.FatalFormat("Action: {0} Error: {1}", "Dao.UpdateContributionPaymentCopere(" + string.Join(",", info.Select(x => x.ContributionPaymentId)) + ", " + period + ")", ex.Message);
+            }
+        }
+        private void UpdateLoanPaymentCopere(List<InfoLoan> info, string period)
+        {
+            try
+            {
+                Log.InfoFormat("Action: {0}", "Dao.UpdateLoanPaymentCopere(" + string.Join(",", info.Select(x => x.LoanPaymentId)) + ", " + period + ")");
+
+                var year = period.Substring(0, 4);
+                var month = period.Substring(4, 2);
+                var xml = XmlHelper.Serialize2String(info, true);
+                xml = xml.Replace('\n', ' ');
+                xml = xml.Replace('\r', ' ');
+                xml = xml.Replace("<?xml version=\"1.0\"?>", "");
+
+                Sql = "UpdateLoanPaymentCopere @XmlPackage,@Year, @Month";
+                Command = new SqlCommand(Sql, Connection);
+                Command.Parameters.AddWithValue("@XmlPackage", xml);
+                Command.Parameters.AddWithValue("@Year", Convert.ToInt32(year));
+                Command.Parameters.AddWithValue("@Month", Convert.ToInt32(month));
+                Command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Log.FatalFormat("Action: {0} Error: {1}", "Dao.UpdateLoanPaymentCopere(" + string.Join(",", info.Select(x => x.LoanPaymentId)) + ", " + period + ")", ex.Message);
+            }
+        }
+        #endregion
+
+        #region Caja
+        public void ProcessCaja(Report report, List<Info> listResponse, List<Info> listRequest, string bankName)
+        {
+            var infoContributionNoCash = new List<InfoContribution>(); // sin liquidez
+            var infoContributionPayedComplete = new List<InfoContribution>(); // los pagos completos
+            var infoContributionIncomplete = new List<InfoContribution>(); // los puchos
+
+            var infoLoanNoCash = new List<InfoLoan>(); // sin liquidez
+            var infoLoanPayedComplete = new List<InfoLoan>(); // los pagos completos
+            var infoLoanIncomplete = new List<InfoLoan>(); // los puchos
+
+
+            #region SplitList
+
+            Info response;
+            foreach (var request in listRequest)
+            {
+                request.InfoContribution.BankName = bankName;
+                request.InfoContribution.Description = "Proceso automática por el sistema ACMR";
+
+                var info1 = request;
+                response = listResponse.FirstOrDefault(x => x.AdminCode == info1.AdminCode);
+                if (response == null)
+                {
+                    #region Sin liquidez en Contribution y Loan
+
+                    #region Sin Liquidez en aportaciones
+
+                    request.InfoContribution.StateId = (int)ContributionState.SinLiquidez;
+                    infoContributionNoCash.Add(MappingContribution(request.InfoContribution));
+
+                    #endregion
+
+                    #region Sin Liquides en Prestamos
+
+                    foreach (var infoLoan in request.InfoLoans)
+                    {
+                        infoLoan.StateId = (int)ContributionState.SinLiquidez;
+                        infoLoan.BankName = bankName;
+                        infoLoanNoCash.Add(MappingLoan(infoLoan));
+                    }
+
+                    #endregion
+
+                    #endregion
+                }
+                else
+                {
+                    if (request.TotalContribution == response.TotalPayed)
+                    {
+                        #region Pagado completo en aportaciones y sin liquidez en prestamos
+
+                        #region Pago completo de la aportacion
+
+                        request.InfoContribution.StateId = (int)ContributionState.Pagado;
+                        request.InfoContribution.AmountPayed = response.TotalPayed;
+                        infoContributionPayedComplete.Add(MappingContribution(request.InfoContribution));
+
+                        #endregion
+
+                        #region Sin Liquides en Prestamos
+
+                        foreach (var infoLoan in request.InfoLoans)
+                        {
+                            infoLoan.StateId = (int)ContributionState.SinLiquidez;
+                            infoLoan.BankName = bankName;
+                            infoLoanNoCash.Add(MappingLoan(infoLoan));
+                        }
+
+                        #endregion
+
+                        #endregion
+                    }
+
+                    if (request.TotalContribution > response.TotalPayed)
+                    {
+                        #region Pago por puchos en aportacion  y sin liquidez en prestamos
+
+                        #region Pago por puchos en aportaciones
+
+                        request.InfoContribution.StateId = (int)ContributionState.PagoParcial;
+                        request.InfoContribution.AmountPayed = response.TotalPayed;
+
+                        infoContributionIncomplete.Add(MappingContribution(request.InfoContribution));
+
+                        #endregion
+
+                        #region Sin Liquides en Prestamos
+
+                        foreach (var infoLoan in request.InfoLoans)
+                        {
+                            infoLoan.StateId = (int)ContributionState.SinLiquidez;
+                            infoLoan.BankName = bankName;
+                            infoLoanNoCash.Add(MappingLoan(infoLoan));
+                        }
+
+                        #endregion
+
+                        #endregion
+                    }
+
+                    if (request.TotalContribution < response.TotalPayed)
+                    {
+                        #region Pago total en aportacion y en puchos en prestamos
+
+                        #region Pago total en aportacion
+
+                        request.InfoContribution.StateId = (int)ContributionState.Pagado;
+                        request.InfoContribution.AmountPayed = request.InfoContribution.AmountTotal;
+                        infoContributionPayedComplete.Add(MappingContribution(request.InfoContribution));
+
+                        #endregion
+
+                        response.TotalPayed -= request.InfoContribution.AmountTotal;
+
+                        foreach (var infoLoan in request.InfoLoans)
+                        {
+                            if (response.TotalPayed >= infoLoan.MonthlyQuota)
+                            {
+                                #region Pago completo en prestamo
+
+                                infoLoan.StateId = (int)ContributionState.Pagado;
+                                infoLoan.MonthlyPayed = infoLoan.MonthlyQuota;
+                                infoLoan.BankName = bankName;
+                                infoLoanPayedComplete.Add(MappingLoan(infoLoan));
+
+                                #endregion
+
+                                response.TotalPayed -= infoLoan.MonthlyQuota;
+                            }
+                            else
+                            {
+                                if (response.TotalPayed > 0)
+                                {
+                                    #region Pago Parcial del prestamo
+
+                                    infoLoan.StateId = (int)ContributionState.PagoParcial;
+                                    infoLoan.MonthlyPayed = response.TotalPayed;
+                                    infoLoan.BankName = bankName;
+                                    infoLoanIncomplete.Add(MappingLoan(infoLoan));
+
+                                    #endregion
+
+                                    response.TotalPayed = 0;
+
+                                }
+                                else
+                                {
+                                    #region No hay liquidez para el pago
+
+                                    infoLoan.StateId = (int)ContributionState.SinLiquidez;
+                                    infoLoan.MonthlyPayed = 0;
+                                    infoLoan.BankName = bankName;
+                                    infoLoanNoCash.Add(MappingLoan(infoLoan));
+
+                                    #endregion
+                                }
+                            }
+                        }
+
+                        #endregion
+                    }
+                }
+            }
+
+            #endregion
+
+            #region ContributionPayment
+
+            if (infoContributionPayedComplete.Count > 0)
+            {
+                UpdateContributionPaymentCaja(infoContributionPayedComplete, report.Period);
+            }
+            if (infoContributionIncomplete.Count > 0)
+            {
+                UpdateContributionPaymentCaja(infoContributionIncomplete, report.Period);
+            }
+            if (infoContributionNoCash.Count > 0)
+            {
+                UpdateContributionPaymentCaja(infoContributionNoCash, report.Period);
+            }
+
+            #endregion
+
+            #region LoanPayment
+            if (infoLoanPayedComplete.Count > 0)
+            {
+                UpdateLoanPaymentCaja(infoLoanPayedComplete, report.Period);
+            }
+            if (infoLoanIncomplete.Count > 0)
+            {
+                UpdateLoanPaymentCaja(infoLoanIncomplete, report.Period);
+            }
+            if (infoLoanNoCash.Count > 0)
+            {
+                UpdateLoanPaymentCaja(infoLoanNoCash, report.Period);
+            }
+
+            #endregion
+
+            CloseReport(report);
+        }
+        private void UpdateContributionPaymentCaja(List<InfoContribution> info, string period)
+        {
+            try
+            {
+                Log.InfoFormat("Action: {0}", "Dao.UpdateContributionPaymentCaja(" + string.Join(",", info.Select(x => x.ContributionPaymentId)) + ", " + period + ")");
+
+                var year = period.Substring(0, 4);
+                var month = period.Substring(4, 2);
+                var xml = XmlHelper.Serialize2String(info, true);
+                xml = xml.Replace('\n', ' ');
+                xml = xml.Replace('\r', ' ');
+                xml = xml.Replace("<?xml version=\"1.0\"?>", "");
+
+                Sql = "UpdateContributionPaymentCaja @XmlPackage,@Year, @Month";
+                Command = new SqlCommand(Sql, Connection);
+                Command.Parameters.AddWithValue("@XmlPackage", xml);
+                Command.Parameters.AddWithValue("@Year", Convert.ToInt32(year));
+                Command.Parameters.AddWithValue("@Month", Convert.ToInt32(month));
+                Command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Log.FatalFormat("Action: {0} Error: {1}", "Dao.UpdateContributionPaymentCaja(" + string.Join(",", info.Select(x => x.ContributionPaymentId)) + ", " + period + ")", ex.Message);
+            }
+        }
+        private void UpdateLoanPaymentCaja(List<InfoLoan> info, string period)
+        {
+            try
+            {
+                Log.InfoFormat("Action: {0}", "Dao.UpdateLoanPayment(" + string.Join(",", info.Select(x => x.LoanPaymentId)) + ", " + period + ")");
+
+                var year = period.Substring(0, 4);
+                var month = period.Substring(4, 2);
+                var xml = XmlHelper.Serialize2String(info, true);
+                xml = xml.Replace('\n', ' ');
+                xml = xml.Replace('\r', ' ');
+                xml = xml.Replace("<?xml version=\"1.0\"?>", "");
+
+                Sql = "UpdateLoanPaymentCaja @XmlPackage,@Year, @Month";
+                Command = new SqlCommand(Sql, Connection);
+                Command.Parameters.AddWithValue("@XmlPackage", xml);
+                Command.Parameters.AddWithValue("@Year", Convert.ToInt32(year));
+                Command.Parameters.AddWithValue("@Month", Convert.ToInt32(month));
+                Command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Log.FatalFormat("Action: {0} Error: {1}", "Dao.UpdateContributionPayment(" + string.Join(",", info.Select(x => x.LoanPaymentId)) + ", " + period + ")", ex.Message);
+            }
+        }
+        #endregion
 
         #region Utilities
 
@@ -315,56 +618,6 @@ namespace Ks.Batch.Merge
                 Reference = info.Reference,
                 Description = info.Description
             };
-        }
-        private void UpdateContributionPayment(List<InfoContribution> info, string period)
-        {
-            try
-            {
-                Log.InfoFormat("Action: {0}", "Dao.UpdateContributionPayment(" + string.Join(",", info.Select(x=>x.ContributionPaymentId)) + ", " + period + ")");
-
-                var year = period.Substring(0, 4);
-                var month = period.Substring(4, 2);
-                var xml = XmlHelper.Serialize2String(info, true);
-                xml = xml.Replace('\n', ' ');
-                xml = xml.Replace('\r', ' ');
-                xml = xml.Replace("<?xml version=\"1.0\"?>", "");
-
-                Sql = "UpdateContributionPayment @XmlPackage,@Year, @Month";
-                Command = new SqlCommand(Sql, Connection);
-                Command.Parameters.AddWithValue("@XmlPackage", xml);
-                Command.Parameters.AddWithValue("@Year", Convert.ToInt32(year));
-                Command.Parameters.AddWithValue("@Month", Convert.ToInt32(month));
-                Command.ExecuteNonQuery();
-            }
-            catch (Exception ex)
-            {
-                Log.FatalFormat("Action: {0} Error: {1}", "Dao.UpdateContributionPayment(" + string.Join(",", info.Select(x => x.ContributionPaymentId)) + ", " + period + ")", ex.Message);
-            }
-        }
-        private void UpdateLoanPayment(List<InfoLoan> info, string period)
-        {
-            try
-            {
-                Log.InfoFormat("Action: {0}", "Dao.UpdateLoanPayment(" + string.Join(",", info.Select(x => x.LoanPaymentId)) + ", " + period + ")");
-
-                var year = period.Substring(0, 4);
-                var month = period.Substring(4, 2);
-                var xml = XmlHelper.Serialize2String(info, true);
-                xml = xml.Replace('\n', ' ');
-                xml = xml.Replace('\r', ' ');
-                xml = xml.Replace("<?xml version=\"1.0\"?>", "");
-
-                Sql = "UpdateLoanPayment @XmlPackage,@Year, @Month";
-                Command = new SqlCommand(Sql, Connection);
-                Command.Parameters.AddWithValue("@XmlPackage", xml);
-                Command.Parameters.AddWithValue("@Year", Convert.ToInt32(year));
-                Command.Parameters.AddWithValue("@Month", Convert.ToInt32(month));
-                Command.ExecuteNonQuery();
-            }
-            catch (Exception ex)
-            {
-                Log.FatalFormat("Action: {0} Error: {1}", "Dao.UpdateContributionPayment(" + string.Join(",", info.Select(x => x.LoanPaymentId)) + ", " + period + ")", ex.Message);
-            }
         }
         private void CloseReport(Report report)
         {

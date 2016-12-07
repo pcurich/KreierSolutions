@@ -27,10 +27,10 @@ namespace Ks.Batch.Merge
             if (listData.Count == 2)
                 SplitList(listData);
 
-            if (_copereOut != null && _copereIn != null && _copereOut.Count > 0 && _copereIn.Count > 0)
-                dao.Process(_reportCopere, _copereIn, _copereOut,"Copere");
-            if (_cajaOut != null && _cajaIn != null && _cajaOut.Count > 0 && _cajaIn.Count > 0)
-                dao.Process(_reportCaja, _cajaIn, _cajaOut,"Caja");
+            if (_copereOut != null && _copereIn != null && _copereOut.Count > 0 && _copereIn.Count > 0 && e.Name == "CopereWakeUp.txt")
+                dao.ProcessCopere(_reportCopere, _copereIn, _copereOut,"Copere");
+            if (_cajaOut != null && _cajaIn != null && _cajaOut.Count > 0 && _cajaIn.Count > 0 && e.Name == "CajaWakeUp.txt")
+                dao.ProcessCaja(_reportCaja, _cajaIn, _cajaOut,"Caja");
             dao.Close();
 
             File.Delete(e.FullPath);
