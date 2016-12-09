@@ -37,6 +37,7 @@ namespace Ks.Services.Security
         public static readonly PermissionRecord ManageBlog = new PermissionRecord { Name = "Admin area. Manage Blog", SystemName = "ManageBlog", Category = "Content Management" };
         public static readonly PermissionRecord ManageWidgets = new PermissionRecord { Name = "Admin area. Manage Widgets", SystemName = "ManageWidgets", Category = "Content Management" };
         public static readonly PermissionRecord ManageTopics = new PermissionRecord { Name = "Admin area. Manage Topics", SystemName = "ManageTopics", Category = "Content Management" };
+        public static readonly PermissionRecord ManageTabs = new PermissionRecord { Name = "Admin area. Manage Tabs", SystemName = "ManageTabs", Category = "Content Management" };
         public static readonly PermissionRecord ManageForums = new PermissionRecord { Name = "Admin area. Manage Forums", SystemName = "ManageForums", Category = "Content Management" };
         public static readonly PermissionRecord ManageMessageTemplates = new PermissionRecord { Name = "Admin area. Manage Message Templates", SystemName = "ManageMessageTemplates", Category = "Content Management" };
         public static readonly PermissionRecord ManageCountries = new PermissionRecord { Name = "Admin area. Manage Countries", SystemName = "ManageCountries", Category = "Configuration" };
@@ -99,6 +100,7 @@ namespace Ks.Services.Security
                 ManageBlog,
                 ManageWidgets,
                 ManageTopics,
+                ManageTabs,
                 ManageForums,
                 ManageMessageTemplates,
                 ManageCountries,
@@ -165,6 +167,7 @@ namespace Ks.Services.Security
                         ManageBlog,
                         ManageWidgets,
                         ManageTopics,
+                        ManageTabs,
                         ManageForums,
                         ManageMessageTemplates,
                         ManageCountries,

@@ -320,6 +320,64 @@ namespace Ks.Admin.Extensions
 
         #endregion
 
+        #region Tab
+
+        public static TabModel ToModel(this Tab entity)
+        {
+            return entity.MapTo<Tab, TabModel>();
+        }
+
+        public static Tab ToEntity(this TabModel model)
+        {
+            return model.MapTo<TabModel, Tab>();
+        }
+
+        public static Tab ToEntity(this TabModel model, Tab destination)
+        {
+            return model.MapTo(destination);
+        }
+
+        #endregion
+
+        #region TabDetail
+
+        public static TabDetailModel ToModel(this TabDetail entity)
+        {
+            return entity.MapTo<TabDetail, TabDetailModel>();
+        }
+
+        public static TabDetail ToEntity(this TabDetailModel model)
+        {
+            return model.MapTo<TabDetailModel, TabDetail>();
+        }
+
+        public static TabDetail ToEntity(this TabDetailModel model, TabDetail destination)
+        {
+            return model.MapTo(destination);
+        }
+
+
+        #endregion
+
+        #region Benefit
+
+        public static BenefitModel ToModel(this Benefit entity)
+        {
+            return entity.MapTo<Benefit, BenefitModel>();
+        }
+
+        public static Benefit ToEntity(this BenefitModel model)
+        {
+            return model.MapTo<BenefitModel, Benefit>();
+        }
+
+        public static Benefit ToEntity(this BenefitModel model, Benefit destination)
+        {
+            return model.MapTo(destination);
+        }
+
+        #endregion
+
         #region Log
 
         public static LogModel ToModel(this Log entity)

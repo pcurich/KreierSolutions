@@ -1314,6 +1314,12 @@
     <Content Include="Views\Loans\_CreateOrUpdatePayment.cshtml" />
     <Content Include="Views\Loans\CreateCustomPayment.cshtml" />
     <Content Include="Views\Loans\_CreateOrUpdateCustomPayment.cshtml" />
+    <Content Include="Views\Tab\List.cshtml" />
+    <Content Include="Views\Tab\Create.cshtml" />
+    <Content Include="Views\Tab\Edit.cshtml" />
+    <Content Include="Views\Tab\_CreateOrUpdateTab.cshtml" />
+    <Content Include="Views\Customer\_CreateOrUpdateBenefit.cshtml" />
+    <Content Include="Views\Customer\BenefitCreate.cshtml" />
     <None Include="Views\Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1354,6 +1360,7 @@
     <Compile Include="Controllers\ScheduleTaskController.cs" />
     <Compile Include="Controllers\SecurityController.cs" />
     <Compile Include="Controllers\SettingController.cs" />
+    <Compile Include="Controllers\TabController.cs" />
     <Compile Include="Extensions\AttributeParserHelper.cs" />
     <Compile Include="Extensions\HtmlExtensions.cs" />
     <Compile Include="Extensions\MappingExtensions.cs" />
@@ -1370,6 +1377,7 @@
     <Compile Include="Models\Common\SystemWarningModel.cs" />
     <Compile Include="Models\Common\UrlRecordListModel.cs" />
     <Compile Include="Models\Common\UrlRecordModel.cs" />
+    <Compile Include="Models\Contract\BenefitModel.cs" />
     <Compile Include="Models\Contract\ContributionPaymentListModel.cs" />
     <Compile Include="Models\Contract\ContributionListModel.cs" />
     <Compile Include="Models\Contract\ContributionModel.cs" />
@@ -1377,9 +1385,12 @@
     <Compile Include="Models\Contract\LoanModel.cs" />
     <Compile Include="Models\Contract\ContributionPaymentsModel.cs" />
     <Compile Include="Models\Contract\LoanPaymentListModel.cs" />
+    <Compile Include="Models\Contract\TabDetailModel.cs" />
+    <Compile Include="Models\Contract\TabModel.cs" />
     <Compile Include="Models\Customers\CustomerAddressModel.cs" />
     <Compile Include="Models\Customers\CustomerAttributeModel.cs" />
     <Compile Include="Models\Customers\CustomerAttributeValueModel.cs" />
+    <Compile Include="Models\Customers\CustomerBenefitModel.cs" />
     <Compile Include="Models\Customers\CustomerListModel.cs" />
     <Compile Include="Models\Customers\CustomerModel.cs" />
     <Compile Include="Models\Customers\CustomerRoleModel.cs" />

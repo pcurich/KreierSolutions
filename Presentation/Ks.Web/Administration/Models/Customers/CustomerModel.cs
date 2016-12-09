@@ -224,6 +224,8 @@ namespace Ks.Admin.Models.Customers
 
         public ContributionModel Contribution { get; set; }
 
+        public bool HasBenefits { get; set; }
+
         #region Nested classes
 
         public partial class StoreModel : BaseKsEntityModel

@@ -304,7 +304,7 @@ namespace Ks.Admin.Infrastructure
                 .ForMember(dest => dest.CreatedOn, mo => mo.Ignore())
                 .ForMember(dest => dest.UpdatedOn, mo => mo.Ignore())
                 .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
-            Mapper.CreateMap<ContributionModel, Contribution>()
+            Mapper.CreateMap<LoanModel, Loan>()
                 .ForMember(dest => dest.CreatedOnUtc, mo => mo.Ignore())
                 .ForMember(dest => dest.UpdatedOnUtc, mo => mo.Ignore());
             #endregion
@@ -316,6 +316,36 @@ namespace Ks.Admin.Infrastructure
             Mapper.CreateMap<LoanPaymentsModel, LoanPayment>()
                 .ForMember(dest => dest.ScheduledDateOnUtc, mo => mo.Ignore())
                 .ForMember(dest => dest.ProcessedDateOnUtc, mo => mo.Ignore());
+            #endregion
+
+            #region tab
+            Mapper.CreateMap<Tab, TabModel>()
+                .ForMember(dest => dest.CreatedOn, mo => mo.Ignore())
+                .ForMember(dest => dest.UpdatedOn, mo => mo.Ignore())
+                .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
+            Mapper.CreateMap<TabModel, Tab>()
+                .ForMember(dest => dest.CreatedOnUtc, mo => mo.Ignore())
+                .ForMember(dest => dest.UpdatedOnUtc, mo => mo.Ignore());
+            #endregion
+
+            #region tabDetail
+            Mapper.CreateMap<TabDetail, TabDetailModel>()
+                 .ForMember(dest => dest.CreatedOn, mo => mo.Ignore())
+                .ForMember(dest => dest.UpdatedOn, mo => mo.Ignore())
+                .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
+            Mapper.CreateMap<TabDetailModel, TabDetail>()
+                 .ForMember(dest => dest.CreatedOnUtc, mo => mo.Ignore())
+                .ForMember(dest => dest.UpdatedOnUtc, mo => mo.Ignore());
+            #endregion
+
+            #region benefit
+            Mapper.CreateMap<Benefit, BenefitModel>()
+                .ForMember(dest => dest.CreatedOn, mo => mo.Ignore())
+                .ForMember(dest => dest.UpdatedOn, mo => mo.Ignore())
+                .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
+            Mapper.CreateMap<BenefitModel, Benefit>()
+                .ForMember(dest => dest.CreatedOnUtc, mo => mo.Ignore())
+                .ForMember(dest => dest.UpdatedOnUtc, mo => mo.Ignore());
             #endregion
 
             #region measure weights

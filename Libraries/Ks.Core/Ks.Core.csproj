@@ -120,6 +120,8 @@
     <Compile Include="Domain\Common\SearchTermReportLine.cs" />
     <Compile Include="Domain\Configuration\Setting.cs" />
     <Compile Include="Domain\Contract\BankSettings.cs" />
+    <Compile Include="Domain\Contract\Benefit.cs" />
+    <Compile Include="Domain\Contract\BenefitType.cs" />
     <Compile Include="Domain\Contract\Contribution.cs" />
     <Compile Include="Domain\Contract\ContributionPayment.cs" />
     <Compile Include="Domain\Contract\ContributionSatates.cs" />
@@ -129,6 +131,9 @@
     <Compile Include="Domain\Contract\LoanPayment.cs" />
     <Compile Include="Domain\Contract\ContributionSettings.cs" />
     <Compile Include="Domain\Contract\StateActivitySettings.cs" />
+    <Compile Include="Domain\Contract\Tab.cs" />
+    <Compile Include="Domain\Contract\TabDetail.cs" />
+    <Compile Include="Domain\Contract\ValueOfBenefitSetting.cs" />
     <Compile Include="Domain\Customers\Customer.cs" />
     <Compile Include="Domain\Customers\CustomerAttribute.cs" />
     <Compile Include="Domain\Customers\CustomerAttributeValue.cs" />

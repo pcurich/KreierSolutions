@@ -506,6 +506,29 @@ BEGIN
 	Group BY ContributionId
 	)  T 
 	WHERE T.ContributionId=Contribution.Id
+	
+	UPDATE Contribution 	
+	set Contribution.PayedCycles =T.PayedCycles
+	FROM 
+	(
+		SELECT ContributionPayment.ContributionId, COUNT(*) AS PayedCycles
+		FROM ContributionPayment 
+		WHERE ContributionPayment.StateId=4 
+		GROUP BY ContributionPayment.ContributionId
+	) T
+	WHERE  T.ContributionId=Contribution.Id
+
+
+	UPDATE Contribution 	
+	set Contribution.PartialCycles =T.PartialCycles
+	FROM 
+	(
+		SELECT ContributionPayment.ContributionId, COUNT(*) AS PartialCycles
+		FROM ContributionPayment 
+		WHERE ContributionPayment.StateId=3
+		GROUP BY ContributionPayment.ContributionId
+	) T
+	WHERE  T.ContributionId=Contribution.Id
  
 END 
 GO
@@ -571,6 +594,29 @@ BEGIN
 	Group BY ContributionId
 	)  T 
 	WHERE T.ContributionId=Contribution.Id
+	
+	UPDATE Contribution 	
+	set Contribution.PayedCycles =T.PayedCycles
+	FROM 
+	(
+		SELECT ContributionPayment.ContributionId, COUNT(*) AS PayedCycles
+		FROM ContributionPayment 
+		WHERE ContributionPayment.StateId=4 
+		GROUP BY ContributionPayment.ContributionId
+	) T
+	WHERE  T.ContributionId=Contribution.Id
+
+
+	UPDATE Contribution 	
+	set Contribution.PartialCycles =T.PartialCycles
+	FROM 
+	(
+		SELECT ContributionPayment.ContributionId, COUNT(*) AS PartialCycles
+		FROM ContributionPayment 
+		WHERE ContributionPayment.StateId=3
+		GROUP BY ContributionPayment.ContributionId
+	) T
+	WHERE  T.ContributionId=Contribution.Id
  
 END 
 GO

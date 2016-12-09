@@ -21,6 +21,7 @@ using Ks.Services.Configuration;
 using Ks.Services.Customers;
 using Ks.Services.Helpers;
 using Ks.Services.Localization;
+using Microsoft.Data.Edm.Library.Annotations;
 
 namespace Ks.Services.Installation
 {
@@ -45,6 +46,8 @@ namespace Ks.Services.Installation
         private readonly IRepository<City> _cityRepository;
         private readonly IRepository<ActivityLogType> _activityLogTypeRepository;
         private readonly IRepository<ScheduleTask> _scheduleTaskRepository;
+        private readonly IRepository<Tab> _tabRepository;
+        private readonly IRepository<Benefit> _benefitRepository;
         private readonly IRepository<Address> _addressRepository;
 
         private readonly IGenericAttributeService _genericAttributeService;
@@ -66,7 +69,7 @@ namespace Ks.Services.Installation
             IRepository<MessageTemplate> messageTemplateRepository,
             IRepository<Country> countryRepository, IRepository<StateProvince> stateProvinceRepository,
             IRepository<City> cityRepository, IRepository<ActivityLogType> activityLogTypeRepository,
-            IRepository<ScheduleTask> scheduleTaskRepository, IRepository<Address> addressRepository,
+            IRepository<Tab> tabRepository, IRepository<Benefit> benefitRepository, IRepository<ScheduleTask> scheduleTaskRepository, IRepository<Address> addressRepository,
             IGenericAttributeService genericAttributeService, IWebHelper webHelper)
         {
             _ksSystemRepository = ksSystemRepository;
@@ -86,6 +89,8 @@ namespace Ks.Services.Installation
             _cityRepository = cityRepository;
             _activityLogTypeRepository = activityLogTypeRepository;
             _scheduleTaskRepository = scheduleTaskRepository;
+            _tabRepository = tabRepository;
+            _benefitRepository = benefitRepository;
             _addressRepository = addressRepository;
             _genericAttributeService = genericAttributeService;
             _webHelper = webHelper;
@@ -706,12 +711,12 @@ namespace Ks.Services.Installation
                 AuthorizeDiscount = 1583,
                 DeclaratoryLetter = 11671,
                 RegistrationForm = 54651,
-                AuthorizeLoan=1000
+                AuthorizeLoan = 1000
             });
 
             settingService.SaveSetting(new ContributionSettings
             {
-                TotalCycle = 12*35,
+                TotalCycle = 12 * 35,
                 DayOfPayment = 20,
                 CycleOfDelay = 6,
                 IsActiveAmount1 = true,
@@ -724,23 +729,50 @@ namespace Ks.Services.Installation
 
             settingService.SaveSetting(new StateActivitySettings
             {
-                Periods="12,18,24,36",Tea=.08,Safe=.01,
+                Periods = "12,18,24,36",
+                Tea = .08,
+                Safe = .01,
 
-                IsEnable1=true, StateName1 = "A",MinClycle1 = 0, MaxClycle1 = 15, 
-                HasOnlySignature1 = true, MinAmountWithSignature1 = 500M, MaxAmountWithSignature1 = 5000M,
-                HasWarranty1 = true,MinAmountWithWarranty1 = 5500M,MaxAmountWithWarranty1 = 12000M,
+                IsEnable1 = true,
+                StateName1 = "A",
+                MinClycle1 = 0,
+                MaxClycle1 = 15,
+                HasOnlySignature1 = true,
+                MinAmountWithSignature1 = 500M,
+                MaxAmountWithSignature1 = 5000M,
+                HasWarranty1 = true,
+                MinAmountWithWarranty1 = 5500M,
+                MaxAmountWithWarranty1 = 12000M,
 
-                StateName2 = "B",MinClycle2 = 15, MaxClycle2 = 20, 
-                HasOnlySignature2 = true, MinAmountWithSignature2 = 500M, MaxAmountWithSignature2 = 6000M,
-                HasWarranty2 = true,MinAmountWithWarranty2 = 6500M,MaxAmountWithWarranty2 = 12000M,
+                StateName2 = "B",
+                MinClycle2 = 15,
+                MaxClycle2 = 20,
+                HasOnlySignature2 = true,
+                MinAmountWithSignature2 = 500M,
+                MaxAmountWithSignature2 = 6000M,
+                HasWarranty2 = true,
+                MinAmountWithWarranty2 = 6500M,
+                MaxAmountWithWarranty2 = 12000M,
 
-                StateName3 = "C",MinClycle3 = 20,MaxClycle3 = 35,
-                HasOnlySignature3 = true,MinAmountWithSignature3 = 500M,MaxAmountWithSignature3 = 12000M,
-                HasWarranty3 = false ,MinAmountWithWarranty3 = 0M,MaxAmountWithWarranty3 = 0M,
+                StateName3 = "C",
+                MinClycle3 = 20,
+                MaxClycle3 = 35,
+                HasOnlySignature3 = true,
+                MinAmountWithSignature3 = 500M,
+                MaxAmountWithSignature3 = 12000M,
+                HasWarranty3 = false,
+                MinAmountWithWarranty3 = 0M,
+                MaxAmountWithWarranty3 = 0M,
 
-                StateName4 = "D",MinClycle4 = 20,MaxClycle4 = 35,
-                HasOnlySignature4 = true,MinAmountWithSignature4= 500M,MaxAmountWithSignature4 = 6000M,
-                HasWarranty4 = false,MinAmountWithWarranty4 = 6500M,MaxAmountWithWarranty4 = 12000M,
+                StateName4 = "D",
+                MinClycle4 = 20,
+                MaxClycle4 = 35,
+                HasOnlySignature4 = true,
+                MinAmountWithSignature4 = 500M,
+                MaxAmountWithSignature4 = 6000M,
+                HasWarranty4 = false,
+                MinAmountWithWarranty4 = 6500M,
+                MaxAmountWithWarranty4 = 12000M,
 
                 StateName5 = "E",
 
@@ -749,12 +781,25 @@ namespace Ks.Services.Installation
 
             settingService.SaveSetting(new BankSettings
             {
-                IsActive1 = true, NameBank1 = "BBVA Continental", AccountNumber1 = "1111111111",
-                IsActive2 = true, NameBank2 = "Banco de Crédito del Perú",AccountNumber2 = "2222222222222",
-                IsActive3 = true, NameBank3 = "Interbank",AccountNumber3 = "33333333333333",
-                IsActive4 = true, NameBank4 = "BANBIF Banco Interamericano de Finanzas",AccountNumber4 = "44444444444444",
-                IsActive5 = true, NameBank5 = "Scotiabank Perú",AccountNumber5 = "5555555555555555"
+                IsActive1 = true,
+                NameBank1 = "BBVA Continental",
+                AccountNumber1 = "1111111111",
+                IsActive2 = true,
+                NameBank2 = "Banco de Crédito del Perú",
+                AccountNumber2 = "2222222222222",
+                IsActive3 = true,
+                NameBank3 = "Interbank",
+                AccountNumber3 = "33333333333333",
+                IsActive4 = true,
+                NameBank4 = "BANBIF Banco Interamericano de Finanzas",
+                AccountNumber4 = "44444444444444",
+                IsActive5 = true,
+                NameBank5 = "Scotiabank Perú",
+                AccountNumber5 = "5555555555555555"
             });
+
+            settingService.SaveSetting(new BenefitValueSetting { AmountBaseOfBenefit = 12801.59M });
+
         }
 
         protected virtual void InstallActivityLogTypes()
@@ -940,6 +985,71 @@ namespace Ks.Services.Installation
             _scheduleTaskRepository.Insert(tasks);
         }
 
+        protected virtual void InstallTabs()
+        {
+            var tab = new Tab
+            {
+                Name = "Tabulador para Beneficio " + DateTime.Now.ToShortDateString(),
+                BaseAmount = 12000M,
+                DisplayOrder = 1,
+                Published = true,
+                CreatedOnUtc = DateTime.UtcNow,
+                UpdatedOnUtc = DateTime.UtcNow,
+                TabDetails = new List<TabDetail>
+                {
+                    new TabDetail{YearInActivity =1,Value = 0.02857,CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc = DateTime.UtcNow},
+                    new TabDetail{YearInActivity =2,Value = 0.05714,CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc = DateTime.UtcNow},
+                    new TabDetail{YearInActivity =3,Value = 0.08571,CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc = DateTime.UtcNow},
+                    new TabDetail{YearInActivity =4,Value = 0.11429,CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc = DateTime.UtcNow},
+                    new TabDetail{YearInActivity =5,Value = 0.14286,CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc = DateTime.UtcNow},
+                    new TabDetail{YearInActivity =6,Value = 0.17143,CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc = DateTime.UtcNow},
+                    new TabDetail{YearInActivity =7,Value = 0.2,CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc = DateTime.UtcNow},
+                    new TabDetail{YearInActivity =8,Value = 0.22857,CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc = DateTime.UtcNow},
+                    new TabDetail{YearInActivity =9,Value = 0.25714,CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc = DateTime.UtcNow},
+                    new TabDetail{YearInActivity =10,Value = 0.28571,CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc = DateTime.UtcNow},
+                    new TabDetail{YearInActivity =11,Value = 0.31429,CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc = DateTime.UtcNow},
+                    new TabDetail{YearInActivity =12,Value = 0.34286,CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc = DateTime.UtcNow},
+                    new TabDetail{YearInActivity =13,Value = 0.37143,CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc = DateTime.UtcNow},
+                    new TabDetail{YearInActivity =14,Value = 0.4,CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc = DateTime.UtcNow},
+                    new TabDetail{YearInActivity =15,Value = 0.42857,CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc = DateTime.UtcNow},
+                    new TabDetail{YearInActivity =16,Value = 0.45714,CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc = DateTime.UtcNow},
+                    new TabDetail{YearInActivity =17,Value = 0.48571,CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc = DateTime.UtcNow},
+                    new TabDetail{YearInActivity =18,Value = 0.51429,CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc = DateTime.UtcNow},
+                    new TabDetail{YearInActivity =19,Value = 0.54286,CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc = DateTime.UtcNow},
+                    new TabDetail{YearInActivity =20,Value = 0.57143,CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc = DateTime.UtcNow},
+                    new TabDetail{YearInActivity =21,Value = 0.6,CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc = DateTime.UtcNow},
+                    new TabDetail{YearInActivity =22,Value = 0.62857,CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc = DateTime.UtcNow},
+                    new TabDetail{YearInActivity =23,Value = 0.65714,CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc = DateTime.UtcNow},
+                    new TabDetail{YearInActivity =24,Value = 0.68571,CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc = DateTime.UtcNow},
+                    new TabDetail{YearInActivity =25,Value = 0.71429,CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc = DateTime.UtcNow},
+                    new TabDetail{YearInActivity =26,Value = 0.74286,CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc = DateTime.UtcNow},
+                    new TabDetail{YearInActivity =27,Value = 0.77143,CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc = DateTime.UtcNow},
+                    new TabDetail{YearInActivity =28,Value = 0.8,CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc = DateTime.UtcNow},
+                    new TabDetail{YearInActivity =29,Value = 0.82857,CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc = DateTime.UtcNow},
+                    new TabDetail{YearInActivity =30,Value = 0.85714,CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc = DateTime.UtcNow},
+                    new TabDetail{YearInActivity =31,Value = 0.88571,CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc = DateTime.UtcNow},
+                    new TabDetail{YearInActivity =32,Value = 0.91429,CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc = DateTime.UtcNow},
+                    new TabDetail{YearInActivity =33,Value = 0.94286,CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc = DateTime.UtcNow},
+                    new TabDetail{YearInActivity =34,Value = 0.97143,CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc = DateTime.UtcNow},
+                    new TabDetail{YearInActivity =35,Value = 1,CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc = DateTime.UtcNow}
+                }
+            };
+            _tabRepository.Insert(tab);
+        }
+
+        protected virtual void InstallBenefit()
+        {
+            var benefits = new List<Benefit>
+            {
+                new Benefit{Name ="Fallecimiento de un Hijo(a)", BenefitTypeId =(int)BenefitType.Auxilio, Discount = .25, LetterDeclaratory=false,CancelLoans =false, Published= true,DisplayOrder = 1, CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc =DateTime.UtcNow, Description ="Ayuda economica que recibe el asociado al fallecer un hijo(a), teniendo en cuenta un factor del 25% y los años que ha realizado aportaciones. No se considera los montos por pagar de los prestamos adquiridos" },
+                new Benefit{Name ="Fallecimiento de la Esposa", BenefitTypeId =(int)BenefitType.Auxilio, Discount = .50, LetterDeclaratory=false,CancelLoans =false, Published= true,DisplayOrder = 1, CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc =DateTime.UtcNow, Description ="Ayuda economica que recibe el asociado al fallecer un esposa, teniendo en cuenta un factor del 50% y los años que ha realizado aportaciones. No se considera los montos por pagar de los prestamos adquiridos"},
+                new Benefit{Name ="Falleciento del Asociado", BenefitTypeId =(int)BenefitType.Beneficio, Discount = 1, LetterDeclaratory=false,CancelLoans =false, Published= true,DisplayOrder = 1, CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc =DateTime.UtcNow, Description ="Ayuda economica que recibe el asociado al fallecer un hijo(a), teniendo en cuenta un factor del 25% y los años que ha realizado aportaciones. No se considera los montos por pagar de los prestamos adquiridos" },
+                new Benefit{Name ="Normal", BenefitTypeId =(int)BenefitType.Beneficio, Discount = 1, CancelLoans =false,LetterDeclaratory=true, Published= true,DisplayOrder = 1, CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc =DateTime.UtcNow, Description ="Ayuda economica que recibe el asociado al fallecer un hijo(a), teniendo en cuenta un factor del 25% y los años que ha realizado aportaciones. Si se considera los montos por pagar de los prestamos adquiridos" }
+            };
+
+            _benefitRepository.Insert(benefits);
+        }
+
         #endregion
 
         #region Methods
@@ -962,7 +1072,8 @@ namespace Ks.Services.Installation
                 InstallActivityLogTypes();
                 HashDefaultCustomerPassword(defaultUserEmail, defaultUserPassword);
                 InstallScheduleTasks();
-
+                InstallTabs();
+                InstallBenefit();
                 if (installSampleData)
                 {
 

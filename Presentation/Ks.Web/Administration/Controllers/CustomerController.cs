@@ -64,6 +64,8 @@ namespace Ks.Admin.Controllers
         private readonly ICustomerActivityService _customerActivityService;
         private readonly IContributionService _contributionService;
         private readonly ILoanService _loanService;
+        private readonly IBenefitService _benefitService;
+        private readonly ITabService _tabService;
         //private readonly IBackInStockSubscriptionService _backInStockSubscriptionService;
         //private readonly IPriceCalculationService _priceCalculationService;
         //private readonly IProductAttributeFormatter _productAttributeFormatter;
@@ -84,6 +86,7 @@ namespace Ks.Admin.Controllers
         private readonly ContributionSettings _contributionSettings;
         private readonly SequenceIdsSettings _sequenceIdsSettings;
         private readonly StateActivitySettings _stateActivitySettings;
+        private readonly BenefitValueSetting _benefitValueSetting;
         //private readonly IAffiliateService _affiliateService;
         //private readonly IWorkflowMessageService _workflowMessageService;
         //private readonly IRewardPointService _rewardPointService;
@@ -117,6 +120,8 @@ namespace Ks.Admin.Controllers
             ICustomerActivityService customerActivityService,
             IContributionService contributionService,
             ILoanService loanService,
+            IBenefitService benefitService,
+            ITabService tabService,
             //IBackInStockSubscriptionService backInStockSubscriptionService,
             //IPriceCalculationService priceCalculationService,
             //IProductAttributeFormatter productAttributeFormatter,
@@ -136,7 +141,8 @@ namespace Ks.Admin.Controllers
             IAddressAttributeFormatter addressAttributeFormatter,
             ContributionSettings contributionSettings,
             SequenceIdsSettings sequenceIdsSettings,
-            StateActivitySettings stateActivityettings
+            StateActivitySettings stateActivityettings,
+            BenefitValueSetting benefitValueSetting
             //IAffiliateService affiliateService,
             //IWorkflowMessageService workflowMessageService,
             //IRewardPointService rewardPointService
@@ -167,6 +173,8 @@ namespace Ks.Admin.Controllers
             this._customerActivityService = customerActivityService;
             this._contributionService = contributionService;
             this._loanService = loanService;
+            this._tabService = tabService;
+            this._benefitService = benefitService;
             //this._backInStockSubscriptionService = backInStockSubscriptionService;
             //this._priceCalculationService = priceCalculationService;
             //this._productAttributeFormatter = productAttributeFormatter;
@@ -190,6 +198,7 @@ namespace Ks.Admin.Controllers
             //this._workflowMessageService = workflowMessageService;
             //this._rewardPointService = rewardPointService;
             this._stateActivitySettings = stateActivityettings;
+            this._benefitValueSetting = benefitValueSetting;
         }
 
         #endregion
@@ -1939,6 +1948,47 @@ namespace Ks.Admin.Controllers
 
             return model;
         }
+
+        #endregion
+
+        #region Benefits
+
+        public ActionResult BenefitCreate(int customerId)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
+                return AccessDeniedView();
+
+            var customer = _customerService.GetCustomerById(customerId);
+            if (customer == null)
+                //No customer found with the specified id
+                return RedirectToAction("List");
+
+            var model = new CustomerBenefitModel
+            {
+                CustomerId = customer.Id,
+                CustomerDni = customer.GetAttribute<string>(SystemCustomerAttributeNames.Dni),
+                CustomerAdmCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode),
+                CustomerCompleteName = customer.GetFullName(),
+                AmountBaseOfBenefit = _benefitValueSetting.AmountBaseOfBenefit,
+                TabModels = _tabService.GetAllTabs().Select(x=>x.ToModel()).ToList()
+            };
+
+            var benefits = _benefitService.GetAllBenefits();
+            foreach (var benefit in benefits)
+            {
+                model.BenefitModels.Add(new SelectListItem{Value = benefit.Id.ToString(),Text = benefit.Name});
+            }
+            return View(model);
+        }
+
+        #region Util
+
+        public void ChangeTab(int customerId, int tabId)
+        {
+            var contribution = _contributionService.GetContributionsByCustomer(customerId).FirstOrDefault();
+        }
+
+        #endregion
 
         #endregion
 

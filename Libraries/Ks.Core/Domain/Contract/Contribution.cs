@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using Ks.Core.Domain.Customers;
 
@@ -29,6 +28,15 @@ namespace Ks.Core.Domain.Contract
         /// </summary>
         public int TotalOfCycles { get; set; }
 
+        /// <summary>
+        /// Gets or sets the cycle of payed.
+        /// </summary>
+        public int PayedCycles { get; set; }
+
+        /// <summary>
+        /// Gets or sets the cycle of partial.
+        /// </summary>
+        public int PartialCycles { get; set; }
         /// <summary>
         /// Gets or sets the cycle of delay.
         /// </summary>

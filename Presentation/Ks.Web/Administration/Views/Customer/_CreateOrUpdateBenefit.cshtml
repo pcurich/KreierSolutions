@@ -1,0 +1,54 @@
+﻿@using System.Globalization
+@model CustomerBenefitModel
+@Html.ValidationSummary(true)
+@Html.HiddenFor(model => model.CustomerId)
+@Html.HiddenFor(model => model.Id)
+
+<table class="adminContent">
+    <tr>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.CustomerCompleteName):
+        </td>
+        <td class="adminData">
+            @Model.CustomerCompleteName
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.CustomerDni):
+        </td>
+        <td class="adminData">
+            @Model.CustomerDni
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.CustomerAdmCode):
+        </td>
+        <td class="adminData">
+            @Model.CustomerAdmCode
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.AmountBaseOfBenefit):
+        </td>
+        <td class="adminData">
+            @Model.AmountBaseOfBenefit.ToString("c", new CultureInfo("es-PE"))
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.BenefitId):
+        </td>
+        <td class="adminData">
+            @Html.DropDownListFor(model => model.BenefitId, Model.BenefitModels)
+            <script>
+                $(document).ready(function () {
+                    $("#@Html.FieldIdFor(model => model.BenefitId)").width(200).kendoDropDownList();
+                });
+            </script>
+        </td>
+    </tr>
+</table>
+

@@ -170,9 +170,13 @@
     <Compile Include="Configuration\ISettingService.cs" />
     <Compile Include="Configuration\SettingExtensions.cs" />
     <Compile Include="Configuration\SettingService.cs" />
+    <Compile Include="Contract\BenefitService.cs" />
     <Compile Include="Contract\ContributionService.cs" />
+    <Compile Include="Contract\IBenefitService.cs" />
     <Compile Include="Contract\ILoanService.cs" />
+    <Compile Include="Contract\ITabService.cs" />
     <Compile Include="Contract\LoanService.cs" />
+    <Compile Include="Contract\TabService.cs" />
     <Compile Include="Customers\ChangePasswordRequest.cs" />
     <Compile Include="Customers\ChangePasswordResult.cs" />
     <Compile Include="Customers\CustomerAttributeExtensions.cs" />

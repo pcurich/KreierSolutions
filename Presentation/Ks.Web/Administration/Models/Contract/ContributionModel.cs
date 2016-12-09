@@ -32,7 +32,10 @@ namespace Ks.Admin.Models.Contract
 
         [KsResourceDisplayName("Admin.Contract.Contribution.Fields.TotalOfCycles")]
         public int TotalOfCycles { get; set; }
-
+        [KsResourceDisplayName("Admin.Contract.Contribution.Fields.PayedCycles")]
+        public int PayedCycles { get; set; }
+        [KsResourceDisplayName("Admin.Contract.Contribution.Fields.PartialCycles")]
+        public int PartialCycles { get; set; }
         [KsResourceDisplayName("Admin.Contract.Contribution.Fields.DelayCycles")]
         public int DelayCycles { get; set; }
 

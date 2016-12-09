@@ -40,6 +40,9 @@
                 <li @Html.RenderSelectedTabIndex(5, GetSelectedTabIndex())>
                     @T("Admin.Customers.Customers.Loan")
                 </li>
+                <li @Html.RenderSelectedTabIndex(6, GetSelectedTabIndex())>
+                    @T("Admin.Customers.Customers.Benefit")
+                </li>
             }
         }
     </ul>
@@ -64,6 +67,9 @@
         {
             <div>
                 @TabLoan()
+            </div>
+            <div>
+                @TabBenefits()
             </div>
         }
     }
@@ -830,10 +836,6 @@
             }
         </ul>
 
-        <p>
-            <input type="button" class="k-button" onclick=" location.href = '@Url.Action("LoanCreate", new {customerId = Model.Id})' " value='@T("Admin.Customers.Customers.Loan.AddButton")'/>
-        </p>
-
         <script>
             $(document).ready(function() {
                 $("#panelbarloans").kendoPanelBar({
@@ -841,6 +843,25 @@
                 });
             });
         </script>
+    }
+    else { 
+        <p>
+            <input type="button" class="k-button" onclick="location.href = '@Url.Action("LoanCreate", new {customerId = Model.Id})' " value='@T("Admin.Customers.Customers.Loan.AddButton")'/>
+        </p>
+    }
+}
+
+@helper TabBenefits()
+{
+    if (Model.HasBenefits)
+    {
+
+    }
+    else
+    {
+        <p>
+            <input type="button" class="k-button" onclick="location.href = '@Url.Action("BenefitCreate", new { customerId = Model.Id })' " value='@T("Admin.Customers.Customers.Benefit.AddButton")' />
+        </p>
     }
 }
      

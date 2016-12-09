@@ -7612,10 +7612,22 @@
     <Value>Tiempo total de aportación</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Contribution.Fields.DelayCycles">
-    <Value>Tiempo sin Liquidez</Value>
+    <Value>Sin Liquidez</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Contribution.Fields.DelayCycles.Hint">
     <Value>Tiempo consecutivo que se queda sin liquidez</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Contribution.Fields.PartialCycles">
+    <Value>Pagos Parciales</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Contribution.Fields.PartialCycles.Hint">
+    <Value>Veces que se ha realizado los pagos parciales</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Contribution.Fields.PayedCycles">
+    <Value>Pagos Totales</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Contribution.Fields.PayedCycles.Hint">
+    <Value>Veces que se ha realizado los pagos totales</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Contribution.Fields.Description">
     <Value>Nota</Value>
@@ -8696,6 +8708,18 @@
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.List.SearchZipCode.Hint">
     <Value>Buscar por código postal.</Value>
+  </LocaleResource>
+   <LocaleResource Name="Admin.Customers.Customers.Benefit">
+    <Value>Beneficios</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.addbutton">
+    <Value>Nuevo Beneficio</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.addnew">
+    <Value>Agregar nuevo Beneficio</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.BackToCustomer">
+    <Value>Volver a los detalles del afiliado</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.Loan">
     <Value>Apoyo Social Económico</Value>
