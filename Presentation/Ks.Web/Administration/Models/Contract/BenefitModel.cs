@@ -10,21 +10,32 @@ namespace Ks.Admin.Models.Contract
     {
         public BenefitModel()
         {
-            States = new List<SelectListItem>();
+            BenefitTypes = new List<SelectListItem>();
         }
 
+        [KsResourceDisplayName("Admin.Configuration.Benefits.Fields.Name")]
         public string Name { get; set; }
+        [KsResourceDisplayName("Admin.Configuration.Benefits.Fields.Description")]
+        [AllowHtml]
         public string Description { get; set; }
+        [KsResourceDisplayName("Admin.Configuration.Benefits.Fields.BenefitTypeId")]
         public int BenefitTypeId { get; set; }
-        public int BenefitTypeName { get; set; }
+        public string BenefitTypeName { get; set; }
+        [KsResourceDisplayName("Admin.Configuration.Benefits.Fields.Discount")]
         public double Discount { get; set; }
+        [KsResourceDisplayName("Admin.Configuration.Benefits.Fields.CancelLoans")]
         public bool CancelLoans { get; set; }
+        [KsResourceDisplayName("Admin.Configuration.Benefits.Fields.LetterDeclaratory")]
         public bool LetterDeclaratory { get; set; }
-        public bool Published { get; set; }
+        [KsResourceDisplayName("Admin.Configuration.Benefits.Fields.IsActive")]
+        public bool IsActive { get; set; }
+        [KsResourceDisplayName("Admin.Configuration.Benefits.Fields.DisplayOrder")]
         public int DisplayOrder { get; set; }
+        [KsResourceDisplayName("Admin.Configuration.Benefits.Fields.CreatedOn")]
         public DateTime CreatedOn { get; set; }
+        [KsResourceDisplayName("Admin.Configuration.Benefits.Fields.UpdatedOn")]
         public DateTime UpdatedOn { get; set; }
 
-        public List<SelectListItem> States { get; set; }
+        public List<SelectListItem> BenefitTypes { get; set; }
     }
 }

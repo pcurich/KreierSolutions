@@ -9,7 +9,7 @@ namespace Ks.Data.Mapping.Contract
             ToTable("Tab");
             HasKey(sp => sp.Id);
             Property(sp => sp.Name).IsRequired();
-            Property(sp => sp.BaseAmount).HasPrecision(12, 2);
+            Property(sp => sp.AmountBase).HasPrecision(12, 2);
         }
     }
 }

@@ -11,13 +11,15 @@ namespace Ks.Services.Contract
         void InsertTab(Tab tab);
         void UpdateTab(Tab tab);
         Tab GetTabById(int tabId);
-        IPagedList<Tab> GetAllTabs(bool active = true, int pageIndex = 0,
-            int pageSize = Int32.MaxValue);
+        IPagedList<Tab> GetAllTabs(int pageIndex = 0,int pageSize = Int32.MaxValue);
         #endregion
 
         #region TabDetail
         IPagedList<TabDetail> GetAllValues(int tabId = 0, int pageIndex = 0,
            int pageSize = Int32.MaxValue);
+
+        TabDetail GetTabDetailById(int tabDetailId);
+        TabDetail GetValueFromActive(int year);
         void DeleteTabDetail(TabDetail tabDetail);
         void InsertTabDetail(TabDetail tabDetail);
         void UpdateTabDetail(TabDetail tabDetail);

@@ -14,19 +14,14 @@ namespace Ks.Core.Domain.Contract
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets the base amount.
+        /// Gets or sets the amount base.
         /// </summary>
-        public decimal BaseAmount { get; set; }
+        public decimal AmountBase { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="Tab"/> is published.
+        /// Gets or sets a value indicating whether this instance is active.
         /// </summary>
-        public bool Published { get; set; }
-
-        /// <summary>
-        /// Gets or sets the display order.
-        /// </summary>
-        public int DisplayOrder { get; set; }
+        public bool IsActive { get; set; }
 
         /// <summary>
         ///     Gets or sets the date and time of instance creation

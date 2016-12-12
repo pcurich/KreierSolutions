@@ -12,8 +12,8 @@ namespace Ks.Services.Contract
         void InsertBenefit(Benefit benefit);
         void UpdateBenefit(Benefit benefit);
         Benefit GetBenefitById(int benefitId);
-        List<Benefit> GetAllBenefits();
-        IPagedList<Benefit> SearchBenefits(int pageIndex = 0, int pageSize = Int32.MaxValue);
+        List<Benefit> GetActiveBenefits();
+        IPagedList<Benefit> GetAllBenefits(int pageIndex = 0, int pageSize = Int32.MaxValue);
         #endregion
     }
 }

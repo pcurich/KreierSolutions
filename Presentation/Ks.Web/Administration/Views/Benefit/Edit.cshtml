@@ -1,7 +1,7 @@
-﻿@model TabModel
+﻿@model BenefitModel
 @{
     //page title
-    ViewBag.Title = T("Admin.Configuration.Tabs.EditTab").Text;
+    ViewBag.Title = T("Admin.Configuration.Benefits.EditBenefit").Text;
 }
 @using (Html.BeginForm())
 {
@@ -9,15 +9,15 @@
     <div class="section-header">
         <div class="title">
             <img src="@Url.Content("~/Administration/Content/images/ico-configuration.png")" alt="" />
-            @T("Admin.Configuration.Tabs.EditTab") - @Model.Name @Html.ActionLink("(" + T("Admin.Configuration.Tabs.BackToList") + ")", "List")
+            @T("Admin.Configuration.Benefits.EditBenefit") - @Model.Name @Html.ActionLink("(" + T("Admin.Configuration.Benefits.BackToList") + ")", "List")
         </div>
         <div class="options">
             <input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")" />
             <input type="submit" name="save-continue" class="k-button" value="@T("Admin.Common.SaveContinue")" />
-            <span id="tab-delete" class="k-button">@T("Admin.Common.Delete")</span>
+            <span id="benefit-delete" class="k-button">@T("Admin.Common.Delete")</span>
         </div>
     </div>
     @Html.Partial("_CreateOrUpdate", Model)
 }
-@Html.DeleteConfirmation("tab-delete")
+@Html.DeleteConfirmation("benefit-delete")
 

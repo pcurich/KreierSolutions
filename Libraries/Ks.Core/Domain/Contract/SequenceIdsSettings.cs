@@ -20,6 +20,11 @@ namespace Ks.Core.Domain.Contract
         public int AuthorizeLoan { get; set; }
 
         /// <summary>
+        /// Gets or sets the registration cash.
+        /// </summary>
+        public int RegistrationCash { get; set; }
+
+        /// <summary>
         /// Gets or sets the registration form.
         /// </summary>
         public int RegistrationForm { get; set; }

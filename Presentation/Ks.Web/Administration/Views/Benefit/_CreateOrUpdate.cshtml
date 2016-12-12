@@ -1,0 +1,151 @@
+﻿@model BenefitModel
+
+@Html.ValidationSummary(false)
+@Html.HiddenFor(model => model.Id)
+
+<script>
+    $(document).ready(function () {
+        $("#benefit-edit").kendoTabStrip({
+            animation: {
+                open: {
+                    effects: "fadeIn"
+                }
+            },
+            select: tabstrip_on_tab_select
+        });
+    });
+</script>
+
+<div id="benefit-edit">
+    <ul>
+        <li @Html.RenderSelectedTabIndex(0, GetSelectedTabIndex())>
+            @T("Admin.Configuration.Benefits.Info")
+        </li>
+    </ul>
+    <div>
+        @TabInfo()
+    </div>
+</div>
+
+@{
+    //custom tabs
+    var eventMessage = new AdminTabStripCreated(this.Html, "benefit-edit");
+    EngineContext.Current.Resolve<IEventPublisher>().Publish(eventMessage);
+    foreach (var eventBlock in eventMessage.BlocksToRender)
+    {
+        @eventBlock
+    }
+}
+
+
+@*save selected tab index*@
+<input type="hidden" id="selected-tab-index" name="selected-tab-index" value="@(GetSelectedTabIndex())">
+
+@helper TabInfo()
+{
+    <table class="adminContent">
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.Name):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.Name)
+                @Html.ValidationMessageFor(model => model.Name)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.BenefitTypeId):
+            </td>
+            <td class="adminData">
+                @Html.DropDownListFor(model => model.BenefitTypeId, Model.BenefitTypes)
+                <script>
+                    $(document).ready(function () {
+                        $("#@Html.FieldIdFor(model => model.BenefitTypeId)").width(200).kendoDropDownList();
+                    });
+                </script>
+
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.Description):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.Description, "RichEditor")
+                @Html.ValidationMessageFor(model => model.Description)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.Discount):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.Discount)
+                @Html.ValidationMessageFor(model => model.Discount)
+
+                <script>
+                    $(document).ready(function () {
+                        $("#@Html.FieldIdFor(model => model.Discount)").kendoNumericTextBox({
+                            format: "p2",
+                            decimals: 4
+                        });
+                    });
+                </script>
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.CancelLoans):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.CancelLoans)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.LetterDeclaratory):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.LetterDeclaratory)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.IsActive):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.IsActive)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.DisplayOrder):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.DisplayOrder)
+            </td>
+        </tr>
+        @{
+            if (Model.Id > 0)
+            {
+                <tr>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.CreatedOn):
+                    </td>
+                    <td class="adminData">
+                        @Model.CreatedOn
+                    </td>
+                </tr>
+                <tr>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.UpdatedOn):
+                    </td>
+                    <td class="adminData">
+                        @Model.UpdatedOn
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+}

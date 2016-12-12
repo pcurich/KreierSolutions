@@ -43,6 +43,9 @@
                 @T("Admin.Configuration.Settings.SequenceIds.AuthorizeLoan.Header")
             </li>
             <li @Html.RenderSelectedTabIndex(3, GetSelectedTabIndex())>
+                @T("Admin.Configuration.Settings.SequenceIds.RegistrationCash.Header")
+            </li>
+            <li @Html.RenderSelectedTabIndex(4, GetSelectedTabIndex())>
                 @T("Admin.Configuration.Settings.SequenceIds.RegistrationForm.Header")
             </li>
         </ul>
@@ -54,6 +57,9 @@
         </div>
         <div>
             @TabAuthorizeLoanSettings()
+        </div>
+        <div>
+            @TabRegistrationCashSettings()
         </div>
         <div>
             @TabRegistrationFormSettings()
@@ -86,6 +92,21 @@
             <td class="adminData">
                 @Html.EditorFor(model => model.AuthorizeDiscount)
                 @Html.ValidationMessageFor(model => model.DeclaratoryLetter)
+            </td>
+        </tr>
+    </table>
+}
+    @helper TabRegistrationCashSettings()
+{
+    <table class="adminContent">
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.RegistrationCash):
+            </td>
+
+            <td class="adminData">
+                @Html.EditorFor(model => model.RegistrationCash)
+                @Html.ValidationMessageFor(model => model.RegistrationCash)
             </td>
         </tr>
     </table>

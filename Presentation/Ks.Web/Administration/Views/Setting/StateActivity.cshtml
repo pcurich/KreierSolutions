@@ -112,8 +112,10 @@
                     <script>
                         $(document).ready(function() {
                             $('#@Html.FieldIdFor(model => model.Tea)').kendoNumericTextBox({
-                                format: "##.00 %",
-                                decimals:3
+                                //format: "##.00 %",
+                                //decimals:3
+                                format: "p2",
+                                decimals: 4
                             });
                         });
                     </script>

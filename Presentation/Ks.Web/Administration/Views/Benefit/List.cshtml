@@ -1,12 +1,12 @@
 ﻿@{
     //page title
-    ViewBag.Title = T("Admin.Configuration.Tabs").Text;
+    ViewBag.Title = T("Admin.Configuration.Benefits").Text;
 }
 @Html.AntiForgeryToken()
 <div class="section-header">
     <div class="title">
         <img src="@Url.Content("~/Administration/Content/images/ico-configuration.png")" alt="" />
-        @T("Admin.Configuration.Tabs")
+        @T("Admin.Configuration.Benefits")
     </div>
     <div class="options">
         <a href="@Url.Action("Create")" class="k-button">@T("Admin.Common.AddNew")</a>
@@ -15,15 +15,15 @@
 <table class="adminContent">
     <tr>
         <td>
-            <div id="tab-grid"></div>
+            <div id="benefit-grid"></div>
             <script>
                 $(document).ready(function () {
-                    $("#tab-grid").kendoGrid({
+                    $("#benefit-grid").kendoGrid({
                         dataSource: {
                             type: "json",
                             transport: {
                                 read: {
-                                    url: "@Html.Raw(Url.Action("List", "Tab"))",
+                                    url: "@Html.Raw(Url.Action("List", "Benefit"))",
                                     type: "POST",
                                     dataType: "json",
                                     data: addAntiForgeryToken
@@ -56,27 +56,44 @@
                         scrollable: false,
                         columns: [{
                             field: "Name",
-                            title: "@T("Admin.Configuration.Tabs.Fields.Name")"
+                            title: "@T("Admin.Configuration.Benefits.Fields.Name")"
                         }, {
-                            field: "AmountBase",
-                            title: "@T("Admin.Configuration.Tabs.Fields.AmountBase")",
-                            template: '#= kendo.toString(AmountBase,"c","es-PE") #',
-                            format: "{0:c2}"
+                            field: "BenefitTypeName",
+                            title: "@T("Admin.Configuration.Benefits.Fields.BenefitTypeId")"
+                        }, {
+                            field: "Discount",
+                            title: "@T("Admin.Configuration.Benefits.Fields.Discount")",
+                            template: '#=kendo.format("{0:p}", Discount)#'
+                        }, {
+                            field: "CancelLoans",
+                            title: "@T("Admin.Configuration.Benefits.Fields.CancelLoans")",
+                            headerAttributes: { style: "text-align:center" },
+                            attributes: { style: "text-align:center" },
+                            template: '<img src="@Url.Content("~/Administration/Content/images/")active-#=CancelLoans#.gif" />'
+                        }, {
+                            field: "LetterDeclaratory",
+                            title: "@T("Admin.Configuration.Benefits.Fields.LetterDeclaratory")",
+                            headerAttributes: { style: "text-align:center" },
+                            attributes: { style: "text-align:center" },
+                            template: '<img src="@Url.Content("~/Administration/Content/images/")active-#=LetterDeclaratory#.gif" />'
+                        }, {
+                            field: "DisplayOrder",
+                            title: "@T("Admin.Configuration.Benefits.Fields.DisplayOrder")" 
                         },{
                             field: "CreatedOn",
-                            title: "@T("Admin.Configuration.Tabs.Fields.CreatedOn")",
+                            title: "@T("Admin.Configuration.Benefits.Fields.CreatedOn")",
                             template: '#= CreatedOn!=null ? kendo.toString(CreatedOn,"dd/MM/yyyy hh:mm:ss","es-PE"): " "#',
                             type: "date",
                             format: "{0:G}"
                         }, {
                             field: "UpdatedOn",
-                            title: "@T("Admin.Configuration.Tabs.Fields.UpdatedOn")",
+                            title: "@T("Admin.Configuration.Benefits.Fields.UpdatedOn")",
                             template: '#= UpdatedOn!=null ? kendo.toString(UpdatedOn,"dd/MM/yyyy hh:mm:ss","es-PE"): " "#',
                             type: "date",
                             format: "{0:G}"
-                        },  {
+                        }, {
                             field: "IsActive",
-                            title: "@T("Admin.Configuration.Tabs.Fields.IsActive")",
+                            title: "@T("Admin.Configuration.Benefits.Fields.IsActive")",
                             headerAttributes: { style: "text-align:center" },
                             attributes: { style: "text-align:center" },
                             template: '<img src="@Url.Content("~/Administration/Content/images/")active-#=IsActive#.gif" />'

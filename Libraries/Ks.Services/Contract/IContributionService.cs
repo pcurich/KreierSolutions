@@ -69,6 +69,7 @@ namespace Ks.Services.Contract
         /// <param name="contribution">The contribution.</param>
         void UpdateContribution(Contribution contribution);
 
+        List<ContributionPayment> GetPaymentByContributionId(int contributionId = 0);
         /// <summary>
         /// Gets all payments.
         /// </summary>

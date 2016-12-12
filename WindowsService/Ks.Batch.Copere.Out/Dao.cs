@@ -331,6 +331,8 @@ namespace Ks.Batch.Copere.Out
                             ToString(CultureInfo.InvariantCulture).PadLeft(13, '0')).Replace(".", ""),
                             Batch.PeriodYear, Batch.PeriodMonth.ToString("00"));
 
+                    contributions.Add(lineContribution);
+
                     string lineLoan = null;
                     if (ReportOut[customerId].TotalLoan > 0)
                     {
@@ -341,13 +343,9 @@ namespace Ks.Batch.Copere.Out
                             (Math.Round(infoLoan.MonthlyQuota * 100)).
                                 ToString(CultureInfo.InvariantCulture).PadLeft(13, '0')).Replace(".", "").Replace(",", ""),
                                 Batch.PeriodYear, Batch.PeriodMonth.ToString("00"));
-                        }
-                    }
 
-                    contributions.Add(lineContribution);
-                    if (lineLoan != null)
-                    {
-                        loans.Add(lineLoan);
+                            loans.Add(lineLoan);
+                        }
                     }
                 }
             }

@@ -8,8 +8,10 @@ namespace Ks.Data.Mapping.Contract
         {
             ToTable("TabDetail");
             HasKey(sp => sp.Id);
-            Property(sp => sp.YearInActivity).IsRequired();
-            Property(sp => sp.Value);
+
+            HasRequired(pc => pc.Tab)
+               .WithMany(pc => pc.TabDetails)
+               .HasForeignKey(pc => pc.TabId);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿@model TabModel
 @{
     //page title
-    ViewBag.Title = T("Admin.Configuration.Languages.AddNew").Text;
+    ViewBag.Title = T("Admin.Configuration.Tabs.AddNew").Text;
 }
 @using (Html.BeginForm())
 {
@@ -9,12 +9,12 @@
     <div class="section-header">
         <div class="title">
             <img src="@Url.Content("~/Administration/Content/images/ico-configuration.png")" alt="" />
-            @T("Admin.Configuration.Languages.AddNew") @Html.ActionLink("(" + T("Admin.Configuration.Languages.BackToList") + ")", "List")
+            @T("Admin.Configuration.Tabs.AddNew") @Html.ActionLink("(" + T("Admin.Configuration.Tabs.BackToList") + ")", "List")
         </div>
         <div class="options">
             <input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")" />
             <input type="submit" name="save-continue" class="k-button" value="@T("Admin.Common.SaveContinue")" />
         </div>
     </div>
-    @Html.Partial("_CreateOrUpdateTab", Model)
+    @Html.Partial("_CreateOrUpdate", Model)
 }

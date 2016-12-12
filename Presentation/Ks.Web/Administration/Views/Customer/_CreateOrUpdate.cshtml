@@ -762,7 +762,6 @@
                     <li>
                         <span class="k-link">@loan.LoanNumber</span>
                         <div style="padding: 10px;">
-
                             <table class="adminContent">
                                 <tr>
                                     <td class="adminTitle">
@@ -844,11 +843,9 @@
             });
         </script>
     }
-    else { 
-        <p>
-            <input type="button" class="k-button" onclick="location.href = '@Url.Action("LoanCreate", new {customerId = Model.Id})' " value='@T("Admin.Customers.Customers.Loan.AddButton")'/>
-        </p>
-    }
+    <p>
+        <input type="button" class="k-button" onclick="location.href='@Url.Action("LoanCreate", new {customerId = Model.Id})' " value='@T("Admin.Customers.Customers.Loan.AddButton")'/>
+    </p>
 }
 
 @helper TabBenefits()
@@ -860,7 +857,7 @@
     else
     {
         <p>
-            <input type="button" class="k-button" onclick="location.href = '@Url.Action("BenefitCreate", new { customerId = Model.Id })' " value='@T("Admin.Customers.Customers.Benefit.AddButton")' />
+            <input type="button" class="k-button" onclick="location.href='@Url.Action("BenefitCreate", new { customerId = Model.Id, contributionId = Model.Contribution.Id })' " value='@T("Admin.Customers.Customers.Benefit.AddButton")' />
         </p>
     }
 }

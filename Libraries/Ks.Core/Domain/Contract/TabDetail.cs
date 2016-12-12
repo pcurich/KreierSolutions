@@ -12,7 +12,7 @@ namespace Ks.Core.Domain.Contract
         /// <summary>
         /// Gets or sets the value.
         /// </summary>
-        public double Value { get; set; }
+        public double TabValue { get; set; }
         /// <summary>
         ///     Gets or sets the date and time of instance creation
         /// </summary>

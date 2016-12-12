@@ -1,5 +1,5 @@
 ﻿@using System.Globalization
-@model Ks.Admin.Models.Contract.ContributionModel
+@model ContributionModel
 @Html.ValidationSummary(true)
 @Html.HiddenFor(x=>x.CustomerId)
 @Html.HiddenFor(x => x.Id)
@@ -8,103 +8,144 @@
 @Html.HiddenFor(x => x.AmountMeta)
 @Html.HiddenFor(x => x.TotalOfCycles)
 
-<table class="adminContent">
-    <tr>
-        <td class="adminTitle">
-            @Html.KsLabelFor(model => model.CustomerCompleteName):
-        </td>
-        <td class="adminData">
-            @Model.CustomerCompleteName
-            @Html.HiddenFor(model => model.CustomerCompleteName)
-        </td>
-    </tr>
-    <tr>
-        <td class="adminTitle">
-            @Html.KsLabelFor(model => model.CustomerDni):
-        </td>
-        <td class="adminData">
-            @Model.CustomerDni
-            @Html.HiddenFor(model => model.CustomerDni)
-        </td>
-    </tr>
-    <tr>
-        <td class="adminTitle">
-            @Html.KsLabelFor(model => model.CustomerAdmCode):
-        </td>
-        <td class="adminData">
-            @Model.CustomerAdmCode
-            @Html.HiddenFor(model => model.CustomerAdmCode)
-        </td>
-    </tr>
-    <tr>
-        <td class="adminTitle">
-            @Html.KsLabelFor(model => model.AuthorizeDiscount):
-        </td>
-        <td class="adminData">
-            @Model.AuthorizeDiscount
-        </td>
-    </tr>
-    <tr>
-        <td class="adminTitle">
-            @Html.KsLabelFor(model => model.DayOfPayment):
-        </td>
-        <td class="adminData">
-            @Model.DayOfPayment
-        </td>
-    </tr>
-    <tr>
-        <td class="adminTitle">
-            @Html.KsLabelFor(model => model.AmountMeta):
-        </td>
-        <td class="adminData">
-            @Model.AmountMeta.ToString("c", new CultureInfo("es-PE"))
-        </td>
-    </tr>
-    <tr>
-        <td class="adminTitle">
-            @Html.KsLabelFor(model => model.TotalOfCycles):
-        </td>
-        <td class="adminData">
-            @(Model.TotalOfCycles / 12) <small>@T("Common.Year")</small> - @(Model.TotalOfCycles % 12) <small>@T("Common.Month")</small>
-        </td>
-    </tr>
-    <tr>
-        <td class="adminTitle">
-            @Html.KsLabelFor(model => model.CreatedOn):
-        </td>
-        <td class="adminData">
-            @Model.CreatedOn
-            @Html.HiddenFor(model => model.CreatedOn)
-        </td>
-    </tr>
-    <tr>
-        <td class="adminTitle">
-            @Html.KsLabelFor(model => model.MonthId):
-        </td>
+<script>
+    $(document).ready(function () {
+        $("#contribution-edit").kendoTabStrip({
+            animation: {
+                open: {
+                    effects: "fadeIn"
+                }
+            },
+            select: tabstrip_on_tab_select
+        });
+    });
+</script>
 
-        <td class="adminData">
-            @Html.DropDownListFor(model => model.MonthId, Model.MonthsList)
-            @Html.ValidationMessageFor(model => model.MonthId)
-            <script>
-                $(document).ready(function() {
-                    $('#@Html.FieldIdFor(model => model.MonthId)').kendoDropDownList();
-                });
-            </script>
-        </td>
-    </tr>
-    <tr>
-        <td class="adminTitle">
-            @Html.KsLabelFor(model => model.YearId):
-        </td>
+<div id="contribution-edit">
+    <ul>
+        <li @Html.RenderSelectedTabIndex(0, GetSelectedTabIndex())>
+            @T("Admin.Configuration.Benefits.Info")
+        </li>
+    </ul>
+    <div>
+        @TabInfo()
+    </div>
+</div>
 
-        <td class="adminData">
-            @Html.DropDownListFor(model => model.YearId, Model.YearsList)
-            @Html.ValidationMessageFor(model => model.YearId)
-            <script>
-                $(document).ready(function () {
-                    $('#@Html.FieldIdFor(model => model.YearId)').kendoDropDownList();
-                });
-            </script>
-        </td>
-    </tr>
-</table>
+@{
+    //custom tabs
+    var eventMessage = new AdminTabStripCreated(this.Html, "contribution-edit");
+    EngineContext.Current.Resolve<IEventPublisher>().Publish(eventMessage);
+    foreach (var eventBlock in eventMessage.BlocksToRender)
+    {
+        @eventBlock
+    }
+}
+
+
+@*save selected tab index*@
+<input type="hidden" id="selected-tab-index" name="selected-tab-index" value="@(GetSelectedTabIndex())">
+
+@helper TabInfo()
+{
+    <table class="adminContent">
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.CustomerCompleteName):
+            </td>
+            <td class="adminData">
+                @Model.CustomerCompleteName
+                @Html.HiddenFor(model => model.CustomerCompleteName)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.CustomerDni):
+            </td>
+            <td class="adminData">
+                @Model.CustomerDni
+                @Html.HiddenFor(model => model.CustomerDni)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.CustomerAdmCode):
+            </td>
+            <td class="adminData">
+                @Model.CustomerAdmCode
+                @Html.HiddenFor(model => model.CustomerAdmCode)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.AuthorizeDiscount):
+            </td>
+            <td class="adminData">
+                @Model.AuthorizeDiscount
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.DayOfPayment):
+            </td>
+            <td class="adminData">
+                @Model.DayOfPayment
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.AmountMeta):
+            </td>
+            <td class="adminData">
+                @Model.AmountMeta.ToString("c", new CultureInfo("es-PE"))
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.TotalOfCycles):
+            </td>
+            <td class="adminData">
+                @(Model.TotalOfCycles/12) <small>@T("Common.Year")</small> - @(Model.TotalOfCycles%12) <small>@T("Common.Month")</small>
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.CreatedOn):
+            </td>
+            <td class="adminData">
+                @Model.CreatedOn
+                @Html.HiddenFor(model => model.CreatedOn)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.MonthId):
+            </td>
+
+            <td class="adminData">
+                @Html.DropDownListFor(model => model.MonthId, Model.MonthsList)
+                @Html.ValidationMessageFor(model => model.MonthId)
+                <script>
+                    $(document).ready(function() {
+                        $('#@Html.FieldIdFor(model => model.MonthId)').kendoDropDownList();
+                    });
+                </script>
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.YearId):
+            </td>
+
+            <td class="adminData">
+                @Html.DropDownListFor(model => model.YearId, Model.YearsList)
+                @Html.ValidationMessageFor(model => model.YearId)
+                <script>
+                    $(document).ready(function() {
+                        $('#@Html.FieldIdFor(model => model.YearId)').kendoDropDownList();
+                    });
+                </script>
+            </td>
+        </tr>
+    </table>
+}

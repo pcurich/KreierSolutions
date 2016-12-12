@@ -999,9 +999,9 @@ FROm @XmlPackage.nodes('//ArrayOfInfoLoan/InfoLoan') AS R(nref)
 --1) Split int 3 types {PagoParcial = 3,Pagado = 4,SinLiquidez=5}
 ------------------------------------------------------------------------
 
-select  * into #LoanPaymentTmpCopere3 from #LoanPaymentTmpCopere where stateId=3
-select  * into #LoanPaymentTmpCopere4 from #LoanPaymentTmpCopere where stateId=4
-select  * into #LoanPaymentTmpCopere5 from #LoanPaymentTmpCopere where stateId=5
+select  * into #LoanPaymentTmpCopere3 from #LoanPaymentCopereTmp where stateId=3
+select  * into #LoanPaymentTmpCopere4 from #LoanPaymentCopereTmp where stateId=4
+select  * into #LoanPaymentTmpCopere5 from #LoanPaymentCopereTmp where stateId=5
 
 ------------------------------------------------------------------------
 --2) Update Data 4 {PagoParcial = 3, Pagado = 4, SinLiquidez=5}
@@ -1027,7 +1027,7 @@ UPDATE  LoanPayment
 SET 
 LoanPayment.StateId=5,
 LoanPayment.AccountNumber = cast(convert(NVARCHAR, getutcdate(), 112) +REPLACE(convert(NVARCHAR, getutcdate(), 114) ,':','') as nvarchar(50)),
-ProcessedDateOnUtc=GETUTCDATE(), 
+LoanPayment.ProcessedDateOnUtc=GETUTCDATE(), 
 BankName=#LoanPaymentTmpCopere5.BankName
 FROM #LoanPaymentTmpCopere5 
 WHERE #LoanPaymentTmpCopere5.LoanPaymentId=LoanPayment.Id
@@ -1040,7 +1040,7 @@ GROUP BY LP.LoanId
 
 INSERT INTO LoanPayment  
 select T.LoanId,T.Quota,L.MonthlyQuota,L.MonthlyFee,
-L.MonthlyCapital,0, 1, L.IsAutomatic,'','', '','',
+L.MonthlyCapital,0, 1, 1,'','', '','',
 'Cuota Agregada por falta de liquidez en el pago del periodo ' +cast(2016 as nvarchar(4)) + cast(15 as nvarchar(2)),
 DATEADD (month , 1 ,T.ScheduledDateOnUtc), null 
 FROM  LoanPayment L
@@ -1058,21 +1058,24 @@ SET
 LoanPayment.StateId=3,
 LoanPayment.MonthlyPayed = #LoanPaymentTmpCopere3.MonthlyPayed,
 LoanPayment.BankName = #LoanPaymentTmpCopere3.BankName,
+LoanPayment.ProcessedDateOnUtc=GETUTCDATE(),
 LoanPayment.AccountNumber = cast(convert(NVARCHAR, getutcdate(), 112) +REPLACE(convert(NVARCHAR, getutcdate(), 114) ,':','') as nvarchar(50))
 FROM #LoanPaymentTmpCopere3 
 WHERE #LoanPaymentTmpCopere3.LoanPaymentId=LoanPayment.Id
 
 --Insert New LoanPayment
-SELECT LP.LoanId,(MAX(LP.Quota)+1 ) as Quota, MAX(LP.ScheduledDateOnUtc) AS ScheduledDateOnUtc  into     #tempMax2
+SELECT LP.LoanId,(MAX(LP.Quota)+1 ) as Quota, 
+MAX(LP.ScheduledDateOnUtc) AS ScheduledDateOnUtc  into     #tempMax2
 FROM  LoanPayment LP
 INNER JOIN  #LoanPaymentTmpCopere3 T ON T.LoanId=LP.LoanId
 GROUP BY LP.LoanId
 
 INSERT INTO LoanPayment  
-select   T.LoanId,T.Quota,L.MonthlyQuota-LT.MonthlyPayed,
-L.MonthlyFee*(1-((L.MonthlyQuota-LT.MonthlyPayed)/L.MonthlyQuota)),
-L.MonthlyCapital*(1-((L.MonthlyQuota-LT.MonthlyPayed)/L.MonthlyQuota)),
-0, 1, L.IsAutomatic,'','', '','',
+select   
+T.LoanId,T.Quota,L.MonthlyQuota-LT.MonthlyPayed,
+L.MonthlyFee*(((L.MonthlyQuota-LT.MonthlyPayed)/L.MonthlyQuota)),
+L.MonthlyCapital*(((L.MonthlyQuota-LT.MonthlyPayed)/L.MonthlyQuota)),
+0, 1, 1,'','', '','',
 'Cuota Agregada por pago parcial en el pago del periodo ' +cast(2016 as nvarchar(4)) + cast(15 as nvarchar(2)),
 DATEADD (month , 1 ,T.ScheduledDateOnUtc)  , null 
 FROM  LoanPayment L
@@ -1166,7 +1169,7 @@ UPDATE  LoanPayment
 SET 
 LoanPayment.StateId=5,
 LoanPayment.AccountNumber = cast(convert(NVARCHAR, getutcdate(), 112) +REPLACE(convert(NVARCHAR, getutcdate(), 114) ,':','') as nvarchar(50)),
-ProcessedDateOnUtc=GETUTCDATE(), 
+LoanPayment.ProcessedDateOnUtc=GETUTCDATE(), 
 BankName=#LoanPaymentTmpCaja5.BankName
 FROM #LoanPaymentTmpCaja5 
 WHERE #LoanPaymentTmpCaja5.LoanPaymentId=LoanPayment.Id
@@ -1179,7 +1182,7 @@ GROUP BY LP.LoanId
 
 INSERT INTO LoanPayment  
 select T.LoanId,T.Quota,L.MonthlyQuota,L.MonthlyFee,
-L.MonthlyCapital,0, 1, L.IsAutomatic,'','', '','',
+L.MonthlyCapital,0, 1, 1,'','', '','',
 'Cuota Agregada por falta de liquidez en el pago del periodo ' +cast(2016 as nvarchar(4)) + cast(15 as nvarchar(2)),
 DATEADD (month , 1 ,T.ScheduledDateOnUtc), null 
 FROM  LoanPayment L
@@ -1196,6 +1199,7 @@ UPDATE  LoanPayment
 SET 
 LoanPayment.StateId=3,
 LoanPayment.MonthlyPayed = #LoanPaymentTmpCaja3.MonthlyPayed,
+LoanPayment.ProcessedDateOnUtc=GETUTCDATE(), 
 LoanPayment.BankName = #LoanPaymentTmpCaja3.BankName,
 LoanPayment.AccountNumber = cast(convert(NVARCHAR, getutcdate(), 112) +REPLACE(convert(NVARCHAR, getutcdate(), 114) ,':','') as nvarchar(50))
 FROM #LoanPaymentTmpCaja3 
@@ -1209,9 +1213,9 @@ GROUP BY LP.LoanId
 
 INSERT INTO LoanPayment  
 select   T.LoanId,T.Quota,L.MonthlyQuota-LT.MonthlyPayed,
-L.MonthlyFee*(1-((L.MonthlyQuota-LT.MonthlyPayed)/L.MonthlyQuota)),
-L.MonthlyCapital*(1-((L.MonthlyQuota-LT.MonthlyPayed)/L.MonthlyQuota)),
-0, 1, L.IsAutomatic,'','', '','',
+L.MonthlyFee*(((L.MonthlyQuota-LT.MonthlyPayed)/L.MonthlyQuota)),
+L.MonthlyCapital*(((L.MonthlyQuota-LT.MonthlyPayed)/L.MonthlyQuota)),
+0, 1, 1,'','', '','',
 'Cuota Agregada por pago parcial en el pago del periodo ' +cast(2016 as nvarchar(4)) + cast(15 as nvarchar(2)),
 DATEADD (month , 1 ,T.ScheduledDateOnUtc)  , null 
 FROM  LoanPayment L

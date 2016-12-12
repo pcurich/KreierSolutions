@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using iTextSharp.text.pdf.fonts.cmaps;
 using Ks.Core;
 using Ks.Core.Caching;
 using Ks.Core.Data;
 using Ks.Core.Domain.Contract;
-using Ks.Core.Domain.Customers;
 using Ks.Data;
 using Ks.Services.Events;
 
@@ -113,7 +111,7 @@ namespace Ks.Services.Contract
             return result;
         }
 
-        public virtual IPagedList<Tab> GetAllTabs(bool active = true, int pageIndex = 0, int pageSize = Int32.MaxValue)
+        public virtual IPagedList<Tab> GetAllTabs(int pageIndex = 0, int pageSize = Int32.MaxValue)
         {
             var query = from c in _tabRepository.Table
                         select c;
@@ -124,17 +122,40 @@ namespace Ks.Services.Contract
 
         #region TabDetails
 
+        public virtual TabDetail GetTabDetailById(int tabDetailId)
+        {
+            if (tabDetailId == 0)
+                return null;
+
+            var query = from t in _tabDetailRepository.Table
+                        where t.Id == tabDetailId
+                        select t;
+
+            return query.FirstOrDefault();
+        }
+
         public virtual IPagedList<TabDetail> GetAllValues(int tabId = 0, int pageIndex = 0, int pageSize = Int32.MaxValue)
         {
             if (tabId == 0)
                 return new PagedList<TabDetail>(new List<TabDetail>(), pageIndex, pageSize);
 
-            var query = from t in _tabRepository.Table
-                        join td in _tabDetailRepository.Table on t.Id equals td.TabId
-                        where t.Id == tabId
-                        select td;
+            var query = from t in _tabDetailRepository.Table
+                        where t.TabId == tabId
+                        orderby t.YearInActivity
+                        select t;
 
             return new PagedList<TabDetail>(query.ToList(), pageIndex, pageSize);
+
+        }
+
+        public virtual TabDetail GetValueFromActive(int year)
+        {
+            var query = from t in _tabRepository.Table
+                        join td in _tabDetailRepository.Table on t.Id equals td.TabId
+                        where t.IsActive && td.YearInActivity == year
+                        select td;
+
+            return query.FirstOrDefault();
 
         }
 

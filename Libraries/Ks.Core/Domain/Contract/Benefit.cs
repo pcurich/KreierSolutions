@@ -10,7 +10,7 @@ namespace Ks.Core.Domain.Contract
         public double Discount { get; set; }
         public bool CancelLoans { get; set; }
         public bool LetterDeclaratory { get; set; }
-        public bool Published { get; set; }
+        public bool IsActive { get; set; }
         public int DisplayOrder { get; set; }
         public DateTime CreatedOnUtc { get; set; }
         public DateTime UpdatedOnUtc { get; set; }

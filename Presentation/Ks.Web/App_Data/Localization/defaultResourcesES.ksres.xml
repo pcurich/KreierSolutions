@@ -594,6 +594,12 @@
   <LocaleResource Name="ActivityLog.AddNewCategory">
     <Value>Se ha agregado una nueva categoría ('{0}')</Value>
   </LocaleResource>
+  <LocaleResource Name="ActivityLog.AddNewTab">
+    <Value>Se ha agregado un nuevo tabulador ('{0}') por el usuario ('{1}')</Value>
+  </LocaleResource>
+  <LocaleResource Name="ActivityLog.AddNewBenefit">
+    <Value>Se ha agregado un nuevo beneficio ('{0}') por el usuario ('{1}')</Value>
+  </LocaleResource>
   <LocaleResource Name="ActivityLog.AddNewCheckoutAttribute">
     <Value>Se ha agregado un nuevo atributo checkout ('{0}')</Value>
   </LocaleResource>
@@ -666,6 +672,12 @@
   <LocaleResource Name="ActivityLog.DeleteSpecAttribute">
     <Value>Eliminado de un atributo de especificación ('{0}')</Value>
   </LocaleResource>
+  <LocaleResource Name="ActivityLog.DeleteTab">
+    <Value>Eliminado un tabulador ('{0}') por el usuario ('{1}')</Value>
+  </LocaleResource>
+  <LocaleResource Name="ActivityLog.DeleteBenefit">
+    <Value>Eliminado un beneficio ('{0}') por el usuario ('{1}')</Value>
+  </LocaleResource>
   <LocaleResource Name="ActivityLog.DeleteWidget">
     <Value>Eliminado de un widget (ID = {0})</Value>
   </LocaleResource>
@@ -704,6 +716,12 @@
   </LocaleResource>
   <LocaleResource Name="ActivityLog.EditSpecAttribute">
     <Value>Edición de un atributo de especificación ('{0}')</Value>
+  </LocaleResource>
+  <LocaleResource Name="ActivityLog.EditTab">
+    <Value>Edición del tabulador ('{0}') por el usuario ('{1}')</Value>
+  </LocaleResource>
+  <LocaleResource Name="ActivityLog.EditBenefit">
+    <Value>Edición del beneficio ('{0}') por el usuario ('{1}')</Value>
   </LocaleResource>
   <LocaleResource Name="ActivityLog.EditWidget">
     <Value>Edición de un widget (ID = {0})</Value>
@@ -3882,6 +3900,7 @@
   <LocaleResource Name="Admin.Configuration.KsSystem.Updated">
     <Value>El sistema se ha actualizado correctamente.</Value>
   </LocaleResource>
+  
   <LocaleResource Name="Admin.Configuration.Languages">
     <Value>Idiomas</Value>
   </LocaleResource>
@@ -4354,7 +4373,7 @@
     <Value>Valor</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.BankSettings">
-    <Value>Configuracion de cuentas</Value>
+    <Value>Configuracion de Bancos</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.BankSettings.Header">
     <Value>Configuracion de cuentas Interbancarias</Value>
@@ -5586,6 +5605,9 @@
   <LocaleResource Name="Admin.Configuration.Settings.SequenceIds.RegistrationForm.Header">
     <Value>Configuración de la ficha de inscripción</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.SequenceIds.RegistrationCash.Header">
+    <Value>Configuración del Beneficio</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.SequenceIds.DeclaratoryLetter">
     <Value>N° carta declaratoria</Value>
   </LocaleResource>
@@ -5609,6 +5631,12 @@
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.SequenceIds.RegistrationForm.Hint">
     <Value>N° de la ficha de inscripción</Value>
+  </LocaleResource>  
+  <LocaleResource Name="Admin.Configuration.Settings.SequenceIds.RegistrationCash">
+    <Value>N° de la ficha de liquidez</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.SequenceIds.RegistrationCash.Hint">
+    <Value>N° de la ficha de liquidez</Value>
   </LocaleResource>  
   <LocaleResource Name="Admin.Configuration.Settings.Media">
     <Value>Configuración de Medios</Value>
@@ -6692,6 +6720,180 @@
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.SMSProviders.Fields.SystemName">
     <Value>Nombre del sistema</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Tabs">
+    <Value>Tabuladores</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Tabs.Added">
+    <Value>El nuevo tabulador se ha agregado.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Tabs.Updated">
+    <Value>El nuevo tabulador se ha agregado.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Tabs.Delete">
+    <Value>El nuevo tabulador se ha agregado.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Tabs.Error">
+    <Value>El nuevo tabulador no ha podido ser agregado.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Tabs.ErrorDelete">
+    <Value>No se puede eliminar el unico tabulador.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Tabs.ErrorNoUnique">
+    <Value>So se puede desactivar el tabulador debido a que es el único activo.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Tabs.AddNew">
+    <Value>Agregar uno nuevo tabulador</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Tabs.BackToList">
+    <Value>Volver a la lista de tabuladores</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Tabs.Deleted">
+    <Value>El tabulador se ha eliminado correctamente.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Tabs.EditTab">
+    <Value>Edición del tabulador</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Tabs.Info">
+    <Value>Información</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Tabs.TabValues">
+    <Value>Valores</Value>
+  </LocaleResource>
+   <LocaleResource Name="Admin.Configuration.Tabs.Fields.Name">
+    <Value>Nombre</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Tabs.Fields.Name.Hint">
+    <Value>Ingrese el nombre que se identificara al tabulador.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Tabs.Fields.AmountBase">
+    <Value>Base</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Tabs.Fields.AmountBase.Hint">
+    <Value>Ingrese la base sobre el cual se realizara el calculo</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Tabs.Fields.IsActive">
+    <Value>Es Activo</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Tabs.Fields.IsActive.Hint">
+    <Value>Establece si este tabulador se va a considerar en adelante</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Tabs.Fields.CreatedOn">
+    <Value>Fecha de Creación</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Tabs.Fields.CreatedOn.Hint">
+    <Value>Fecha de Creación</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Tabs.Fields.UpdatedOn">
+    <Value>Fecha de Actualización</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Tabs.Fields.UpdatedOn.Hint">
+    <Value>Fecha de Actualización</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.TabDetails.Fields.YearInActivity">
+    <Value>Años</Value>
+  </LocaleResource>
+   <LocaleResource Name="Admin.Configuration.TabDetails.Fields.TabValue">
+    <Value>Valor</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.TabDetails.Fields.CreatedOn">
+    <Value>Fecha de Creación</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.TabDetails.Fields.UpdatedOn">
+    <Value>Fecha de Actualización</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Benefits">
+    <Value>Beneficios</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Benefits.Added">
+    <Value>El nuevo beneficio se ha agregado.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Benefits.Updated">
+    <Value>El nuevo beneficio se ha agregado.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Benefits.Delete">
+    <Value>El nuevo beneficio se ha agregado.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Benefits.Error">
+    <Value>El nuevo beneficio no ha podido ser agregado.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Benefits.ErrorDelete">
+    <Value>No se puede eliminar el unico beneficio.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Benefits.AddNew">
+    <Value>Agregar uno nuevo beneficio</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Benefits.BackToList">
+    <Value>Volver a la lista de beneficios</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Benefits.Deleted">
+    <Value>El beneficio se ha eliminado correctamente.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Benefits.EditBenefit">
+    <Value>Edición del Beneficio</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Benefits.Info">
+    <Value>Información</Value>
+  </LocaleResource>
+   <LocaleResource Name="Admin.Configuration.Benefits.Fields.Name">
+    <Value>Nombre</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Benefits.Fields.Name.Hint">
+    <Value>Ingrese el nombre que se identificara al beneficio.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Benefits.Fields.Description">
+    <Value>Descripción</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Benefits.Fields.Description.Hint">
+    <Value>Ingrese la descripción.</Value>
+  </LocaleResource>
+    <LocaleResource Name="Admin.Configuration.Benefits.Fields.BenefitTypeId">
+    <Value>Tipo</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Benefits.Fields.BenefitTypeId.Hint">
+    <Value>Tipo de Beneficio (Beneficio o Apoyo).</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Benefits.Fields.Discount">
+    <Value>Recibir (%)</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Benefits.Fields.Discount.Hint">
+    <Value>Ingrese el porcentaje que sera considerado para el beneficio.</Value>
+  </LocaleResource>
+    <LocaleResource Name="Admin.Configuration.Benefits.Fields.CancelLoans">
+    <Value>Considera Prestamos</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Benefits.Fields.CancelLoans.Hint">
+    <Value>Incluye los montos de los prestamos que se van a saldar .</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Benefits.Fields.IsActive">
+    <Value>Es Activo</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Benefits.Fields.IsActive.Hint">
+    <Value>Establece si este beneficio se va a considerar en adelante</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Benefits.Fields.DisplayOrder">
+    <Value>Mostrar Orden</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Benefits.Fields.DisplayOrder.Hint">
+    <Value>Mostrar Orden</Value>
+  </LocaleResource>
+    <LocaleResource Name="Admin.Configuration.Benefits.Fields.LetterDeclaratory">
+    <Value>Carta Declaratoria</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Benefits.Fields.LetterDeclaratory.Hint">
+    <Value>Incluye carta Declaratoria</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Benefits.Fields.CreatedOn">
+    <Value>Fecha de Creación</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Benefits.Fields.CreatedOn.Hint">
+    <Value>Fecha de Creación</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Benefits.Fields.UpdatedOn">
+    <Value>Fecha de Actualización</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Benefits.Fields.UpdatedOn.Hint">
+    <Value>Fecha de Actualización</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Tax">
     <Value>Impuestos</Value>
@@ -8712,15 +8914,111 @@
    <LocaleResource Name="Admin.Customers.Customers.Benefit">
     <Value>Beneficios</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Customers.Customers.Benefit.addbutton">
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.Addbutton">
     <Value>Nuevo Beneficio</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Customers.Customers.Benefit.addnew">
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.Addnew">
     <Value>Agregar nuevo Beneficio</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.Info">
+    <Value>Información</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.Checks">
+    <Value>Cheques</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.Benefit.BackToCustomer">
     <Value>Volver a los detalles del afiliado</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.BenefitId">
+    <Value>Beneficio/Auxilio</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.BenefitId.Hint">
+    <Value>Beneficio/Auxilio</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.AmountBaseOfBenefit">
+    <Value>Base</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.AmountBaseOfBenefit.Hint">
+    <Value>Monto Base desde el cual se hace el calculo</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.YearInActivity">
+    <Value>Tiempo de Asociado</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.YearInActivity.Hint">
+    <Value>Años en que ha estado de aportante</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.TabValue">
+    <Value>Tabulador</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.TabValue.Hint">
+    <Value>Valor del tabulador que le corresponde por el tiempo de aportante</Value>
+  </LocaleResource>
+   <LocaleResource Name="Admin.Customers.Customers.Benefit.Discount">
+    <Value>Descuento (%)</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.Discount.Hint">
+    <Value>Porcentaje que corresponde segun sea el auxilio o beneficio </Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.TotalToPay">
+    <Value>Total Beneficio</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.TotalToPay.Hint">
+    <Value>Valor del beneficio a girar</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.TotalContributionCaja">
+    <Value>Aporte en Retiro</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.TotalContributionCaja.Hint">
+    <Value>Monto aportado por la caja</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.TotalContributionCopere">
+    <Value>Aporte en Actividad</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.TotalContributionCopere.Hint">
+    <Value>Monto aportado por el copere</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.TotalPersonalPayment">
+    <Value>Aporte Personal</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.TotalPersonalPayment.Hint">
+    <Value>Monto aportado de manera personal</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.ReserveFund">
+    <Value>Fondo de Reserva</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.ReserveFund.Hint">
+    <Value>Fondo de Reserva</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.TotalReationShip">
+    <Value>N° Beneficiarios</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.TotalReationShip.Hint">
+    <Value>N° Personas que van a recibir el beneficio</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.CreatedOn">
+    <Value>Fecha de Creación</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.CreatedOn.Hint">
+    <Value>Fecha de Creación</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.CustomerCompleteName">
+    <Value>Nombre Completo</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.CustomerCompleteName.Hint">
+    <Value>Nombre Completo del afiliado</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.CustomerAdmCode">
+    <Value>Código Administrativo</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.CustomerAdmCode.Hint">
+    <Value>Código Administrativo</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.CustomerDni">
+    <Value>Dni</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.CustomerDni.Hint">
+    <Value>DNI</Value>
+  </LocaleResource>  
   <LocaleResource Name="Admin.Customers.Customers.Loan">
     <Value>Apoyo Social Económico</Value>
   </LocaleResource>

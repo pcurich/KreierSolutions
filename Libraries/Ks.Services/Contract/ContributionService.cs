@@ -203,6 +203,18 @@ namespace Ks.Services.Contract
             _eventPublisher.EntityUpdated(contribution);
         }
 
+        public virtual List<ContributionPayment> GetPaymentByContributionId(int contributionId = 0)
+        {
+            if(contributionId==0)
+                return new List<ContributionPayment>();
+
+            var query = from c in _contributionPaymentRepository.Table
+                        where c.ContributionId==contributionId
+                        select c;
+
+            return query.ToList();
+
+        }
         public virtual IPagedList<ContributionPayment> GetAllPayments(int contributionId = 0,
             int number = 0, int stateId = -1, string accountNumber = "0",
             bool? type = null, int pageIndex = 0, int pageSize = Int32.MaxValue)

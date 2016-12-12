@@ -115,12 +115,13 @@ namespace Ks.Services.Contract
             });
         }
 
-        public virtual List<Benefit> GetAllBenefits()
+        public virtual List<Benefit> GetActiveBenefits()
         {
             string key = string.Format(BENEFITS_ALL);
             return _cacheManager.Get(key, () =>
             {
                 var query = from cr in _benefitRepository.Table
+                            where cr.IsActive
                             orderby cr.Id
                             select cr;
                 var benefit = query.ToList();
@@ -128,10 +129,14 @@ namespace Ks.Services.Contract
             });
         }
 
-        public virtual IPagedList<Benefit> SearchBenefits(int pageIndex = 0, int pageSize = Int32.MaxValue)
+        public virtual IPagedList<Benefit> GetAllBenefits(int pageIndex = 0, int pageSize = Int32.MaxValue)
         {
-            var query = GetAllBenefits();
-            return new PagedList<Benefit>(query, pageIndex, pageSize);
+            var query = from cr in _benefitRepository.Table
+                        orderby cr.Id
+                        select cr;
+            var benefit = query.ToList();
+
+            return new PagedList<Benefit>(benefit, pageIndex, pageSize);
         }
 
         #endregion

@@ -21,6 +21,8 @@ namespace Ks.Services.Security
         public static readonly PermissionRecord ManageCustomers = new PermissionRecord { Name = "Admin area. Manage Customers", SystemName = "ManageCustomers", Category = "Customers" };
         public static readonly PermissionRecord ManageContributions = new PermissionRecord { Name = "Admin area. Manage Contributions", SystemName = "ManageContributions", Category = "Customers" };
         public static readonly PermissionRecord ManageLoans = new PermissionRecord { Name = "Admin area. Manage Loans", SystemName = "ManageLoans", Category = "Customers" };
+        public static readonly PermissionRecord ManageBenefits = new PermissionRecord { Name = "Admin area. Manage Benefits", SystemName = "ManageBenefits", Category = "Customers" };
+        public static readonly PermissionRecord ManageReturns = new PermissionRecord { Name = "Admin area. Manage Returns", SystemName = "ManageReturns", Category = "Customers" };
         public static readonly PermissionRecord ManageVendors = new PermissionRecord { Name = "Admin area. Manage Vendors", SystemName = "ManageVendors", Category = "Customers" };
         public static readonly PermissionRecord ManageCurrentCarts = new PermissionRecord { Name = "Admin area. Manage Current Carts", SystemName = "ManageCurrentCarts", Category = "Orders" };
         public static readonly PermissionRecord ManageOrders = new PermissionRecord { Name = "Admin area. Manage Orders", SystemName = "ManageOrders", Category = "Orders" };
@@ -84,6 +86,8 @@ namespace Ks.Services.Security
                 ManageCustomers,
                 ManageContributions,
                 ManageLoans,
+                ManageBenefits,
+                ManageReturns,
                 ManageVendors,
                 ManageCurrentCarts,
                 ManageOrders,
@@ -151,6 +155,8 @@ namespace Ks.Services.Security
                         ManageCustomers,
                         ManageContributions,
                         ManageLoans,
+                        ManageBenefits,
+                        ManageReturns,
                         ManageVendors,
                         ManageCurrentCarts,
                         ManageOrders,
