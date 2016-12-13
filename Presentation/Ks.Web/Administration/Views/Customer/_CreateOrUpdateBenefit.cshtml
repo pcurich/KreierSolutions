@@ -92,6 +92,7 @@
                 @Html.KsLabelFor(model => model.AmountBaseOfBenefit):
             </td>
             <td class="adminData">
+                @Html.HiddenFor(model => model.AmountBaseOfBenefit)
                 @Model.AmountBaseOfBenefit.ToString("c", new CultureInfo("es-PE"))
             </td>
         </tr>
@@ -114,6 +115,7 @@
             </td>
             <td class="adminData">
                 @Html.HiddenFor(model => model.TotalContributionCopere)
+                @Html.HiddenFor(model => model.TotalContributionCopere)
                 @Model.TotalContributionCopere.ToString("c", new CultureInfo("es-PE"))
             </td>
         </tr>
@@ -122,6 +124,7 @@
                 @Html.KsLabelFor(model => model.TotalContributionCaja):
             </td>
             <td class="adminData">
+                @Html.HiddenFor(model => model.TotalContributionCaja)
                 @Html.HiddenFor(model => model.TotalContributionCaja)
                 @Model.TotalContributionCaja.ToString("c", new CultureInfo("es-PE"))
             </td>
@@ -132,6 +135,7 @@
             </td>
             <td class="adminData">
                 @Html.HiddenFor(model => model.TotalPersonalPayment)
+                @Html.HiddenFor(model => model.TotalPersonalPayment)
                 @Model.TotalPersonalPayment.ToString("c", new CultureInfo("es-PE"))
             </td>
         </tr>
@@ -140,6 +144,7 @@
                 @Html.KsLabelFor(model => model.ReserveFund):
             </td>
             <td class="adminData">
+                @Html.HiddenFor(model => model.ReserveFund)
                 <div id="reserve_result">S/ 0.00</div>
             </td>
         </tr>
@@ -148,6 +153,7 @@
                 @Html.KsLabelFor(model => model.TotalToPay):
             </td>
             <td class="adminData">
+                @Html.HiddenFor(model => model.TotalToPay)
                 <div id="benetfit_result">S/ 0.00</div>
             </td>
         </tr>
@@ -175,7 +181,7 @@
                         var personal = $("#@Html.FieldIdFor(model => model.TotalPersonalPayment)").val();
                         var temp = Math.round((data - copere - caja - personal) * 100) / 100;
                         reserve.html("S/. "+temp);
-                        $("#@Html.FieldIdFor(model => model.ReserveFund)").val(data - copere - caja - personal);
+                        $("#@Html.FieldIdFor(model => model.ReserveFund)").val(temp);
                         $("#@Html.FieldIdFor(model => model.TotalToPay)").val(data);
                     },
                     error: function (xhr, ajaxOptions, thrownError) {

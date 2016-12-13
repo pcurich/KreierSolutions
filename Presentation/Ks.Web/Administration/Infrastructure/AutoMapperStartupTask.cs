@@ -348,6 +348,14 @@ namespace Ks.Admin.Infrastructure
                 .ForMember(dest => dest.UpdatedOnUtc, mo => mo.Ignore());
             #endregion
 
+            #region contributionbenefit
+            Mapper.CreateMap<ContributionBenefit, ContributionBenefitModel>()
+                .ForMember(dest => dest.CreatedOn, mo => mo.Ignore())
+                .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
+            Mapper.CreateMap<ContributionBenefitModel, ContributionBenefit>()
+                .ForMember(dest => dest.CreatedOnUtc, mo => mo.Ignore());
+            #endregion
+
             #region measure weights
 
             Mapper.CreateMap<MeasureWeight, MeasureWeightModel>()

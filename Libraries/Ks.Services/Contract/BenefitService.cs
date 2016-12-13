@@ -32,11 +32,28 @@ namespace Ks.Services.Contract
         /// </summary>
         private const string BENEFITS_PATTERN_KEY = "ks.benefits.";
 
+        /// <summary>
+        ///     Key for caching
+        /// </summary>
+        /// <remarks>
+        ///     {0} : customerId
+        ///     {1} : contributionId
+        /// </remarks>
+        private const string CONTRIBUTIONBENEFIS_BY_KEY = "ks.contributionbenefit.{0}.{1}";
+
+        /// <summary>
+        ///     Key pattern to clear cache
+        /// </summary>
+        private const string CONTRIBUTIONBENEFITS_PATTERN_KEY = "ks.contributionbenefit.";
+
         #endregion
 
         #region Fields
 
         private readonly IRepository<Benefit> _benefitRepository;
+        private readonly IRepository<Contribution> _contributionRepository;
+        private readonly IRepository<ContributionBenefit> _contributionBenefitRepository;
+        private readonly IRepository<ContributionBenefitBank> _contributionBenefitBankRepository;
         private readonly ICacheManager _cacheManager;
         private readonly IEventPublisher _eventPublisher;
         private readonly IDataProvider _dataProvider;
@@ -46,9 +63,20 @@ namespace Ks.Services.Contract
 
         #region Constructor
 
-        public BenefitService(IRepository<Benefit> benefitRepository, ICacheManager cacheManager, IEventPublisher eventPublisher, IDataProvider dataProvider, IDbContext dbContext)
+        public BenefitService(
+            IRepository<Benefit> benefitRepository,
+            IRepository<Contribution> contributionRepository,
+            IRepository<ContributionBenefit> contributionBenefitRepository,
+            IRepository<ContributionBenefitBank> contributionBenefitBankRepository,
+            ICacheManager cacheManager,
+            IEventPublisher eventPublisher,
+            IDataProvider dataProvider,
+            IDbContext dbContext)
         {
             _benefitRepository = benefitRepository;
+            _contributionRepository = contributionRepository;
+            _contributionBenefitRepository = contributionBenefitRepository;
+            _contributionBenefitBankRepository = contributionBenefitBankRepository;
             _cacheManager = cacheManager;
             _eventPublisher = eventPublisher;
             _dataProvider = dataProvider;
@@ -58,6 +86,8 @@ namespace Ks.Services.Contract
         #endregion
 
         #region Methods
+
+        #region Benefit
 
         public virtual void DeleteBenefit(Benefit benefit)
         {
@@ -70,7 +100,7 @@ namespace Ks.Services.Contract
             _cacheManager.RemoveByPattern(BENEFITS_PATTERN_KEY);
 
             //event notification
-            _eventPublisher.EntityUpdated(benefit);
+            _eventPublisher.EntityDeleted(benefit);
         }
 
         public virtual void InsertBenefit(Benefit benefit)
@@ -84,7 +114,7 @@ namespace Ks.Services.Contract
             _cacheManager.RemoveByPattern(BENEFITS_PATTERN_KEY);
 
             //event notification
-            _eventPublisher.EntityUpdated(benefit);
+            _eventPublisher.EntityInserted(benefit);
         }
 
         public virtual void UpdateBenefit(Benefit benefit)
@@ -138,6 +168,102 @@ namespace Ks.Services.Contract
 
             return new PagedList<Benefit>(benefit, pageIndex, pageSize);
         }
+
+        #endregion
+
+        #region ContributionBenefit
+
+        public virtual void DeleteContributionBenefit(ContributionBenefit contributionBenefit)
+        {
+            if (contributionBenefit == null)
+                throw new ArgumentNullException("contributionBenefit");
+
+            _contributionBenefitRepository.Delete(contributionBenefit);
+
+            //cache
+            _cacheManager.RemoveByPattern(CONTRIBUTIONBENEFITS_PATTERN_KEY);
+
+            //event notification
+            _eventPublisher.EntityDeleted(contributionBenefit);
+        }
+
+        public virtual void InsertContributionBenefit(ContributionBenefit contributionBenefit)
+        {
+            if (contributionBenefit == null)
+                throw new ArgumentNullException("contributionBenefit");
+
+            _contributionBenefitRepository.Insert(contributionBenefit);
+
+            //cache
+            _cacheManager.RemoveByPattern(CONTRIBUTIONBENEFITS_PATTERN_KEY);
+
+            //event notification
+            _eventPublisher.EntityInserted(contributionBenefit);
+        }
+
+        public virtual void UpdateContributionBenefit(ContributionBenefit contributionBenefit)
+        {
+            if (contributionBenefit == null)
+                throw new ArgumentNullException("contributionBenefit");
+
+            _contributionBenefitRepository.Update(contributionBenefit);
+
+            //cache
+            _cacheManager.RemoveByPattern(CONTRIBUTIONBENEFITS_PATTERN_KEY);
+
+            //event notification
+            _eventPublisher.EntityUpdated(contributionBenefit);
+        }
+
+        public virtual ContributionBenefit GetContributionBenefitbyId(int contributionBenefitId)
+        {
+            var query = from b in _contributionBenefitRepository.Table
+                        where b.Id == contributionBenefitId
+                        select b;
+
+            return query.FirstOrDefault();
+        }
+
+        public virtual IPagedList<ContributionBenefit> GetAllContributionBenefitByCustomer(int customerId = 0, int pageIndex = 0, int pageSize = Int32.MaxValue)
+        {
+
+            var query = from b in _contributionBenefitRepository.Table
+                        join c in _contributionRepository.Table on customerId equals c.CustomerId
+                        where c.CustomerId == customerId && c.Active
+                        select b;
+
+            return new PagedList<ContributionBenefit>(query.ToList(), pageIndex, pageSize);
+        }
+
+        public virtual List<ContributionBenefit> GetContributionBenefitsByCustomer(int customerId)
+        {
+            string key = string.Format(CONTRIBUTIONBENEFIS_BY_KEY, customerId, 0);
+            return _cacheManager.Get(key, () =>
+            {
+                var query = (from cb in _contributionBenefitRepository.Table
+                             join cc in _contributionRepository.Table on cb.ContributionId equals cc.Id
+                             where cc.CustomerId == customerId
+                             select cb);
+
+                return query.ToList();
+            });
+        }
+
+        public virtual ContributionBenefit GetContributionBenefitsByContribution(int customerId, int contributionId)
+        {
+            string key = string.Format(CONTRIBUTIONBENEFIS_BY_KEY, customerId, contributionId);
+            return _cacheManager.Get(key, () =>
+            {
+                var query = (from cb in _contributionBenefitRepository.Table
+                             join cc in _contributionRepository.Table on cb.ContributionId equals cc.Id
+                             where cc.CustomerId == customerId
+                             select cb);
+
+                return query.FirstOrDefault();
+            });
+        }
+
+        #endregion
 
         #endregion
     }

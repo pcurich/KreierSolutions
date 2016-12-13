@@ -1983,13 +1983,6 @@ namespace Ks.Admin.Controllers
                 ContributionId = contributionId
             };
 
-            var benefits = _benefitService.GetAllBenefits();
-            foreach (var benefit in benefits)
-            {
-                model.BenefitModels.Add(new SelectListItem { Value = benefit.Id.ToString(), Text = benefit.Name });
-            }
-            model.BenefitModels.Insert(0, new SelectListItem { Value = "0", Text = "----------------------------" });
-
             var contributions = _contributionService.GetPaymentByContributionId(contributionId);
             var amountTotal = contributions.Sum(x => x.AmountPayed);
             var amountCaja = contributions.Where(x => x.BankName == "Caja").Sum(x => x.AmountPayed);
@@ -1999,6 +1992,16 @@ namespace Ks.Admin.Controllers
             model.TotalContributionCopere = amountCopere;
             model.TotalPersonalPayment = amountTotal - amountCaja - amountCopere;
 
+
+            var benefits = _benefitService.GetAllBenefits();
+            var benefitInCustomer = _benefitService.GetContributionBenefitsByCustomer(customerId);
+            foreach (var benefit in benefits)
+            {
+                if (benefitInCustomer.Count(x => x.BenefitId == benefit.Id) == 0)
+                    model.BenefitModels.Add(new SelectListItem { Value = benefit.Id.ToString(), Text = benefit.Name });
+            }
+            model.BenefitModels.Insert(0, new SelectListItem { Value = "0", Text = "----------------------------" });
+
             return View(model);
         }
 
@@ -2006,14 +2009,31 @@ namespace Ks.Admin.Controllers
         [ValidateInput(false)]
         public ActionResult BenefitCreate(ContributionBenefitModel model)
         {
-            //if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
-            //    return AccessDeniedView();
-            //var contribution= _contributionService.GetContributionById(model.c)
-            //var contBene = new ContributionBenefit();
-            //contBene.AmountBaseOfBenefit = _benefitValueSetting.AmountBaseOfBenefit;
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
+                return AccessDeniedView();
 
-            //contBene.YearInActivity = 2;
-            return null;
+            var benefit = _benefitService.GetBenefitById(model.BenefitId);
+            var contribution = _contributionService.GetContributionsByCustomer(model.CustomerId, 1).FirstOrDefault();
+            var zeroTime = new DateTime(1, 1, 1);
+            int year = 0;
+            if (contribution != null)
+            {
+                var span = DateTime.UtcNow - contribution.CreatedOnUtc;
+                year = (zeroTime + span).Year;
+            }
+            var activeTab = _tabService.GetValueFromActive(year);
+
+            model.Discount = benefit.Discount;
+            model.TabValue = activeTab.TabValue;
+            model.YearInActivity = year;
+            model.TotalReationShip = 0;
+
+            var entity = model.ToEntity();
+            entity.CreatedOnUtc = DateTime.UtcNow;
+
+            _benefitService.InsertContributionBenefit(entity);
+
+            return RedirectToAction("BenefitCreate", new { customerId = model.CustomerId, contributionId = model.ContributionId });
         }
 
 

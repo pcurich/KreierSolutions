@@ -19,6 +19,7 @@ namespace Ks.Services.Security
         public static readonly PermissionRecord ManageProductTags = new PermissionRecord { Name = "Admin area. Manage Product Tags", SystemName = "ManageProductTags", Category = "Catalog" };
         public static readonly PermissionRecord ManageAttributes = new PermissionRecord { Name = "Admin area. Manage Attributes", SystemName = "ManageAttributes", Category = "Catalog" };
         public static readonly PermissionRecord ManageCustomers = new PermissionRecord { Name = "Admin area. Manage Customers", SystemName = "ManageCustomers", Category = "Customers" };
+        public static readonly PermissionRecord ManageContributionBenefit = new PermissionRecord { Name = "Admin area. Manage Contribution Benefit", SystemName = "ManageContributionBenefit", Category = "Customers" };
         public static readonly PermissionRecord ManageContributions = new PermissionRecord { Name = "Admin area. Manage Contributions", SystemName = "ManageContributions", Category = "Customers" };
         public static readonly PermissionRecord ManageLoans = new PermissionRecord { Name = "Admin area. Manage Loans", SystemName = "ManageLoans", Category = "Customers" };
         public static readonly PermissionRecord ManageBenefits = new PermissionRecord { Name = "Admin area. Manage Benefits", SystemName = "ManageBenefits", Category = "Customers" };
@@ -84,6 +85,7 @@ namespace Ks.Services.Security
                 ManageProductTags,
                 ManageAttributes,
                 ManageCustomers,
+                ManageContributionBenefit,
                 ManageContributions,
                 ManageLoans,
                 ManageBenefits,
@@ -153,6 +155,7 @@ namespace Ks.Services.Security
                         ManageProductTags,
                         ManageAttributes,
                         ManageCustomers,
+                        ManageContributionBenefit,
                         ManageContributions,
                         ManageLoans,
                         ManageBenefits,

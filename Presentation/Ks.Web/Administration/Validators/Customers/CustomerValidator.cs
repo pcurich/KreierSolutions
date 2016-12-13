@@ -87,14 +87,14 @@ namespace Ks.Admin.Validators.Customers
                     return new ValidationFailure("AdmCode",
                         localizationService.GetResource("Account.Fields.AdmCode.Length"));
 
-                if (customerService.GetCustomerByAdmCode(x.AdmCode.Trim()) != null)
+                if (customerService.GetCustomerByAdmCode(x.AdmCode.Trim()) != null && x.Id==0)
                     return new ValidationFailure("AdmCode",
                         localizationService.GetResource("Account.Fields.AdmCode.IsRegister"));
 
                 if (x.Dni == null || x.Dni.Length != 8)
                     return new ValidationFailure("Dni", localizationService.GetResource("Account.Fields.Dni.Length"));
 
-                if (customerService.GetCustomerByDni(x.Dni.Trim()) != null)
+                if (customerService.GetCustomerByDni(x.Dni.Trim()) != null && x.Id == 0)
                     return new ValidationFailure("Dni",
                         localizationService.GetResource("Account.Fields.Dni.IsRegister"));
 

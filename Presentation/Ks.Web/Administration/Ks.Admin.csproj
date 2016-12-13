@@ -1324,6 +1324,8 @@
     <Content Include="Views\Benefit\Create.cshtml" />
     <Content Include="Views\Benefit\Edit.cshtml" />
     <Content Include="Views\Benefit\_CreateOrUpdate.cshtml" />
+    <Content Include="Views\CustomerBenefit\Create.cshtml" />
+    <Content Include="Views\CustomerBenefit\_CreateOrUpdate.cshtml" />
     <None Include="Views\Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1350,6 +1352,7 @@
     <Compile Include="Controllers\ContributionsController.cs" />
     <Compile Include="Controllers\CountryController.cs" />
     <Compile Include="Controllers\CustomerAttributeController.cs" />
+    <Compile Include="Controllers\CustomerBenefitController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\CustomerRoleController.cs" />
     <Compile Include="Controllers\EmailAccountController.cs" />

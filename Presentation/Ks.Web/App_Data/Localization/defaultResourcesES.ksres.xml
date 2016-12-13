@@ -606,6 +606,9 @@
   <LocaleResource Name="ActivityLog.AddNewBenefit">
     <Value>Se ha agregado un nuevo beneficio ('{0}') por el usuario ('{1}')</Value>
   </LocaleResource>
+  <LocaleResource Name="ActivityLog.AddNewContributionBenefit">
+    <Value>Se ha adigando el beneficio ('{0}') as afiliado ('{1}'), por el usuario ('{2}')</Value>
+  </LocaleResource>  
   <LocaleResource Name="ActivityLog.AddNewCheckoutAttribute">
     <Value>Se ha agregado un nuevo atributo checkout ('{0}')</Value>
   </LocaleResource>
@@ -6727,6 +6730,23 @@
   <LocaleResource Name="Admin.Configuration.SMSProviders.Fields.SystemName">
     <Value>Nombre del sistema</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.ContributionBenefit">
+    <Value>Asignacion de Beneficio</Value>
+  </LocaleResource>
+	<LocaleResource Name="Admin.Configuration.ContributionBenefit.Added">
+    <Value>La nueva asignacion de beneficio se ha agregado.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.ContributionBenefit.Updated">
+    <Value>La asignacion de beneficio se ha actualizado.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.ContributionBenefit.Delete">
+    <Value>La asignacion de beneficio se ha borrado.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.ContributionBenefit.Error">
+    <Value>La asignacion de beneficio no ha podido ser agregado.</Value>
+  </LocaleResource>
+  
+  
   <LocaleResource Name="Admin.Configuration.Tabs">
     <Value>Tabuladores</Value>
   </LocaleResource>
@@ -6734,13 +6754,13 @@
     <Value>El nuevo tabulador se ha agregado.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Tabs.Updated">
-    <Value>El nuevo tabulador se ha agregado.</Value>
+    <Value>El tabulador se ha actualizado.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Tabs.Delete">
-    <Value>El nuevo tabulador se ha agregado.</Value>
+    <Value>El tabulador se ha borrado.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Tabs.Error">
-    <Value>El nuevo tabulador no ha podido ser agregado.</Value>
+    <Value>El tabulador no ha podido ser agregado.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Tabs.ErrorDelete">
     <Value>No se puede eliminar el unico tabulador.</Value>
