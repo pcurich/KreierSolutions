@@ -306,12 +306,12 @@ namespace Ks.Services.Installation
                 SystemName = SystemCustomerRoleNames.Administrators,
             };
 
-            var crRegistered = new CustomerRole
+            var crAssociated = new CustomerRole
             {
-                Name = "Registrado",
+                Name = "Asociado",
                 Active = true,
                 IsSystemRole = false,
-                SystemName = SystemCustomerRoleNames.Registered
+                SystemName = SystemCustomerRoleNames.Associated
             };
 
             var crAuxAccountant = new CustomerRole
@@ -386,7 +386,7 @@ namespace Ks.Services.Installation
             };
             adminUser.Addresses.Add(defaultAdminUserAddress);
             adminUser.CustomerRoles.Add(crAdministrators);
-            adminUser.CustomerRoles.Add(crRegistered);
+            adminUser.CustomerRoles.Add(crAssociated);
             _customerRepository.Insert(adminUser);
             //set default customer name
             _genericAttributeService.SaveAttribute(adminUser, SystemCustomerAttributeNames.FirstName, "Pedro");

@@ -4,7 +4,7 @@
     {
         public static string Administrators { get { return "Administrators"; } }
 
-        public static string Registered { get { return "Registered"; } }
+        public static string Associated { get { return "Associated"; } }
         public static string AccountingAssistant { get { return "AccountingAssistant"; } }
         public static string Secretary { get { return "Secretary"; } }
         public static string Manager { get { return "Manager"; } }

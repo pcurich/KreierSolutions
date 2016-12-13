@@ -453,7 +453,7 @@ BEGIN
 	Declare @MaxToPay int= (select value from Setting where Name  =  'contributionsettings.maximumcharge')
 	DECLARE @ContributionPaymentId INT
 	DECLARE @NextId INT 
-	DECLARE @OffSet decimal 
+	DECLARE @OffSet decimal(12,2) 
 	DECLARE @LastDescription NVARCHAR(MAX)
 	DECLARE @LastNumber INT
 	DECLARE @ValueIndex INT =  0;
@@ -541,7 +541,7 @@ BEGIN
 	Declare @MaxToPay int= (select value from Setting where Name  =  'contributionsettings.maximumcharge')
 	DECLARE @ContributionPaymentId INT
 	DECLARE @NextId INT 
-	DECLARE @OffSet decimal 
+	DECLARE @OffSet decimal(12,2) 
 	DECLARE @LastDescription NVARCHAR(MAX)
 	DECLARE @LastNumber INT
 	DECLARE @ValueIndex INT =  0;

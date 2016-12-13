@@ -180,7 +180,7 @@ namespace Ks.Services.Customers
             request.Customer.Active = request.IsApproved;
 
             //add to 'Registered' role
-            var registeredRole = _customerService.GetCustomerRoleBySystemName(SystemCustomerRoleNames.Registered);
+            var registeredRole = _customerService.GetCustomerRoleBySystemName(SystemCustomerRoleNames.Associated);
             if (registeredRole == null)
                 throw new KsException("'Registered' role could not be loaded");
             request.Customer.CustomerRoles.Add(registeredRole);

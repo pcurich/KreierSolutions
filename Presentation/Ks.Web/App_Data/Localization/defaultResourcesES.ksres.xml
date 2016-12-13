@@ -330,8 +330,14 @@
   <LocaleResource Name="Account.Fields.AdmCode.Length">
     <Value>El código administrativo debe ser de 9 caracteres</Value>
   </LocaleResource>
+  <LocaleResource Name="Account.Fields.AdmCode.IsRegister">
+    <Value>El código administrativo ya se encuentra registrado</Value>
+  </LocaleResource>
   <LocaleResource Name="Account.Fields.Dni.Length">
     <Value>El DNI debe ser de 8 caracteres</Value>
+  </LocaleResource>
+  <LocaleResource Name="Account.Fields.Dni.IsRegister">
+    <Value>El Dni ya se encuentra registrado</Value>
   </LocaleResource>
   <LocaleResource Name="Account.Fields.StreetAddress">
     <Value>Dirección</Value>
@@ -820,10 +826,10 @@
     <Value>Se requiere primer nombre.</Value>
   </LocaleResource>
   <LocaleResource Name="Address.Fields.LastName">
-    <Value>Apellido</Value>
+    <Value>Apellidos</Value>
   </LocaleResource>
   <LocaleResource Name="Address.Fields.LastName.Required">
-    <Value>Se requiere el apellido.</Value>
+    <Value>Se requiere los apellidos.</Value>
   </LocaleResource>
   <LocaleResource Name="Address.Fields.PhoneNumber">
     <Value>Número de teléfono</Value>
@@ -3268,7 +3274,7 @@
     <Value>Aportaciones</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Loans">
-    <Value>Apoyo Económico</Value>
+    <Value>Apoyo Social Económico</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.ACL">
     <Value>Accede a la lista de control</Value>
@@ -7990,6 +7996,18 @@
   <LocaleResource Name="Admin.Contract.Loan.Fields.SearchAdmCode.Hint">
     <Value>Busqueda por el codigo administrativo</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.CustomerCompleteName">
+    <Value>Nombre completo</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.CustomerDni">
+	<Value>N° Dni</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Loan.Fields.CustomerAdmCode">
+	<Value>N° Administrativo</Value>
+  </LocaleResource>  
+  <LocaleResource Name="Admin.Contract.LoanPayments.Fields.AccountNumber">
+    <Value>N° de Cuenta</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Contract.Loan.Fields.Active">
     <Value>Activo</Value>
   </LocaleResource>
@@ -8122,9 +8140,6 @@
   <LocaleResource Name="Admin.Contract.LoanPayments.CustomPayment">
     <Value>Pago Variable</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Contract.LoanPayments.Fields.AccountNumber">
-    <Value>N° de Cuenta</Value>
-  </LocaleResource>
   <LocaleResource Name="Admin.Contract.LoanPayments.Fields.AccountNumber.Hint">
     <Value>N° de Cuenta</Value>
   </LocaleResource>
@@ -8171,10 +8186,10 @@
     <Value>Cuota Mensual</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.LoanPayments.Fields.MonthlyFee">
-    <Value>Impuestos</Value>
+    <Value>Intereses</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.LoanPayments.Fields.MonthlyFee.Hint">
-    <Value>Valor del a couta en Impuestos</Value>
+    <Value>Valor de la couta en Intereses</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.LoanPayments.Fields.MonthlyCapital">
     <Value>Capital</Value>
@@ -8696,10 +8711,10 @@
     <Value>La última fecha de la actividad.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.Fields.LastName">
-    <Value>Apellido</Value>
+    <Value>Apellidos</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.Fields.LastName.Hint">
-    <Value>El apellido del cliente.</Value>
+    <Value>Los apellidos del asociado.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.Fields.LastName.Required">
     <Value>Por favor proporcione un apellido.</Value>

@@ -217,7 +217,7 @@ namespace Ks.Services.Security
                 },
                 new DefaultPermissionRecord 
                 {
-                    CustomerRoleSystemName = SystemCustomerRoleNames.Registered,
+                    CustomerRoleSystemName = SystemCustomerRoleNames.Associated,
                     PermissionRecords = new[] 
                     {
                         DisplayPrices,

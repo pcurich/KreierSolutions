@@ -110,7 +110,7 @@ namespace Ks.Services.Customers
         /// <param name="pageSize">Page size</param>
         /// <returns>Customers</returns>
         public virtual IPagedList<Customer> GetAllCustomers(DateTime? createdFromUtc = null,
-            DateTime? createdToUtc = null,int[] customerRoleIds = null, string email = null, string username = null,
+            DateTime? createdToUtc = null, int[] customerRoleIds = null, string email = null, string username = null,
             string firstName = null, string lastName = null,
             int dayOfBirth = 0, int monthOfBirth = 0, string admCode = null, string dni = null,
             string company = null, string phone = null, string zipPostalCode = null,
@@ -121,7 +121,7 @@ namespace Ks.Services.Customers
                 query = query.Where(c => createdFromUtc.Value <= c.CreatedOnUtc);
             if (createdToUtc.HasValue)
                 query = query.Where(c => createdToUtc.Value >= c.CreatedOnUtc);
- 
+
             query = query.Where(c => !c.Deleted);
             if (customerRoleIds != null && customerRoleIds.Length > 0)
                 query = query.Where(c => c.CustomerRoles.Select(cr => cr.Id).Intersect(customerRoleIds).Any());
@@ -387,6 +387,26 @@ namespace Ks.Services.Customers
             return customer;
         }
 
+        public virtual Customer GetCustomerByDni(string dni)
+        {
+            var query = from ga in _gaRepository.Table
+                        join c in _customerRepository.Table on ga.EntityId equals c.Id
+                        where ga.Key == "Dni" && ga.Value == dni && ga.KeyGroup == "Customer" && c.Active
+                        select c;
+            var customer = query.FirstOrDefault();
+            return customer;
+        }
+
+        public virtual Customer GetCustomerByAdmCode(string admCode)
+        {
+            var query = from ga in _gaRepository.Table
+                        join c in _customerRepository.Table on ga.EntityId equals c.Id
+                        where ga.Key == "AdmCode" && ga.Value == admCode && ga.KeyGroup == "Customer" && c.Active
+                        select c;
+            var customer = query.FirstOrDefault();
+            return customer;
+        }
+
         /// <summary>
         /// Get customer by system name
         /// </summary>
@@ -477,7 +497,7 @@ namespace Ks.Services.Customers
             //event notification
             _eventPublisher.EntityUpdated(customer);
         }
- 
+
 
         /// <summary>
         /// Delete guest customer records
@@ -552,7 +572,7 @@ namespace Ks.Services.Customers
                 if (createdToUtc.HasValue)
                     query = query.Where(c => createdToUtc.Value >= c.CreatedOnUtc);
                 query = query.Where(c => c.CustomerRoles.Select(cr => cr.Id).Contains(guestRole.Id));
-                
+
                 //don't delete system accounts
                 query = query.Where(c => !c.IsSystemAccount);
 

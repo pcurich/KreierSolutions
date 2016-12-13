@@ -69,6 +69,20 @@ namespace Ks.Services.Customers
         Customer GetCustomerByEmail(string email);
 
         /// <summary>
+        /// Gets the customer by dni.
+        /// </summary>
+        /// <param name="dni">The dni.</param>
+        /// <returns></returns>
+        Customer GetCustomerByDni(string dni);
+
+        /// <summary>
+        /// Gets the customer by adm code.
+        /// </summary>
+        /// <param name="admCode">The adm code.</param>
+        /// <returns></returns>
+        Customer GetCustomerByAdmCode(string admCode);
+
+        /// <summary>
         /// Get customer by system role
         /// </summary>
         /// <param name="systemName">System name</param>

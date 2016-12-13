@@ -19,18 +19,18 @@ namespace Ks.Admin.Models.Contract
         }
 
         #region Customer
-
+        
         public int CustomerId { get; set; }
 
-        [KsResourceDisplayName("Admin.Contract.Contribution.Fields.CustomerCompleteName")]
+        [KsResourceDisplayName("Admin.Contract.Loan.Fields.CustomerCompleteName")]
         [AllowHtml]
         public string CustomerCompleteName { get; set; }
 
-        [KsResourceDisplayName("Admin.Contract.Contribution.Fields.CustomerDni")]
+        [KsResourceDisplayName("Admin.Contract.Loan.Fields.CustomerDni")]
         [AllowHtml]
         public string CustomerDni { get; set; }
 
-        [KsResourceDisplayName("Admin.Contract.Contribution.Fields.CustomerAdmCode")]
+        [KsResourceDisplayName("Admin.Contract.Loan.Fields.CustomerAdmCode")]
         [AllowHtml]
         public string CustomerAdmCode { get; set; }
 

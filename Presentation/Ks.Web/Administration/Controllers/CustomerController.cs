@@ -42,7 +42,7 @@ namespace Ks.Admin.Controllers
 
         private readonly ISettingService _settingService;
         private readonly ICustomerService _customerService;
-        //private readonly INewsLetterSubscriptionService _newsLetterSubscriptionService;
+        private readonly IEncryptionService _encryptionService;
         private readonly IGenericAttributeService _genericAttributeService;
         private readonly ICustomerRegistrationService _customerRegistrationService;
         private readonly IDateTimeHelper _dateTimeHelper;
@@ -101,7 +101,7 @@ namespace Ks.Admin.Controllers
             ICustomerService customerService,
             IGenericAttributeService genericAttributeService,
             ICustomerRegistrationService customerRegistrationService,
-            //ICustomerReportService customerReportService,
+            IEncryptionService encryptionService,
             IDateTimeHelper dateTimeHelper,
             ILocalizationService localizationService,
             DateTimeSettings dateTimeSettings,
@@ -155,7 +155,7 @@ namespace Ks.Admin.Controllers
             this._customerService = customerService;
             this._genericAttributeService = genericAttributeService;
             this._customerRegistrationService = customerRegistrationService;
-            //this._customerReportService = customerReportService;
+            this._encryptionService = encryptionService;
             this._dateTimeHelper = dateTimeHelper;
             this._localizationService = localizationService;
             this._dateTimeSettings = dateTimeSettings;
@@ -580,7 +580,7 @@ namespace Ks.Admin.Controllers
             //ensure a customer is not added to both 'Guests' and 'Registered' customer roles
             //ensure that a customer is in at least one required role ('Guests' and 'Registered')
             bool isInGuestsRole = customerRoles.FirstOrDefault(cr => cr.SystemName == SystemCustomerRoleNames.Guests) != null;
-            bool isInRegisteredRole = customerRoles.FirstOrDefault(cr => cr.SystemName == SystemCustomerRoleNames.Registered) != null;
+            bool isInRegisteredRole = customerRoles.FirstOrDefault(cr => cr.SystemName == SystemCustomerRoleNames.Associated) != null;
             if (isInGuestsRole && isInRegisteredRole)
                 return "The customer cannot be in both 'Guests' and 'Registered' customer roles";
             if (!isInGuestsRole && !isInRegisteredRole)
@@ -717,7 +717,7 @@ namespace Ks.Admin.Controllers
                 return AccessDeniedView();
 
             //load registered customers by default
-            var defaultRoleIds = new[] { _customerService.GetCustomerRoleBySystemName(SystemCustomerRoleNames.Registered).Id };
+            var defaultRoleIds = new[] { _customerService.GetCustomerRoleBySystemName(SystemCustomerRoleNames.Associated).Id };
             var model = new CustomerListModel
             {
                 UsernamesEnabled = _customerSettings.UsernamesEnabled,
@@ -818,17 +818,21 @@ namespace Ks.Admin.Controllers
 
             if (ModelState.IsValid)
             {
+                string saltKey = _encryptionService.CreateSaltKey(5);
+
                 var customer = new Customer
                 {
                     CustomerGuid = Guid.NewGuid(),
                     Email = model.Email,
-                    Username = model.Username,
+                    Username = model.AdmCode,
                     //VendorId = model.VendorId,
                     AdminComment = model.AdminComment,
                     //IsTaxExempt = model.IsTaxExempt,
                     Active = model.Active,
                     CreatedOnUtc = DateTime.UtcNow,
                     LastActivityDateUtc = DateTime.UtcNow,
+                    Password = _encryptionService.CreatePasswordHash(model.Dni, saltKey, _customerSettings.HashedPasswordFormat),
+                    PasswordSalt = saltKey,
                 };
                 _customerService.InsertCustomer(customer);
 
