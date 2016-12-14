@@ -1326,6 +1326,7 @@
     <Content Include="Views\Benefit\_CreateOrUpdate.cshtml" />
     <Content Include="Views\CustomerBenefit\Create.cshtml" />
     <Content Include="Views\CustomerBenefit\_CreateOrUpdate.cshtml" />
+    <Content Include="Views\CustomerBenefit\Edit.cshtml" />
     <None Include="Views\Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

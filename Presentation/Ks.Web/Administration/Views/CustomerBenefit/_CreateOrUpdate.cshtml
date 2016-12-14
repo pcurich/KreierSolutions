@@ -1,7 +1,227 @@
-﻿
+﻿@using System.Globalization
+@model ContributionBenefitModel
+@Html.ValidationSummary(true)
+@Html.HiddenFor(model => model.CustomerId)
+@Html.HiddenFor(model => model.Id)
+@Html.HiddenFor(model => model.TotalToPay)
+
+
+<script>
+    $(document).ready(function () {
+        $("#customer-benefit-edit").kendoTabStrip({
+            animation: {
+                open: {
+                    effects: "fadeIn"
+                }
+            },
+            select: tabstrip_on_tab_select
+        });
+    });
+</script>
+
+<div id="customer-benefit-edit">
+    <ul>
+        <li @Html.RenderSelectedTabIndex(0, GetSelectedTabIndex())>
+            @T("Admin.Customers.Customers.Benefit.Info")
+        </li>
+        @{
+            if (Model.Id > 0)
+            {
+                <li @Html.RenderSelectedTabIndex(1, GetSelectedTabIndex())>
+                    @T("Admin.Customers.Customers.Benefit.Checks")
+                </li>
+            }
+        }
+    </ul>
+    <div>
+        @TabInfo()
+    </div>
+    @{
+        if (Model.Id > 0)
+        {
+            <div>
+                @TabChecks()
+            </div>
+        }
+    }
+</div>
+
 @{
-    ViewBag.Title = "_CreateOrUpdate";
+    //custom tabs
+    var eventMessage = new AdminTabStripCreated(this.Html, "customer-benefit-edit");
+    EngineContext.Current.Resolve<IEventPublisher>().Publish(eventMessage);
+    foreach (var eventBlock in eventMessage.BlocksToRender)
+    {
+        @eventBlock
+    }
 }
 
-<h2>_CreateOrUpdate</h2>
 
+@*save selected tab index*@
+<input type="hidden" id="selected-tab-index" name="selected-tab-index" value="@(GetSelectedTabIndex())">
+
+@helper TabInfo()
+{
+    <table class="adminContent">
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.CustomerCompleteName):
+            </td>
+            <td class="adminData">
+                @Model.CustomerCompleteName
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.CustomerDni):
+            </td>
+            <td class="adminData">
+                @Model.CustomerDni
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.CustomerAdmCode):
+            </td>
+            <td class="adminData">
+                @Model.CustomerAdmCode
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.AmountBaseOfBenefit):
+            </td>
+            <td class="adminData">
+                @Html.HiddenFor(model => model.AmountBaseOfBenefit)
+                @Model.AmountBaseOfBenefit.ToString("c", new CultureInfo("es-PE"))
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.BenefitId):
+            </td>
+            <td class="adminData">
+                @{
+                    if (Model.Id > 0)
+                    {
+                        @Model.BenefitName
+                    }
+                    else
+                    {
+                        @Html.DropDownListFor(model => model.BenefitId, Model.BenefitModels)
+                        <script>
+                            $(document).ready(function () {
+                                $("#@Html.FieldIdFor(model => model.BenefitId)").width(200).kendoDropDownList();
+                            });
+                        </script>
+                    }
+                }
+
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.TotalContributionCopere):
+            </td>
+            <td class="adminData">
+                @Html.HiddenFor(model => model.TotalContributionCopere)
+                @Html.HiddenFor(model => model.TotalContributionCopere)
+                @Model.TotalContributionCopere.ToString("c", new CultureInfo("es-PE"))
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.TotalContributionCaja):
+            </td>
+            <td class="adminData">
+                @Html.HiddenFor(model => model.TotalContributionCaja)
+                @Html.HiddenFor(model => model.TotalContributionCaja)
+                @Model.TotalContributionCaja.ToString("c", new CultureInfo("es-PE"))
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.TotalPersonalPayment):
+            </td>
+            <td class="adminData">
+                @Html.HiddenFor(model => model.TotalPersonalPayment)
+                @Html.HiddenFor(model => model.TotalPersonalPayment)
+                @Model.TotalPersonalPayment.ToString("c", new CultureInfo("es-PE"))
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.ReserveFund):
+            </td>
+            <td class="adminData">
+                @{
+                    if (Model.Id > 0)
+                    {
+                        @Model.ReserveFund.ToString("c", new CultureInfo("es-PE"))
+                    }
+                    else
+                    {
+                        @Html.HiddenFor(model => model.ReserveFund)
+                        <div id="reserve_result">S/ 0.00</div>
+                    }
+                }
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.TotalToPay):
+            </td>
+            <td class="adminData">
+                @{
+                    if (Model.Id > 0)
+                    {
+                        @Model.TotalToPay.ToString("c", new CultureInfo("es-PE"))
+                    }
+                    else
+                    {
+                        @Html.HiddenFor(model => model.TotalToPay)
+                        <div id="benetfit_result">S/ 0.00</div>
+                    }
+                }
+            </td>
+        </tr>
+
+
+    </table>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#@Html.FieldIdFor(model => model.BenefitId)").change(function () {
+                var benefitId = $(this).val();
+                var customerId = $("#@Html.FieldIdFor(model => model.CustomerId)").val();
+                var result = $('#benetfit_result');
+                var reserve = $('#reserve_result');
+                $.ajax({
+                    cache: false,
+                    type: "GET",
+                    url: "@(Url.Action("ChangeTab", "Customer"))",
+                    data: { "customerId": customerId, "benefitId": benefitId },
+                    success: function (data) {
+                        result.html(data);
+                        data = data.replace("S/.", "");
+                        var copere = $("#@Html.FieldIdFor(model => model.TotalContributionCopere)").val();
+                        var caja = $("#@Html.FieldIdFor(model => model.TotalContributionCaja)").val();
+                        var personal = $("#@Html.FieldIdFor(model => model.TotalPersonalPayment)").val();
+                        var temp = Math.round((data - copere - caja - personal) * 100) / 100;
+                        reserve.html("S/. " + temp);
+                        $("#@Html.FieldIdFor(model => model.ReserveFund)").val(temp);
+                        $("#@Html.FieldIdFor(model => model.TotalToPay)").val(data);
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert('Failed to retrieve states.');
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+@helper TabChecks()
+{
+
+}

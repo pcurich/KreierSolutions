@@ -4727,7 +4727,7 @@
     <Value>Introduzca el número de niveles de subcategoría para mostrar en el menú de la categoría superior.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Contributions">
-    <Value>Configuración de la Ficha de las Aportaciones</Value>
+    <Value>Configuración de las Aportaciones</Value>
   </LocaleResource>  
   <LocaleResource Name="Admin.Configuration.Settings.Customeruser">
     <Value>Configuración del Usuarios - Asociados</Value>
@@ -6281,7 +6281,7 @@
     <Value>Configuración de Apoyo Social Económico</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.StateActivity.CashFlow.FindCustomer">
-    <Value>N° Administrativo (Garante)</Value>
+    <Value>Código Administrativo (Garante)</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings">
     <Value>Situacion Militar</Value>
@@ -7711,7 +7711,7 @@
     <Value>Nueva Contibucion</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Contribution.BackToList">
-    <Value>Volver a la lista de Contribuciones</Value>
+    <Value>Volver a la lista de Aportaciones</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Contribution.BackToPayment">
     <Value>Volver a los pagos Realizados</Value>
@@ -7747,10 +7747,10 @@
     <Value>Fecha de creación</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Contribution.Fields.CreatedOn.Hint">
-    <Value>Fecha de la asignacion del personal militar a la contribucion</Value>
+    <Value>Fecha de la asignacion del personal militar a la aportación</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Contribution.Fields.CustomerAdmCode">
-    <Value>N° Administrativo</Value>
+    <Value>Código Administrativo</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Contribution.Fields.CustomerAdmCode.Hint">
     <Value>Codigo Administrativo del personal militar</Value>
@@ -7777,7 +7777,7 @@
     <Value>Dia de cada mes en que se realizan los cobros</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Contribution.Fields.ExistsContribution">
-    <Value>Ya se encuenta una contribucion activa</Value>
+    <Value>Ya se encuenta una aportación activa</Value>
   </LocaleResource>
     <LocaleResource Name="Admin.Contract.Contribution.Fields.IsActive">
     <Value>Activo</Value>
@@ -7798,7 +7798,7 @@
     <Value>Establece si el garante es un contribuyente en la actualidad</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Contribution.Fields.AuthorizeDiscount">
-    <Value>N° Descuento</Value>
+    <Value>Autorización de Descuento</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Contribution.Fields.AuthorizeDiscount.GreaterThanOrEqualTo1">
     <Value>Ingrese numero de carta declaratoria valido</Value>
@@ -7816,10 +7816,10 @@
     <Value>Define el mes desde cuando se realizaran los cobros</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Contribution.Fields.SearchAdmCode">
-    <Value>N° Administrativo</Value>
+    <Value>Código Administrativo</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Contribution.Fields.SearchAdmCode.Hint">
-    <Value>Buscar por el N° Administrativo</Value>
+    <Value>Buscar por el Código Administrativo</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Contribution.Fields.SearchDni">
     <Value>N° Dni</Value>
@@ -7879,7 +7879,7 @@
     <Value>Define el año desde el cual se realizaran los cobros</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Contribution.Updated">
-    <Value>La contribucion se ha actualizado satisfactoriamente.</Value>
+    <Value>La aportación se ha actualizado satisfactoriamente.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.Amount">
     <Value>Monto Cobrado</Value>
@@ -8011,7 +8011,7 @@
     <Value>Buscar por dni</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Loan.Fields.SearchAdmCode">
-    <Value>N° Administrativo</Value>
+    <Value>Código Administrativo</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Loan.Fields.SearchAdmCode.Hint">
     <Value>Busqueda por el codigo administrativo</Value>
@@ -8023,7 +8023,7 @@
 	<Value>N° Dni</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Loan.Fields.CustomerAdmCode">
-	<Value>N° Administrativo</Value>
+	<Value>Código Administrativo</Value>
   </LocaleResource>  
   <LocaleResource Name="Admin.Contract.LoanPayments.Fields.AccountNumber">
     <Value>N° de Cuenta</Value>
@@ -8149,7 +8149,7 @@
     <Value>No puede solicitar un importe de {0} debido a que sobrepasa lo estipulado por la asociación</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Loan.StateActivity.Warranty.Error">
-    <Value>Requiere un garante debido al importe que solicita. Ingrese el N° Administrativo de un garante activo</Value>
+    <Value>Requiere un garante debido al importe que solicita. Ingrese el Código Administrativo de un garante activo</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Loan.Summary">
     <Value>Pre Evaluación</Value>
@@ -10369,7 +10369,7 @@
     <Value>Envío no es necesario</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.PageTitle">
-    <Value>Administración viccos</Value>
+    <Value>Administración ACMR</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Picture.RemovePicture">
     <Value>Eliminar imagen</Value>
@@ -11621,7 +11621,7 @@
     <Value>Lista de variables del servidor</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.System.SystemInfo.SoftVersion">
-    <Value>Versión de Viccos</Value>
+    <Value>Versión de ACMR</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.System.SystemInfo.SoftVersion.Hint">
     <Value>Versión de Viccos</Value>

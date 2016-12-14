@@ -1994,7 +1994,7 @@ namespace Ks.Admin.Controllers
 
 
             var benefits = _benefitService.GetAllBenefits();
-            var benefitInCustomer = _benefitService.GetContributionBenefitsByCustomer(customerId);
+            var benefitInCustomer = _benefitService.GetAllContributionBenefitByCustomer(customerId);
             foreach (var benefit in benefits)
             {
                 if (benefitInCustomer.Count(x => x.BenefitId == benefit.Id) == 0)

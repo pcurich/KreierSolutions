@@ -14,7 +14,9 @@
         <div class="options">
             <input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")" />
             <input type="submit" name="save-continue" class="k-button" value="@T("Admin.Common.SaveContinue")" />
+            <span id="contribution-benefit-delete" class="k-button">@T("Admin.Common.Delete")</span>
         </div>
     </div>
     @Html.Partial("_CreateOrUpdate", Model)
 }
+@Html.DeleteConfirmation("contribution-benefit-delete")

@@ -850,15 +850,6 @@
 
 @helper TabBenefits()
 {
-    if (Model.HasBenefits)
-    {
-
-    }
-    else
-    {
-        <p>
-            <input type="button" class="k-button" onclick="location.href='@Url.Action("BenefitCreate", new { customerId = Model.Id, contributionId = Model.Contribution.Id })' " value='@T("Admin.Customers.Customers.Benefit.AddButton")' />
-        </p>
-    }
+    @Html.Partial("_CreateOrUpdateBenefit", Model)
 }
      

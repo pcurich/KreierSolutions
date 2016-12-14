@@ -2,22 +2,17 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Web.Mvc;
 using Ks.Admin.Extensions;
-using Ks.Admin.Models.Common;
-using Ks.Admin.Models.Contract;
 using Ks.Admin.Models.Customers;
-using Ks.Admin.Models.Settings;
 using Ks.Core;
-using Ks.Core.Domain.Catalog;
 using Ks.Core.Domain.Common;
 using Ks.Core.Domain.Contract;
 using Ks.Core.Domain.Customers;
-using Ks.Core.Domain.Directory;
 using Ks.Core.Domain.Messages;
 using Ks.Services.Common;
+using Ks.Services.Configuration;
+using Ks.Services.Contract;
 using Ks.Services.Customers;
 using Ks.Services.Directory;
 using Ks.Services.ExportImport;
@@ -29,10 +24,6 @@ using Ks.Services.Messages;
 using Ks.Services.Security;
 using Ks.Web.Framework.Controllers;
 using Ks.Web.Framework.Kendoui;
-using Ks.Web.Framework.Mvc;
-using Ks.Services.Configuration;
-using Ks.Services.Contract;
-using Ks.Web.Framework;
 
 namespace Ks.Admin.Controllers
 {
@@ -78,9 +69,52 @@ namespace Ks.Admin.Controllers
         private readonly BenefitValueSetting _benefitValueSetting;
         private readonly BankSettings _bankSettings;
 
-
         #endregion
 
+        #region Constructor
+
+        public CustomerBenefitController(ISettingService settingService, ICustomerService customerService, IEncryptionService encryptionService, IGenericAttributeService genericAttributeService, ICustomerRegistrationService customerRegistrationService, IDateTimeHelper dateTimeHelper, ILocalizationService localizationService, DateTimeSettings dateTimeSettings, ICountryService countryService, IStateProvinceService stateProvinceService, ICityService cityService, IAddressService addressService, CustomerSettings customerSettings, IWorkContext workContext, IKsSystemContext ksSystemContext, IExportManager exportManager, ICustomerActivityService customerActivityService, IContributionService contributionService, ILoanService loanService, IBenefitService benefitService, ITabService tabService, IPermissionService permissionService, IQueuedEmailService queuedEmailService, EmailAccountSettings emailAccountSettings, IEmailAccountService emailAccountService, AddressSettings addressSettings, IKsSystemService ksSystemService, ICustomerAttributeParser customerAttributeParser, ICustomerAttributeService customerAttributeService, IAddressAttributeParser addressAttributeParser, IAddressAttributeService addressAttributeService, IAddressAttributeFormatter addressAttributeFormatter, ContributionSettings contributionSettings, SequenceIdsSettings sequenceIdsSettings, StateActivitySettings stateActivitySettings, BenefitValueSetting benefitValueSetting, BankSettings bankSettings)
+        {
+            _settingService = settingService;
+            _customerService = customerService;
+            _encryptionService = encryptionService;
+            _genericAttributeService = genericAttributeService;
+            _customerRegistrationService = customerRegistrationService;
+            _dateTimeHelper = dateTimeHelper;
+            _localizationService = localizationService;
+            _dateTimeSettings = dateTimeSettings;
+            _countryService = countryService;
+            _stateProvinceService = stateProvinceService;
+            _cityService = cityService;
+            _addressService = addressService;
+            _customerSettings = customerSettings;
+            _workContext = workContext;
+            _ksSystemContext = ksSystemContext;
+            _exportManager = exportManager;
+            _customerActivityService = customerActivityService;
+            _contributionService = contributionService;
+            _loanService = loanService;
+            _benefitService = benefitService;
+            _tabService = tabService;
+            _permissionService = permissionService;
+            _queuedEmailService = queuedEmailService;
+            _emailAccountSettings = emailAccountSettings;
+            _emailAccountService = emailAccountService;
+            _addressSettings = addressSettings;
+            _ksSystemService = ksSystemService;
+            _customerAttributeParser = customerAttributeParser;
+            _customerAttributeService = customerAttributeService;
+            _addressAttributeParser = addressAttributeParser;
+            _addressAttributeService = addressAttributeService;
+            _addressAttributeFormatter = addressAttributeFormatter;
+            _contributionSettings = contributionSettings;
+            _sequenceIdsSettings = sequenceIdsSettings;
+            _stateActivitySettings = stateActivitySettings;
+            _benefitValueSetting = benefitValueSetting;
+            _bankSettings = bankSettings;
+        }
+
+        #endregion
 
         #region Benefits
 
@@ -96,6 +130,7 @@ namespace Ks.Admin.Controllers
                 Data = benefits.Select(x =>
                 {
                     var model = x.ToModel();
+                    model.BenefitName = _benefitService.GetAllBenefits().FirstOrDefault(c => c.Id == model.BenefitId).Name;
                     model.CreatedOn = _dateTimeHelper.ConvertToUserTime(x.CreatedOnUtc, TimeZoneInfo.Utc);
                     return model;
                 }),
@@ -109,7 +144,7 @@ namespace Ks.Admin.Controllers
 
         public ActionResult Create(int customerId, int contributionId)
         {
-            if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributionBenefit))
                 return AccessDeniedView();
 
             var customer = _customerService.GetCustomerById(customerId);
@@ -136,15 +171,7 @@ namespace Ks.Admin.Controllers
             model.TotalContributionCopere = amountCopere;
             model.TotalPersonalPayment = amountTotal - amountCaja - amountCopere;
 
-
-            var benefits = _benefitService.GetAllBenefits();
-            var benefitInCustomer = _benefitService.GetContributionBenefitsByCustomer(customerId);
-            foreach (var benefit in benefits)
-            {
-                if (benefitInCustomer.Count(x => x.BenefitId == benefit.Id) == 0)
-                    model.BenefitModels.Add(new SelectListItem { Value = benefit.Id.ToString(), Text = benefit.Name });
-            }
-            model.BenefitModels.Insert(0, new SelectListItem { Value = "0", Text = "----------------------------" });
+            model.BenefitModels = PrepareBenefitList(customerId, model.BenefitId);
 
             return View(model);
         }
@@ -159,7 +186,7 @@ namespace Ks.Admin.Controllers
             {
                 var benefit = _benefitService.GetBenefitById(model.BenefitId);
                 var contribution = _contributionService.GetContributionsByCustomer(model.CustomerId, 1).FirstOrDefault();
-                int year = 0;
+                var year = 0;
 
                 if (contribution != null)
                     year = (new DateTime(1, 1, 1) + (DateTime.UtcNow - contribution.CreatedOnUtc)).Year;
@@ -177,16 +204,19 @@ namespace Ks.Admin.Controllers
                 _benefitService.InsertContributionBenefit(entity);
 
                 //activity log
-                _customerActivityService.InsertActivity("AddNewContributionBenefit", _localizationService.GetResource("ActivityLog.AddNewContributionBenefit"), entity.Id, model.CustomerCompleteName, _workContext.CurrentCustomer.GetFullName());
+                _customerActivityService.InsertActivity("AddNewContributionBenefit",
+                    _localizationService.GetResource("ActivityLog.AddNewContributionBenefit"), entity.Id,
+                    model.CustomerCompleteName, _workContext.CurrentCustomer.GetFullName());
 
                 SuccessNotification(_localizationService.GetResource("Admin.Configuration.ContributionBenefit.Added"));
 
-                return continueEditing ? RedirectToAction("Edit", new { id = entity.Id }) : RedirectToAction("Customer/Edit/" + model.CustomerId);
+                return continueEditing
+                    ? RedirectToAction("Edit", new { id = entity.Id })
+                    : RedirectToAction("Edit", new { Controller = "Customer", id = model.CustomerId });
             }
             ErrorNotification(_localizationService.GetResource("Admin.Configuration.ContributionBenefit.Error"));
 
             return View(model);
-
         }
 
         public ActionResult Edit(int id)
@@ -200,11 +230,14 @@ namespace Ks.Admin.Controllers
                 return RedirectToAction("List");
 
             var model = benefits.ToModel();
+            var contribution = _contributionService.GetContributionById(benefits.ContributionId);
+            var customer = _customerService.GetCustomerById(contribution.Id);
+            model.BenefitModels = PrepareBenefitList(contribution.CustomerId,model.BenefitId, true);
             model.CreatedOn = _dateTimeHelper.ConvertToUserTime(benefits.CreatedOnUtc, DateTimeKind.Utc);
-
-
-            if (model.Id > 0)
-                SaveSelectedTabIndex(1);
+            model.CustomerId = customer.Id;
+            model.CustomerDni = customer.GetAttribute<string>(SystemCustomerAttributeNames.Dni);
+            model.CustomerAdmCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode);
+            model.CustomerCompleteName = customer.GetFullName();
 
             return View(model);
         }
@@ -239,6 +272,39 @@ namespace Ks.Admin.Controllers
             return model;
         }
 
+        [NonAction]
+        protected virtual List<SelectListItem> PrepareBenefitList(int customerId, int benefitId, bool isCreate=false)
+        {
+            var model = new List<SelectListItem>();
+            var benefits = _benefitService.GetAllBenefits();
+            var benefitInCustomer = _benefitService.GetAllContributionBenefitByCustomer(customerId);
+            foreach (var benefit in benefits)
+            {
+                if (isCreate)
+                {
+                    model.Add(new SelectListItem
+                    {
+                        Value = benefit.Id.ToString(),
+                        Text = benefit.Name,
+                        Selected = benefit.Id == benefitId
+                    });
+                }
+                else
+                {
+                    if (benefitInCustomer.Count(x => x.BenefitId == benefit.Id) == 0)
+                        model.Add(new SelectListItem
+                        {
+                            Value = benefit.Id.ToString(),
+                            Text = benefit.Name,
+                            Selected = benefit.Id == benefitId
+                        });
+                }
+            }
+            model.Insert(0, new SelectListItem { Value = "0", Text = "----------------------------", Selected = false});
+
+            return model;
+        }
+
         [AcceptVerbs(HttpVerbs.Get)]
         public ActionResult ChangeTab(int customerId, int benefitId)
         {
@@ -248,7 +314,7 @@ namespace Ks.Admin.Controllers
             var benefit = _benefitService.GetBenefitById(benefitId);
             var contribution = _contributionService.GetContributionsByCustomer(customerId, 1).FirstOrDefault();
             var zeroTime = new DateTime(1, 1, 1);
-            int year = 0;
+            var year = 0;
             if (contribution != null)
             {
                 var span = DateTime.UtcNow - contribution.CreatedOnUtc;

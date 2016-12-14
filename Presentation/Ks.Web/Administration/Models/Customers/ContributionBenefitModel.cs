@@ -17,6 +17,8 @@ namespace Ks.Admin.Models.Customers
         public int ContributionId { get; set; }
         [KsResourceDisplayName("Admin.Customers.Customers.Benefit.BenefitId")]
         public int BenefitId { get; set; }
+        [KsResourceDisplayName("Admin.Customers.Customers.Benefit.BenefitId")]
+        public string BenefitName { get; set; }
         public int CustomerId { get; set; }
         [KsResourceDisplayName("Admin.Customers.Customers.Benefit.AmountBaseOfBenefit")]
         [UIHint("Decimal")]
