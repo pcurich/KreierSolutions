@@ -209,8 +209,6 @@ namespace Ks.Admin.Models.Customers
         [KsResourceDisplayName("Admin.Customers.Customers.AssociatedExternalAuth")]
         public IList<AssociatedExternalAuthModel> AssociatedExternalAuthRecords { get; set; }
 
-        public bool HasContributions { get; set; }
-
         public string NameAmount1 { get; set; }
         public bool IsActiveAmount1 { set; get; }
         public string NameAmount2 { get; set; }
@@ -222,9 +220,12 @@ namespace Ks.Admin.Models.Customers
 
         public List<LoanModel> LoanModels { get; set; }
 
+        public bool HasContributions { get; set; }
         public ContributionModel Contribution { get; set; }
 
-        public bool HasBenefits { get; set; }
+        public bool HasContributionBenefits { get; set; }
+
+        public List<ContributionBenefitModel> ContributionBenefits { get; set; }
 
         #region Nested classes
 

@@ -357,6 +357,10 @@ namespace Ks.Admin.Controllers
                     model.LoanModels = loans.Select(x => x.ToModel()).ToList();
                 }
 
+                var benefits = _benefitService.GetAllContributionBenefitByCustomer(customer.Id);
+                if (benefits != null)
+                    model.HasContributionBenefits= true;
+
                 if (model.HasContributions && contribution != null)
                 {
                     model.Contribution.AuthorizeDiscount = contribution.AuthorizeDiscount;
