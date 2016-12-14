@@ -14,8 +14,6 @@ namespace Ks.Core.Domain.Contract
         public string BankName { get; set; }
         public string CheckNumber { get; set; }
         public DateTime CreatedOnUtc { get; set; }
-        public DateTime UpdateOnUtc { get; set; }
-
         public virtual ContributionBenefit ContributionBenefit { get; set; }
     }
 }

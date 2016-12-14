@@ -232,7 +232,7 @@ namespace Ks.Admin.Controllers
             var model = benefits.ToModel();
             var contribution = _contributionService.GetContributionById(benefits.ContributionId);
             var customer = _customerService.GetCustomerById(contribution.Id);
-            model.BenefitModels = PrepareBenefitList(contribution.CustomerId,model.BenefitId, true);
+            model.BenefitModels = PrepareBenefitList(contribution.CustomerId, model.BenefitId, true);
             model.CreatedOn = _dateTimeHelper.ConvertToUserTime(benefits.CreatedOnUtc, DateTimeKind.Utc);
             model.CustomerId = customer.Id;
             model.CustomerDni = customer.GetAttribute<string>(SystemCustomerAttributeNames.Dni);
@@ -243,9 +243,26 @@ namespace Ks.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult BankList(DataSourceRequest command, CustomerListModel model)
+        public ActionResult BankCheckList(DataSourceRequest command, int contributionBenefitId)
         {
-            return View();
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributionBenefit))
+                return AccessDeniedView();
+
+            var benefitsBanks = _benefitService.GetAllContributionBenefitBank(contributionBenefitId);
+            var gridModel = new DataSourceResult
+            {
+                Data = benefitsBanks.Select(x =>
+                {
+                    var model = x.ToModel();
+                    model.CreatedOn = _dateTimeHelper.ConvertToUserTime(x.CreatedOnUtc, TimeZoneInfo.Utc);
+                    return model;
+                }),
+                Total = benefitsBanks.Count()
+            };
+            return new JsonResult
+            {
+                Data = gridModel
+            };
         }
 
         #endregion
@@ -273,7 +290,7 @@ namespace Ks.Admin.Controllers
         }
 
         [NonAction]
-        protected virtual List<SelectListItem> PrepareBenefitList(int customerId, int benefitId, bool isCreate=false)
+        protected virtual List<SelectListItem> PrepareBenefitList(int customerId, int benefitId, bool isCreate = false)
         {
             var model = new List<SelectListItem>();
             var benefits = _benefitService.GetAllBenefits();
@@ -300,7 +317,7 @@ namespace Ks.Admin.Controllers
                         });
                 }
             }
-            model.Insert(0, new SelectListItem { Value = "0", Text = "----------------------------", Selected = false});
+            model.Insert(0, new SelectListItem { Value = "0", Text = "----------------------------", Selected = false });
 
             return model;
         }

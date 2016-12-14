@@ -24,9 +24,17 @@ namespace Ks.Services.Contract
 
         ContributionBenefit GetContributionBenefitbyId(int contributionBenefitId);
         IPagedList<ContributionBenefit> GetAllContributionBenefitByCustomer(int customerId = 0, int pageIndex = 0, int pageSize = Int32.MaxValue);
-        //List<ContributionBenefit> GetContributionBenefitsByCustomer(int customerId);
 
-        //ContributionBenefit GetContributionBenefitsByContribution(int customerId, int contributionId);
+
+        #endregion
+
+        #region ContributionBenefitBank
+
+        void DeleteContributionBenefitBank(ContributionBenefitBank contributionBenefitBank);
+        void InsertContributionBenefitBank(ContributionBenefitBank contributionBenefitBank);
+        void UpdateContributionBenefitBank(ContributionBenefitBank contributionBenefitBank);
+
+        IPagedList<ContributionBenefitBank> GetAllContributionBenefitBank(int contributionBenefitId, int pageIndex = 0, int pageSize = Int32.MaxValue);
 
         #endregion
     }

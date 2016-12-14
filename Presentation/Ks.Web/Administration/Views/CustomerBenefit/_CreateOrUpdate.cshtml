@@ -223,5 +223,130 @@
 
 @helper TabChecks()
 {
-
+    <table class="adminContent">
+        <tr>
+            <td>
+                <div id="tabdetails-grid"></div>
+                <script>
+                    $(document).ready(function () {
+                        $("#tabdetails-grid").kendoGrid({
+                            dataSource: {
+                                type: "json",
+                                transport: {
+                                    read: {
+                                        url: "@Html.Raw(Url.Action("BankCheckList", "CustomerBenefit", new { contributionBenefitId = Model.Id }))",
+                                        type: "POST",
+                                        dataType: "json",
+                                        contentType: "application/json"
+                                        //any-forgery does not work with this contentType for some reasons
+                                        //data: addAntiForgeryToken
+                                    },
+                                    create: {
+                                        url: "@Html.Raw(Url.Action("BankCheckAdd", "CustomerBenefit"))",
+                                        type: "POST",
+                                        dataType: "json",
+                                        data: addAntiForgeryToken
+                                    },
+                                    update: {
+                                        url: "@Html.Raw(Url.Action("BankCheckUpdate", "CustomerBenefit"))",
+                                        type: "POST",
+                                        dataType: "json",
+                                        data: addAntiForgeryToken
+                                    },
+                                    destroy: {
+                                        url: "@Html.Raw(Url.Action("BankCheckDelete", "CustomerBenefit"))",
+                                        type: "POST",
+                                        dataType: "json",
+                                        data: addAntiForgeryToken
+                                    },
+                                    parameterMap: function (data, operation) {
+                                        if (operation != "read") {
+                                            return data;
+                                        } else {
+                                            //for some reasons only such "Filter" data be parsed
+                                            return JSON.stringify(data);
+                                        }
+                                    }
+                                },
+                                schema: {
+                                    data: "Data",
+                                    total: "Total",
+                                    errors: "Errors",
+                                    model: {
+                                        id: "Id",
+                                        fields: {
+                                            TabId: { editable: true, type: "number", defaultValue: @Model.Id },
+                                            YearInActivity: { editable: true, type: "number" },
+                                            TabValueS: { editable: true, type: "string" },
+                                            CreatedOn: { editable: false, type: "date" },
+                                            UpdatedOn: { editable: false, type: "date" },
+                                            Id: { editable: false, type: "number" }
+                                        }
+                                    }
+                                },
+                                requestEnd: function (e) {
+                                    if (e.type == "create" || e.type == "update") {
+                                        this.read();
+                                    }
+                                },
+                                error: function (e) {
+                                    display_kendoui_grid_error(e);
+                                    // Cancel the changes
+                                    this.cancelChanges();
+                                },
+                                serverPaging: true,
+                                serverFiltering: true,
+                                serverSorting: true
+                            },
+                            pageable: {
+                                refresh: true,
+                                numeric: false,
+                                previousNext: false,
+                                info: false
+                            },
+                            editable: {
+                                confirmation: false,
+                                mode: "inline"
+                            },
+                            scrollable: true,
+                            toolbar: [{ name: "create", text: "@T("Admin.Common.AddNewRecord")" }],
+                            columns: [{
+                                field: "YearInActivity",
+                                title: "@T("Admin.Configuration.TabDetails.Fields.YearInActivity")"
+                            }, {
+                                field: "TabValueS",
+                                title: "@T("Admin.Configuration.TabDetails.Fields.TabValue")"
+                            }, {
+                                field: "CreatedOn",
+                                title: "@T("Admin.Configuration.TabDetails.Fields.CreatedOn")",
+                                template: '#= CreatedOn!=null ? kendo.toString(CreatedOn,"dd/MM/yyyy","es-PE"): " "#',
+                                type: "date",
+                                format: "{0:G}"
+                            }, {
+                                field: "UpdatedOn",
+                                title: "@T("Admin.Configuration.TabDetails.Fields.UpdatedOn")",
+                                template: '#= UpdatedOn!=null ? kendo.toString(UpdatedOn,"dd/MM/yyyy","es-PE"): " "#',
+                                type: "date",
+                                format: "{0:G}"
+                            }, {
+                                command: [{
+                                    name: "edit",
+                                    text: {
+                                        edit: "@T("Admin.Common.Edit")",
+                                        update: "@T("Admin.Common.Update")",
+                                        cancel: "@T("Admin.Common.Cancel")"
+                                    }
+                                }, {
+                                    name: "destroy",
+                                    text: "@T("Admin.Common.Delete")"
+                                }],
+                                width: 200,
+                                filterable: false
+                            }]
+                        });
+                    });
+                </script>
+            </td>
+        </tr>
+    </table>
 }

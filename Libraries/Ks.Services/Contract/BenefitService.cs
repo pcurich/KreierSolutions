@@ -265,6 +265,47 @@ namespace Ks.Services.Contract
 
         #endregion
 
+        #region ContributionBenefitBank
+
+        public virtual void DeleteContributionBenefitBank(ContributionBenefitBank contributionBenefitBank)
+        {
+            if (contributionBenefitBank == null)
+                throw new ArgumentNullException("contributionBenefitBank");
+
+            _contributionBenefitBankRepository.Delete(contributionBenefitBank);
+
+        }
+
+        public virtual void InsertContributionBenefitBank(ContributionBenefitBank contributionBenefitBank)
+        {
+             if (contributionBenefitBank == null)
+                throw new ArgumentNullException("contributionBenefitBank");
+
+            _contributionBenefitBankRepository.Insert(contributionBenefitBank);
+        }
+
+        public virtual void UpdateContributionBenefitBank(ContributionBenefitBank contributionBenefitBank)
+        {
+             if (contributionBenefitBank == null)
+                throw new ArgumentNullException("contributionBenefitBank");
+
+            _contributionBenefitBankRepository.Update(contributionBenefitBank);
+        }
+
+        public IPagedList<ContributionBenefitBank> GetAllContributionBenefitBank(int contributionBenefitId, int pageIndex = 0, int pageSize = Int32.MaxValue)
+        {
+            var query = from x in _contributionBenefitBankRepository.Table
+                        where x.ContributionBenefitId==contributionBenefitId
+                        select x;
+
+            return new PagedList<ContributionBenefitBank>(query.ToList(), pageIndex, pageSize); 
+        }
+
         #endregion
+
+        #endregion
+
+
+         
     }
 }

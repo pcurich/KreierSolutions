@@ -356,6 +356,14 @@ namespace Ks.Admin.Infrastructure
                 .ForMember(dest => dest.CreatedOnUtc, mo => mo.Ignore());
             #endregion
 
+            #region contributionbenefitbank
+            Mapper.CreateMap<ContributionBenefitBank, ContributionBenefitBankModel>()
+                .ForMember(dest => dest.CreatedOn, mo => mo.Ignore())
+                .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
+            Mapper.CreateMap<ContributionBenefitBankModel, ContributionBenefitBank>()
+                .ForMember(dest => dest.CreatedOnUtc, mo => mo.Ignore());
+            #endregion
+
             #region measure weights
 
             Mapper.CreateMap<MeasureWeight, MeasureWeightModel>()

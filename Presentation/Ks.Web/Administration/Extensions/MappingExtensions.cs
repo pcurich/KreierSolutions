@@ -397,8 +397,22 @@ namespace Ks.Admin.Extensions
 
         #endregion
 
-
         #region ContributionBenefitModelBank
+
+        public static ContributionBenefitBankModel ToModel(this ContributionBenefitBank entity)
+        {
+            return entity.MapTo<ContributionBenefitBank, ContributionBenefitBankModel>();
+        }
+
+        public static ContributionBenefitBank ToEntity(this ContributionBenefitBankModel model)
+        {
+            return model.MapTo<ContributionBenefitBankModel, ContributionBenefitBank>();
+        }
+
+        public static ContributionBenefitBank ToEntity(this ContributionBenefitBankModel model, ContributionBenefitBank destination)
+        {
+            return model.MapTo(destination);
+        }
 
         #endregion
 

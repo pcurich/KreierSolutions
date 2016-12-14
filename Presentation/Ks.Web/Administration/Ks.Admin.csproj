@@ -1386,6 +1386,7 @@
     <Compile Include="Models\Common\UrlRecordListModel.cs" />
     <Compile Include="Models\Common\UrlRecordModel.cs" />
     <Compile Include="Models\Contract\BenefitModel.cs" />
+    <Compile Include="Models\Contract\ContributionBenefitBankModel.cs" />
     <Compile Include="Models\Contract\ContributionPaymentListModel.cs" />
     <Compile Include="Models\Contract\ContributionListModel.cs" />
     <Compile Include="Models\Contract\ContributionModel.cs" />
