@@ -1319,7 +1319,6 @@
     <Content Include="Views\Tab\Edit.cshtml" />
     <Content Include="Views\Tab\_CreateOrUpdate.cshtml" />
     <Content Include="Views\Customer\_CreateOrUpdateBenefit.cshtml" />
-    <Content Include="Views\Customer\BenefitCreate.cshtml" />
     <Content Include="Views\Benefit\List.cshtml" />
     <Content Include="Views\Benefit\Create.cshtml" />
     <Content Include="Views\Benefit\Edit.cshtml" />

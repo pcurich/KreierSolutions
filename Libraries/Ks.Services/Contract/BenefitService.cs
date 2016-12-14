@@ -228,7 +228,7 @@ namespace Ks.Services.Contract
         {
 
             var query = from b in _contributionBenefitRepository.Table
-                        join c in _contributionRepository.Table on customerId equals c.CustomerId
+                        join c in _contributionRepository.Table on b.ContributionId equals c.Id
                         where c.CustomerId == customerId && c.Active
                         select b;
 

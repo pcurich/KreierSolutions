@@ -13,91 +13,94 @@
         <input type="button" class="k-button" onclick="location.href='@Url.Action("Create","CustomerBenefit", new { customerId = Model.Id, contributionId = Model.Contribution.Id })' " value='@T("Admin.Common.AddNew")' />
     </div>
 </div>
-<table class="adminContent">
-    <tr>
-        <td>
-            <div id="tab-grid"></div>
-            <script>
-                $(document).ready(function () {
-                    $("#tab-grid").kendoGrid({
-                        dataSource: {
-                            type: "json",
-                            transport: {
-                                read: {
-                                    url: "@Html.Raw(Url.Action("List", "CustomerBenefit", new { customerId=Model.Id }))",
-                                    type: "POST",
-                                    dataType: "json",
-                                    data: addAntiForgeryToken
-                                }
-                            },
-                            schema: {
-                                data: "Data",
-                                total: "Total",
-                                errors: "Errors"
-                            },
-                            error: function (e) {
-                                display_kendoui_grid_error(e);
-                                // Cancel the changes
-                                this.cancelChanges();
-                            },
-                            serverPaging: true,
-                            serverFiltering: true,
-                            serverSorting: true
-                        },
-                        pageable: {
-                            refresh: true,
-                            numeric: false,
-                            previousNext: false,
-                            info: false
-                        },
-                        editable: {
-                            confirmation: false,
-                            mode: "inline"
-                        },
-                        scrollable: false,
-                        columns: [{
-                            field: "BenefitName",
-                            title: "@T("Admin.Customers.Customers.Benefit.TotalToPay")"
-                        }, {
-                            field: "TotalToPay",
-                            title: "@T("Admin.Configuration.Tabs.Fields.AmountBase")",
-                            template: '#= kendo.toString(TotalToPay,"c","es-PE") #',
-                            format: "{0:c2}"
-                        }, {
-                            field: "TotalToPay",
-                            title: "@T("Admin.Configuration.Tabs.Fields.AmountBase")",
-                            template: '#= kendo.toString(TotalToPay,"c","es-PE") #',
-                            format: "{0:c2}"
-                        }, {
-                            field: "TotalContributionCaja",
-                            title: "@T("Admin.Configuration.Tabs.Fields.TotalContributionCaja")",
-                            template: '#= kendo.toString(TotalContributionCaja,"c","es-PE") #',
-                            format: "{0:c2}"
-                        }, {
-                            field: "TotalContributionCopere",
-                            title: "@T("Admin.Configuration.Tabs.Fields.TotalContributionCopere")",
-                            template: '#= kendo.toString(TotalContributionCopere,"c","es-PE") #',
-                            format: "{0:c2}"
-                        }, {
-                            field: "TotalPersonalPayment",
-                            title: "@T("Admin.Configuration.Tabs.Fields.TotalPersonalPayment")",
-                            template: '#= kendo.toString(TotalPersonalPayment,"c","es-PE") #',
-                            format: "{0:c2}"
-                        }, {
-                            field: "CreatedOn",
-                            title: "@T("Admin.Customers.Customers.Benefit.CreatedOn")",
-                            template: '#= CreatedOn!=null ? kendo.toString(CreatedOn,"dd/MM/yyyy hh:mm:ss","es-PE"): " "#',
-                            type: "date",
-                            format: "{0:G}"
-                        }, {
-                            field: "Id",
-                            title: "@T("Admin.Common.Edit")",
-                            width: 100,
-                            template: '<a href="../../CustomerBenefit/Edit/#=Id#">@T("Admin.Common.Edit")</a>'
-                        }]
-                    });
-                });
-            </script>
-        </td>
-    </tr>
-</table>
+@{
+    if (Model.HasContributionBenefits)
+    {
+        <table class="adminContent">
+            <tr>
+                <td>
+                    <div id="tab-grid"></div>
+                    <script>
+                        $(document).ready(function () {
+                            $("#tab-grid").kendoGrid({
+                                dataSource: {
+                                    type: "json",
+                                    transport: {
+                                        read: {
+                                            url: "@Html.Raw(Url.Action("List", "CustomerBenefit", new { customerId=Model.Id }))",
+                                            type: "POST",
+                                            dataType: "json",
+                                            data: addAntiForgeryToken
+                                        }
+                                    },
+                                    schema: {
+                                        data: "Data",
+                                        total: "Total",
+                                        errors: "Errors"
+                                    },
+                                    error: function (e) {
+                                        display_kendoui_grid_error(e);
+                                        // Cancel the changes
+                                        this.cancelChanges();
+                                    },
+                                    serverPaging: true,
+                                    serverFiltering: true,
+                                    serverSorting: true
+                                },
+                                pageable: {
+                                    refresh: true,
+                                    numeric: false,
+                                    previousNext: false,
+                                    info: false
+                                },
+                                editable: {
+                                    confirmation: false,
+                                    mode: "inline"
+                                },
+                                scrollable: false,
+                                columns: [{
+                                    field: "BenefitName",
+                                    title: "@T("Admin.Customers.Customers.Benefit.TotalToPay")"
+                                }, {
+                                    field: "TotalToPay",
+                                    title: "@T("Admin.Configuration.Tabs.Fields.AmountBase")",
+                                    template: '#= kendo.toString(TotalToPay,"c","es-PE") #',
+                                    format: "{0:c2}"
+                                }, {
+                                    field: "YearInActivity",
+                                    title: "@T("Admin.Customers.Customers.Benefit.YearInActivity")" 
+                                },                                {
+                                    field: "TotalContributionCaja",
+                                    title: "@T("Admin.Customers.Customers.Benefit.TotalContributionCaja")",
+                                    template: '#= kendo.toString(TotalContributionCaja,"c","es-PE") #',
+                                    format: "{0:c2}"
+                                }, {
+                                    field: "TotalContributionCopere",
+                                    title: "@T("Admin.Customers.Customers.Benefit.TotalContributionCopere")",
+                                    template: '#= kendo.toString(TotalContributionCopere,"c","es-PE") #',
+                                    format: "{0:c2}"
+                                }, {
+                                    field: "TotalPersonalPayment",
+                                    title: "@T("Admin.Customers.Customers.Benefit.TotalPersonalPayment")",
+                                    template: '#= kendo.toString(TotalPersonalPayment,"c","es-PE") #',
+                                    format: "{0:c2}"
+                                }, {
+                                    field: "CreatedOn",
+                                    title: "@T("Admin.Customers.Customers.Benefit.CreatedOn")",
+                                    template: '#= CreatedOn!=null ? kendo.toString(CreatedOn,"dd/MM/yyyy hh:mm:ss","es-PE"): " "#',
+                                    type: "date",
+                                    format: "{0:G}"
+                                }, {
+                                    field: "Id",
+                                    title: "@T("Admin.Common.Edit")",
+                                    width: 100,
+                                    template: '<a href="../../CustomerBenefit/Edit/#=Id#">@T("Admin.Common.Edit")</a>'
+                                }]
+                            });
+                        });
+                    </script>
+                </td>
+            </tr>
+        </table>
+    }
+}

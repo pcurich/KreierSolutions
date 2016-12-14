@@ -351,15 +351,15 @@ namespace Ks.Admin.Controllers
                 model.HasContributions = contribution != null;
                 model.Contribution = contribution.ToModel();
                 var loans = _loanService.GetLoansByCustomer(model.Id);
-                if (loans != null)
+                if (loans != null && loans.Count > 0)
                 {
                     model.HasLoans = true;
                     model.LoanModels = loans.Select(x => x.ToModel()).ToList();
                 }
 
                 var benefits = _benefitService.GetAllContributionBenefitByCustomer(customer.Id);
-                if (benefits != null)
-                    model.HasContributionBenefits= true;
+                if (benefits != null && benefits.Count > 0)
+                    model.HasContributionBenefits = true;
 
                 if (model.HasContributions && contribution != null)
                 {
@@ -1962,131 +1962,6 @@ namespace Ks.Admin.Controllers
 
             return model;
         }
-
-        #endregion
-
-        #region Benefits
-
-        public ActionResult BenefitCreate(int customerId, int contributionId)
-        {
-            if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
-                return AccessDeniedView();
-
-            var customer = _customerService.GetCustomerById(customerId);
-            if (customer == null)
-                //No customer found with the specified id
-                return RedirectToAction("List");
-
-            var model = new ContributionBenefitModel
-            {
-                CustomerId = customer.Id,
-                CustomerDni = customer.GetAttribute<string>(SystemCustomerAttributeNames.Dni),
-                CustomerAdmCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode),
-                CustomerCompleteName = customer.GetFullName(),
-                AmountBaseOfBenefit = _benefitValueSetting.AmountBaseOfBenefit,
-                ContributionId = contributionId
-            };
-
-            var contributions = _contributionService.GetPaymentByContributionId(contributionId);
-            var amountTotal = contributions.Sum(x => x.AmountPayed);
-            var amountCaja = contributions.Where(x => x.BankName == "Caja").Sum(x => x.AmountPayed);
-            var amountCopere = contributions.Where(x => x.BankName == "Copere").Sum(x => x.AmountPayed);
-
-            model.TotalContributionCaja = amountCaja;
-            model.TotalContributionCopere = amountCopere;
-            model.TotalPersonalPayment = amountTotal - amountCaja - amountCopere;
-
-
-            var benefits = _benefitService.GetAllBenefits();
-            var benefitInCustomer = _benefitService.GetAllContributionBenefitByCustomer(customerId);
-            foreach (var benefit in benefits)
-            {
-                if (benefitInCustomer.Count(x => x.BenefitId == benefit.Id) == 0)
-                    model.BenefitModels.Add(new SelectListItem { Value = benefit.Id.ToString(), Text = benefit.Name });
-            }
-            model.BenefitModels.Insert(0, new SelectListItem { Value = "0", Text = "----------------------------" });
-
-            return View(model);
-        }
-
-        [HttpPost]
-        [ValidateInput(false)]
-        public ActionResult BenefitCreate(ContributionBenefitModel model)
-        {
-            if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
-                return AccessDeniedView();
-
-            var benefit = _benefitService.GetBenefitById(model.BenefitId);
-            var contribution = _contributionService.GetContributionsByCustomer(model.CustomerId, 1).FirstOrDefault();
-            var zeroTime = new DateTime(1, 1, 1);
-            int year = 0;
-            if (contribution != null)
-            {
-                var span = DateTime.UtcNow - contribution.CreatedOnUtc;
-                year = (zeroTime + span).Year;
-            }
-            var activeTab = _tabService.GetValueFromActive(year);
-
-            model.Discount = benefit.Discount;
-            model.TabValue = activeTab.TabValue;
-            model.YearInActivity = year;
-            model.TotalReationShip = 0;
-
-            var entity = model.ToEntity();
-            entity.CreatedOnUtc = DateTime.UtcNow;
-
-            _benefitService.InsertContributionBenefit(entity);
-
-            return RedirectToAction("BenefitCreate", new { customerId = model.CustomerId, contributionId = model.ContributionId });
-        }
-
-
-        #region Util
-
-        [NonAction]
-        protected virtual List<SelectListItem> PrepareBanks()
-        {
-            var model = new List<SelectListItem>();
-            model.Insert(0, new SelectListItem { Value = "0", Text = "----------------" });
-
-            if (_bankSettings.IsActive1)
-                model.Add(new SelectListItem { Value = _bankSettings.AccountNumber1, Text = _bankSettings.NameBank1 });
-            if (_bankSettings.IsActive2)
-                model.Add(new SelectListItem { Value = _bankSettings.AccountNumber2, Text = _bankSettings.NameBank2 });
-            if (_bankSettings.IsActive3)
-                model.Add(new SelectListItem { Value = _bankSettings.AccountNumber3, Text = _bankSettings.NameBank3 });
-            if (_bankSettings.IsActive4)
-                model.Add(new SelectListItem { Value = _bankSettings.AccountNumber4, Text = _bankSettings.NameBank4 });
-            if (_bankSettings.IsActive5)
-                model.Add(new SelectListItem { Value = _bankSettings.AccountNumber5, Text = _bankSettings.NameBank5 });
-
-            return model;
-        }
-
-        [AcceptVerbs(HttpVerbs.Get)]
-        public ActionResult ChangeTab(int customerId, int benefitId)
-        {
-            if (benefitId == 0)
-                return Json(0.ToString("c", new CultureInfo("es-PE")), JsonRequestBehavior.AllowGet);
-
-            var benefit = _benefitService.GetBenefitById(benefitId);
-            var contribution = _contributionService.GetContributionsByCustomer(customerId, 1).FirstOrDefault();
-            var zeroTime = new DateTime(1, 1, 1);
-            int year = 0;
-            if (contribution != null)
-            {
-                var span = DateTime.UtcNow - contribution.CreatedOnUtc;
-                year = (zeroTime + span).Year;
-            }
-            var activeTab = _tabService.GetValueFromActive(year);
-            var total = _benefitValueSetting.AmountBaseOfBenefit * (decimal)benefit.Discount * (decimal)activeTab.TabValue;
-            if (benefit.CancelLoans)
-                total -= _loanService.GetLoansByCustomer(customerId).Sum(x => x.TotalToPay);
-
-            return Json(total.ToString("c", new CultureInfo("es-PE")), JsonRequestBehavior.AllowGet);
-        }
-
-        #endregion
 
         #endregion
 
