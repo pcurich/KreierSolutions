@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Web.Mvc;
 using Ks.Admin.Extensions;
+using Ks.Admin.Models.Contract;
 using Ks.Admin.Models.Customers;
 using Ks.Core;
 using Ks.Core.Domain.Common;
@@ -22,8 +23,10 @@ using Ks.Services.Localization;
 using Ks.Services.Logging;
 using Ks.Services.Messages;
 using Ks.Services.Security;
+using Ks.Web.Framework;
 using Ks.Web.Framework.Controllers;
 using Ks.Web.Framework.Kendoui;
+using Ks.Web.Framework.Mvc;
 
 namespace Ks.Admin.Controllers
 {
@@ -238,7 +241,8 @@ namespace Ks.Admin.Controllers
             model.CustomerDni = customer.GetAttribute<string>(SystemCustomerAttributeNames.Dni);
             model.CustomerAdmCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode);
             model.CustomerCompleteName = customer.GetFullName();
-
+            model.Banks = PrepareBanks();
+            model.RelaTionShips = PrepareRelationShip();
             return View(model);
         }
 
@@ -265,6 +269,64 @@ namespace Ks.Admin.Controllers
             };
         }
 
+
+        [HttpPost]
+        public ActionResult BankCheckUpdate([Bind(Exclude = "CreatedOn")] ContributionBenefitBankModel model)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributionBenefit))
+                return AccessDeniedView();
+
+            if (!ModelState.IsValid)
+            {
+                return Json(new DataSourceResult { Errors = ModelState.SerializeErrors() });
+            }
+            var entity =model.ToEntity();
+            entity.CreatedOnUtc = DateTime.UtcNow;
+            _benefitService.InsertContributionBenefitBank(entity);
+
+            _customerActivityService.InsertActivity("EditContributionBenefitBank", _localizationService.GetResource("ActivityLog.EditContributionBenefitBank"), model.CompleteName, _workContext.CurrentCustomer.GetFullName());
+
+            return new NullJsonResult();
+        }
+
+        [HttpPost]
+        public ActionResult TabDetailAdd([Bind(Exclude = "Id,CreatedOn")] ContributionBenefitBankModel model)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributionBenefit))
+                return AccessDeniedView();
+
+            if (!ModelState.IsValid)
+            {
+                return Json(new DataSourceResult { Errors = ModelState.SerializeErrors() });
+            }
+
+            var entity = model.ToEntity();
+            entity.CreatedOnUtc = DateTime.UtcNow;
+            //revisar si viene bien todo
+            _benefitService.InsertContributionBenefitBank(entity);
+
+            _customerActivityService.InsertActivity("AddNewContributionBenefitBank", _localizationService.GetResource("ActivityLog.AddNewContributionBenefitBank"), model.CompleteName, _workContext.CurrentCustomer.GetFullName());
+
+            return new NullJsonResult();
+        }
+
+        [HttpPost]
+        public ActionResult TabDetailDelete(int id)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributionBenefit))
+                return AccessDeniedView();
+
+            var contributionBenefitBank = _benefitService.GetContributionBenefitBankById(id);
+            if (contributionBenefitBank == null)
+                throw new ArgumentException("No setting found with the specified id");
+            _benefitService.DeleteContributionBenefitBank(contributionBenefitBank);
+
+            //activity log
+            _customerActivityService.InsertActivity("DeleteContributionBenefitBank", _localizationService.GetResource("ActivityLog.DeleteContributionBenefitBank"), contributionBenefitBank.CompleteName, _workContext.CurrentCustomer.GetFullName());
+
+            return new NullJsonResult();
+        }
+
         #endregion
 
         #region Util
@@ -286,6 +348,14 @@ namespace Ks.Admin.Controllers
             if (_bankSettings.IsActive5)
                 model.Add(new SelectListItem { Value = _bankSettings.AccountNumber5, Text = _bankSettings.NameBank5 });
 
+            return model;
+        }
+
+        [NonAction]
+        protected virtual List<SelectListItem> PrepareRelationShip()
+        {
+            var model = RelationShipType.Esposa.ToSelectList().ToList();
+            model.Insert(0, new SelectListItem { Value = "0", Text = "----------------" });
             return model;
         }
 

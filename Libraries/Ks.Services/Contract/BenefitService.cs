@@ -278,7 +278,7 @@ namespace Ks.Services.Contract
 
         public virtual void InsertContributionBenefitBank(ContributionBenefitBank contributionBenefitBank)
         {
-             if (contributionBenefitBank == null)
+            if (contributionBenefitBank == null)
                 throw new ArgumentNullException("contributionBenefitBank");
 
             _contributionBenefitBankRepository.Insert(contributionBenefitBank);
@@ -286,19 +286,28 @@ namespace Ks.Services.Contract
 
         public virtual void UpdateContributionBenefitBank(ContributionBenefitBank contributionBenefitBank)
         {
-             if (contributionBenefitBank == null)
+            if (contributionBenefitBank == null)
                 throw new ArgumentNullException("contributionBenefitBank");
 
             _contributionBenefitBankRepository.Update(contributionBenefitBank);
         }
 
+        public virtual ContributionBenefitBank GetContributionBenefitBankById(int contributionBenefitBankId)
+        {
+            var query = from x in _contributionBenefitBankRepository.Table
+                        where x.Id == contributionBenefitBankId
+                        select x;
+
+            return query.FirstOrDefault();
+        }
+
         public IPagedList<ContributionBenefitBank> GetAllContributionBenefitBank(int contributionBenefitId, int pageIndex = 0, int pageSize = Int32.MaxValue)
         {
             var query = from x in _contributionBenefitBankRepository.Table
-                        where x.ContributionBenefitId==contributionBenefitId
+                        where x.ContributionBenefitId == contributionBenefitId
                         select x;
 
-            return new PagedList<ContributionBenefitBank>(query.ToList(), pageIndex, pageSize); 
+            return new PagedList<ContributionBenefitBank>(query.ToList(), pageIndex, pageSize);
         }
 
         #endregion
@@ -306,6 +315,6 @@ namespace Ks.Services.Contract
         #endregion
 
 
-         
+
     }
 }

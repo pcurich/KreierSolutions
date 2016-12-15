@@ -33,6 +33,7 @@ namespace Ks.Services.Contract
         void DeleteContributionBenefitBank(ContributionBenefitBank contributionBenefitBank);
         void InsertContributionBenefitBank(ContributionBenefitBank contributionBenefitBank);
         void UpdateContributionBenefitBank(ContributionBenefitBank contributionBenefitBank);
+        ContributionBenefitBank GetContributionBenefitBankById(int contributionBenefitBankId);
 
         IPagedList<ContributionBenefitBank> GetAllContributionBenefitBank(int contributionBenefitId, int pageIndex = 0, int pageSize = Int32.MaxValue);
 

@@ -275,11 +275,18 @@
                                     model: {
                                         id: "Id",
                                         fields: {
-                                            TabId: { editable: true, type: "number", defaultValue: @Model.Id },
-                                            YearInActivity: { editable: true, type: "number" },
-                                            TabValueS: { editable: true, type: "string" },
-                                            CreatedOn: { editable: false, type: "date" },
-                                            UpdatedOn: { editable: false, type: "date" },
+                                            ContributionBenefitId:{editable: true,type: "number", defaultValue: @Model.Id },
+                                            RelationShip:{editable: true,type: "string"},
+                                            RelationShipId:{editable: true,type: "number"},
+                                            CompleteName:{editable: true,type: "string"},
+                                            Dni:{editable: true,type: "string"},
+                                            AccountNumber:{editable: false,type: "string"},
+                                            Bank:{editable: true,type: "string"},
+                                            BankId:{editable: true,type: "number"},
+                                            CheckNumber:{editable: true,type: "string"},
+                                            Ratio:{editable: true,type: "number"},
+                                            AmountToPay:{editable: false,type: "number"},
+                                            CreatedOn:{editable: false,type: "date"},
                                             Id: { editable: false, type: "number" }
                                         }
                                     }
@@ -310,43 +317,127 @@
                             },
                             scrollable: true,
                             toolbar: [{ name: "create", text: "@T("Admin.Common.AddNewRecord")" }],
-                            columns: [{
-                                field: "YearInActivity",
-                                title: "@T("Admin.Configuration.TabDetails.Fields.YearInActivity")"
-                            }, {
-                                field: "TabValueS",
-                                title: "@T("Admin.Configuration.TabDetails.Fields.TabValue")"
-                            }, {
-                                field: "CreatedOn",
-                                title: "@T("Admin.Configuration.TabDetails.Fields.CreatedOn")",
-                                template: '#= CreatedOn!=null ? kendo.toString(CreatedOn,"dd/MM/yyyy","es-PE"): " "#',
-                                type: "date",
-                                format: "{0:G}"
-                            }, {
-                                field: "UpdatedOn",
-                                title: "@T("Admin.Configuration.TabDetails.Fields.UpdatedOn")",
-                                template: '#= UpdatedOn!=null ? kendo.toString(UpdatedOn,"dd/MM/yyyy","es-PE"): " "#',
-                                type: "date",
-                                format: "{0:G}"
-                            }, {
-                                command: [{
-                                    name: "edit",
-                                    text: {
-                                        edit: "@T("Admin.Common.Edit")",
-                                        update: "@T("Admin.Common.Update")",
-                                        cancel: "@T("Admin.Common.Cancel")"
+                            edit: function(e) {
+                                if (e.model.isNew()) {
+                                    //little hack here
+                                    //pre-select the first value of kendoui dropdownlist datasource
+                                    //for some reasons (maybe, bug) it always sends 0
+                                    //if no value has been selected (changed) in the dropdownlist
+                                    if (allBanks.length > 0) {
+                                        e.model.BankName = allBanks[0].Id;
                                     }
+                                }
+                            },
+                            columns: [
+                                {
+                                    field: "RelationShipId",
+                                    title: "@T("Admin.Configuration.ContributionBenefitBank.RelationShip")",
+                                    editor: relationShipDropDownEditor,
+                                    template: "#:RelationShip#"
+                                },{
+                                    field: "CompleteName",
+                                    title: "@T("Admin.Configuration.ContributionBenefitBank.CompleteName")",
+                                },{
+                                    field: "Dni",
+                                    title: "@T("Admin.Configuration.ContributionBenefitBank.Dni")",
+                                },{
+                                    field: "AccountNumber",
+                                    title: "@T("Admin.Configuration.ContributionBenefitBank.AccountNumber")"
+                                },{
+                                    field: "BankId",
+                                    title: "@T("Admin.Configuration.ContributionBenefitBank.Bank")",
+                                    editor: banksDropDownEditor,
+                                    template: "#:Bank#"
                                 }, {
-                                    name: "destroy",
-                                    text: "@T("Admin.Common.Delete")"
-                                }],
-                                width: 200,
-                                filterable: false
-                            }]
+                                    field: "CheckNumber",
+                                    title: "@T("Admin.Configuration.ContributionBenefitBank.CheckNumber")"
+                                }, {
+                                    field: "Ratio",
+                                    title: "@T("Admin.Configuration.ContributionBenefitBank.Ratio")"
+                                }, {
+                                    field: "AmountToPay",
+                                    title: "@T("Admin.Configuration.ContributionBenefitBank.AmountToPay")",
+                                    template: '#= kendo.toString(AmountToPay,"c","es-PE") #',
+                                    format: "{0:c2}"
+                                }, {
+                                    field: "CreatedOn",
+                                    title: "@T("Admin.Configuration.ContributionBenefitBank.CreatedOn")",
+                                    template: '#= CreatedOn!=null ? kendo.toString(CreatedOn,"dd/MM/yyyy","es-PE"): " "#',
+                                    type: "date",
+                                    format: "{0:G}"
+                                }, {
+                                    command: [{
+                                        name: "edit",
+                                        text: {
+                                            edit: "@T("Admin.Common.Edit")",
+                                            update: "@T("Admin.Common.Update")",
+                                            cancel: "@T("Admin.Common.Cancel")"
+                                        }
+                                    }, {
+                                        name: "destroy",
+                                        text: "@T("Admin.Common.Delete")"
+                                    }],
+                                    width: 200,
+                                    filterable: false
+                                }]
                         });
                     });
+
+                    var allBanks = [
+                        @for (int i = 0; i < Model.Banks.Count; i++)
+                        {
+                            var bankItem = Model.Banks[i];
+                            <text>
+                                {
+                                    Id:@(bankItem.Value),
+                                    Name: "@(Html.Raw(HttpUtility.JavaScriptStringEncode(bankItem.Text)))"
+                                }
+                            </text>
+                            if (i != Model.Banks.Count - 1)
+                                {
+                                    <text>,</text>
+                                }
+                        }
+                    ];
+
+                    var allRelationShip = [
+                        @for (int i = 0; i < Model.RelaTionShips.Count; i++)
+                    {
+                        var relationShipItem = Model.RelaTionShips[i];
+                        <text>
+                            {
+                                Id:@(relationShipItem.Value),
+                                Name: "@(Html.Raw(HttpUtility.JavaScriptStringEncode(relationShipItem.Text)))"
+                            }
+                        </text>
+                        if (i != Model.RelaTionShips.Count - 1)
+                        {
+                            <text>,</text>
+                        }
+                    }
+                    ];
+
+                    function relationShipDropDownEditor(container, options) {
+                        $('<input required data-text-field="Name" data-value-field="Id" data-bind="value:RelationShipId"/>')
+                            .appendTo(container)
+                            .kendoDropDownList({
+                                autoBind: false,
+                                dataSource: allRelationShip
+                            });
+                    };
+
+                    function banksDropDownEditor(container, options) {
+                        $('<input required data-text-field="Name" data-value-field="Id" data-bind="value:BankId"/>')
+                            .appendTo(container)
+                            .kendoDropDownList({
+                                autoBind: false,
+                                dataSource: allBanks
+                            });
+                    }
+
                 </script>
             </td>
+
         </tr>
     </table>
 }

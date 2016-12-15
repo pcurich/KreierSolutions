@@ -9,11 +9,17 @@ namespace Ks.Admin.Models.Customers
 {
     public class ContributionBenefitModel : BaseKsEntityModel
     {
-        
+ 
         public ContributionBenefitModel()
         {
             BenefitModels = new List<SelectListItem>();
+            Banks= new List<SelectListItem>();
+            RelaTionShips = new List<SelectListItem>();
         }
+
+        public List<SelectListItem> Banks { get; set; }
+        public List<SelectListItem> RelaTionShips { get; set; }
+
         public int ContributionId { get; set; }
         [KsResourceDisplayName("Admin.Customers.Customers.Benefit.BenefitId")]
         public int BenefitId { get; set; }

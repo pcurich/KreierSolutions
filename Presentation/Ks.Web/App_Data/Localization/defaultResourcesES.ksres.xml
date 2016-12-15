@@ -606,6 +606,9 @@
   <LocaleResource Name="ActivityLog.AddNewBenefit">
     <Value>Se ha agregado un nuevo beneficio ('{0}') por el usuario ('{1}')</Value>
   </LocaleResource>
+  <LocaleResource Name="ActivityLog.AddNewContributionBenefitBank">
+    <Value>Se ha agregado un nuevo beneficiario ('{0}') por el usuario ('{1}')</Value>
+  </LocaleResource>
   <LocaleResource Name="ActivityLog.AddNewContributionBenefit">
     <Value>Se ha adigando el beneficio ('{0}') as afiliado ('{1}'), por el usuario ('{2}')</Value>
   </LocaleResource>  
@@ -687,6 +690,9 @@
   <LocaleResource Name="ActivityLog.DeleteBenefit">
     <Value>Eliminado un beneficio ('{0}') por el usuario ('{1}')</Value>
   </LocaleResource>
+  <LocaleResource Name="ActivityLog.DeleteContributionBenefitBank">
+    <Value>Eliminado de un beneficiario ('{0}') por el usuario ('{1}')</Value>
+  </LocaleResource>
   <LocaleResource Name="ActivityLog.DeleteWidget">
     <Value>Eliminado de un widget (ID = {0})</Value>
   </LocaleResource>
@@ -731,6 +737,9 @@
   </LocaleResource>
   <LocaleResource Name="ActivityLog.EditBenefit">
     <Value>Edición del beneficio ('{0}') por el usuario ('{1}')</Value>
+  </LocaleResource>
+  <LocaleResource Name="ActivityLog.EditContributionBenefitBank">
+    <Value>Edición del beneficiario ('{0}') por el usuario ('{1}')</Value>
   </LocaleResource>
   <LocaleResource Name="ActivityLog.EditWidget">
     <Value>Edición de un widget (ID = {0})</Value>
@@ -6744,9 +6753,34 @@
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.ContributionBenefit.Error">
     <Value>La asignacion de beneficio no ha podido ser agregado.</Value>
+  </LocaleResource>  
+  <LocaleResource Name="Admin.Configuration.ContributionBenefitBank.CompleteName">
+    <Value>Beneficiario</Value>
   </LocaleResource>
-  
-  
+  <LocaleResource Name="Admin.Configuration.ContributionBenefitBank.Dni">
+    <Value>DNI</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.ContributionBenefitBank.RelationShip">
+    <Value>Parentesco</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.ContributionBenefitBank.AccountNumber">
+    <Value>Cuenta</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.ContributionBenefitBank.Bank">
+    <Value>Banco</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.ContributionBenefitBank.CheckNumber">
+    <Value>N° Cheque</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.ContributionBenefitBank.Ratio">
+    <Value>Porcentaje(%)</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.ContributionBenefitBank.AmountToPay">
+    <Value>Monto</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.ContributionBenefitBank.CreatedOn">
+     <Value>Fecha de Creación</Value>
+  </LocaleResource>  
   <LocaleResource Name="Admin.Configuration.Tabs">
     <Value>Tabuladores</Value>
   </LocaleResource>
