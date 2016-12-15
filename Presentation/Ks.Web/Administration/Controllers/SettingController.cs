@@ -199,6 +199,13 @@ namespace Ks.Admin.Controllers
             var bankSettings = _settingService.LoadSetting<BankSettings>(storeScope);
 
             bankSettings = model.ToEntity(bankSettings);
+            
+            bankSettings.IdBank1 = 1;
+            bankSettings.IdBank2 = 2;
+            bankSettings.IdBank3 = 3;
+            bankSettings.IdBank4 = 4;
+            bankSettings.IdBank5 = 5;
+
             _settingService.SaveSetting(bankSettings);
 
             //now clear settings cache

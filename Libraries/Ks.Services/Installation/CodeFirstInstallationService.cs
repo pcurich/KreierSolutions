@@ -781,18 +781,23 @@ namespace Ks.Services.Installation
 
             settingService.SaveSetting(new BankSettings
             {
+                IdBank1=1,
                 IsActive1 = true,
                 NameBank1 = "BBVA Continental",
-                AccountNumber1 = "1111111111",
+                AccountNumber1 = "0011-0199-0200374278",
+                IdBank2 = 2,
                 IsActive2 = true,
                 NameBank2 = "Banco de Crédito del Perú",
                 AccountNumber2 = "2222222222222",
+                IdBank3 = 3,
                 IsActive3 = true,
                 NameBank3 = "Interbank",
                 AccountNumber3 = "33333333333333",
+                IdBank4 = 4,
                 IsActive4 = true,
                 NameBank4 = "BANBIF Banco Interamericano de Finanzas",
                 AccountNumber4 = "44444444444444",
+                IdBank5 = 5,
                 IsActive5 = true,
                 NameBank5 = "Scotiabank Perú",
                 AccountNumber5 = "5555555555555555"

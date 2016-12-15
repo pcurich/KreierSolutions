@@ -276,13 +276,14 @@
                                         id: "Id",
                                         fields: {
                                             ContributionBenefitId:{editable: true,type: "number", defaultValue: @Model.Id },
+                                            TotalToPay:{editable: false, type: "number", defaultValue: @Model.TotalToPay },
                                             RelationShip:{editable: true,type: "string"},
                                             RelationShipId:{editable: true,type: "number"},
                                             CompleteName:{editable: true,type: "string"},
                                             Dni:{editable: true,type: "string"},
                                             AccountNumber:{editable: false,type: "string"},
                                             Bank:{editable: true,type: "string"},
-                                            BankId:{editable: true,type: "number"},
+                                            BankId:{editable: true,type: "string"},
                                             CheckNumber:{editable: true,type: "string"},
                                             Ratio:{editable: true,type: "number"},
                                             AmountToPay:{editable: false,type: "number"},
@@ -313,7 +314,7 @@
                             },
                             editable: {
                                 confirmation: false,
-                                mode: "inline"
+                                mode: "popup"
                             },
                             scrollable: true,
                             toolbar: [{ name: "create", text: "@T("Admin.Common.AddNewRecord")" }],
@@ -353,19 +354,25 @@
                                     title: "@T("Admin.Configuration.ContributionBenefitBank.CheckNumber")"
                                 }, {
                                     field: "Ratio",
-                                    title: "@T("Admin.Configuration.ContributionBenefitBank.Ratio")"
+                                    title: "@T("Admin.Configuration.ContributionBenefitBank.Ratio")",
+                                    format: "{0:p2}",
+                                    width:70,
+                                    editor: function(container, options) {
+                                        $("<input name='Ratio'>")
+                                        .appendTo(container)
+                                        .kendoNumericTextBox(
+                                          {
+                                              format: "p2",
+                                              decimals: 4
+                                          });
+                                    }
                                 }, {
                                     field: "AmountToPay",
                                     title: "@T("Admin.Configuration.ContributionBenefitBank.AmountToPay")",
                                     template: '#= kendo.toString(AmountToPay,"c","es-PE") #',
-                                    format: "{0:c2}"
-                                }, {
-                                    field: "CreatedOn",
-                                    title: "@T("Admin.Configuration.ContributionBenefitBank.CreatedOn")",
-                                    template: '#= CreatedOn!=null ? kendo.toString(CreatedOn,"dd/MM/yyyy","es-PE"): " "#',
-                                    type: "date",
-                                    format: "{0:G}"
-                                }, {
+                                    format: "{0:c2}",
+                                    width: 80
+                                },   {
                                     command: [{
                                         name: "edit",
                                         text: {

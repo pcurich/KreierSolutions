@@ -315,6 +315,5 @@ namespace Ks.Services.Contract
         #endregion
 
 
-
     }
 }

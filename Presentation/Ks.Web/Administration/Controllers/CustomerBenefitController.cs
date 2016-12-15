@@ -246,6 +246,10 @@ namespace Ks.Admin.Controllers
             return View(model);
         }
 
+        #endregion
+
+        #region BenefitBank
+
         [HttpPost]
         public ActionResult BankCheckList(DataSourceRequest command, int contributionBenefitId)
         {
@@ -259,6 +263,7 @@ namespace Ks.Admin.Controllers
                 {
                     var model = x.ToModel();
                     model.CreatedOn = _dateTimeHelper.ConvertToUserTime(x.CreatedOnUtc, TimeZoneInfo.Utc);
+                    model.Bank = x.BankName;
                     return model;
                 }),
                 Total = benefitsBanks.Count()
@@ -268,7 +273,6 @@ namespace Ks.Admin.Controllers
                 Data = gridModel
             };
         }
-
 
         [HttpPost]
         public ActionResult BankCheckUpdate([Bind(Exclude = "CreatedOn")] ContributionBenefitBankModel model)
@@ -280,9 +284,30 @@ namespace Ks.Admin.Controllers
             {
                 return Json(new DataSourceResult { Errors = ModelState.SerializeErrors() });
             }
-            var entity =model.ToEntity();
+
+            if (model.Dni == null || model.Dni.Length != 8)
+            {
+                return Json(new DataSourceResult { Errors = "El DNI no es valido" });
+            }
+
+            if (model.CheckNumber == null || model.CheckNumber.Length != 8)
+            {
+                return Json(new DataSourceResult { Errors = "El Número de cheque debe tener una longitud de 8 digitos" });
+            }
+
+            if (model.Ratio > 1)
+            {
+                return Json(new DataSourceResult { Errors = "Ingrese un valor entre 0 y 1" });
+            }
+
+            var entity = model.ToEntity();
+            entity.BankName = GetBankById(Convert.ToInt32(model.BankId)).Text;
+            entity.AccountNumber = GetBankById(Convert.ToInt32(model.BankId)).Value;
+
+            entity.RelationShip = PrepareRelationShip().FirstOrDefault(x => x.Value == model.RelationShipId.ToString()).Text;
             entity.CreatedOnUtc = DateTime.UtcNow;
-            _benefitService.InsertContributionBenefitBank(entity);
+            entity.AmountToPay = model.TotalToPay * (decimal)model.Ratio;
+            _benefitService.UpdateContributionBenefitBank(entity);
 
             _customerActivityService.InsertActivity("EditContributionBenefitBank", _localizationService.GetResource("ActivityLog.EditContributionBenefitBank"), model.CompleteName, _workContext.CurrentCustomer.GetFullName());
 
@@ -290,7 +315,7 @@ namespace Ks.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult TabDetailAdd([Bind(Exclude = "Id,CreatedOn")] ContributionBenefitBankModel model)
+        public ActionResult BankCheckAdd([Bind(Exclude = "Id,CreatedOn")] ContributionBenefitBankModel model)
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributionBenefit))
                 return AccessDeniedView();
@@ -300,9 +325,28 @@ namespace Ks.Admin.Controllers
                 return Json(new DataSourceResult { Errors = ModelState.SerializeErrors() });
             }
 
+            if(model.Dni==null || model.Dni.Length!=8){
+                return Json(new DataSourceResult { Errors = "El DNI no es valido" });
+            }
+
+            if (model.CheckNumber == null || model.CheckNumber.Length != 8)
+            {
+                return Json(new DataSourceResult { Errors = "El Número de cheque debe tener una longitud de 8 digitos" });
+            }
+
+            if (model.Ratio>1)
+            {
+                return Json(new DataSourceResult { Errors = "Ingrese un valor entre 0 y 1" });
+            }
+
+            // revisar esto TODO
             var entity = model.ToEntity();
+            entity.BankName = GetBankById(Convert.ToInt32(model.BankId)).Text;
+            entity.AccountNumber = GetBankById(Convert.ToInt32(model.BankId)).Value;
+
+            entity.RelationShip = PrepareRelationShip().FirstOrDefault(x => x.Value == model.RelationShipId.ToString()).Text;
             entity.CreatedOnUtc = DateTime.UtcNow;
-            //revisar si viene bien todo
+            entity.AmountToPay = model.TotalToPay * (decimal)model.Ratio;
             _benefitService.InsertContributionBenefitBank(entity);
 
             _customerActivityService.InsertActivity("AddNewContributionBenefitBank", _localizationService.GetResource("ActivityLog.AddNewContributionBenefitBank"), model.CompleteName, _workContext.CurrentCustomer.GetFullName());
@@ -311,7 +355,7 @@ namespace Ks.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult TabDetailDelete(int id)
+        public ActionResult BankCheckDelete(int id)
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributionBenefit))
                 return AccessDeniedView();
@@ -335,20 +379,35 @@ namespace Ks.Admin.Controllers
         protected virtual List<SelectListItem> PrepareBanks()
         {
             var model = new List<SelectListItem>();
-            model.Insert(0, new SelectListItem { Value = "0", Text = "----------------" });
 
             if (_bankSettings.IsActive1)
-                model.Add(new SelectListItem { Value = _bankSettings.AccountNumber1, Text = _bankSettings.NameBank1 });
+                model.Add(new SelectListItem { Text = _bankSettings.NameBank1, Value = _bankSettings.IdBank1.ToString() });
             if (_bankSettings.IsActive2)
-                model.Add(new SelectListItem { Value = _bankSettings.AccountNumber2, Text = _bankSettings.NameBank2 });
+                model.Add(new SelectListItem { Text = _bankSettings.NameBank2, Value = _bankSettings.IdBank2.ToString() });
             if (_bankSettings.IsActive3)
-                model.Add(new SelectListItem { Value = _bankSettings.AccountNumber3, Text = _bankSettings.NameBank3 });
+                model.Add(new SelectListItem { Text = _bankSettings.NameBank3, Value = _bankSettings.IdBank3.ToString() });
             if (_bankSettings.IsActive4)
-                model.Add(new SelectListItem { Value = _bankSettings.AccountNumber4, Text = _bankSettings.NameBank4 });
+                model.Add(new SelectListItem { Text = _bankSettings.NameBank4, Value = _bankSettings.IdBank4.ToString() });
             if (_bankSettings.IsActive5)
-                model.Add(new SelectListItem { Value = _bankSettings.AccountNumber5, Text = _bankSettings.NameBank5 });
+                model.Add(new SelectListItem { Text = _bankSettings.NameBank5, Value = _bankSettings.IdBank5.ToString() });
 
             return model;
+        }
+
+        protected virtual SelectListItem GetBankById(int id)
+        {
+            if (_bankSettings.IsActive1 && _bankSettings.IdBank1 == id)
+                return (new SelectListItem { Text = _bankSettings.NameBank1, Value = _bankSettings.AccountNumber1.ToString() });
+            if (_bankSettings.IsActive2 && _bankSettings.IdBank2 == id)
+                return (new SelectListItem { Text = _bankSettings.NameBank2, Value = _bankSettings.AccountNumber2.ToString() });
+            if (_bankSettings.IsActive3 && _bankSettings.IdBank3 == id)
+                return (new SelectListItem { Text = _bankSettings.NameBank3, Value = _bankSettings.AccountNumber3.ToString() });
+            if (_bankSettings.IsActive4 && _bankSettings.IdBank4 == id)
+                return (new SelectListItem { Text = _bankSettings.NameBank4, Value = _bankSettings.AccountNumber4.ToString() });
+            if (_bankSettings.IsActive5 && _bankSettings.IdBank5 == id)
+                return (new SelectListItem { Text = _bankSettings.NameBank5, Value = _bankSettings.AccountNumber5.ToString() });
+
+            return new SelectListItem{Text="", Value=""};
         }
 
         [NonAction]

@@ -1,6 +1,7 @@
 ﻿using Ks.Web.Framework.Mvc;
 using System;
 using Ks.Web.Framework;
+using System.Web.Mvc;
 
 
 namespace Ks.Admin.Models.Contract
@@ -19,12 +20,15 @@ namespace Ks.Admin.Models.Contract
         public string AccountNumber { get; set; }
         [KsResourceDisplayName("Admin.Configuration.ContributionBenefitBank.Bank")]
         public string Bank { get; set; }
-        public int BankId { get; set; }
+        [AllowHtml]
+        public string BankId { get; set; }
         [KsResourceDisplayName("Admin.Configuration.ContributionBenefitBank.CheckNumber")]
         public string CheckNumber { get; set; }
         [KsResourceDisplayName("Admin.Configuration.ContributionBenefitBank.Ratio")]
         public double Ratio { get; set; }
         [KsResourceDisplayName("Admin.Configuration.ContributionBenefitBank.AmountToPay")]
+
+        public decimal TotalToPay { get; set; }
         public decimal AmountToPay { get; set; }
         [KsResourceDisplayName("Admin.Configuration.ContributionBenefitBank.CreatedOn")]
         public DateTime CreatedOn { get; set; }
