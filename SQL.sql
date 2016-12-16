@@ -332,20 +332,27 @@ ORDER BY Number
 
 ---------------------------------
 --CLEAN DATA
+use ACMR
 UPDATE Contribution SET IsDelay=0, DelayCycles=0, Active=1, UpdatedOnUtc=NULL, AmountPayed=0
 UPDATE ContributionPayment SET  NumberOld =0, AmountOld =0, AmountPayed=0, AmountTotal=35, ProcessedDateOnUtc=null, StateId=1, IsAutomatic=1, BankName=null,Description=''
 UPDATE Loan SET IsDelay=0,  Active=1, UpdatedOnUtc=NULL, TotalPayed=0
 UPDATE LoanPayment SET  MonthlyPayed =0,  ProcessedDateOnUtc=null, StateId=1, IsAutomatic=1, BankName=null,AccountNumber='',Description=''
 delete Report
-update ScheduleBatch set PeriodMonth=12, PeriodYear=2016,  NextExecutionOnUtc =GETUTCDATE() where  SystemName IN ('Ks.Batch.Copere.Out','Ks.Batch.Copere.In')
-update ScheduleBatch set PeriodMonth=12, PeriodYear=2016,  NextExecutionOnUtc =GETUTCDATE() where  SystemName IN ('Ks.Batch.Caja.In','Ks.Batch.Caja.Out')
+update ScheduleBatch set PeriodMonth=1, PeriodYear=2017,  NextExecutionOnUtc =GETUTCDATE() where  SystemName IN ('Ks.Batch.Copere.Out','Ks.Batch.Copere.In')
+update ScheduleBatch set PeriodMonth=1, PeriodYear=2017,  NextExecutionOnUtc =GETUTCDATE() where  SystemName IN ('Ks.Batch.Caja.In','Ks.Batch.Caja.Out')
 
 --fuerza el quarts
-
+select * from ScheduleBatch
 update ScheduleBatch set   NextExecutionOnUtc =GETUTCDATE() where id>0
- 
+update LoanPayment set StateId=1
+update ContributionPayment set StateId=1 where ContributionId=1 and Number=2
 
+select * from Report where StateId=5
+update report set StateId=2 where id in (18,19)
 
+update Report set StateId=2 where id in(203,204) 
+
+select * from report
  select LastExecutionOnUtc from ScheduleBatch
 SELECT * FROM ContributionPayment WHERE ID=424
 SELECT * FROM ContributionPayment WHERE detailsold is not null 
@@ -449,3 +456,17 @@ select * from #tmp_reports
 
  select * from loan where LoanNumber=10014
  select * from LoanPayment where LoanId = (select id from Loan where LoanNumber=10014)
+
+ select * from Contribution
+ select * from Loan
+ select * from tab
+ select * from tabdetail
+ select * from benefit
+ UPDATE BENEFIT SET LETTERDECLARATORY =1 WHERE id=3
+ Select * from ContributionBenefit
+
+ use acmr
+
+ select * from log
+
+ exec SearchAllTables '0.0804'

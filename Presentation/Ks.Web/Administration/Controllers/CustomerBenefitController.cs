@@ -275,46 +275,6 @@ namespace Ks.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult BankCheckUpdate([Bind(Exclude = "CreatedOn")] ContributionBenefitBankModel model)
-        {
-            if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributionBenefit))
-                return AccessDeniedView();
-
-            if (!ModelState.IsValid)
-            {
-                return Json(new DataSourceResult { Errors = ModelState.SerializeErrors() });
-            }
-
-            if (model.Dni == null || model.Dni.Length != 8)
-            {
-                return Json(new DataSourceResult { Errors = "El DNI no es valido" });
-            }
-
-            if (model.CheckNumber == null || model.CheckNumber.Length != 8)
-            {
-                return Json(new DataSourceResult { Errors = "El Número de cheque debe tener una longitud de 8 digitos" });
-            }
-
-            if (model.Ratio > 1)
-            {
-                return Json(new DataSourceResult { Errors = "Ingrese un valor entre 0 y 1" });
-            }
-
-            var entity = model.ToEntity();
-            entity.BankName = GetBankById(Convert.ToInt32(model.BankId)).Text;
-            entity.AccountNumber = GetBankById(Convert.ToInt32(model.BankId)).Value;
-
-            entity.RelationShip = PrepareRelationShip().FirstOrDefault(x => x.Value == model.RelationShipId.ToString()).Text;
-            entity.CreatedOnUtc = DateTime.UtcNow;
-            entity.AmountToPay = model.TotalToPay * (decimal)model.Ratio;
-            _benefitService.UpdateContributionBenefitBank(entity);
-
-            _customerActivityService.InsertActivity("EditContributionBenefitBank", _localizationService.GetResource("ActivityLog.EditContributionBenefitBank"), model.CompleteName, _workContext.CurrentCustomer.GetFullName());
-
-            return new NullJsonResult();
-        }
-
-        [HttpPost]
         public ActionResult BankCheckAdd([Bind(Exclude = "Id,CreatedOn")] ContributionBenefitBankModel model)
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributionBenefit))
@@ -339,7 +299,6 @@ namespace Ks.Admin.Controllers
                 return Json(new DataSourceResult { Errors = "Ingrese un valor entre 0 y 1" });
             }
 
-            // revisar esto TODO
             var entity = model.ToEntity();
             entity.BankName = GetBankById(Convert.ToInt32(model.BankId)).Text;
             entity.AccountNumber = GetBankById(Convert.ToInt32(model.BankId)).Value;
