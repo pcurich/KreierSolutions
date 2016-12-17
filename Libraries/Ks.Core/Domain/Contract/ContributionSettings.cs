@@ -11,8 +11,7 @@ namespace Ks.Core.Domain.Contract
         /// <summary>
         /// Gets or sets the day of payment.
         /// </summary>
-        public int DayOfPayment { get; set; }
-
+        public int DayOfPaymentContribution { get; set; }
         /// <summary>
         /// Gets or sets the cycle of delay.
         /// </summary>

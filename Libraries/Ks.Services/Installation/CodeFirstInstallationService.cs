@@ -717,7 +717,7 @@ namespace Ks.Services.Installation
             settingService.SaveSetting(new ContributionSettings
             {
                 TotalCycle = 12 * 35,
-                DayOfPayment = 20,
+                DayOfPaymentContribution = 20,
                 CycleOfDelay = 6,
                 IsActiveAmount1 = true,
                 NameAmount1 = "Valor de aportación",
@@ -732,7 +732,7 @@ namespace Ks.Services.Installation
                 Periods = "12,18,24,36",
                 Tea = .08,
                 Safe = .01,
-
+                DayOfPaymentLoan = 15,
                 IsEnable1 = true,
                 StateName1 = "A",
                 MinClycle1 = 0,

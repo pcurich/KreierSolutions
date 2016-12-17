@@ -11,6 +11,8 @@ namespace Ks.Admin.Models.Settings
         public double Tea { get; set; }
         [KsResourceDisplayName("Admin.Configuration.Settings.StateActivitySettings.Safe")]
         public double Safe { get; set; }
+        [KsResourceDisplayName("Admin.Configuration.Settings.StateActivitySettings.DayOfPaymentLoan")]
+        public int DayOfPaymentLoan { get; set; }
 
         #region Clase A
 

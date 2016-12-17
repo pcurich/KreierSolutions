@@ -1394,7 +1394,7 @@ namespace Ks.Admin.Controllers
                 AmountMeta = (_contributionSettings.Amount1 + _contributionSettings.Amount2 + _contributionSettings.Amount3) * _contributionSettings.TotalCycle,
                 CreatedOn = DateTime.UtcNow,
                 AuthorizeDiscount = _sequenceIdsSettings.AuthorizeDiscount,
-                DayOfPayment = _contributionSettings.DayOfPayment,
+                DayOfPayment = _contributionSettings.DayOfPaymentContribution,
                 MonthsList = PrepareMonthsList(),
                 YearsList = PrepareYearsList()
             };

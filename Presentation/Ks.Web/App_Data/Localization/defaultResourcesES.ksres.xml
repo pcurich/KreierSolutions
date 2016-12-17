@@ -6391,6 +6391,12 @@
   <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.Safe.Hint">
     <Value>Seguro de desgravamen (ingresar un numero desde 0 hasta 1, por ejemplo 0.01)</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.DayOfPaymentLoan">
+    <Value>Dia de cobros (Apoyo Económico)</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.DayOfPaymentLoan.Hint">
+    <Value>Dia de cada mes en que se realizan los cobros del apoyo economico</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.StateName">
     <Value>Nombre de la situacion militar en actividad</Value>
   </LocaleResource>
@@ -7801,15 +7807,15 @@
   <LocaleResource Name="Admin.Contract.Contribution.Fields.CustomerDni.Hint">
     <Value>N° Dni del personal militar</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Contract.Contribution.Fields.DayOfPayment">
-    <Value>Dia de cobros</Value>
+  <LocaleResource Name="Admin.Contract.Contribution.Fields.DayOfPaymentContribution">
+    <Value>Dia de cobros (Aportaciones)</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.Contribution.Fields.DayOfPaymentContribution.Hint">
+    <Value>Dia de cada mes en que se realizan los cobros de las aportaciones</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Contribution.Fields.DayOfPayment.AfterNow">
     <Value>La fecha ingresa debe ser posterior al dia de hoy ({0})</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Contract.Contribution.Fields.DayOfPayment.Hint">
-    <Value>Dia de cada mes en que se realizan los cobros</Value>
-  </LocaleResource>
+  </LocaleResource>  
   <LocaleResource Name="Admin.Contract.Contribution.Fields.ExistsContribution">
     <Value>Ya se encuenta una aportación activa</Value>
   </LocaleResource>

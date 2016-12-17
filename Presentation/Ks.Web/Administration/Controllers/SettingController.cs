@@ -395,28 +395,7 @@ namespace Ks.Admin.Controllers
 
             var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
             var stateActivitySettings = _settingService.LoadSetting<StateActivitySettings>(storeScope);
-
-            //var  model = new List<CashFlowModel>
-            //{
-            //    new CashFlowModel{Id = 1,Since = 500, To = 3500, Amount = 1300},
-            //    new CashFlowModel{Id = 2,Since = 4000, To = 6500, Amount = 2000},
-            //    new CashFlowModel{Id = 3,Since = 7000, To = 9500, Amount = 3000},
-            //    new CashFlowModel{Id = 4,Since = 1000, To = 1200, Amount = 4000},
-            //};
-            //stateActivitySettings.CashFlow = XmlHelper.Serialize2String(model).Replace("\"", "'").Replace("\r", "").Replace("\n", "");
-            //_settingService.SaveSetting(stateActivitySettings);
-            //stateActivitySettings = _settingService.LoadSetting<StateActivitySettings>(storeScope);
-
-            //try
-            //{
-            //    if (!string.IsNullOrEmpty(stateActivitySettings.CashFlow))
-            //        model = XmlHelper.XmlToObject<List<CashFlowModel>>(@stateActivitySettings.CashFlow);
-            //}
-            //catch (Exception e)
-            //{
-            //    var xx = e.Message;
-            //    xx = xx + "ss";
-            //}
+ 
             var model = new List<CashFlowModel>();
 
             if (!string.IsNullOrEmpty(stateActivitySettings.CashFlow))
