@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using Ks.Core;
 using Ks.Core.Caching;
 using Ks.Core.Data;
 using Ks.Core.Domain.Contract;
+using Ks.Core.Domain.Reports;
 using Ks.Data;
 using Ks.Services.Events;
 
@@ -308,6 +310,52 @@ namespace Ks.Services.Contract
                         select x;
 
             return new PagedList<ContributionBenefitBank>(query.ToList(), pageIndex, pageSize);
+        }
+
+        #endregion
+
+        #region Report
+
+        public virtual IList<ReportContributionBenefit> GetReportContributionBenefit(int contributionBenefitId, int pageIndex = 0, int pageSize = Int32.MaxValue)
+        {
+            if (contributionBenefitId == 0)
+                return new List<ReportContributionBenefit>();
+
+            var pContributionBenefitId = _dataProvider.GetParameter();
+            pContributionBenefitId.ParameterName = "contributionBenefitId";
+            pContributionBenefitId.Value = contributionBenefitId;
+            pContributionBenefitId.DbType = DbType.Int32;
+
+            var pNameReport = _dataProvider.GetParameter();
+            pNameReport.ParameterName = "NameReport";
+            pNameReport.Value = "SummaryReportContributionBenefit";
+            pNameReport.DbType = DbType.String;
+
+            var pReportState = _dataProvider.GetParameter();
+            pReportState.ParameterName = "ReportState";
+            pReportState.Value = (int)ReportState.Completed;
+            pReportState.DbType = DbType.Int32;
+
+            var pSource = _dataProvider.GetParameter();
+            pSource.ParameterName = "Source";
+            pSource.Value = "Ks.Services.Contract.BenefitService";
+            pSource.DbType = DbType.String;
+
+            var pTotalRecords = _dataProvider.GetParameter();
+            pTotalRecords.ParameterName = "TotalRecords";
+            pTotalRecords.Direction = ParameterDirection.Output;
+            pTotalRecords.DbType = DbType.Int32;
+
+            //invoke stored procedure
+            var data = _dbContext.ExecuteStoredProcedureList<Report>("SummaryReportContributionBenefit", pContributionBenefitId, pNameReport, pReportState, pSource, pTotalRecords);
+
+            //return products
+            var totalRecords = (pTotalRecords.Value != DBNull.Value) ? Convert.ToInt32(pTotalRecords.Value) : 0;
+            var firstOrDefault = data.FirstOrDefault();
+            if (firstOrDefault != null)
+                return new PagedList<ReportContributionBenefit>(XmlHelper.XmlToObject<List<ReportContributionBenefit>>(firstOrDefault.Value), pageIndex, pageSize, totalRecords);
+
+            return new List<ReportContributionBenefit>();
         }
 
         #endregion

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Ks.Core;
 using Ks.Core.Domain.Contract;
+using Ks.Core.Domain.Reports;
 
 namespace Ks.Services.Contract
 {
@@ -36,6 +37,14 @@ namespace Ks.Services.Contract
         ContributionBenefitBank GetContributionBenefitBankById(int contributionBenefitBankId);
 
         IPagedList<ContributionBenefitBank> GetAllContributionBenefitBank(int contributionBenefitId, int pageIndex = 0, int pageSize = Int32.MaxValue);
+
+        #endregion
+
+        #region Report
+
+        IList<ReportContributionBenefit> GetReportContributionBenefit(int contributionBenefitId, int pageIndex = 0,
+            int pageSize = Int32.MaxValue);
+
 
         #endregion
     }

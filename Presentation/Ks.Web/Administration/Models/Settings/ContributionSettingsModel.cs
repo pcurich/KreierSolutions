@@ -14,8 +14,6 @@ namespace Ks.Admin.Models.Settings
 
         [KsResourceDisplayName("Admin.Configuration.Settings.ContributionSettings.DayOfPaymentContribution")]
         public int DayOfPaymentContribution { get; set; }
-        [KsResourceDisplayName("Admin.Configuration.Settings.ContributionSettings.DayOfPaymentLoan")]
-        public int DayOfPaymentLoan { get; set; }
 
         [KsResourceDisplayName("Admin.Configuration.Settings.ContributionSettings.CycleOfDelay")]
         public int CycleOfDelay { get; set; }

@@ -13,10 +13,32 @@
         </div>
         <div class="options">
             <input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")" />
-            <input type="submit" name="save-continue" class="k-button" value="@T("Admin.Common.SaveContinue")" />
+            <input type="submit" name="save-continue" class="k-button" value="@T("Admin.Common.SaveContinue")"/>
+            <input type="submit" name="exportexcel" id="exportexcel" class="k-button" value="@T("Admin.Common.ExportToExcel")" />
             <span id="contribution-benefit-delete" class="k-button">@T("Admin.Common.Delete")</span>
         </div>
     </div>
     @Html.Partial("_CreateOrUpdate", Model)
 }
 @Html.DeleteConfirmation("contribution-benefit-delete")
+
+@using (Html.BeginForm("ExportExcel", "CustomerBenefit", FormMethod.Post, new { id = "export-excel-form"  }))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="customerId" name="customerId" value="" />
+    <input type="hidden" id="customerBenefitId" name="customerBenefitId" value=""/>
+    <input type="hidden" id="export-excel" name="export-excel" value="export-excel" />
+}
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#exportexcel').click(function (e) {
+            e.preventDefault();
+            $('#export-excel-form #customerId').val(@Model.CustomerId);
+            $('#export-excel-form #customerBenefitId').val(@Model.Id);
+            $('#export-excel-form').submit();
+            return false;
+        });
+    });
+
+</script>

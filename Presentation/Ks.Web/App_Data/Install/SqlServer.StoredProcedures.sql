@@ -247,7 +247,7 @@ BEGIN
 END
 GO
 
-CREATE PROC SearchAllTables
+CREATE PROCEDURE SearchAllTables
 (
 @SearchStr nvarchar(100)
 )
@@ -445,10 +445,61 @@ SELECT * FROM Report WHERE [key]=@newId
 END
 GO
 
-CREATE PROCEDURE FixQuotaCopere 
+CREATE PROCEDURE [dbo].[SummaryReportContributionBenefit]
+(
+	@ContributionBenefitId int,
+	@NameReport nvarchar(255),
+	@ReportState int,
+	@Source nvarchar(250),
+	@TotalRecords int = null OUTPUT
+)
 AS
 BEGIN
- 
+
+DECLARE @combinedString VARCHAR(MAX)
+SELECT @combinedString = COALESCE(@combinedString + '|', '') +CompleteName + '('+RelationShip+' '+CAST(Ratio*100 as nvarchar(15)) +' %)-'+ CAST(AmountToPay AS NVARCHAR(10))
+FROM ContributionBenefitBank
+WHERE ContributionBenefitId = @ContributionBenefitId 
+
+SELECT 
+B.Name as BenefitName,
+CASE WHEN B.BenefitTypeId=1 then 'AUXILIO ECONOMICO' else 'BENEFICIO ECONOMICO' end AS BenefitType,
+CF.NumberOfLiquidation AS NumberOfLiquidation,
+CF.AmountBaseOfBenefit AS AmountBaseOfBenefit,
+CF.YearInActivity AS YearInActivity,
+CF.TabValue AS TabValue,
+CF.Discount AS Discount,
+CF.SubTotalToPay AS SubTotalToPay,
+CF.TotalContributionCaja AS TotalContributionCaja,
+CF.TotalContributionCopere AS TotalContributionCopere,
+CF.TotalContributionPersonalPayment AS TotalContributionPersonalPayment,
+CF.TotalLoan AS TotalLoan,
+CF.TotalContributionPersonalPayment  AS TotalLoanToPay,
+CF.ReserveFund AS ReserveFund,
+CF.TotalReationShip AS TotalReationShip,
+CF.TotalToPay AS TotalToPay,
+CF.CreatedOnUtc AS CreatedOnUtc,
+@combinedString AS Checks
+INTO #tmp_reports
+FROM ContributionBenefit  CF
+INNER JOIN Benefit B ON B.Id=CF.BenefitId
+WHERE CF.Id=@ContributionBenefitId
+
+
+DECLARE @newId uniqueidentifier =NEWID();
+DECLARE @value XML=(SELECT * FROM  #tmp_reports order by 1 desc FOR XML PATH ('ReportContributionBenefit'), root ('ArrayOfReportContributionBenefit'))
+
+DELETE FROM Report WHERE source=@Source
+INSERT INTO Report VALUES (@newId,@NameReport,@value,'',@ReportState,'',@Source,@newId,GETUTCDATE())
+SELECT @TotalRecords = COUNT(1) FROM #tmp_reports
+SELECT * FROM Report WHERE [key]=@newId
+
+END
+GO
+
+CREATE PROCEDURE FixQuotaCopere 
+AS
+BEGIN 
 	
 	Declare @MaxToPay int= (select value from Setting where Name  =  'contributionsettings.maximumcharge')
 	DECLARE @ContributionPaymentId INT

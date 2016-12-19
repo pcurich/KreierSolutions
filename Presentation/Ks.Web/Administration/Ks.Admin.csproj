@@ -1176,7 +1176,7 @@
     <Content Include="Views\Setting\Contributions.cshtml" />
     <Content Include="Views\Customer\_CreateOrUpdateContributions.cshtml" />
     <Content Include="Views\Setting\_CreateOrUpdateCashFlow.cshtml" />
-    <Content Include="Views\Setting\StateActivity.cshtml" />
+    <Content Include="Views\Setting\Loans.cshtml" />
     <Content Include="Views\Setting\CashFlowCreatePopup.cshtml" />
     <Content Include="Views\Customer\_CreateOrUpdateLoans.cshtml" />
     <Content Include="Views\Customer\_LoanStateActivity.cshtml" />
@@ -1326,6 +1326,8 @@
     <Content Include="Views\CustomerBenefit\Create.cshtml" />
     <Content Include="Views\CustomerBenefit\_CreateOrUpdate.cshtml" />
     <Content Include="Views\CustomerBenefit\Edit.cshtml" />
+    <Content Include="Views\Setting\ScheduleBatch.cshtml" />
+    <Content Include="Views\Setting\Signature.cshtml" />
     <None Include="Views\Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1430,10 +1432,12 @@
     <Compile Include="Models\Settings\BankSettingsModel.cs" />
     <Compile Include="Models\Settings\CashFlowModel.cs" />
     <Compile Include="Models\Settings\CustomerUserSettingsModel.cs" />
+    <Compile Include="Models\Settings\ScheduleBatchSettingsModel.cs" />
     <Compile Include="Models\Settings\SequenceIdsSettingsModel.cs" />
     <Compile Include="Models\Settings\ContributionSettingsModel.cs" />
     <Compile Include="Models\Settings\SettingModel.cs" />
-    <Compile Include="Models\Settings\StateActivitySettingsModel.cs" />
+    <Compile Include="Models\Settings\LoanSettingsModel.cs" />
+    <Compile Include="Models\Settings\SignatureSettingsModel.cs" />
     <Compile Include="Models\Systems\KsSystemModel.cs" />
     <Compile Include="Models\Tasks\ScheduleTaskModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -48,6 +48,9 @@
             <li @Html.RenderSelectedTabIndex(4, GetSelectedTabIndex())>
                 @T("Admin.Configuration.Settings.SequenceIds.RegistrationForm.Header")
             </li>
+            <li @Html.RenderSelectedTabIndex(5, GetSelectedTabIndex())>
+                @T("Admin.Configuration.Settings.SequenceIds.NumberOfLiquidation.Header")
+            </li>
         </ul>
         <div>
             @TabDeclaratoryLetterSettings()
@@ -63,6 +66,9 @@
         </div>
         <div>
             @TabRegistrationFormSettings()
+        </div>
+        <div>
+            @TabNumberOfLiquidationSettings()
         </div>
     </div>
 
@@ -140,4 +146,18 @@
             </tr>
         </table>
 }
+    @helper TabNumberOfLiquidationSettings()
+    {
+         <table class="adminContent">
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.NumberOfLiquidation):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.NumberOfLiquidation)
+                    @Html.ValidationMessageFor(model => model.NumberOfLiquidation)
+                </td>
+            </tr>
+        </table>
+    }
 }

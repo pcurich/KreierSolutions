@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Ks.Core;
 using Ks.Core.Data;
+using Ks.Core.Domain.Batchs;
 using Ks.Core.Domain.Catalog;
 using Ks.Core.Domain.Common;
 using Ks.Core.Domain.Contract;
@@ -711,7 +712,8 @@ namespace Ks.Services.Installation
                 AuthorizeDiscount = 1583,
                 DeclaratoryLetter = 11671,
                 RegistrationForm = 54651,
-                AuthorizeLoan = 1000
+                AuthorizeLoan = 1000,
+                NumberOfLiquidation=1291
             });
 
             settingService.SaveSetting(new ContributionSettings
@@ -721,13 +723,13 @@ namespace Ks.Services.Installation
                 CycleOfDelay = 6,
                 IsActiveAmount1 = true,
                 NameAmount1 = "Valor de aportación",
-                Amount1 = 35M,
+                Amount1 = 34.85M,
                 Amount2 = 0M,
                 Amount3 = 0M,
-                MaximumCharge = 70M
+                MaximumCharge = (decimal) (34.85*2)
             });
 
-            settingService.SaveSetting(new StateActivitySettings
+            settingService.SaveSetting(new LoanSettings
             {
                 Periods = "12,18,24,36",
                 Tea = .08,
@@ -781,7 +783,7 @@ namespace Ks.Services.Installation
 
             settingService.SaveSetting(new BankSettings
             {
-                IdBank1=1,
+                IdBank1 = 1,
                 IsActive1 = true,
                 NameBank1 = "BBVA Continental",
                 AccountNumber1 = "0011-0199-0200374278",
@@ -804,6 +806,27 @@ namespace Ks.Services.Installation
             });
 
             settingService.SaveSetting(new BenefitValueSetting { AmountBaseOfBenefit = 12801.59M });
+
+            settingService.SaveSetting(new ScheduleBatchsSetting
+            {
+                ServiceName1 = "Ks.Batch.Caja.Out",
+                DayOfProcess1 = 15,
+                DayOfProcess2 = 20,
+                ServiceName2 = "Ks.Batch.Copere.Out"
+            });
+
+            settingService.SaveSetting(new SignatureSettings
+            {
+                DefaultName = "AUXILIO COOPERATIVO MILITAR DE RETIRO",
+                BenefitLeftPosition = "CONTADOR",
+                BenefitCenterPosition = "GERENTE ADMINISTRATIVO",
+                BenefitRightPosition = "APORTES Y BENEFICIOS",
+
+                BenefitLeftName = "CARLOS JESUS ALCANTARA MOLINA",
+                BenefitCenterName = "MANUEL ANTONIO VELEZ CARRASCO",
+                BenefitRightName = "RONNY ALBERTO CALLAN ISASI",
+
+            });
 
         }
 

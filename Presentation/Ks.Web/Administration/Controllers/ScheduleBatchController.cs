@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Web.Mvc;
 using Ks.Admin.Extensions;
 using Ks.Admin.Models.Batchs;
-using Ks.Admin.Models.Tasks;
 using Ks.Core.Domain.Batchs;
-using Ks.Core.Domain.Contract;
 using Ks.Services.Batchs;
 using Ks.Services.Helpers;
 using Ks.Services.Localization;
@@ -15,7 +12,6 @@ using Ks.Services.Security;
 using Ks.Web.Framework;
 using Ks.Web.Framework.Controllers;
 using Ks.Web.Framework.Kendoui;
-using Ks.Web.Framework.Mvc;
 
 namespace Ks.Admin.Controllers
 {
@@ -28,7 +24,7 @@ namespace Ks.Admin.Controllers
         private readonly IDateTimeHelper _dateTimeHelper;
         private readonly ILocalizationService _localizationService;
 
-        private readonly ContributionSettings _contributionSettings;
+        private readonly ScheduleBatchsSetting _scheduleBatchsSetting;
 
         #endregion
 
@@ -37,13 +33,13 @@ namespace Ks.Admin.Controllers
         public ScheduleBatchController(IScheduleBatchService scheduleBatchService,
             IPermissionService permissionService,
             IDateTimeHelper dateTimeHelper, ILocalizationService localizationService,
-            ContributionSettings contributionSettings)
+            ScheduleBatchsSetting scheduleBatchsSetting)
         {
             this._scheduleBatchService = scheduleBatchService;
             this._permissionService = permissionService;
             this._dateTimeHelper = dateTimeHelper;
             this._localizationService = localizationService;
-            this._contributionSettings = contributionSettings;
+            this._scheduleBatchsSetting = scheduleBatchsSetting;
         }
 
         #endregion
@@ -153,9 +149,20 @@ namespace Ks.Admin.Controllers
             if (!batch.StartExecutionOnUtc.HasValue)
             {
                 //only for the First Time
-                var startExecution = new DateTime(DateTime.Now.Year, DateTime.Now.Month, _contributionSettings.DayOfPayment);
-                if (DateTime.Now.Day > _contributionSettings.DayOfPayment)
-                    startExecution = startExecution.AddMonths(1);
+                var startExecution = DateTime.Now;
+                if (batch.SystemName == _scheduleBatchsSetting.ServiceName1)
+                {
+                    startExecution = new DateTime(DateTime.Now.Year, DateTime.Now.Month, _scheduleBatchsSetting.DayOfProcess1);
+                    if (DateTime.Now.Day > _scheduleBatchsSetting.DayOfProcess1)
+                        startExecution = startExecution.AddMonths(1);    
+                }
+
+                if (batch.SystemName == _scheduleBatchsSetting.ServiceName2)
+                {
+                    startExecution = new DateTime(DateTime.Now.Year, DateTime.Now.Month, _scheduleBatchsSetting.DayOfProcess2);
+                    if (DateTime.Now.Day > _scheduleBatchsSetting.DayOfProcess1)
+                        startExecution = startExecution.AddMonths(1);
+                }
 
                 model.StartExecutionOn = startExecution;
                 model.NextExecutionOn = startExecution.AddDays(batch.FrecuencyId);
@@ -211,16 +218,24 @@ namespace Ks.Admin.Controllers
                     var minute = model.StartExecutionOn.Value.Minute;
                     var second = model.StartExecutionOn.Value.Second;
 
-                    var startExecution = new DateTime(
-                        DateTime.Now.Year, 
-                        DateTime.Now.Month, 
-                        _contributionSettings.DayOfPayment,hour,minute,second);
+                    var startExecution = DateTime.Now;
+                    if (batch.SystemName == _scheduleBatchsSetting.ServiceName1)
+                    {
+                        startExecution = new DateTime(DateTime.Now.Year, DateTime.Now.Month, _scheduleBatchsSetting.DayOfProcess1, hour,minute,second);
+                        if (DateTime.Now.Day > _scheduleBatchsSetting.DayOfProcess1)
+                            startExecution = startExecution.AddMonths(1);
+                    }
 
-                    if (DateTime.Now.Day > _contributionSettings.DayOfPayment)
-                        startExecution = startExecution.AddMonths(1);
+                    if (batch.SystemName == _scheduleBatchsSetting.ServiceName2)
+                    {
+                        startExecution = new DateTime(DateTime.Now.Year, DateTime.Now.Month, _scheduleBatchsSetting.DayOfProcess2, hour, minute, second);
+                        if (DateTime.Now.Day > _scheduleBatchsSetting.DayOfProcess1)
+                            startExecution = startExecution.AddMonths(1);
+                    }
+
 
                     batch.StartExecutionOnUtc = _dateTimeHelper.ConvertToUtcTime(startExecution);
-                    batch.NextExecutionOnUtc = _dateTimeHelper.ConvertToUtcTime(startExecution); ;
+                    batch.NextExecutionOnUtc = _dateTimeHelper.ConvertToUtcTime(startExecution); 
                     batch.LastExecutionOnUtc = null;
                 }
                     

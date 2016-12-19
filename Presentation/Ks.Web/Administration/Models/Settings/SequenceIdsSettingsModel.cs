@@ -15,5 +15,8 @@ namespace Ks.Admin.Models.Settings
         public int RegistrationCash { get; set; }
         [KsResourceDisplayName("Admin.Configuration.Settings.SequenceIds.RegistrationForm")]
         public int RegistrationForm { get; set; }
+
+        [KsResourceDisplayName("Admin.Configuration.Settings.SequenceIds.NumberOfLiquidation")]
+        public int NumberOfLiquidation { get; set; }
     }
 }

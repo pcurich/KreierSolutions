@@ -60,11 +60,29 @@
             <td class="adminData">
                 @Html.DropDownListFor(model => model.BenefitTypeId, Model.BenefitTypes)
                 <script>
-                    $(document).ready(function () {
+                    $(document).ready(function() {
                         $("#@Html.FieldIdFor(model => model.BenefitTypeId)").width(200).kendoDropDownList();
                     });
                 </script>
 
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.CustomField1):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.CustomField1)
+                @Html.ValidationMessageFor(model => model.CustomField1)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.CustomField2):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.CustomField2)
+                @Html.ValidationMessageFor(model => model.CustomField2)
             </td>
         </tr>
         <tr>
@@ -100,6 +118,14 @@
             </td>
             <td class="adminData">
                 @Html.EditorFor(model => model.CancelLoans)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.CloseContributions):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.CloseContributions)
             </td>
         </tr>
         <tr>

@@ -257,11 +257,27 @@ namespace Ks.Admin.Infrastructure
 
             #endregion
 
-            #region StateActivitySettings
+            #region LoanSettings
 
-            Mapper.CreateMap<StateActivitySettings, StateActivitySettingsModel>()
+            Mapper.CreateMap<LoanSettings, LoanSettingsModel>()
                    .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
-            Mapper.CreateMap<StateActivitySettingsModel, StateActivitySettings>();
+            Mapper.CreateMap<LoanSettingsModel, LoanSettings>();
+
+            #endregion
+
+            #region ScheduleBatchSettings
+
+            Mapper.CreateMap<ScheduleBatchsSetting, ScheduleBatchSettingsModel>()
+                   .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
+            Mapper.CreateMap<ScheduleBatchSettingsModel, ScheduleBatchsSetting>();
+
+            #endregion
+
+            #region Signature
+
+            Mapper.CreateMap<SignatureSettings, SignatureSettingsModel>()
+                   .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
+            Mapper.CreateMap<SignatureSettingsModel, SignatureSettings>();
 
             #endregion
 

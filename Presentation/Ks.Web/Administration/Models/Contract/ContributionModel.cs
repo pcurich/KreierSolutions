@@ -71,8 +71,8 @@ namespace Ks.Admin.Models.Contract
         public string CustomerAdmCode { get; set; }
 
         #endregion
-        
-        [KsResourceDisplayName("Admin.Contract.Contribution.Fields.DayOfPayment")]
+
+        [KsResourceDisplayName("Admin.Configuration.Settings.ContributionSettings.DayOfPaymentContribution")]
         public int DayOfPayment { get; set; }
         
         [KsResourceDisplayName("Admin.Contract.Contribution.Fields.MonthId")]

@@ -88,7 +88,6 @@ namespace Ks.Admin.Controllers
                                 .Text;
 
                     return model;
-                    return model;
                 }),
                 Total = benefits.Count()
             };

@@ -26,6 +26,9 @@ namespace Ks.Admin.Models.Customers
         [KsResourceDisplayName("Admin.Customers.Customers.Benefit.BenefitId")]
         public string BenefitName { get; set; }
         public int CustomerId { get; set; }
+        [KsResourceDisplayName("Admin.Customers.Customers.Benefit.NumberOfLiquidation")]
+        public int NumberOfLiquidation { get;set; }
+
         [KsResourceDisplayName("Admin.Customers.Customers.Benefit.AmountBaseOfBenefit")]
         [UIHint("Decimal")]
         public decimal AmountBaseOfBenefit { get; set; }
@@ -35,16 +38,26 @@ namespace Ks.Admin.Models.Customers
         public double TabValue { get; set; }
         [KsResourceDisplayName("Admin.Customers.Customers.Benefit.Discount")]
         public double Discount { get; set; }
-        [KsResourceDisplayName("Admin.Customers.Customers.Benefit.TotalToPay")]
-        public decimal TotalToPay { get; set; }
+        [KsResourceDisplayName("Admin.Customers.Customers.Benefit.SubTotalToPay")]
+        public decimal SubTotalToPay { get; set; }
         [KsResourceDisplayName("Admin.Customers.Customers.Benefit.TotalContributionCaja")]
         public decimal TotalContributionCaja { get; set; }
         [KsResourceDisplayName("Admin.Customers.Customers.Benefit.TotalContributionCopere")]
         public decimal TotalContributionCopere { get; set; }
-        [KsResourceDisplayName("Admin.Customers.Customers.Benefit.TotalPersonalPayment")]
-        public decimal TotalPersonalPayment { get; set; }
+        [KsResourceDisplayName("Admin.Customers.Customers.Benefit.TotalContributionPersonalPayment")]
+        public decimal TotalContributionPersonalPayment { get; set; }
         [KsResourceDisplayName("Admin.Customers.Customers.Benefit.ReserveFund")]
         public decimal ReserveFund { get; set; }
+        [KsResourceDisplayName("Admin.Customers.Customers.Benefit.TotalLoan")]
+        public int TotalLoan { get; set; }
+        [KsResourceDisplayName("Admin.Customers.Customers.Benefit.TotalLoanToPay")]
+        public decimal TotalLoanToPay { get; set; }
+        [KsResourceDisplayName("Admin.Customers.Customers.Benefit.TotalToPay")]
+        public decimal TotalToPay { get; set; }
+        public string CustomField1 { get; set; }
+        public string CustomValue1 { get; set; }
+        public string CustomField2 { get; set; }
+        public string CustomValue2 { get; set; }
         [KsResourceDisplayName("Admin.Customers.Customers.Benefit.TotalReationShip")]
         public int TotalReationShip { get; set; }
         [KsResourceDisplayName("Admin.Customers.Customers.Benefit.CreatedOn")]
@@ -60,6 +73,8 @@ namespace Ks.Admin.Models.Customers
         public string CustomerAdmCode { get; set; }
         [KsResourceDisplayName("Admin.Customers.Customers.Benefit.CustomerDni")]
         public string CustomerDni { get; set; }
+        [KsResourceDisplayName("Admin.Customers.Customers.Benefit.ContributionStart")]
+        public DateTime ContributionStart { get; set; }
 
         #endregion
 

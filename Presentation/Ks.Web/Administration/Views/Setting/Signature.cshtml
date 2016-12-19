@@ -1,0 +1,111 @@
+﻿@model SignatureSettingsModel
+@Html.ValidationSummary(false)
+@{
+    //page title
+    ViewBag.Title = T("Admin.Configuration.Settings.SignatureSettings").Text;
+}
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="section-header">
+        <div class="title">
+            <img src="@Url.Content("~/Administration/Content/images/ico-configuration.png")" alt="" />
+            @T("Admin.Configuration.Settings.SignatureSettings")
+        </div>
+        <div class="options">
+            <input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")" />
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $("#Contributionsettings-edit").kendoTabStrip({
+                animation: {
+                    open: {
+                        effects: "fadeIn"
+                    }
+                },
+                select: tabstrip_on_tab_select
+            });
+        });
+    </script>
+    <div id="Contributionsettings-edit">
+        <ul>
+            <li @Html.RenderSelectedTabIndex(0, GetSelectedTabIndex())>
+                @T("Admin.Configuration.Settings.SignatureSettings.Header")
+            </li>
+        </ul>
+        <div>
+            @TabSignatureSettings()
+        </div>
+    </div>
+
+    @helper TabSignatureSettings()
+{
+    
+
+    <table class="adminContent">
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.DefaultName):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.DefaultName)
+                @Html.ValidationMessageFor(model => model.DefaultName)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.BenefitLeftPosition):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.BenefitLeftPosition)
+                @Html.ValidationMessageFor(model => model.BenefitLeftPosition)
+            </td>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.BenefitLeftName):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.BenefitLeftName)
+                @Html.ValidationMessageFor(model => model.BenefitLeftName)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.BenefitCenterPosition):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.BenefitCenterPosition)
+                @Html.ValidationMessageFor(model => model.BenefitCenterPosition)
+            </td>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.BenefitCenterName):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.BenefitCenterName)
+                @Html.ValidationMessageFor(model => model.BenefitCenterName)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.BenefitRightPosition):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.BenefitRightPosition)
+                @Html.ValidationMessageFor(model => model.BenefitRightPosition)
+            </td>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.BenefitRightName):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.BenefitRightName)
+                @Html.ValidationMessageFor(model => model.BenefitRightName)
+            </td>
+        </tr>
+    </table>
+}
+}
+
+

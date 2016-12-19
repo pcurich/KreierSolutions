@@ -9,11 +9,17 @@ namespace Ks.Core.Domain.Contract
         public int BenefitTypeId { get; set; }
         public double Discount { get; set; }
         public bool CancelLoans { get; set; }
+        public bool CloseContributions { get; set; }
         public bool LetterDeclaratory { get; set; }
         public bool IsActive { get; set; }
+        
         public int DisplayOrder { get; set; }
+        public string CustomField1 { get; set; }
+        public string CustomField2 { get; set; }
+
         public DateTime CreatedOnUtc { get; set; }
         public DateTime UpdatedOnUtc { get; set; }
+
 
         public BenefitType BenefitType
         {

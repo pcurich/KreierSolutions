@@ -28,5 +28,10 @@ namespace Ks.Core.Domain.Contract
         /// Gets or sets the registration form.
         /// </summary>
         public int RegistrationForm { get; set; }
-     }
+
+        /// <summary>
+        /// Gets or sets the number of liquidation.
+        /// </summary>
+        public int NumberOfLiquidation { get; set; }
+    }
 }

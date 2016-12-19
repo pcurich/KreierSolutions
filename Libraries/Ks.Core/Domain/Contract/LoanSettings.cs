@@ -3,7 +3,7 @@ using Ks.Core.Configuration;
 
 namespace Ks.Core.Domain.Contract
 {
-    public class StateActivitySettings : ISettings
+    public class LoanSettings : ISettings
     {
         public string Periods { get; set; }
         public double Tea { get; set; }

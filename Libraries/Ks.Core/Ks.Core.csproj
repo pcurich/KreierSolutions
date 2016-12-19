@@ -103,6 +103,7 @@
     <Compile Include="Data\IRepository.cs" />
     <Compile Include="Domain\Batchs\ScheduleBatch.cs" />
     <Compile Include="Domain\Batchs\ScheduleBatchFrecuency.cs" />
+    <Compile Include="Domain\Batchs\ScheduleBatchsSetting.cs" />
     <Compile Include="Domain\Catalog\AttributeControlType.cs" />
     <Compile Include="Domain\Catalog\SpecificationAttribute.cs" />
     <Compile Include="Domain\Catalog\SpecificationAttributeOption.cs" />
@@ -133,7 +134,7 @@
     <Compile Include="Domain\Contract\Loan.cs" />
     <Compile Include="Domain\Contract\LoanPayment.cs" />
     <Compile Include="Domain\Contract\ContributionSettings.cs" />
-    <Compile Include="Domain\Contract\StateActivitySettings.cs" />
+    <Compile Include="Domain\Contract\LoanSettings.cs" />
     <Compile Include="Domain\Contract\Tab.cs" />
     <Compile Include="Domain\Contract\TabDetail.cs" />
     <Compile Include="Domain\Contract\ValueOfBenefitSetting.cs" />
@@ -162,6 +163,7 @@
     <Compile Include="Domain\Directory\MeasureDimension.cs" />
     <Compile Include="Domain\Directory\MeasureSettings.cs" />
     <Compile Include="Domain\Directory\MeasureWeight.cs" />
+    <Compile Include="Domain\Directory\SignatureSettings.cs" />
     <Compile Include="Domain\Directory\StateProvince.cs" />
     <Compile Include="Domain\KsSystemInformationSettings.cs" />
     <Compile Include="Domain\Localization\ILocalizedEntity.cs" />
@@ -185,7 +187,8 @@
     <Compile Include="Domain\Messages\MessageTemplatesSettings.cs" />
     <Compile Include="Domain\Messages\QueuedEmail.cs" />
     <Compile Include="Domain\Messages\QueuedEmailPriority.cs" />
-    <Compile Include="Domain\Reports\ReportContributionPaymentModel.cs" />
+    <Compile Include="Domain\Reports\ReportContributionBenefit.cs" />
+    <Compile Include="Domain\Reports\ReportContributionPayment.cs" />
     <Compile Include="Domain\Reports\Report.cs" />
     <Compile Include="Domain\Reports\ReportLoanPayment.cs" />
     <Compile Include="Domain\Reports\ReportLoanPaymentKardex.cs" />

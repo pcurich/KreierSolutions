@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 using Ks.Admin.Extensions;
@@ -46,7 +46,7 @@ namespace Ks.Admin.Controllers
         private readonly IStateProvinceService _stateProvinceService;
         private readonly ICityService _cityService;
         private readonly IAddressService _addressService;
-        private readonly CustomerSettings _customerSettings;
+
         private readonly IWorkContext _workContext;
         private readonly IKsSystemContext _ksSystemContext;
         private readonly IExportManager _exportManager;
@@ -68,7 +68,7 @@ namespace Ks.Admin.Controllers
         private readonly IAddressAttributeFormatter _addressAttributeFormatter;
         private readonly ContributionSettings _contributionSettings;
         private readonly SequenceIdsSettings _sequenceIdsSettings;
-        private readonly StateActivitySettings _stateActivitySettings;
+        private readonly LoanSettings _loanSettings;
         private readonly BenefitValueSetting _benefitValueSetting;
         private readonly BankSettings _bankSettings;
 
@@ -76,7 +76,7 @@ namespace Ks.Admin.Controllers
 
         #region Constructor
 
-        public CustomerBenefitController(ISettingService settingService, ICustomerService customerService, IEncryptionService encryptionService, IGenericAttributeService genericAttributeService, ICustomerRegistrationService customerRegistrationService, IDateTimeHelper dateTimeHelper, ILocalizationService localizationService, DateTimeSettings dateTimeSettings, ICountryService countryService, IStateProvinceService stateProvinceService, ICityService cityService, IAddressService addressService, CustomerSettings customerSettings, IWorkContext workContext, IKsSystemContext ksSystemContext, IExportManager exportManager, ICustomerActivityService customerActivityService, IContributionService contributionService, ILoanService loanService, IBenefitService benefitService, ITabService tabService, IPermissionService permissionService, IQueuedEmailService queuedEmailService, EmailAccountSettings emailAccountSettings, IEmailAccountService emailAccountService, AddressSettings addressSettings, IKsSystemService ksSystemService, ICustomerAttributeParser customerAttributeParser, ICustomerAttributeService customerAttributeService, IAddressAttributeParser addressAttributeParser, IAddressAttributeService addressAttributeService, IAddressAttributeFormatter addressAttributeFormatter, ContributionSettings contributionSettings, SequenceIdsSettings sequenceIdsSettings, StateActivitySettings stateActivitySettings, BenefitValueSetting benefitValueSetting, BankSettings bankSettings)
+        public CustomerBenefitController(ISettingService settingService, ICustomerService customerService, IEncryptionService encryptionService, IGenericAttributeService genericAttributeService, ICustomerRegistrationService customerRegistrationService, IDateTimeHelper dateTimeHelper, ILocalizationService localizationService, DateTimeSettings dateTimeSettings, ICountryService countryService, IStateProvinceService stateProvinceService, ICityService cityService, IAddressService addressService, CustomerSettings customerSettings, IWorkContext workContext, IKsSystemContext ksSystemContext, IExportManager exportManager, ICustomerActivityService customerActivityService, IContributionService contributionService, ILoanService loanService, IBenefitService benefitService, ITabService tabService, IPermissionService permissionService, IQueuedEmailService queuedEmailService, EmailAccountSettings emailAccountSettings, IEmailAccountService emailAccountService, AddressSettings addressSettings, IKsSystemService ksSystemService, ICustomerAttributeParser customerAttributeParser, ICustomerAttributeService customerAttributeService, IAddressAttributeParser addressAttributeParser, IAddressAttributeService addressAttributeService, IAddressAttributeFormatter addressAttributeFormatter, ContributionSettings contributionSettings, SequenceIdsSettings sequenceIdsSettings, LoanSettings loanSettings, BenefitValueSetting benefitValueSetting, BankSettings bankSettings)
         {
             _settingService = settingService;
             _customerService = customerService;
@@ -90,7 +90,6 @@ namespace Ks.Admin.Controllers
             _stateProvinceService = stateProvinceService;
             _cityService = cityService;
             _addressService = addressService;
-            _customerSettings = customerSettings;
             _workContext = workContext;
             _ksSystemContext = ksSystemContext;
             _exportManager = exportManager;
@@ -112,7 +111,7 @@ namespace Ks.Admin.Controllers
             _addressAttributeFormatter = addressAttributeFormatter;
             _contributionSettings = contributionSettings;
             _sequenceIdsSettings = sequenceIdsSettings;
-            _stateActivitySettings = stateActivitySettings;
+            _loanSettings = loanSettings;
             _benefitValueSetting = benefitValueSetting;
             _bankSettings = bankSettings;
         }
@@ -170,9 +169,19 @@ namespace Ks.Admin.Controllers
             var amountCaja = contributions.Where(x => x.BankName == "Caja").Sum(x => x.AmountPayed);
             var amountCopere = contributions.Where(x => x.BankName == "Copere").Sum(x => x.AmountPayed);
 
+            var contribution = _contributionService.GetContributionsByCustomer(model.CustomerId, 1).FirstOrDefault();
+            var year = 0;
+            if (contribution != null)
+                year = (new DateTime(1, 1, 1) + (DateTime.UtcNow - contribution.CreatedOnUtc)).Year;
+            if (year > _contributionSettings.TotalCycle / 12)
+                year = 35;
+
+            model.ContributionStart = _dateTimeHelper.ConvertToUserTime(contribution.CreatedOnUtc, DateTimeKind.Utc);
+            model.YearInActivity = year;
+            model.TabValue = _tabService.GetValueFromActive(year).TabValue;
             model.TotalContributionCaja = amountCaja;
             model.TotalContributionCopere = amountCopere;
-            model.TotalPersonalPayment = amountTotal - amountCaja - amountCopere;
+            model.TotalContributionPersonalPayment = amountTotal - amountCaja - amountCopere;
 
             model.BenefitModels = PrepareBenefitList(customerId, model.BenefitId);
 
@@ -193,18 +202,42 @@ namespace Ks.Admin.Controllers
 
                 if (contribution != null)
                     year = (new DateTime(1, 1, 1) + (DateTime.UtcNow - contribution.CreatedOnUtc)).Year;
+                if (year > _contributionSettings.TotalCycle / 12)
+                    year = 35;
 
                 var activeTab = _tabService.GetValueFromActive(year);
+                var loans = _loanService.GetLoansByCustomer(model.CustomerId).Where(x => x.Active).ToList();
+
+                model.TotalLoan = loans.Count;
+                foreach (var loan in loans)
+                {
+                    model.TotalLoanToPay += loan.TotalAmount - loan.TotalPayed;
+                }
 
                 model.Discount = benefit.Discount;
                 model.TabValue = activeTab != null ? activeTab.TabValue : 0;
                 model.YearInActivity = year;
                 model.TotalReationShip = 0;
 
+                model.SubTotalToPay = ((decimal)model.Discount*model.AmountBaseOfBenefit*(decimal)model.TabValue)- model.TotalLoanToPay;
+                model.ReserveFund = model.SubTotalToPay - model.TotalContributionCaja - model.TotalContributionCopere -
+                                    model.TotalContributionPersonalPayment;
+
+                model.TotalToPay = model.SubTotalToPay - model.TotalLoanToPay;
                 var entity = model.ToEntity();
                 entity.CreatedOnUtc = DateTime.UtcNow;
+                entity.NumberOfLiquidation = _sequenceIdsSettings.NumberOfLiquidation;
 
                 _benefitService.InsertContributionBenefit(entity);
+
+                var storeScope = GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
+                var sequenceIdsSettings = _settingService.LoadSetting<SequenceIdsSettings>(storeScope);
+
+                sequenceIdsSettings.NumberOfLiquidation += 1;
+                _settingService.SaveSetting(sequenceIdsSettings);
+
+                //now clear settings cache
+                _settingService.ClearCache();
 
                 //activity log
                 _customerActivityService.InsertActivity("AddNewContributionBenefit",
@@ -227,25 +260,55 @@ namespace Ks.Admin.Controllers
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributionBenefit))
                 return AccessDeniedView();
 
-            var benefits = _benefitService.GetContributionBenefitbyId(id);
-            if (benefits == null)
+            var contributionBenefit = _benefitService.GetContributionBenefitbyId(id);
+            if (contributionBenefit == null)
                 //No tab found with the specified id
                 return RedirectToAction("List");
 
-            var model = benefits.ToModel();
-            var contribution = _contributionService.GetContributionById(benefits.ContributionId);
+            var benefit = _benefitService.GetBenefitById(contributionBenefit.BenefitId);
+
+            var model = contributionBenefit.ToModel();
+            var contribution = _contributionService.GetContributionById(contributionBenefit.ContributionId);
             var customer = _customerService.GetCustomerById(contribution.Id);
+            model.ContributionStart = _dateTimeHelper.ConvertToUserTime(contribution.CreatedOnUtc, DateTimeKind.Utc);
             model.BenefitModels = PrepareBenefitList(contribution.CustomerId, model.BenefitId, true);
-            model.CreatedOn = _dateTimeHelper.ConvertToUserTime(benefits.CreatedOnUtc, DateTimeKind.Utc);
+            model.CreatedOn = _dateTimeHelper.ConvertToUserTime(contributionBenefit.CreatedOnUtc, DateTimeKind.Utc);
             model.CustomerId = customer.Id;
             model.CustomerDni = customer.GetAttribute<string>(SystemCustomerAttributeNames.Dni);
             model.CustomerAdmCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode);
             model.CustomerCompleteName = customer.GetFullName();
             model.Banks = PrepareBanks();
             model.RelaTionShips = PrepareRelationShip();
+            model.CustomField1 = benefit.CustomField1;
+            model.CustomField2 = benefit.CustomField2;
             return View(model);
         }
 
+        [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
+        public ActionResult Edit(ContributionBenefitModel model, bool continueEditing)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributionBenefit))
+                return AccessDeniedView();
+
+            var entity = _benefitService.GetContributionBenefitbyId(model.Id);
+            entity.CustomValue1 = model.CustomValue1;
+            entity.CustomValue2 = model.CustomValue2;
+            entity.CustomField1 = model.CustomField1;
+            entity.CustomField2 = model.CustomField2;
+
+            _benefitService.UpdateContributionBenefit(entity);
+
+            _customerActivityService.InsertActivity("EditContributionBenefit",
+                    _localizationService.GetResource("ActivityLog.EditContributionBenefit"), model.BenefitName,
+                    model.CustomerCompleteName, _workContext.CurrentCustomer.GetFullName());
+
+            SuccessNotification(_localizationService.GetResource("Admin.Configuration.ContributionBenefit.Updated"));
+
+            return continueEditing
+                    ? RedirectToAction("Edit", new { id = entity.Id })
+                    : RedirectToAction("Edit", new { Controller = "Customer", id = model.CustomerId });
+
+        }
         #endregion
 
         #region BenefitBank
@@ -285,7 +348,8 @@ namespace Ks.Admin.Controllers
                 return Json(new DataSourceResult { Errors = ModelState.SerializeErrors() });
             }
 
-            if(model.Dni==null || model.Dni.Length!=8){
+            if (model.Dni == null || model.Dni.Length != 8)
+            {
                 return Json(new DataSourceResult { Errors = "El DNI no es valido" });
             }
 
@@ -294,7 +358,7 @@ namespace Ks.Admin.Controllers
                 return Json(new DataSourceResult { Errors = "El Número de cheque debe tener una longitud de 8 digitos" });
             }
 
-            if (model.Ratio>1)
+            if (model.Ratio > 1)
             {
                 return Json(new DataSourceResult { Errors = "Ingrese un valor entre 0 y 1" });
             }
@@ -307,6 +371,12 @@ namespace Ks.Admin.Controllers
             entity.CreatedOnUtc = DateTime.UtcNow;
             entity.AmountToPay = model.TotalToPay * (decimal)model.Ratio;
             _benefitService.InsertContributionBenefitBank(entity);
+
+            var contributionBenefit =
+                _benefitService.GetContributionBenefitbyId(entity.ContributionBenefitId);
+
+            contributionBenefit.TotalReationShip++;
+            _benefitService.UpdateContributionBenefit(contributionBenefit);
 
             _customerActivityService.InsertActivity("AddNewContributionBenefitBank", _localizationService.GetResource("ActivityLog.AddNewContributionBenefitBank"), model.CompleteName, _workContext.CurrentCustomer.GetFullName());
 
@@ -322,12 +392,51 @@ namespace Ks.Admin.Controllers
             var contributionBenefitBank = _benefitService.GetContributionBenefitBankById(id);
             if (contributionBenefitBank == null)
                 throw new ArgumentException("No setting found with the specified id");
-            _benefitService.DeleteContributionBenefitBank(contributionBenefitBank);
 
+            var contributionBenefit =
+                _benefitService.GetContributionBenefitbyId(contributionBenefitBank.ContributionBenefitId);
+
+            contributionBenefit.TotalReationShip--;
+            _benefitService.DeleteContributionBenefitBank(contributionBenefitBank);
+            _benefitService.UpdateContributionBenefit(contributionBenefit);
             //activity log
             _customerActivityService.InsertActivity("DeleteContributionBenefitBank", _localizationService.GetResource("ActivityLog.DeleteContributionBenefitBank"), contributionBenefitBank.CompleteName, _workContext.CurrentCustomer.GetFullName());
 
             return new NullJsonResult();
+        }
+
+        #endregion
+
+        #region Reports
+
+        [HttpPost]
+        [FormValueRequired("export-excel")]
+        public ActionResult ExportExcel(FormCollection form)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributionBenefit))
+                return AccessDeniedView();
+            var customerId = Convert.ToInt32(form.GetValues("customerId")[0]);
+            var customerBenefitId = Convert.ToInt32(form.GetValues("customerBenefitId")[0]);
+            var customer = _customerService.GetCustomerById(customerId);
+            var contributionBenefit = _benefitService.GetContributionBenefitbyId(customerBenefitId);
+            var reportContributionBenefit = _benefitService.GetReportContributionBenefit(customerBenefitId);
+            try
+            {
+                byte[] bytes;
+                using (var stream = new MemoryStream())
+                {
+                    _exportManager.ExportReportContributionBenefitToXlsx(stream, customer, contributionBenefit, reportContributionBenefit);
+                    bytes = stream.ToArray();
+                }
+                //Response.ContentType = "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                //Response.AddHeader("content-disposition", "attachment; filename=Aportaciones.xlsx");
+                return File(bytes, "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Beneficio - Auxilio.xlsx");
+            }
+            catch (Exception exc)
+            {
+                ErrorNotification(exc);
+                return RedirectToAction("List");
+            }
         }
 
         #endregion
@@ -366,7 +475,7 @@ namespace Ks.Admin.Controllers
             if (_bankSettings.IsActive5 && _bankSettings.IdBank5 == id)
                 return (new SelectListItem { Text = _bankSettings.NameBank5, Value = _bankSettings.AccountNumber5.ToString() });
 
-            return new SelectListItem{Text="", Value=""};
+            return new SelectListItem { Text = "", Value = "" };
         }
 
         [NonAction]
@@ -408,29 +517,6 @@ namespace Ks.Admin.Controllers
             model.Insert(0, new SelectListItem { Value = "0", Text = "----------------------------", Selected = false });
 
             return model;
-        }
-
-        [AcceptVerbs(HttpVerbs.Get)]
-        public ActionResult ChangeTab(int customerId, int benefitId)
-        {
-            if (benefitId == 0)
-                return Json(0.ToString("c", new CultureInfo("es-PE")), JsonRequestBehavior.AllowGet);
-
-            var benefit = _benefitService.GetBenefitById(benefitId);
-            var contribution = _contributionService.GetContributionsByCustomer(customerId, 1).FirstOrDefault();
-            var zeroTime = new DateTime(1, 1, 1);
-            var year = 0;
-            if (contribution != null)
-            {
-                var span = DateTime.UtcNow - contribution.CreatedOnUtc;
-                year = (zeroTime + span).Year;
-            }
-            var activeTab = _tabService.GetValueFromActive(year);
-            var total = _benefitValueSetting.AmountBaseOfBenefit * (decimal)benefit.Discount * (decimal)activeTab.TabValue;
-            if (benefit.CancelLoans)
-                total -= _loanService.GetLoansByCustomer(customerId).Sum(x => x.TotalToPay);
-
-            return Json(total.ToString("c", new CultureInfo("es-PE")), JsonRequestBehavior.AllowGet);
         }
 
         #endregion

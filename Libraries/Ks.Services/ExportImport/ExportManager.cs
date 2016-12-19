@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Text;
 using Ks.Core.Domain.Directory;
 using System.IO;
+using System.Linq;
 using Ks.Core;
 using Ks.Core.Domain;
 using Ks.Core.Domain.Contract;
@@ -30,16 +31,21 @@ namespace Ks.Services.ExportImport
         private readonly IWebHelper _webHelper;
         private readonly IDateTimeHelper _dateTimeHelper;
 
+        private readonly SignatureSettings _signatureSettings;
+
         #endregion
 
         #region Ctor
 
-        public ExportManager(IKsSystemService ksSystemService, KsSystemInformationSettings ksSystemInformationSettings, IWebHelper webHelper, IDateTimeHelper dateTimeHelper)
+        public ExportManager(IKsSystemService ksSystemService,
+            KsSystemInformationSettings ksSystemInformationSettings,
+            IWebHelper webHelper, IDateTimeHelper dateTimeHelper, SignatureSettings signatureSettings)
         {
             _ksSystemService = ksSystemService;
             _ksSystemInformationSettings = ksSystemInformationSettings;
             _webHelper = webHelper;
             _dateTimeHelper = dateTimeHelper;
+            _signatureSettings = signatureSettings;
         }
 
         #endregion
@@ -607,6 +613,288 @@ namespace Ks.Services.ExportImport
                 worksheet.Cells[row, 5].Style.Font.Bold = true;
                 xlPackage.Save();
             }
+        }
+
+        public virtual void ExportReportContributionBenefitToXlsx(Stream stream, Customer customer, ContributionBenefit contributionBenefit,
+            IList<ReportContributionBenefit> reportContributionBenefit)
+        {
+            if (stream == null)
+                throw new ArgumentNullException("stream");
+
+            var report = reportContributionBenefit.FirstOrDefault();
+
+            using (var xlPackage = new ExcelPackage(stream))
+            {
+                // get handle to the existing worksheet
+                var worksheet = xlPackage.Workbook.Worksheets.Add(report.BenefitName);
+                var imagePath = _webHelper.MapPath("/Administration/Content/images/logo.png");
+                //Stream binary = new MemoryStream(File.ReadAllBytes(sampleImagesPath + "logo.png"));
+
+                //var logo = Image.FromStream(binary);
+                //var picture = worksheet.Drawings.AddPicture("", logo);
+                var image = new Bitmap(imagePath);
+                var excelImage = worksheet.Drawings.AddPicture("ACMR", image);
+                excelImage.From.Column = 0;
+                excelImage.From.Row = 0;
+
+                #region 1. DATOS GENERALES :
+
+                worksheet.Cells["C5"].Value = report.BenefitType.ToUpper();
+                worksheet.Cells["C5"].Style.Font.Bold = true;
+                worksheet.Cells["C6"].Value = report.BenefitName.ToUpper();
+                worksheet.Cells["C6"].Style.Font.Bold = true;
+                worksheet.Cells["C7"].Value = "Nº DE LIQUIDACION: " + report.NumberOfLiquidation;
+                worksheet.Cells["C7"].Style.Font.Bold = true;
+                worksheet.Cells["A7:D7"].Style.Border.Bottom.Style = ExcelBorderStyle.Thick;
+
+                worksheet.Cells["A9"].Value = "1. DATOS GENERALES :";
+                worksheet.Cells["A9"].Style.Font.Bold = true;
+                worksheet.Cells["A9"].Style.Font.UnderLine = true;
+
+                worksheet.Cells["B10"].Value = "1.1";
+                worksheet.Cells["B10"].Style.Font.Bold = true;
+                worksheet.Cells["C10"].Value = "N° Adm:";
+                worksheet.Cells["C10"].Style.Font.Bold = true;
+                worksheet.Cells["D10"].Value = customer.GetGenericAttribute(SystemCustomerAttributeNames.AdmCode);
+
+                worksheet.Cells["B11"].Value = "1.2";
+                worksheet.Cells["B11"].Style.Font.Bold = true;
+                worksheet.Cells["C11"].Value = "Dni:";
+                worksheet.Cells["C11"].Style.Font.Bold = true;
+                worksheet.Cells["D11"].Value = customer.GetGenericAttribute(SystemCustomerAttributeNames.Dni);
+
+                worksheet.Cells["B12"].Value = "1.3";
+                worksheet.Cells["B12"].Style.Font.Bold = true;
+                worksheet.Cells["C12"].Value = "Apellidos y Nombres:";
+                worksheet.Cells["C12"].Style.Font.Bold = true;
+                worksheet.Cells["D12"].Value = customer.GetFullName();
+
+
+                worksheet.Cells["B13"].Value = "1.4";
+                worksheet.Cells["B13"].Style.Font.Bold = true;
+                worksheet.Cells["C13"].Value = "Fecha Ingreso:";
+                worksheet.Cells["C13"].Style.Font.Bold = true;
+                worksheet.Cells["D13"].Value = _dateTimeHelper.ConvertToUserTime(customer.CreatedOnUtc, DateTimeKind.Utc).ToString(CultureInfo.InvariantCulture);
+
+                worksheet.Cells["B14"].Value = "1.5";
+                worksheet.Cells["B14"].Style.Font.Bold = true;
+                worksheet.Cells["C14"].Value = "Años Aportados:";
+                worksheet.Cells["C14"].Style.Font.Bold = true;
+                worksheet.Cells["D14"].Value = report.YearInActivity + " años";
+
+                var offset = 15;
+
+                if (!string.IsNullOrEmpty(contributionBenefit.CustomValue1))
+                {
+                    worksheet.Cells["B" + offset].Value = "1." + (offset - 9);
+                    worksheet.Cells["B" + offset].Style.Font.Bold = true;
+                    worksheet.Cells["C" + offset].Value = contributionBenefit.CustomField1;
+                    worksheet.Cells["C" + offset].Style.Font.Bold = true;
+                    worksheet.Cells["D" + offset].Value = contributionBenefit.CustomValue1;
+                    offset++;
+                }
+
+                if (!string.IsNullOrEmpty(contributionBenefit.CustomValue2))
+                {
+                    worksheet.Cells["B" + offset].Value = "1." + (offset - 9);
+                    worksheet.Cells["B" + offset].Style.Font.Bold = true;
+                    worksheet.Cells["C" + offset].Value = contributionBenefit.CustomField2;
+                    worksheet.Cells["C" + offset].Style.Font.Bold = true;
+                    worksheet.Cells["D" + offset].Value = contributionBenefit.CustomValue2;
+                    offset++;
+                }
+
+                offset++;
+                offset++;
+
+                #endregion
+
+                #region 2. CALCULO AUXILIO ECONOMICO :
+
+                worksheet.Cells["A" + offset].Value = "2. CALCULO AUXILIO ECONOMICO";
+                worksheet.Cells["A" + offset].Style.Font.Bold = true;
+                worksheet.Cells["A" + offset].Style.Font.UnderLine = true;
+                offset++;
+
+                worksheet.Cells["B" + offset].Value = "2.1";
+                worksheet.Cells["B" + offset].Style.Font.Bold = true;
+                worksheet.Cells["C" + offset].Value = "En Base al Beneficio Economico según Calculo Matematico Actuarial:";
+                worksheet.Cells["C" + offset].Style.Font.Bold = true;
+                worksheet.Cells["D" + offset].Value = report.AmountBaseOfBenefit.ToString("c");
+                offset++;
+
+                worksheet.Cells["B" + offset].Value = "2.2";
+                worksheet.Cells["B" + offset].Style.Font.Bold = true;
+                worksheet.Cells["C" + offset].Value = "Factor Variable Según Años Aportados:";
+                worksheet.Cells["C" + offset].Style.Font.Bold = true;
+                worksheet.Cells["D" + offset].Value = report.TabValue;
+                offset++;
+
+                worksheet.Cells["B" + offset].Value = "2.3";
+                worksheet.Cells["B" + offset].Style.Font.Bold = true;
+                worksheet.Cells["C" + offset].Value = "Porcentaje a Pagar:";
+                worksheet.Cells["C" + offset].Style.Font.Bold = true;
+                worksheet.Cells["D" + offset].Value = report.Discount.ToString("P");
+                offset++;
+
+                #region 2.4 Sumatoria Aportes y Apoyo del Fondo de Reserva
+
+                worksheet.Cells["B" + offset].Value = "2.4";
+                worksheet.Cells["B" + offset].Style.Font.Bold = true;
+                worksheet.Cells["C" + offset].Value = "Sumatoria Aportes y Apoyo del Fondo de Reserva:";
+                worksheet.Cells["C" + offset].Style.Font.Bold = true;
+                offset++;
+
+                worksheet.Cells["C" + offset].Value = "2.4.1 Aportes del Asociado en Actividad:";
+                worksheet.Cells["C" + offset].Style.Font.Bold = true;
+                worksheet.Cells["D" + offset].Value = report.TotalContributionCopere.ToString("c");
+                offset++;
+
+                worksheet.Cells["C" + offset].Value = "2.4.2. Aportes del Asociado en Retiro:";
+                worksheet.Cells["C" + offset].Style.Font.Bold = true;
+                worksheet.Cells["D" + offset].Value = report.TotalContributionCaja.ToString("c");
+                offset++;
+
+                worksheet.Cells["C" + offset].Value = "2.4.3. Aportes Pagos Personales:";
+                worksheet.Cells["C" + offset].Style.Font.Bold = true;
+                worksheet.Cells["D" + offset].Value = report.TotalContributionPersonalPayment.ToString("c");
+                offset++;
+
+                worksheet.Cells["C" + offset].Value = "2.4.4. Apoyo Fondo de Reserva:";
+                worksheet.Cells["C" + offset].Style.Font.Bold = true;
+                worksheet.Cells["D" + offset].Value = report.ReserveFund.ToString("c");
+                offset++;
+
+                worksheet.Cells["C" + offset].Value = "2.4.5. Aportacion Total:";
+                worksheet.Cells["C" + offset].Style.Font.Bold = true;
+                worksheet.Cells["C" + offset].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                worksheet.Cells["C" + offset].Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#77dd77"));
+                worksheet.Cells["D" + offset].Value = report.SubTotalToPay.ToString("c");
+                worksheet.Cells["D" + offset].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                worksheet.Cells["D" + offset].Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#77dd77"));
+                offset++;
+
+                #endregion
+
+                #region 2.4 Deducciones
+
+                worksheet.Cells["B" + offset].Value = "2.5";
+                worksheet.Cells["B" + offset].Style.Font.Bold = true;
+                worksheet.Cells["C" + offset].Value = "Deducciones";
+                worksheet.Cells["C" + offset].Style.Font.Bold = true;
+                offset++;
+
+                worksheet.Cells["C" + offset].Value = "2.5.1. Prestamos Pendites:";
+                worksheet.Cells["C" + offset].Style.Font.Bold = true;
+                worksheet.Cells["D" + offset].Value = report.TotalLoan;
+                offset++;
+
+                worksheet.Cells["C" + offset].Value = "2.5.2. Aportes Pendientes:";
+                worksheet.Cells["C" + offset].Style.Font.Bold = true;
+                worksheet.Cells["D" + offset].Value = report.TotalLoanToPay.ToString("c");
+                offset++;
+
+                worksheet.Cells["C" + offset].Value = "2.5.3. Deducción Total:";
+                worksheet.Cells["C" + offset].Style.Font.Bold = true;
+                worksheet.Cells["C" + offset].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                worksheet.Cells["C" + offset].Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#77dd77"));
+                worksheet.Cells["D" + offset].Value = report.TotalLoanToPay.ToString("c");
+                worksheet.Cells["D" + offset].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                worksheet.Cells["D" + offset].Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#77dd77"));
+                offset++;
+
+                #endregion
+
+                #region 2.6 Beneficio Económico a Liquidar:
+
+                worksheet.Cells["B" + offset].Value = "2.6";
+                worksheet.Cells["B" + offset].Style.Font.Bold = true;
+                worksheet.Cells["C" + offset].Value = "Beneficio Económico a Liquidar:";
+                worksheet.Cells["C" + offset].Style.Font.Bold = true;
+                worksheet.Cells["D" + offset].Value = (report.TotalToPay).ToString("C", new CultureInfo("es-PE"));
+                offset++;
+
+                #endregion
+
+                #region 2.7 Pago Beneficiarios según Sucesion Intestada Nº 1863
+
+                worksheet.Cells["B" + offset].Value = "2.7";
+                worksheet.Cells["B" + offset].Style.Font.Bold = true;
+                worksheet.Cells["C" + offset].Value = "Pago Beneficiarios según Sucesion Intestada Nº 1863";
+                worksheet.Cells["C" + offset].Style.Font.Bold = true;
+                offset++;
+
+                var checks = report.Checks.Split('|');
+                var index = 1;
+                foreach (var check in checks)
+                {
+                    worksheet.Cells["C" + offset].Value = "2.7." + index + check.Split('-')[0];
+                    worksheet.Cells["C" + offset].Style.Font.Bold = true;
+                    worksheet.Cells["D" + offset].Value = Convert.ToDecimal(check.Split('-')[1]).ToString("c");
+                    offset++;
+                    index++;
+                }
+                #endregion
+
+                worksheet.Cells["B" + offset].Value = "2.8";
+                worksheet.Cells["B" + offset].Style.Font.Bold = true;
+                worksheet.Cells["C" + offset].Value = "Auxilio Economico total a pagar:";
+                worksheet.Cells["C" + offset].Style.Font.Bold = true;
+                worksheet.Cells["C" + offset].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                worksheet.Cells["C" + offset].Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#77dd77"));
+                worksheet.Cells["D" + offset].Value = report.TotalToPay.ToString("c", new CultureInfo("es-PE"));
+                worksheet.Cells["D" + offset].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                worksheet.Cells["D" + offset].Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#77dd77"));
+                offset++;
+                offset++;
+                offset++;
+                offset++;
+                offset++;
+
+                #endregion
+
+                #region Firmas
+
+                worksheet.Cells["A" + offset].Style.Border.Bottom.Style = ExcelBorderStyle.DashDot;
+                worksheet.Cells["A" + (offset + 1)].Value = _signatureSettings.BenefitRightName;
+                worksheet.Cells["A" + (offset + 1)].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
+                worksheet.Cells["A" + (offset + 2)].Value = _signatureSettings.BenefitRightPosition;
+                worksheet.Cells["A" + (offset + 2)].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
+                worksheet.Cells["A" + (offset + 3)].Value = _signatureSettings.DefaultName;
+                worksheet.Cells["A" + (offset + 3)].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
+
+                worksheet.Cells["C" + offset].Style.Border.Bottom.Style = ExcelBorderStyle.DashDot;
+                worksheet.Cells["C" + (offset + 1)].Value = _signatureSettings.BenefitCenterName;
+                worksheet.Cells["C" + (offset + 1)].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
+                worksheet.Cells["C" + (offset + 2)].Value = _signatureSettings.BenefitCenterName;
+                worksheet.Cells["C" + (offset + 2)].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
+                worksheet.Cells["C" + (offset + 3)].Value = _signatureSettings.DefaultName;
+                worksheet.Cells["C" + (offset + 3)].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
+
+                worksheet.Cells["E" + (offset)].Style.Border.Bottom.Style = ExcelBorderStyle.DashDot;
+                worksheet.Cells["E" + (offset + 1)].Value = _signatureSettings.BenefitLeftName;
+                worksheet.Cells["E" + (offset + 1)].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
+                worksheet.Cells["E" + (offset + 2)].Value = _signatureSettings.BenefitLeftPosition;
+                worksheet.Cells["E" + (offset + 3)].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
+                worksheet.Cells["E" + (offset + 3)].Value = _signatureSettings.DefaultName;
+                worksheet.Cells["E" + (offset + 3)].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
+                #endregion
+
+                var imagePathSignature = _webHelper.MapPath("/Administration/Content/images/Escudo.png");
+                var imageSignature = new Bitmap(imagePathSignature);
+                var excelImageSignature = worksheet.Drawings.AddPicture("Firma", imageSignature);
+                excelImageSignature.From.Column = 2;
+                excelImageSignature.From.Row = offset + 4;
+                excelImageSignature.SetSize(115,115);
+                excelImageSignature.AdjustPositionAndSize();
+                
+                for (var i = 1; i <= worksheet.Dimension.Columns; i++)
+                {
+                    worksheet.Column(i).AutoFit();
+                }
+                xlPackage.Save();
+            }
+
         }
 
         #endregion

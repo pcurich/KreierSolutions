@@ -74,9 +74,7 @@ namespace Ks.Admin.Controllers
         private readonly IQueuedEmailService _queuedEmailService;
         private readonly EmailAccountSettings _emailAccountSettings;
         private readonly IEmailAccountService _emailAccountService;
-        //private readonly ForumSettings _forumSettings;
-        //private readonly IForumService _forumService;
-        //private readonly IOpenAuthenticationService _openAuthenticationService;
+
         private readonly AddressSettings _addressSettings;
         private readonly IKsSystemService _ksSystemService;
         private readonly ICustomerAttributeParser _customerAttributeParser;
@@ -84,14 +82,10 @@ namespace Ks.Admin.Controllers
         private readonly IAddressAttributeParser _addressAttributeParser;
         private readonly IAddressAttributeService _addressAttributeService;
         private readonly IAddressAttributeFormatter _addressAttributeFormatter;
+
         private readonly ContributionSettings _contributionSettings;
         private readonly SequenceIdsSettings _sequenceIdsSettings;
-        private readonly StateActivitySettings _stateActivitySettings;
-        private readonly BenefitValueSetting _benefitValueSetting;
-        private readonly BankSettings _bankSettings;
-        //private readonly IAffiliateService _affiliateService;
-        //private readonly IWorkflowMessageService _workflowMessageService;
-        //private readonly IRewardPointService _rewardPointService;
+        private readonly LoanSettings _loanSettings;
 
         #endregion
 
@@ -105,35 +99,22 @@ namespace Ks.Admin.Controllers
             IDateTimeHelper dateTimeHelper,
             ILocalizationService localizationService,
             DateTimeSettings dateTimeSettings,
-            //TaxSettings taxSettings,
-            //RewardPointsSettings rewardPointsSettings,
             ICountryService countryService,
             IStateProvinceService stateProvinceService,
             ICityService cityService,
             IAddressService addressService,
             CustomerSettings customerSettings,
-            //ITaxService taxService,
             IWorkContext workContext,
-            //IVendorService vendorService,
-            IKsSystemContext ksSystemContext,
-            //IPriceFormatter priceFormatter,
-            //IOrderService orderService,
             IExportManager exportManager,
             ICustomerActivityService customerActivityService,
             IContributionService contributionService,
             ILoanService loanService,
             IBenefitService benefitService,
             ITabService tabService,
-            //IBackInStockSubscriptionService backInStockSubscriptionService,
-            //IPriceCalculationService priceCalculationService,
-            //IProductAttributeFormatter productAttributeFormatter,
             IPermissionService permissionService,
             IQueuedEmailService queuedEmailService,
             EmailAccountSettings emailAccountSettings,
             IEmailAccountService emailAccountService,
-            //ForumSettings forumSettings,
-            //IForumService forumService,
-            //IOpenAuthenticationService openAuthenticationService,
             AddressSettings addressSettings,
             IKsSystemService ksSystemService,
             ICustomerAttributeParser customerAttributeParser,
@@ -143,13 +124,7 @@ namespace Ks.Admin.Controllers
             IAddressAttributeFormatter addressAttributeFormatter,
             ContributionSettings contributionSettings,
             SequenceIdsSettings sequenceIdsSettings,
-            StateActivitySettings stateActivityettings,
-            BenefitValueSetting benefitValueSetting,
-            BankSettings bankSettings
-            //IAffiliateService affiliateService,
-            //IWorkflowMessageService workflowMessageService,
-            //IRewardPointService rewardPointService
-            )
+            LoanSettings stateActivityettings, IKsSystemContext ksSystemContext)
         {
             this._settingService = settingService;
             this._customerService = customerService;
@@ -200,9 +175,8 @@ namespace Ks.Admin.Controllers
             //this._affiliateService = affiliateService;
             //this._workflowMessageService = workflowMessageService;
             //this._rewardPointService = rewardPointService;
-            this._stateActivitySettings = stateActivityettings;
-            this._benefitValueSetting = benefitValueSetting;
-            this._bankSettings = bankSettings;
+            this._loanSettings = stateActivityettings;
+            _ksSystemContext = ksSystemContext;
         }
 
         #endregion
@@ -1514,7 +1488,7 @@ namespace Ks.Admin.Controllers
                 //No customer found with the specified id
                 return RedirectToAction("List");
 
-            var periods = CommonHelper.ConvertToSelectListItem(_stateActivitySettings.Periods, ',');
+            var periods = CommonHelper.ConvertToSelectListItem(_loanSettings.Periods, ',');
             periods.Insert(0, new SelectListItem { Value = "0", Text = "------------------" });
             var totalOfContribution = _contributionService.GetAllPayments(customerId);
             var totalOfCyclesPayments = totalOfContribution.Count(x => x.StateId == (int)ContributionState.Pagado);
@@ -1546,7 +1520,7 @@ namespace Ks.Admin.Controllers
 
             if (!ModelState.IsValid)
             {
-                var periods = CommonHelper.ConvertToSelectListItem(_stateActivitySettings.Periods, ',');
+                var periods = CommonHelper.ConvertToSelectListItem(_loanSettings.Periods, ',');
                 periods.Insert(0, new SelectListItem { Value = "0", Text = "----" });
                 model.Periods = periods;
                 return View(model);
@@ -1607,13 +1581,12 @@ namespace Ks.Admin.Controllers
                     TotalToPay = model.PreCashFlow.TotalToPay,
                     IsAuthorized = false,
                     IsDelay = false,
-
                     Active = true,
                     CreatedOnUtc = DateTime.UtcNow,
                     UpdatedOnUtc = null
                 };
 
-                var estimated = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, _contributionSettings.DayOfPayment);
+                var estimated = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, _loanSettings.DayOfPaymentLoan);
 
                 for (var cycle = 1; cycle <= model.Period; cycle++)
                 {
@@ -1679,7 +1652,7 @@ namespace Ks.Admin.Controllers
 
         protected virtual CashFlowModel PrepareCashFlow(decimal cashFlow)
         {
-            var avalibleCashFlow = XmlHelper.XmlToObject<List<CashFlowModel>>(@_stateActivitySettings.CashFlow);
+            var avalibleCashFlow = XmlHelper.XmlToObject<List<CashFlowModel>>(_loanSettings.CashFlow);
             for (int i = 0; i < avalibleCashFlow.Count; i++)
             {
                 if (i + 1 != avalibleCashFlow.Count)
@@ -1694,37 +1667,37 @@ namespace Ks.Admin.Controllers
             var classState = new StateActivityModel();
 
             #region Class A
-            if (_stateActivitySettings.IsEnable1 &&
-                _stateActivitySettings.MinClycle1 * 12 <= cycle &&
-                _stateActivitySettings.MaxClycle1 * 12 >= cycle)
+            if (_loanSettings.IsEnable1 &&
+                _loanSettings.MinClycle1 * 12 <= cycle &&
+                _loanSettings.MaxClycle1 * 12 >= cycle)
             {
-                if (_stateActivitySettings.HasOnlySignature1 &&
-                    _stateActivitySettings.MinAmountWithSignature1 <= amount &&
-                    _stateActivitySettings.MaxAmountWithSignature1 >= amount)
+                if (_loanSettings.HasOnlySignature1 &&
+                    _loanSettings.MinAmountWithSignature1 <= amount &&
+                    _loanSettings.MaxAmountWithSignature1 >= amount)
                 {
-                    classState.StateName = _stateActivitySettings.StateName1;
-                    classState.IsEnable = _stateActivitySettings.IsEnable1;
-                    classState.MinClycle = _stateActivitySettings.MinClycle1;
-                    classState.MaxClycle = _stateActivitySettings.MaxClycle1;
+                    classState.StateName = _loanSettings.StateName1;
+                    classState.IsEnable = _loanSettings.IsEnable1;
+                    classState.MinClycle = _loanSettings.MinClycle1;
+                    classState.MaxClycle = _loanSettings.MaxClycle1;
 
-                    classState.HasOnlySignature = _stateActivitySettings.HasOnlySignature1;
-                    classState.MinAmountWithSignature = _stateActivitySettings.MinAmountWithSignature1;
-                    classState.MaxAmountWithSignature = _stateActivitySettings.MaxAmountWithSignature1;
+                    classState.HasOnlySignature = _loanSettings.HasOnlySignature1;
+                    classState.MinAmountWithSignature = _loanSettings.MinAmountWithSignature1;
+                    classState.MaxAmountWithSignature = _loanSettings.MaxAmountWithSignature1;
                     return classState;
                 }
 
-                if (_stateActivitySettings.HasWarranty1 &&
-                    _stateActivitySettings.MinAmountWithWarranty1 <= amount &&
-                    _stateActivitySettings.MaxAmountWithWarranty1 >= amount)
+                if (_loanSettings.HasWarranty1 &&
+                    _loanSettings.MinAmountWithWarranty1 <= amount &&
+                    _loanSettings.MaxAmountWithWarranty1 >= amount)
                 {
-                    classState.StateName = _stateActivitySettings.StateName1;
-                    classState.IsEnable = _stateActivitySettings.IsEnable1;
-                    classState.MinClycle = _stateActivitySettings.MinClycle1;
-                    classState.MaxClycle = _stateActivitySettings.MaxClycle1;
+                    classState.StateName = _loanSettings.StateName1;
+                    classState.IsEnable = _loanSettings.IsEnable1;
+                    classState.MinClycle = _loanSettings.MinClycle1;
+                    classState.MaxClycle = _loanSettings.MaxClycle1;
 
-                    classState.HasWarranty = _stateActivitySettings.HasWarranty1;
-                    classState.MinAmountWithWarranty = _stateActivitySettings.MinAmountWithWarranty1;
-                    classState.MaxAmountWithWarranty = _stateActivitySettings.MaxAmountWithWarranty1;
+                    classState.HasWarranty = _loanSettings.HasWarranty1;
+                    classState.MinAmountWithWarranty = _loanSettings.MinAmountWithWarranty1;
+                    classState.MaxAmountWithWarranty = _loanSettings.MaxAmountWithWarranty1;
                     classState.CustomerWarranty = new CustomerWarranty
                     {
                         CustomerId = warranty.Id,
@@ -1741,37 +1714,37 @@ namespace Ks.Admin.Controllers
             #endregion
 
             #region Class B
-            if (_stateActivitySettings.IsEnable2 &&
-                _stateActivitySettings.MinClycle2 * 12 <= cycle &&
-                _stateActivitySettings.MaxClycle2 * 12 >= cycle)
+            if (_loanSettings.IsEnable2 &&
+                _loanSettings.MinClycle2 * 12 <= cycle &&
+                _loanSettings.MaxClycle2 * 12 >= cycle)
             {
-                if (_stateActivitySettings.HasOnlySignature2 &&
-                    _stateActivitySettings.MinAmountWithSignature2 <= amount &&
-                    _stateActivitySettings.MaxAmountWithSignature2 >= amount)
+                if (_loanSettings.HasOnlySignature2 &&
+                    _loanSettings.MinAmountWithSignature2 <= amount &&
+                    _loanSettings.MaxAmountWithSignature2 >= amount)
                 {
-                    classState.StateName = _stateActivitySettings.StateName2;
-                    classState.IsEnable = _stateActivitySettings.IsEnable2;
-                    classState.MinClycle = _stateActivitySettings.MinClycle2;
-                    classState.MaxClycle = _stateActivitySettings.MaxClycle2;
+                    classState.StateName = _loanSettings.StateName2;
+                    classState.IsEnable = _loanSettings.IsEnable2;
+                    classState.MinClycle = _loanSettings.MinClycle2;
+                    classState.MaxClycle = _loanSettings.MaxClycle2;
 
-                    classState.HasOnlySignature = _stateActivitySettings.HasOnlySignature2;
-                    classState.MinAmountWithSignature = _stateActivitySettings.MinAmountWithSignature2;
-                    classState.MaxAmountWithSignature = _stateActivitySettings.MaxAmountWithSignature2;
+                    classState.HasOnlySignature = _loanSettings.HasOnlySignature2;
+                    classState.MinAmountWithSignature = _loanSettings.MinAmountWithSignature2;
+                    classState.MaxAmountWithSignature = _loanSettings.MaxAmountWithSignature2;
                     return classState;
                 }
 
-                if (_stateActivitySettings.HasWarranty2 &&
-                    _stateActivitySettings.MinAmountWithWarranty2 <= amount &&
-                    _stateActivitySettings.MaxAmountWithWarranty2 >= amount)
+                if (_loanSettings.HasWarranty2 &&
+                    _loanSettings.MinAmountWithWarranty2 <= amount &&
+                    _loanSettings.MaxAmountWithWarranty2 >= amount)
                 {
-                    classState.StateName = _stateActivitySettings.StateName2;
-                    classState.IsEnable = _stateActivitySettings.IsEnable2;
-                    classState.MinClycle = _stateActivitySettings.MinClycle2;
-                    classState.MaxClycle = _stateActivitySettings.MaxClycle2;
+                    classState.StateName = _loanSettings.StateName2;
+                    classState.IsEnable = _loanSettings.IsEnable2;
+                    classState.MinClycle = _loanSettings.MinClycle2;
+                    classState.MaxClycle = _loanSettings.MaxClycle2;
 
-                    classState.HasWarranty = _stateActivitySettings.HasWarranty2;
-                    classState.MinAmountWithWarranty = _stateActivitySettings.MinAmountWithWarranty2;
-                    classState.MaxAmountWithWarranty = _stateActivitySettings.MaxAmountWithWarranty2;
+                    classState.HasWarranty = _loanSettings.HasWarranty2;
+                    classState.MinAmountWithWarranty = _loanSettings.MinAmountWithWarranty2;
+                    classState.MaxAmountWithWarranty = _loanSettings.MaxAmountWithWarranty2;
                     classState.CustomerWarranty = new CustomerWarranty
                     {
                         CustomerId = warranty.Id,
@@ -1783,41 +1756,42 @@ namespace Ks.Admin.Controllers
                     };
                     return classState;
                 }
-            };
+            }
+
             #endregion
 
             #region Class C
-            if (_stateActivitySettings.IsEnable3 &&
-                _stateActivitySettings.MinClycle3 * 12 <= cycle &&
-                _stateActivitySettings.MaxClycle3 * 12 >= cycle)
+            if (_loanSettings.IsEnable3 &&
+                _loanSettings.MinClycle3 * 12 <= cycle &&
+                _loanSettings.MaxClycle3 * 12 >= cycle)
             {
-                if (_stateActivitySettings.HasOnlySignature3 &&
-                    _stateActivitySettings.MinAmountWithSignature3 <= amount &&
-                    _stateActivitySettings.MaxAmountWithSignature3 >= amount)
+                if (_loanSettings.HasOnlySignature3 &&
+                    _loanSettings.MinAmountWithSignature3 <= amount &&
+                    _loanSettings.MaxAmountWithSignature3 >= amount)
                 {
-                    classState.StateName = _stateActivitySettings.StateName3;
-                    classState.IsEnable = _stateActivitySettings.IsEnable3;
-                    classState.MinClycle = _stateActivitySettings.MinClycle3;
-                    classState.MaxClycle = _stateActivitySettings.MaxClycle3;
+                    classState.StateName = _loanSettings.StateName3;
+                    classState.IsEnable = _loanSettings.IsEnable3;
+                    classState.MinClycle = _loanSettings.MinClycle3;
+                    classState.MaxClycle = _loanSettings.MaxClycle3;
 
-                    classState.HasOnlySignature = _stateActivitySettings.HasOnlySignature3;
-                    classState.MinAmountWithSignature = _stateActivitySettings.MinAmountWithSignature3;
-                    classState.MaxAmountWithSignature = _stateActivitySettings.MaxAmountWithSignature3;
+                    classState.HasOnlySignature = _loanSettings.HasOnlySignature3;
+                    classState.MinAmountWithSignature = _loanSettings.MinAmountWithSignature3;
+                    classState.MaxAmountWithSignature = _loanSettings.MaxAmountWithSignature3;
                     return classState;
                 }
 
-                if (_stateActivitySettings.HasWarranty3 &&
-                    _stateActivitySettings.MinAmountWithWarranty3 <= amount &&
-                    _stateActivitySettings.MaxAmountWithWarranty3 >= amount)
+                if (_loanSettings.HasWarranty3 &&
+                    _loanSettings.MinAmountWithWarranty3 <= amount &&
+                    _loanSettings.MaxAmountWithWarranty3 >= amount)
                 {
-                    classState.StateName = _stateActivitySettings.StateName3;
-                    classState.IsEnable = _stateActivitySettings.IsEnable3;
-                    classState.MinClycle = _stateActivitySettings.MinClycle3;
-                    classState.MaxClycle = _stateActivitySettings.MaxClycle3;
+                    classState.StateName = _loanSettings.StateName3;
+                    classState.IsEnable = _loanSettings.IsEnable3;
+                    classState.MinClycle = _loanSettings.MinClycle3;
+                    classState.MaxClycle = _loanSettings.MaxClycle3;
 
-                    classState.HasWarranty = _stateActivitySettings.HasWarranty3;
-                    classState.MinAmountWithWarranty = _stateActivitySettings.MinAmountWithWarranty3;
-                    classState.MaxAmountWithWarranty = _stateActivitySettings.MaxAmountWithWarranty3;
+                    classState.HasWarranty = _loanSettings.HasWarranty3;
+                    classState.MinAmountWithWarranty = _loanSettings.MinAmountWithWarranty3;
+                    classState.MaxAmountWithWarranty = _loanSettings.MaxAmountWithWarranty3;
                     classState.CustomerWarranty = new CustomerWarranty
                     {
                         CustomerId = warranty.Id,
@@ -1833,37 +1807,37 @@ namespace Ks.Admin.Controllers
             #endregion
 
             #region Class D
-            if (_stateActivitySettings.IsEnable4 &&
-                _stateActivitySettings.MinClycle4 * 12 <= cycle &&
-                _stateActivitySettings.MaxClycle4 * 12 >= cycle)
+            if (_loanSettings.IsEnable4 &&
+                _loanSettings.MinClycle4 * 12 <= cycle &&
+                _loanSettings.MaxClycle4 * 12 >= cycle)
             {
-                if (_stateActivitySettings.HasOnlySignature4 &&
-                    _stateActivitySettings.MinAmountWithSignature4 <= amount &&
-                    _stateActivitySettings.MaxAmountWithSignature4 >= amount)
+                if (_loanSettings.HasOnlySignature4 &&
+                    _loanSettings.MinAmountWithSignature4 <= amount &&
+                    _loanSettings.MaxAmountWithSignature4 >= amount)
                 {
-                    classState.StateName = _stateActivitySettings.StateName4;
-                    classState.IsEnable = _stateActivitySettings.IsEnable4;
-                    classState.MinClycle = _stateActivitySettings.MinClycle4;
-                    classState.MaxClycle = _stateActivitySettings.MaxClycle4;
+                    classState.StateName = _loanSettings.StateName4;
+                    classState.IsEnable = _loanSettings.IsEnable4;
+                    classState.MinClycle = _loanSettings.MinClycle4;
+                    classState.MaxClycle = _loanSettings.MaxClycle4;
 
-                    classState.HasOnlySignature = _stateActivitySettings.HasOnlySignature4;
-                    classState.MinAmountWithSignature = _stateActivitySettings.MinAmountWithSignature4;
-                    classState.MaxAmountWithSignature = _stateActivitySettings.MaxAmountWithSignature4;
+                    classState.HasOnlySignature = _loanSettings.HasOnlySignature4;
+                    classState.MinAmountWithSignature = _loanSettings.MinAmountWithSignature4;
+                    classState.MaxAmountWithSignature = _loanSettings.MaxAmountWithSignature4;
                     return classState;
                 }
 
-                if (_stateActivitySettings.HasWarranty4 &&
-                    _stateActivitySettings.MinAmountWithWarranty4 <= amount &&
-                    _stateActivitySettings.MaxAmountWithWarranty4 >= amount)
+                if (_loanSettings.HasWarranty4 &&
+                    _loanSettings.MinAmountWithWarranty4 <= amount &&
+                    _loanSettings.MaxAmountWithWarranty4 >= amount)
                 {
-                    classState.StateName = _stateActivitySettings.StateName4;
-                    classState.IsEnable = _stateActivitySettings.IsEnable4;
-                    classState.MinClycle = _stateActivitySettings.MinClycle4;
-                    classState.MaxClycle = _stateActivitySettings.MaxClycle4;
+                    classState.StateName = _loanSettings.StateName4;
+                    classState.IsEnable = _loanSettings.IsEnable4;
+                    classState.MinClycle = _loanSettings.MinClycle4;
+                    classState.MaxClycle = _loanSettings.MaxClycle4;
 
-                    classState.HasWarranty = _stateActivitySettings.HasWarranty4;
-                    classState.MinAmountWithWarranty = _stateActivitySettings.MinAmountWithWarranty4;
-                    classState.MaxAmountWithWarranty = _stateActivitySettings.MaxAmountWithWarranty4;
+                    classState.HasWarranty = _loanSettings.HasWarranty4;
+                    classState.MinAmountWithWarranty = _loanSettings.MinAmountWithWarranty4;
+                    classState.MaxAmountWithWarranty = _loanSettings.MaxAmountWithWarranty4;
                     classState.CustomerWarranty = new CustomerWarranty
                     {
                         CustomerId = warranty.Id,
@@ -1879,37 +1853,37 @@ namespace Ks.Admin.Controllers
             #endregion
 
             #region Class E
-            if (_stateActivitySettings.IsEnable5 &&
-                _stateActivitySettings.MinClycle5 * 12 <= cycle &&
-                _stateActivitySettings.MaxClycle5 * 12 >= cycle)
+            if (_loanSettings.IsEnable5 &&
+                _loanSettings.MinClycle5 * 12 <= cycle &&
+                _loanSettings.MaxClycle5 * 12 >= cycle)
             {
-                if (_stateActivitySettings.HasOnlySignature5 &&
-                    _stateActivitySettings.MinAmountWithSignature5 <= amount &&
-                    _stateActivitySettings.MaxAmountWithSignature5 >= amount)
+                if (_loanSettings.HasOnlySignature5 &&
+                    _loanSettings.MinAmountWithSignature5 <= amount &&
+                    _loanSettings.MaxAmountWithSignature5 >= amount)
                 {
-                    classState.StateName = _stateActivitySettings.StateName5;
-                    classState.IsEnable = _stateActivitySettings.IsEnable5;
-                    classState.MinClycle = _stateActivitySettings.MinClycle5;
-                    classState.MaxClycle = _stateActivitySettings.MaxClycle5;
+                    classState.StateName = _loanSettings.StateName5;
+                    classState.IsEnable = _loanSettings.IsEnable5;
+                    classState.MinClycle = _loanSettings.MinClycle5;
+                    classState.MaxClycle = _loanSettings.MaxClycle5;
 
-                    classState.HasOnlySignature = _stateActivitySettings.HasOnlySignature5;
-                    classState.MinAmountWithSignature = _stateActivitySettings.MinAmountWithSignature5;
-                    classState.MaxAmountWithSignature = _stateActivitySettings.MaxAmountWithSignature5;
+                    classState.HasOnlySignature = _loanSettings.HasOnlySignature5;
+                    classState.MinAmountWithSignature = _loanSettings.MinAmountWithSignature5;
+                    classState.MaxAmountWithSignature = _loanSettings.MaxAmountWithSignature5;
                     return classState;
                 }
 
-                if (_stateActivitySettings.HasWarranty5 &&
-                    _stateActivitySettings.MinAmountWithWarranty5 <= amount &&
-                    _stateActivitySettings.MaxAmountWithWarranty5 >= amount)
+                if (_loanSettings.HasWarranty5 &&
+                    _loanSettings.MinAmountWithWarranty5 <= amount &&
+                    _loanSettings.MaxAmountWithWarranty5 >= amount)
                 {
-                    classState.StateName = _stateActivitySettings.StateName5;
-                    classState.IsEnable = _stateActivitySettings.IsEnable5;
-                    classState.MinClycle = _stateActivitySettings.MinClycle5;
-                    classState.MaxClycle = _stateActivitySettings.MaxClycle5;
+                    classState.StateName = _loanSettings.StateName5;
+                    classState.IsEnable = _loanSettings.IsEnable5;
+                    classState.MinClycle = _loanSettings.MinClycle5;
+                    classState.MaxClycle = _loanSettings.MaxClycle5;
 
-                    classState.HasWarranty = _stateActivitySettings.HasWarranty5;
-                    classState.MinAmountWithWarranty = _stateActivitySettings.MinAmountWithWarranty5;
-                    classState.MaxAmountWithWarranty = _stateActivitySettings.MaxAmountWithWarranty5;
+                    classState.HasWarranty = _loanSettings.HasWarranty5;
+                    classState.MinAmountWithWarranty = _loanSettings.MinAmountWithWarranty5;
+                    classState.MaxAmountWithWarranty = _loanSettings.MaxAmountWithWarranty5;
                     classState.CustomerWarranty = new CustomerWarranty
                     {
                         CustomerId = warranty.Id,
@@ -1945,14 +1919,14 @@ namespace Ks.Admin.Controllers
             //2) Get CashFlow
             model.CashFlowModels = PrepareCashFlow(model.CashFlow);
             //3) Calcule PreCashFlow
-            var totalfeed = model.LoanAmount * Convert.ToDecimal(model.Period * _stateActivitySettings.Tea / 12);
-            var totalSafe = model.LoanAmount * Convert.ToDecimal(_stateActivitySettings.Safe);
+            var totalfeed = model.LoanAmount * Convert.ToDecimal(model.Period * _loanSettings.Tea / 12);
+            var totalSafe = model.LoanAmount * Convert.ToDecimal(_loanSettings.Safe);
             model.PreCashFlow = new PreCashFlowModel
             {
                 Period = model.Period,
                 Amount = model.LoanAmount,
-                Tea = _stateActivitySettings.Tea * 100,
-                Safe = _stateActivitySettings.Safe * 100,
+                Tea = _loanSettings.Tea * 100,
+                Safe = _loanSettings.Safe * 100,
                 TotalFeed = (totalfeed),
                 TotalSafe = (totalSafe),
                 MonthlyQuota = ((model.LoanAmount + totalfeed) / model.Period),

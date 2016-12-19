@@ -3,7 +3,7 @@ using Ks.Web.Framework.Mvc;
 
 namespace Ks.Admin.Models.Settings
 {
-    public class StateActivitySettingsModel:  BaseKsModel
+    public class LoanSettingsModel:  BaseKsModel
     {
         [KsResourceDisplayName("Admin.Configuration.Settings.StateActivitySettings.Periods")]
         public string Periods { get; set; }

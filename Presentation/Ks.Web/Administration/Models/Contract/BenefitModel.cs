@@ -25,12 +25,18 @@ namespace Ks.Admin.Models.Contract
         public double Discount { get; set; }
         [KsResourceDisplayName("Admin.Configuration.Benefits.Fields.CancelLoans")]
         public bool CancelLoans { get; set; }
+        [KsResourceDisplayName("Admin.Configuration.Benefits.Fields.CloseContributions")]
+        public bool CloseContributions { get; set; }
         [KsResourceDisplayName("Admin.Configuration.Benefits.Fields.LetterDeclaratory")]
         public bool LetterDeclaratory { get; set; }
         [KsResourceDisplayName("Admin.Configuration.Benefits.Fields.IsActive")]
         public bool IsActive { get; set; }
         [KsResourceDisplayName("Admin.Configuration.Benefits.Fields.DisplayOrder")]
         public int DisplayOrder { get; set; }
+        [KsResourceDisplayName("Admin.Configuration.Benefits.Fields.CustomField")]
+        public string CustomField1 { get; set; }
+        [KsResourceDisplayName("Admin.Configuration.Benefits.Fields.CustomField")]
+        public string CustomField2 { get; set; }
         [KsResourceDisplayName("Admin.Configuration.Benefits.Fields.CreatedOn")]
         public DateTime CreatedOn { get; set; }
         [KsResourceDisplayName("Admin.Configuration.Benefits.Fields.UpdatedOn")]

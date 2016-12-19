@@ -522,18 +522,54 @@ namespace Ks.Admin.Extensions
 
         #endregion
 
-        #region StateActivitySettings
+        #region LoanSettings
 
-        public static StateActivitySettingsModel ToModel(this StateActivitySettings entity)
+        public static LoanSettingsModel ToModel(this LoanSettings entity)
         {
-            return entity.MapTo<StateActivitySettings, StateActivitySettingsModel>();
+            return entity.MapTo<LoanSettings, LoanSettingsModel>();
         }
-        public static StateActivitySettings ToEntity(this StateActivitySettingsModel model)
+        public static LoanSettings ToEntity(this LoanSettingsModel model)
         {
-            return model.MapTo<StateActivitySettingsModel, StateActivitySettings>();
+            return model.MapTo<LoanSettingsModel, LoanSettings>();
         }
 
-        public static StateActivitySettings ToEntity(this StateActivitySettingsModel model, StateActivitySettings destination)
+        public static LoanSettings ToEntity(this LoanSettingsModel model, LoanSettings destination)
+        {
+            return model.MapTo(destination);
+        }
+
+        #endregion
+
+        #region ScheduleBatch
+
+        public static ScheduleBatchSettingsModel ToModel(this ScheduleBatchsSetting entity)
+        {
+            return entity.MapTo<ScheduleBatchsSetting, ScheduleBatchSettingsModel>();
+        }
+        public static ScheduleBatchsSetting ToEntity(this ScheduleBatchSettingsModel model)
+        {
+            return model.MapTo<ScheduleBatchSettingsModel, ScheduleBatchsSetting>();
+        }
+
+        public static ScheduleBatchsSetting ToEntity(this ScheduleBatchSettingsModel model, ScheduleBatchsSetting destination)
+        {
+            return model.MapTo(destination);
+        }
+
+        #endregion
+
+        #region Signature
+
+        public static SignatureSettingsModel ToModel(this SignatureSettings entity)
+        {
+            return entity.MapTo<SignatureSettings, SignatureSettingsModel>();
+        }
+        public static SignatureSettings ToEntity(this SignatureSettingsModel model)
+        {
+            return model.MapTo<SignatureSettingsModel, SignatureSettings>();
+        }
+
+        public static SignatureSettings ToEntity(this SignatureSettingsModel model, SignatureSettings destination)
         {
             return model.MapTo(destination);
         }

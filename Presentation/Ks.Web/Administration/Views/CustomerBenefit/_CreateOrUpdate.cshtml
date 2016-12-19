@@ -1,5 +1,5 @@
-﻿@using System.Globalization
-@model ContributionBenefitModel
+﻿@model ContributionBenefitModel
+@using System.Globalization
 @Html.ValidationSummary(true)
 @Html.HiddenFor(model => model.CustomerId)
 @Html.HiddenFor(model => model.Id)
@@ -24,10 +24,16 @@
         <li @Html.RenderSelectedTabIndex(0, GetSelectedTabIndex())>
             @T("Admin.Customers.Customers.Benefit.Info")
         </li>
+        <li @Html.RenderSelectedTabIndex(1, GetSelectedTabIndex())>
+            Aportaciones
+        </li>
+        <li @Html.RenderSelectedTabIndex(2, GetSelectedTabIndex())>
+            Apoyo Económico
+        </li>
         @{
             if (Model.Id > 0)
             {
-                <li @Html.RenderSelectedTabIndex(1, GetSelectedTabIndex())>
+                <li @Html.RenderSelectedTabIndex(3, GetSelectedTabIndex())>
                     @T("Admin.Customers.Customers.Benefit.Checks")
                 </li>
             }
@@ -35,6 +41,12 @@
     </ul>
     <div>
         @TabInfo()
+    </div>
+    <div>
+        @TabContribution()
+    </div>
+    <div>
+        @TabLoan()
     </div>
     @{
         if (Model.Id > 0)
@@ -89,11 +101,39 @@
         </tr>
         <tr>
             <td class="adminTitle">
-                @Html.KsLabelFor(model => model.AmountBaseOfBenefit):
+                @Html.KsLabelFor(model => model.ContributionStart):
             </td>
             <td class="adminData">
-                @Html.HiddenFor(model => model.AmountBaseOfBenefit)
-                @Model.AmountBaseOfBenefit.ToString("c", new CultureInfo("es-PE"))
+                @Model.ContributionStart.ToShortDateString()
+            </td>
+        </tr>
+        @{
+            if (Model.Id > 0)
+            {
+                <tr>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.Discount):
+                    </td>
+                    <td class="adminData">
+                        @Model.Discount.ToString("p")
+                    </td>
+                </tr>
+            }
+        }
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.YearInActivity):
+            </td>
+            <td class="adminData">
+                @Model.YearInActivity
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.TabValue):
+            </td>
+            <td class="adminData">
+                @Model.TabValue
             </td>
         </tr>
         <tr>
@@ -104,16 +144,16 @@
                 @{
                     if (Model.Id > 0)
                     {
-                        @Model.BenefitName
+                @Model.BenefitName
                     }
                     else
                     {
-                        @Html.DropDownListFor(model => model.BenefitId, Model.BenefitModels)
-                        <script>
-                            $(document).ready(function () {
+                @Html.DropDownListFor(model => model.BenefitId, Model.BenefitModels)
+                <script>
+                            $(document).ready(function() {
                                 $("#@Html.FieldIdFor(model => model.BenefitId)").width(200).kendoDropDownList();
                             });
-                        </script>
+                </script>
                     }
                 }
 
@@ -121,10 +161,67 @@
         </tr>
         <tr>
             <td class="adminTitle">
+                @Html.KsLabelFor(model => model.AmountBaseOfBenefit):
+            </td>
+            <td class="adminData">
+                @Html.HiddenFor(model => model.AmountBaseOfBenefit)
+                @Model.AmountBaseOfBenefit.ToString("c", new CultureInfo("es-PE"))
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.SubTotalToPay):
+            </td>
+            <td class="adminData">
+                @Model.SubTotalToPay.ToString("c", new CultureInfo("es-PE"))
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.TotalToPay):
+            </td>
+            <td class="adminData">
+                @Model.TotalToPay.ToString("c", new CultureInfo("es-PE"))
+            </td>
+        </tr>
+        @{if (!string.IsNullOrEmpty(Model.CustomField1))
+        {
+            <tr>
+                <td class="adminTitle">
+                    @Model.CustomField1:
+                    @Html.HiddenFor(model => model.CustomField1)
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.CustomValue1)
+                </td>
+            </tr>
+        }
+        }
+
+        @{if (!string.IsNullOrEmpty(Model.CustomField2))
+        {
+            <tr>
+                <td class="adminTitle">
+                    @Model.CustomField2:
+                    @Html.HiddenFor(model => model.CustomField2)
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.CustomValue2)
+                </td>
+            </tr>
+        }
+        }
+    </table>
+}
+
+@helper TabContribution()
+{
+    <table class="adminContent">
+        <tr>
+            <td class="adminTitle">
                 @Html.KsLabelFor(model => model.TotalContributionCopere):
             </td>
             <td class="adminData">
-                @Html.HiddenFor(model => model.TotalContributionCopere)
                 @Html.HiddenFor(model => model.TotalContributionCopere)
                 @Model.TotalContributionCopere.ToString("c", new CultureInfo("es-PE"))
             </td>
@@ -135,18 +232,16 @@
             </td>
             <td class="adminData">
                 @Html.HiddenFor(model => model.TotalContributionCaja)
-                @Html.HiddenFor(model => model.TotalContributionCaja)
                 @Model.TotalContributionCaja.ToString("c", new CultureInfo("es-PE"))
             </td>
         </tr>
         <tr>
             <td class="adminTitle">
-                @Html.KsLabelFor(model => model.TotalPersonalPayment):
+                @Html.KsLabelFor(model => model.TotalContributionPersonalPayment):
             </td>
             <td class="adminData">
-                @Html.HiddenFor(model => model.TotalPersonalPayment)
-                @Html.HiddenFor(model => model.TotalPersonalPayment)
-                @Model.TotalPersonalPayment.ToString("c", new CultureInfo("es-PE"))
+                @Html.HiddenFor(model => model.TotalContributionPersonalPayment)
+                @Model.TotalContributionPersonalPayment.ToString("c", new CultureInfo("es-PE"))
             </td>
         </tr>
         <tr>
@@ -154,71 +249,32 @@
                 @Html.KsLabelFor(model => model.ReserveFund):
             </td>
             <td class="adminData">
-                @{
-                    if (Model.Id > 0)
-                    {
-                        @Model.ReserveFund.ToString("c", new CultureInfo("es-PE"))
-                    }
-                    else
-                    {
-                        @Html.HiddenFor(model => model.ReserveFund)
-                        <div id="reserve_result">S/ 0.00</div>
-                    }
-                }
+                @Model.ReserveFund.ToString("c", new CultureInfo("es-PE"))
+            </td>
+        </tr>
+    </table>
+}
+
+@helper TabLoan()
+{
+    <table class="adminContent">
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.TotalLoan):
+            </td>
+            <td class="adminData">
+                @Model.TotalLoan
             </td>
         </tr>
         <tr>
             <td class="adminTitle">
-                @Html.KsLabelFor(model => model.TotalToPay):
+                @Html.KsLabelFor(model => model.TotalLoanToPay):
             </td>
             <td class="adminData">
-                @{
-                    if (Model.Id > 0)
-                    {
-                        @Model.TotalToPay.ToString("c", new CultureInfo("es-PE"))
-                    }
-                    else
-                    {
-                        @Html.HiddenFor(model => model.TotalToPay)
-                        <div id="benetfit_result">S/ 0.00</div>
-                    }
-                }
+                @Model.TotalLoanToPay.ToString("c", new CultureInfo("es-PE"))
             </td>
         </tr>
-
-
     </table>
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#@Html.FieldIdFor(model => model.BenefitId)").change(function () {
-                var benefitId = $(this).val();
-                var customerId = $("#@Html.FieldIdFor(model => model.CustomerId)").val();
-                var result = $('#benetfit_result');
-                var reserve = $('#reserve_result');
-                $.ajax({
-                    cache: false,
-                    type: "GET",
-                    url: "@(Url.Action("ChangeTab", "CustomerBenefit"))",
-                    data: { "customerId": customerId, "benefitId": benefitId },
-                    success: function (data) {
-                        result.html(data);
-                        data = data.replace("S/.", "");
-                        var copere = $("#@Html.FieldIdFor(model => model.TotalContributionCopere)").val();
-                        var caja = $("#@Html.FieldIdFor(model => model.TotalContributionCaja)").val();
-                        var personal = $("#@Html.FieldIdFor(model => model.TotalPersonalPayment)").val();
-                        var temp = Math.round((data - copere - caja - personal) * 100) / 100;
-                        reserve.html("S/. " + temp);
-                        $("#@Html.FieldIdFor(model => model.ReserveFund)").val(temp);
-                        $("#@Html.FieldIdFor(model => model.TotalToPay)").val(data);
-                    },
-                    error: function (xhr, ajaxOptions, thrownError) {
-                        alert('Failed to retrieve states.');
-                    }
-                });
-            });
-        });
-    </script>
 }
 
 @helper TabChecks()
@@ -246,7 +302,7 @@
                                         type: "POST",
                                         dataType: "json",
                                         data: addAntiForgeryToken
-                                    }, 
+                                    },
                                     destroy: {
                                         url: "@Html.Raw(Url.Action("BankCheckDelete", "CustomerBenefit"))",
                                         type: "POST",
@@ -365,7 +421,7 @@
                                     title: "@T("Admin.Configuration.ContributionBenefitBank.AmountToPay")",
                                     template: '#= kendo.toString(AmountToPay,"c","es-PE") #',
                                     format: "{0:c2}",
-                                    width: 80
+                                    width: 100
                                 },   {
                                     command: [{
                                         name: "destroy",

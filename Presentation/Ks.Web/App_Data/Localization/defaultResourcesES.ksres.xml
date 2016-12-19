@@ -738,6 +738,9 @@
   <LocaleResource Name="ActivityLog.EditBenefit">
     <Value>Edición del beneficio ('{0}') por el usuario ('{1}')</Value>
   </LocaleResource>
+    <LocaleResource Name="ActivityLog.EditContributionBenefit">
+    <Value>Edición de la asignacion del beneficio ('{0}') al usuario ('{1}') por el usuario ('{2}')</Value>
+  </LocaleResource>
   <LocaleResource Name="ActivityLog.EditContributionBenefitBank">
     <Value>Edición del beneficiario ('{0}') por el usuario ('{1}')</Value>
   </LocaleResource>
@@ -5626,6 +5629,9 @@
   <LocaleResource Name="Admin.Configuration.Settings.SequenceIds.RegistrationCash.Header">
     <Value>Configuración del Beneficio</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.SequenceIds.NumberOfLiquidation.Header">
+    <Value>Configuración de las liquidaciones</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.SequenceIds.DeclaratoryLetter">
     <Value>N° carta declaratoria</Value>
   </LocaleResource>
@@ -5656,6 +5662,60 @@
   <LocaleResource Name="Admin.Configuration.Settings.SequenceIds.RegistrationCash.Hint">
     <Value>N° de la ficha de liquidez</Value>
   </LocaleResource>  
+  <LocaleResource Name="Admin.Configuration.Settings.SequenceIds.NumberOfLiquidation">
+    <Value>Nº de liquidación</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.SequenceIds.NumberOfLiquidation.Hint">
+    <Value>Nº de liquidación</Value>
+  </LocaleResource>  
+  <LocaleResource Name="Admin.Configuration.Settings.SignatureSettings">
+    <Value>Configuración de firmas</Value>
+  </LocaleResource>
+    <LocaleResource Name="Admin.Configuration.Settings.SignatureSettings.Header">
+    <Value>Configuración de firmas</Value>
+  </LocaleResource>  
+  <LocaleResource Name="Admin.Configuration.Settings.Signature.DefaultName">
+    <Value>Texto Generico</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.Signature.DefaultName.Hint">
+    <Value>Nombre del propio sistema</Value>
+  </LocaleResource>  
+  <LocaleResource Name="Admin.Configuration.Settings.Signature.BenefitLeftName">
+    <Value>Beneficio - Izquierda - Nombre</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.Signature.BenefitLeftName.Hint">
+    <Value>Beneficio - Izquierda - Nombre</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.Signature.BenefitCenterName">	
+    <Value>Beneficio - Centro - Nombre</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.Signature.BenefitCenterName.Hint">
+    <Value>Beneficio - Centro - Nombre</Value>
+  </LocaleResource>  
+  <LocaleResource Name="Admin.Configuration.Settings.Signature.BenefitRightName">	
+    <Value>Beneficio - Derecha - Nombre</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.Signature.BenefitRightName.Hint">
+    <Value>Beneficio - Derecha - Nombre</Value>
+  </LocaleResource> 
+    <LocaleResource Name="Admin.Configuration.Settings.Signature.BenefitLeftPosition">
+    <Value>Beneficio - Izquierda - Cargo</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.Signature.BenefitLeftPosition.Hint">
+    <Value>Beneficio - Izquierda - Cargo</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.Signature.BenefitCenterPosition">	
+    <Value>Beneficio - Centro - Cargo</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.Signature.BenefitCenterPosition.Hint">
+    <Value>Beneficio - Centro - Cargo</Value>
+  </LocaleResource>  
+  <LocaleResource Name="Admin.Configuration.Settings.Signature.BenefitRightPosition">	
+    <Value>Beneficio - Derecha - Cargo</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.Signature.BenefitRightPosition.Hint">
+    <Value>Beneficio - Derecha - Cargo</Value>
+  </LocaleResource> 
   <LocaleResource Name="Admin.Configuration.Settings.Media">
     <Value>Configuración de Medios</Value>
   </LocaleResource>
@@ -5929,6 +5989,15 @@
   <LocaleResource Name="Admin.Configuration.Settings.Order.TermsOfServiceOnShoppingCartPage.Hint">
     <Value>Exigir a los clientes aceptar o rechazar los términos de servicio antes de procesar el pedido (en la página del carrito).</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.ScheduleBatchSettings">
+    <Value>Configuracion de la interfaz de servicios</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.ScheduleBatchSettings">
+    <Value>Configuracion de la interfaz de servicios</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.ScheduleBatchSettings.Header">
+    <Value>Configuracion de la interfaz de servicios</Value>
+  </LocaleResource>  
   <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings">
     <Value>Configuracion de los cobros programados</Value>
   </LocaleResource>
@@ -5968,7 +6037,7 @@
   <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.MaximumCharge.Hint"> 
 	<Value>Monto maximo que se le puede cargar cuando no tenga liquidez suficiente</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.DayOfPayment">
+  <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.DayOfPaymentContribution">
     <Value>Dia de cobros</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.DayOfPayment.Hint">
@@ -6286,7 +6355,7 @@
   <LocaleResource Name="Admin.Configuration.Settings.ShoppingCart.ShowProductImagesOnWishList.Hint">
     <Value>Determina si las imágenes de los productos se deben mostrar en la lista de deseos de los clientes.</Value>
   </LocaleResource>
-  <LocaleResource Name="admin.configuration.settings.stateactivity">
+  <LocaleResource Name="Admin.Configuration.Settings.Loan">
     <Value>Configuración de Apoyo Social Económico</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.StateActivity.CashFlow.FindCustomer">
@@ -6392,7 +6461,7 @@
     <Value>Seguro de desgravamen (ingresar un numero desde 0 hasta 1, por ejemplo 0.01)</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.DayOfPaymentLoan">
-    <Value>Dia de cobros (Apoyo Económico)</Value>
+    <Value>Dia de cobros</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.StateActivitySettings.DayOfPaymentLoan.Hint">
     <Value>Dia de cada mes en que se realizan los cobros del apoyo economico</Value>
@@ -6571,6 +6640,31 @@
   <LocaleResource Name="Admin.Configuration.Settings.Vendor.VendorsBlockItemsToDisplay.Hint">
     <Value>Introduzca el número de vendedores a mostrar en el bloque de navegación de vendedores.</Value>
   </LocaleResource>
+  
+  <LocaleResource Name="Admin.Configuration.Settings.ScheduleBatch.ServiceName1">
+    <Value>Servicio 1</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.ScheduleBatch.ServiceName1.Hint">
+    <Value>Introduzca el nombre del primer servicio.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.ScheduleBatch.ServiceName2">
+    <Value>Servicio 2</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.ScheduleBatch.ServiceName2.Hint">
+    <Value>Introduzca el nombre del segundo servicio.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.ScheduleBatch.DayOfProcess1">
+    <Value>Dia de ejecucion del Servicio 1</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.ScheduleBatch.DayOfProcess1.Hint">
+    <Value>Dia de ejecucion del Servicio 1</Value>
+  </LocaleResource>
+   <LocaleResource Name="Admin.Configuration.Settings.ScheduleBatch.DayOfProcess2">
+    <Value>Dia de ejecucion del Servicio 2</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.ScheduleBatch.DayOfProcess2.Hint">
+    <Value>Dia de ejecucion del Servicio 2</Value>
+  </LocaleResource>   
   <LocaleResource Name="Admin.Configuration.Shipping">
     <Value>Envío</Value>
   </LocaleResource>
@@ -6926,7 +7020,7 @@
     <Value>Ingrese el porcentaje que sera considerado para el beneficio.</Value>
   </LocaleResource>
     <LocaleResource Name="Admin.Configuration.Benefits.Fields.CancelLoans">
-    <Value>Considera Prestamos</Value>
+    <Value>Considera Prestamos?</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Benefits.Fields.CancelLoans.Hint">
     <Value>Incluye los montos de los prestamos que se van a saldar .</Value>
@@ -6936,6 +7030,18 @@
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Benefits.Fields.IsActive.Hint">
     <Value>Establece si este beneficio se va a considerar en adelante</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Benefits.Fields.CloseContributions">
+    <Value>Cierra las aportaciones?</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Benefits.Fields.CloseContributions.Hint">
+    <Value>Permite establecerse como el beneficio por default a gozar despues de terminar el periodo</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Benefits.Fields.CustomField">
+    <Value>Campo personalizabe</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Benefits.Fields.CustomField.Hint">
+    <Value>Valor personalizado que puede ingresa al momento de seleccionar un beneficio</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Benefits.Fields.DisplayOrder">
     <Value>Mostrar Orden</Value>
@@ -9010,6 +9116,12 @@
   <LocaleResource Name="Admin.Customers.Customers.Benefit.BenefitId.Hint">
     <Value>Beneficio/Auxilio</Value>
   </LocaleResource>
+    <LocaleResource Name="Admin.Customers.Customers.Benefit.NumberOfLiquidation">
+    <Value>N° Liquidación</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.NumberOfLiquidation.Hint">
+    <Value>N° Liquidación</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.Benefit.AmountBaseOfBenefit">
     <Value>Base</Value>
   </LocaleResource>
@@ -9034,6 +9146,12 @@
   <LocaleResource Name="Admin.Customers.Customers.Benefit.Discount.Hint">
     <Value>Porcentaje que corresponde segun sea el auxilio o beneficio </Value>
   </LocaleResource>
+    <LocaleResource Name="Admin.Customers.Customers.Benefit.SubTotalToPay">
+    <Value>Sub Total Beneficio</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.SubTotalToPay.Hint">
+    <Value>Valor del beneficio a girar sin prestamos</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.Benefit.TotalToPay">
     <Value>Total Beneficio</Value>
   </LocaleResource>
@@ -9052,11 +9170,29 @@
   <LocaleResource Name="Admin.Customers.Customers.Benefit.TotalContributionCopere.Hint">
     <Value>Monto aportado por el copere</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Customers.Customers.Benefit.TotalPersonalPayment">
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.TotalContributionPersonalPayment">
     <Value>Aporte Personal</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Customers.Customers.Benefit.TotalPersonalPayment.Hint">
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.TotalContributionPersonalPayment.Hint">
     <Value>Monto aportado de manera personal</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.ReserveFund">
+    <Value>Fondo de Reserva</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.ReserveFund.Hint">
+    <Value>Fondo de Reserva</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.TotalLoan">
+    <Value>N° de Apoyo Económico activos</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.TotalLoan.Hint">
+    <Value>N° de Apoyo Económico activos</Value>
+  </LocaleResource>
+    <LocaleResource Name="Admin.Customers.Customers.Benefit.TotalLoanToPay">
+    <Value>Aportes Pendientes</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.TotalLoanToPay.Hint">
+    <Value>Monto de los aportes pendientes que se tiene en la coperativa</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.Benefit.ReserveFund">
     <Value>Fondo de Reserva</Value>
@@ -9094,6 +9230,12 @@
   <LocaleResource Name="Admin.Customers.Customers.Benefit.CustomerDni.Hint">
     <Value>DNI</Value>
   </LocaleResource>  
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.ContributionStart">
+    <Value>Inicio Aportación</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Benefit.ContributionStart.Hint">
+    <Value>Inicio Aportación</Value>
+  </LocaleResource> 
   <LocaleResource Name="Admin.Customers.Customers.Loan">
     <Value>Apoyo Social Económico</Value>
   </LocaleResource>
@@ -11433,6 +11575,9 @@
   </LocaleResource>
   <LocaleResource Name="Admin.System.ScheduleTasks">
     <Value>Programar tareas</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.ScheduleBatchs">
+    <Value>Programar servicios</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.System.ScheduleTasks.Enabled">
     <Value>Activado</Value>

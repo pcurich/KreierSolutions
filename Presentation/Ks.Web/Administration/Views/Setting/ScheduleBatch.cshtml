@@ -1,0 +1,81 @@
+﻿@model ScheduleBatchSettingsModel
+@Html.ValidationSummary(false)
+@{
+    //page title
+    ViewBag.Title = T("Admin.Configuration.Settings.ScheduleBatchSettings").Text;
+}
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="section-header">
+        <div class="title">
+            <img src="@Url.Content("~/Administration/Content/images/ico-configuration.png")" alt="" />
+            @T("Admin.Configuration.Settings.ScheduleBatchSettings")
+        </div>
+        <div class="options">
+            <input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")" />
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $("#schedule-batch-settings-edit").kendoTabStrip({
+                animation: {
+                    open: {
+                        effects: "fadeIn"
+                    }
+                },
+                select: tabstrip_on_tab_select
+            });
+        });
+    </script>
+
+    <div id="schedule-batch-settings-edit">
+        <ul>
+            <li @Html.RenderSelectedTabIndex(0, GetSelectedTabIndex())>
+                @T("Admin.Configuration.Settings.ScheduleBatchSettings.Header")
+            </li>
+        </ul>
+        <div>
+            @TabScheduleBatchSettings()
+        </div>
+    </div>
+
+    @helper TabScheduleBatchSettings()
+{
+    <table class="adminContent">
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.ServiceName1):
+            </td>
+            <td class="adminData">
+                @Model.ServiceName1
+                @Html.HiddenFor(model => model.ServiceName1)
+            </td>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.DayOfProcess1):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.DayOfProcess1)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.ServiceName2):
+            </td>
+            <td class="adminData">
+                @Model.ServiceName2
+                @Html.HiddenFor(model => model.ServiceName2)
+            </td>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.DayOfProcess2):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.DayOfProcess2)
+            </td>
+        </tr>
+    </table>
+}
+}

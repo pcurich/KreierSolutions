@@ -5,9 +5,11 @@ using System.Web.Mvc;
 using Ks.Admin.Extensions;
 using Ks.Admin.Models.Settings;
 using Ks.Core;
+using Ks.Core.Domain.Batchs;
 using Ks.Core.Domain.Common;
 using Ks.Core.Domain.Contract;
 using Ks.Core.Domain.Customers;
+using Ks.Core.Domain.Directory;
 using Ks.Services.Common;
 using Ks.Services.Configuration;
 using Ks.Services.Contract;
@@ -349,25 +351,25 @@ namespace Ks.Admin.Controllers
 
         #endregion
 
-        #region StateActivity
+        #region Loans
 
-        public ActionResult StateActivity()
+        public ActionResult Loans()
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings))
                 return AccessDeniedView();
 
             var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
-            var stateActivitySettings = _settingService.LoadSetting<StateActivitySettings>(storeScope);
+            var stateActivitySettings = _settingService.LoadSetting<LoanSettings>(storeScope);
 
             var model = stateActivitySettings.ToModel();
             return View(model);
         }
 
         [HttpPost]
-        public ActionResult StateActivity(StateActivitySettingsModel model)
+        public ActionResult Loans(LoanSettingsModel model)
         {
             var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
-            var letterSettings = _settingService.LoadSetting<StateActivitySettings>(storeScope);
+            var letterSettings = _settingService.LoadSetting<LoanSettings>(storeScope);
 
             model.CashFlow = letterSettings.CashFlow;
             letterSettings = model.ToEntity(letterSettings);
@@ -384,7 +386,7 @@ namespace Ks.Admin.Controllers
             //selected tab
             SaveSelectedTabIndex();
 
-            return RedirectToAction("StateActivity");
+            return RedirectToAction("Loans");
         }
 
         [HttpPost]
@@ -394,7 +396,7 @@ namespace Ks.Admin.Controllers
                 return AccessDeniedView();
 
             var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
-            var stateActivitySettings = _settingService.LoadSetting<StateActivitySettings>(storeScope);
+            var stateActivitySettings = _settingService.LoadSetting<LoanSettings>(storeScope);
  
             var model = new List<CashFlowModel>();
 
@@ -429,7 +431,7 @@ namespace Ks.Admin.Controllers
                 return AccessDeniedView();
 
             var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
-            var stateActivitySettings = _settingService.LoadSetting<StateActivitySettings>(storeScope);
+            var stateActivitySettings = _settingService.LoadSetting<LoanSettings>(storeScope);
 
             List<CashFlowModel> _model = new List<CashFlowModel>();
 
@@ -461,7 +463,7 @@ namespace Ks.Admin.Controllers
                 return AccessDeniedView();
 
             var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
-            var stateActivitySettings = _settingService.LoadSetting<StateActivitySettings>(storeScope);
+            var stateActivitySettings = _settingService.LoadSetting<LoanSettings>(storeScope);
 
             List<CashFlowModel> model = null;
             var newModel = new List<CashFlowModel>();
@@ -481,6 +483,85 @@ namespace Ks.Admin.Controllers
                 _settingService.SaveSetting(stateActivitySettings);
             }
             return new NullJsonResult();
+        }
+
+        #endregion
+
+        #region ScheduleBatch
+
+        public ActionResult ScheduleBatch()
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings))
+                return AccessDeniedView();
+
+            var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
+            var stateActivitySettings = _settingService.LoadSetting<ScheduleBatchsSetting>(storeScope);
+
+            var model = stateActivitySettings.ToModel();
+            return  View(model);
+        }
+
+        [HttpPost]
+        public ActionResult ScheduleBatch(ScheduleBatchSettingsModel model)
+        {
+            var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
+            var batchsSetting = _settingService.LoadSetting<ScheduleBatchsSetting>(storeScope);
+
+            batchsSetting = model.ToEntity(batchsSetting);
+            _settingService.SaveSetting(batchsSetting);
+
+            //now clear settings cache
+            _settingService.ClearCache();
+
+            //activity log
+            _customerActivityService.InsertActivity("EditSettings", _localizationService.GetResource("ActivityLog.EditSettings"));
+
+            SuccessNotification(_localizationService.GetResource("Admin.Configuration.Updated"));
+
+            //selected tab
+            SaveSelectedTabIndex();
+
+            return RedirectToAction("ScheduleBatch");
+        }
+
+
+        #endregion
+
+        #region SignatureSetting
+
+        public ActionResult Signature()
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings))
+                return AccessDeniedView();
+
+            var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
+            var stateActivitySettings = _settingService.LoadSetting<SignatureSettings>(storeScope);
+
+            var model = stateActivitySettings.ToModel();
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Signature(SignatureSettingsModel model)
+        {
+            var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
+            var batchsSetting = _settingService.LoadSetting<SignatureSettings>(storeScope);
+
+            batchsSetting = model.ToEntity(batchsSetting);
+            _settingService.SaveSetting(batchsSetting);
+
+            //now clear settings cache
+            _settingService.ClearCache();
+
+            //activity log
+            _customerActivityService.InsertActivity("EditSettings", _localizationService.GetResource("ActivityLog.EditSettings"));
+
+            SuccessNotification(_localizationService.GetResource("Admin.Configuration.Updated"));
+
+            //selected tab
+            SaveSelectedTabIndex();
+
+            return RedirectToAction("Signature");
         }
 
         #endregion
