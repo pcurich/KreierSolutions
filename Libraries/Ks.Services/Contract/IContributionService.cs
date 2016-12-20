@@ -93,6 +93,7 @@ namespace Ks.Services.Contract
         /// <returns></returns>
         ContributionPayment GetPaymentById(int contributionPaymentId);
 
+        void InsertContributionPayment(ContributionPayment contributionPayment);
         /// <summary>
         /// Updates the contribution payment.
         /// </summary>

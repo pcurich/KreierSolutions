@@ -1,12 +1,12 @@
 ﻿@using System.Globalization
-@model LoanPaymentsModel
+@model ContributionPaymentsModel
 @Html.ValidationSummary(true)
 @Html.HiddenFor(x => x.Id)
-@Html.HiddenFor(x => x.LoanId)
+@Html.HiddenFor(x => x.ContributionId)
 
 <script>
     $(document).ready(function () {
-        $("#loanpayment-edit").kendoTabStrip({
+        $("#contributionpayment-edit").kendoTabStrip({
             animation: {
                 open: {
                     effects: "fadeIn"
@@ -17,7 +17,7 @@
     });
 </script>
 
-<div id="loanpayment-edit">
+<div id="contributionpayment-edit">
     <ul>
         <li @Html.RenderSelectedTabIndex(0, GetSelectedTabIndex())>
             @T("Common.Payment")
@@ -29,7 +29,7 @@
 </div>
 @{
     //custom tabs
-    var eventMessage = new AdminTabStripCreated(this.Html, "loanpayment-edit");
+    var eventMessage = new AdminTabStripCreated(this.Html, "contributionpayment-edit");
     EngineContext.Current.Resolve<IEventPublisher>().Publish(eventMessage);
     foreach (var eventBlock in eventMessage.BlocksToRender)
     {
@@ -45,11 +45,11 @@
     <table class="adminContent">
         <tr>
             <td class="adminTitle">
-                @Html.KsLabelFor(model => model.MonthlyPayed):
+                @Html.KsLabelFor(model => model.AmountPayed):
             </td>
             <td class="adminData">
-                @Html.EditorFor(model => model.MonthlyPayed)
-                @Html.ValidationMessageFor(model => model.MonthlyPayed)
+                @Html.EditorFor(model => model.AmountPayed)
+                @Html.ValidationMessageFor(model => model.AmountPayed)
             </td>
         </tr>
         <tr>
@@ -58,18 +58,18 @@
             </td>
             <td class="adminData">
                 @{
-                    if (Model.MonthlyPayed > 0)
+                    if (Model.AmountPayed > 0)
                     {
-                @Model.BankName
+                        @Model.BankName
                     }
                     else
                     {
-                @Html.DropDownListFor(model => model.BankName, Model.Banks)
-                <script>
+                        @Html.DropDownListFor(model => model.BankName, Model.Banks)
+                        <script>
                             $(document).ready(function() {
                                 $('#@Html.FieldIdFor(model => model.BankName)').width(250).kendoDropDownList();
                             });
-                </script>
+                        </script>
                     }
                 }
             </td>

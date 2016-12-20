@@ -174,8 +174,10 @@
     <Compile Include="Contract\ContributionService.cs" />
     <Compile Include="Contract\IBenefitService.cs" />
     <Compile Include="Contract\ILoanService.cs" />
+    <Compile Include="Contract\IReturnPaymentService.cs" />
     <Compile Include="Contract\ITabService.cs" />
     <Compile Include="Contract\LoanService.cs" />
+    <Compile Include="Contract\ReturnPaymentService.cs" />
     <Compile Include="Contract\TabService.cs" />
     <Compile Include="Customers\ChangePasswordRequest.cs" />
     <Compile Include="Customers\ChangePasswordResult.cs" />

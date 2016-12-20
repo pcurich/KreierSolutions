@@ -245,6 +245,20 @@ namespace Ks.Services.Contract
             return result;
         }
 
+        public virtual void InsertContributionPayment(ContributionPayment contributionPayment)
+        {
+            if (contributionPayment == null)
+                throw new ArgumentNullException("contributionPayment");
+
+            _contributionPaymentRepository.Insert(contributionPayment);
+
+            //cache
+            _cacheManager.RemoveByPattern(CONTRIBUTIONS_PATTERN_KEY);
+
+            //event notification
+            _eventPublisher.EntityUpdated(contributionPayment);
+        }
+
         public virtual void UpdateContributionPayment(ContributionPayment contributionPayment)
         {
             if (contributionPayment == null)

@@ -385,24 +385,11 @@ namespace Ks.Services.ExportImport
                     row++;
                 }
 
+                for (var i = 1; i <= worksheet.Dimension.Columns; i++)
+                {
+                    worksheet.Column(i).AutoFit();
+                }
 
-                // we had better add some document properties to the spreadsheet 
-
-                //set some core property values
-                //var storeName = _ksSystemService;
-                //var storeUrl = _ksSystemInformationSettings.StoreUrl;
-                //xlPackage.Workbook.Properties.Title = string.Format("{0} products", storeName);
-                //xlPackage.Workbook.Properties.Author = storeName;
-                //xlPackage.Workbook.Properties.Subject = string.Format("{0} products", storeName);
-                //xlPackage.Workbook.Properties.Keywords = string.Format("{0} products", storeName);
-                //xlPackage.Workbook.Properties.Category = "Products";
-                //xlPackage.Workbook.Properties.Comments = string.Format("{0} products", storeName);
-
-                // set some extended property values
-                //xlPackage.Workbook.Properties.Company = storeName;
-                //xlPackage.Workbook.Properties.HyperlinkBase = new Uri(storeUrl);
-
-                // save the new spreadsheet
                 xlPackage.Save();
             }
         }
@@ -517,6 +504,11 @@ namespace Ks.Services.ExportImport
                 worksheet.Cells[row, 6].Style.Font.Bold = true;
                 worksheet.Cells[row, 7].Value = totalMonthlyPayed.ToString("c", new CultureInfo("es-PE"));
                 worksheet.Cells[row, 7].Style.Font.Bold = true;
+               
+                for (var i = 1; i <= worksheet.Dimension.Columns; i++)
+                {
+                    worksheet.Column(i).AutoFit();
+                }
                 xlPackage.Save();
             }
         }
@@ -611,6 +603,11 @@ namespace Ks.Services.ExportImport
                 worksheet.Cells[row, 1].Style.Font.Bold = true;
                 worksheet.Cells[row, 5].Value = loan.TotalPayed.ToString("c", new CultureInfo("es-PE"));
                 worksheet.Cells[row, 5].Style.Font.Bold = true;
+
+                for (var i = 1; i <= worksheet.Dimension.Columns; i++)
+                {
+                    worksheet.Column(i).AutoFit();
+                }
                 xlPackage.Save();
             }
         }
@@ -941,6 +938,7 @@ namespace Ks.Services.ExportImport
                 case (int)LoanState.PagoParcial: return "Pago Parcial";
                 case (int)LoanState.Pagado: return "Pagado";
                 case (int)LoanState.SinLiquidez: return "Sin Liquidez";
+                case (int)LoanState.Devolucion: return "Devolucion";
                 case (int)LoanState.Anulado: return "Anulado";
                 case (int)LoanState.PagoPersonal: return "Pago Personal";
             }

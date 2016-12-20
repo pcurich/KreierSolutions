@@ -7854,7 +7854,7 @@
     <Value>Nombre del sistema</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Contribution.AddNew">
-    <Value>Nueva Contibucion</Value>
+    <Value>Nueva Aportación</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.Contribution.BackToList">
     <Value>Volver a la lista de Aportaciones</Value>
@@ -8072,6 +8072,12 @@
   <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.AmountPayed.Hint">
     <Value>Monto Aportado.</Value>
   </LocaleResource>
+    <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.AmountToCancel">
+    <Value>Monto Pendiente.</Value>
+  </LocaleResource>  
+      <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.AmountToCancel.Hint">
+    <Value>Monto Pendite por pagar.</Value>
+  </LocaleResource>  
 <LocaleResource Name="Admin.Contract.ContributionPayments.Fields.ScheduledDateOn">
     <Value>Fecha Programado.</Value>
   </LocaleResource>
@@ -8367,7 +8373,10 @@
     <Value>Pagado</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.LoanPayments.Fields.AmountToCancel">
-    <Value>Pendiente</Value>
+    <Value>Monto Pendiente</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.LoanPayments.Fields.AmountToCancel.Hint">
+    <Value>Monto Pendiente</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contract.LoanPayments.Fields.MonthlyPayed.Hint">
     <Value>Valor Pagado</Value>
@@ -8711,9 +8720,6 @@
   <LocaleResource Name="Admin.Customers.Loans.MonthlyPayed">
     <Value>Error, el monto ingresado no es igual al pago mensual que se esperaba</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Customers.Loans.PayedIsGrantherThanDebt">
-    <Value>Error, el monto ingresado es mayor a lo que se adeuda</Value>
-  </LocaleResource>  
   <LocaleResource Name="Admin.Customers.Contributions.ValidPayment">
     <Value>Error, no se puede alterar la informacion del pago</Value>
   </LocaleResource>

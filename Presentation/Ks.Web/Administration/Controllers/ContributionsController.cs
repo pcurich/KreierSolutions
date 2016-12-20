@@ -35,6 +35,7 @@ namespace Ks.Admin.Controllers
         private readonly ICustomerActivityService _customerActivityService;
         private readonly ILocalizationService _localizationService;
         private readonly IExportManager _exportManager;
+        private readonly IReturnPaymentService _returnPaymentService;
 
         private readonly ContributionSettings _contributionSettings;
         private readonly BankSettings _bankSettings;
@@ -53,6 +54,7 @@ namespace Ks.Admin.Controllers
             ILocalizationService localizationService,
             IExportManager exportManager,
             ContributionSettings contributionSettings,
+            IReturnPaymentService returnPaymentService,
             BankSettings bankSettings)
         {
             _permissionService = permissionService;
@@ -65,6 +67,7 @@ namespace Ks.Admin.Controllers
             _exportManager = exportManager;
             _contributionSettings = contributionSettings;
             _bankSettings = bankSettings;
+            _returnPaymentService = returnPaymentService;
         }
 
         #endregion
@@ -142,7 +145,7 @@ namespace Ks.Admin.Controllers
 
             return Json(gridModel);
         }
-        
+
         public ActionResult Edit(int id)
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributions))
@@ -291,6 +294,10 @@ namespace Ks.Admin.Controllers
             return RedirectToAction("Edit", new { id = contributionPayment.ContributionId });
         }
 
+        #endregion
+
+        #region Reports
+
         [HttpPost, ActionName("Edit")]
         [FormValueRequired("exportexcel-all")]
         public ActionResult ExportExcelAll(ContributionPaymentListModel model)
@@ -318,6 +325,143 @@ namespace Ks.Admin.Controllers
                 ErrorNotification(exc);
                 return RedirectToAction("List");
             }
+        }
+
+        #endregion
+
+        #region CustomPayment
+
+        public ActionResult CreateCustomPayment(int id)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributions))
+                return AccessDeniedView();
+
+            var allPayment = _contributionService.GetAllPayments(contributionId: id, stateId: (int)ContributionState.Pendiente);
+            var amountToCancel = allPayment.Sum(x => x.AmountTotal);
+            var loanPaymentModel = new ContributionPaymentsModel
+            {
+                Banks = PrepareBanks(),
+                ContributionId = id,
+                AmountToCancel = amountToCancel
+            };
+
+            return View(loanPaymentModel);
+        }
+
+        [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
+        public ActionResult CreateCustomPayment(ContributionPaymentsModel model, bool continueEditing)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributions))
+                return AccessDeniedView();
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var contribution = _contributionService.GetContributionById(model.ContributionId);
+            var allPayment = _contributionService.GetAllPayments(contributionId: model.ContributionId, stateId: (int)ContributionState.Pendiente);
+
+            #region Payed more then One Quota
+
+            var accumulate = 0M;
+            var minNumber = allPayment.Min(x => x.Number);
+            var maxNumber = allPayment.Max(x => x.Number);
+
+            foreach (var payment in allPayment)
+            {
+                accumulate += payment.AmountPayed;
+                if (accumulate <= model.AmountPayed)
+                {
+                    payment.IsAutomatic = false;
+                    payment.AmountPayed = payment.AmountTotal;
+                    payment.StateId = (int)ContributionState.PagoPersonal;
+                    payment.BankName = GetBank(model.BankName);
+                    payment.AccountNumber = model.AccountNumber;
+                    payment.TransactionNumber = model.TransactionNumber;
+                    payment.Reference = model.Reference;
+                    payment.Description = "Couta liquidada por el adelanto realizado en la couta N° " + minNumber;
+                    payment.ProcessedDateOnUtc = DateTime.UtcNow;
+
+                    _contributionService.UpdateContributionPayment(payment);
+
+                    contribution = _contributionService.GetContributionById(model.ContributionId);
+
+                    contribution.UpdatedOnUtc = DateTime.UtcNow;
+                    contribution.AmountPayed += payment.AmountPayed;
+                    contribution.IsDelay = false;
+
+                    _contributionService.UpdateContribution(contribution);
+                }
+                else
+                {
+                    
+                        //just one time, 
+                        accumulate -= payment.AmountPayed;
+                        accumulate = model.AmountPayed - accumulate;
+                        payment.IsAutomatic = false;
+                        payment.AmountPayed = accumulate;
+                        payment.StateId = (int)LoanState.PagoPersonal;
+                        payment.BankName = GetBank(model.BankName);
+                        payment.AccountNumber = model.AccountNumber;
+                        payment.TransactionNumber = model.TransactionNumber;
+                        payment.Reference = model.Reference;
+                        payment.Description = "Couta pagada parcialmente por el adelanto realizado en la couta N° " + minNumber;
+                        payment.ProcessedDateOnUtc = DateTime.UtcNow;
+
+                        _contributionService.UpdateContributionPayment(payment);
+
+                        contribution = _contributionService.GetContributionById(model.ContributionId);
+
+                        contribution.UpdatedOnUtc = DateTime.UtcNow;
+                        contribution.AmountPayed += accumulate;
+                        contribution.IsDelay = false;
+                   
+                }
+            }
+
+            var contributionPayment = new ContributionPayment
+            {
+                IsAutomatic = true,
+                StateId = (int)LoanState.Devolucion,
+                AmountOld = 0,
+                ContributionId = model.ContributionId,
+                Number = maxNumber + 1,
+                AmountTotal = 0,
+                AmountPayed = accumulate - contribution.AmountPayed,
+                ScheduledDateOnUtc = DateTime.UtcNow,
+                ProcessedDateOnUtc = DateTime.UtcNow,
+                Description =
+                    "Devolucion debido al pago personal realizado con el monto: " +
+                    (contribution.AmountPayed - accumulate).ToString("c"),
+                BankName = "ACMR",
+                AccountNumber = "ACMR",
+                TransactionNumber = "ACMR",
+                Reference = "Reembolso de aportacion cancelado con anticipación"
+            };
+
+            _contributionService.InsertContributionPayment(contributionPayment);
+
+            var returnPayment = new ReturnPayment
+            {
+                AmountToPay = accumulate - contribution.AmountPayed,
+                CreatedOnUtc = DateTime.UtcNow,
+                PaymentNumber = maxNumber + 1,
+                ReturnPaymentTypeId = (int)ReturnPaymentType.Aportacion,
+                CustomerId = model.CustomerId
+            };
+
+            _returnPaymentService.InsertReturnPayment(returnPayment);
+
+
+            #endregion
+
+            SuccessNotification(_localizationService.GetResource("Admin.Customers.Customers.Contribution.Updated"));
+
+            if (continueEditing)
+            {
+                return RedirectToAction("CreateCustomPayment", new { id = model.ContributionId });
+            }
+            return RedirectToAction("Edit", new { id = model.ContributionId });
+
         }
 
         #endregion

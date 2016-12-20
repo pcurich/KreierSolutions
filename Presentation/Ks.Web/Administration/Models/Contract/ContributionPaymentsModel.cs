@@ -37,6 +37,9 @@ namespace Ks.Admin.Models.Contract
 
         [KsResourceDisplayName("Admin.Contract.ContributionPayments.Fields.AmountPayed")]
         public decimal AmountPayed { get; set; }
+        [KsResourceDisplayName("Admin.Contract.ContributionPayments.Fields.AmountToCancel")]
+        [UIHint("Decimal")]
+        public decimal AmountToCancel { get; set; }
 
         public bool ShowAmountTotal { get;set; }
         public string NameAmount1 { get; set; }

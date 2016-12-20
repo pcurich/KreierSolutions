@@ -87,6 +87,7 @@
     <Compile Include="Mapping\Contract\ContributionPaymentMap.cs" />
     <Compile Include="Mapping\Contract\LoanMap.cs" />
     <Compile Include="Mapping\Contract\LoanPaymentMap.cs" />
+    <Compile Include="Mapping\Contract\ReturnPaymentMap.cs" />
     <Compile Include="Mapping\Contract\TabDetailMap.cs" />
     <Compile Include="Mapping\Contract\TabMap.cs" />
     <Compile Include="Mapping\Customers\CustomerAttributeMap.cs" />

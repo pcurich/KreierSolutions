@@ -35,15 +35,21 @@ namespace Ks.Admin.Controllers
         private readonly ICustomerActivityService _customerActivityService;
         private readonly ILocalizationService _localizationService;
         private readonly IExportManager _exportManager;
+        private readonly IReturnPaymentService _returnPaymentService;
 
-        private readonly ContributionSettings _contributionSettings;
         private readonly BankSettings _bankSettings;
 
         #endregion
 
         #region Constructors
 
-        public LoansController(IPermissionService permissionService, ILoanService loanService, ICustomerService customerService, IGenericAttributeService genericAttributeService, IDateTimeHelper dateTimeHelper, ICustomerActivityService customerActivityService, ILocalizationService localizationService, IExportManager exportManager, ContributionSettings contributionSettings, BankSettings bankSettings)
+        public LoansController(IPermissionService permissionService,
+            ILoanService loanService, ICustomerService customerService,
+            IGenericAttributeService genericAttributeService,
+            IDateTimeHelper dateTimeHelper, ICustomerActivityService customerActivityService,
+            ILocalizationService localizationService, IExportManager exportManager,
+            BankSettings bankSettings,
+            IReturnPaymentService returnPaymentService)
         {
             _permissionService = permissionService;
             _loanService = loanService;
@@ -53,8 +59,8 @@ namespace Ks.Admin.Controllers
             _customerActivityService = customerActivityService;
             _localizationService = localizationService;
             _exportManager = exportManager;
-            _contributionSettings = contributionSettings;
             _bankSettings = bankSettings;
+            _returnPaymentService = returnPaymentService;
         }
 
         #endregion
@@ -335,10 +341,11 @@ namespace Ks.Admin.Controllers
                 return AccessDeniedView();
 
             var allPayment = _loanService.GetAllPayments(loanId: id, stateId: (int)LoanState.Pendiente);
-            var amountToCancel=allPayment.Sum(x => x.MonthlyQuota);
+            var amountToCancel = allPayment.Sum(x => x.MonthlyQuota);
             var loanPaymentModel = new LoanPaymentsModel
             {
-                Banks = PrepareBanks(), LoanId = id,
+                Banks = PrepareBanks(),
+                LoanId = id,
                 AmountToCancel = amountToCancel
             };
 
@@ -356,55 +363,6 @@ namespace Ks.Admin.Controllers
 
             var loan = _loanService.GetLoanById(model.LoanId);
             var allPayment = _loanService.GetAllPayments(loanId: model.LoanId, stateId: (int)LoanState.Pendiente);
-
-            var noPayedAmount = allPayment.Sum(x=>x.MonthlyQuota);
-            if (model.MonthlyPayed > noPayedAmount)
-            {
-                ErrorNotification(_localizationService.GetResource("Admin.Customers.Loans.PayedIsGrantherThanDebt"));
-                return RedirectToAction("CreateCustomPayment", new { id = model.LoanId });
-            }
-
-            LoanPayment lastLoanPayment;
-            if (noPayedAmount == model.MonthlyPayed)
-            {
-                #region Finish the loan
-
-                lastLoanPayment = new LoanPayment
-                {
-                    IsAutomatic = false,
-                    StateId = (int)LoanState.PagoPersonal,
-                    LoanId = model.LoanId,
-                    Quota = loan.Period + 1,
-                    MonthlyPayed = model.MonthlyPayed,
-                    BankName = GetBank(model.BankName),
-                    AccountNumber = model.AccountNumber,
-                    TransactionNumber = model.TransactionNumber,
-                    Reference = model.Reference,
-                    Description = model.Description,
-                    ProcessedDateOnUtc = DateTime.UtcNow,
-                    ScheduledDateOnUtc = DateTime.UtcNow,
-                };
-
-                CloseLoanPayment(allPayment.ToList());
-                _loanService.InsertLoanPayment(lastLoanPayment);
-
-                loan.UpdatedOnUtc = DateTime.UtcNow;
-                loan.TotalPayed += model.MonthlyPayed;
-                loan.IsDelay = false;
-                loan.Active = false;
-
-                _loanService.UpdateLoan(loan);
-
-                SuccessNotification(_localizationService.GetResource("Admin.Customers.Customers.Loans.Updated"));
-
-                if (continueEditing)
-                {
-                    return RedirectToAction("CreateCustomPayment", new { id = model.LoanId });
-                }
-                return RedirectToAction("List");
-
-                #endregion
-            }
 
             #region Payed more then One Quota
 
@@ -456,7 +414,7 @@ namespace Ks.Admin.Controllers
                         payment.AccountNumber = model.AccountNumber;
                         payment.TransactionNumber = model.TransactionNumber;
                         payment.Reference = model.Reference;
-                        payment.Description = "Couta pagada parcialmente por el adelanto realizado en la couta N° " +minQuota;
+                        payment.Description = "Couta pagada parcialmente por el adelanto realizado en la couta N° " + minQuota;
                         payment.ProcessedDateOnUtc = DateTime.UtcNow;
 
                         _loanService.UpdateLoanPayment(payment);
@@ -473,28 +431,70 @@ namespace Ks.Admin.Controllers
                         accumulate -= payment.MonthlyQuota; //fixed
                         payment.ScheduledDateOnUtc = payment.ScheduledDateOnUtc.AddMonths(countQuotas * -1);
                         payment.IsAutomatic = true;
-                        payment.Description = "Couta adelantada debido al pago parcial realizado en el cuota N° "+minQuota;
+                        payment.Description = "Couta adelantada debido al pago parcial realizado en el cuota N° " + minQuota;
                         scheduledDateOnUtc = payment.ScheduledDateOnUtc;
                         _loanService.UpdateLoanPayment(payment);
                     }
                 }
             }
-
-            //create the last quota
-            lastLoanPayment = new LoanPayment
+            if ((loan.MonthlyQuota - accumulate) > 0)
             {
-                IsAutomatic = true,
-                StateId = (int)LoanState.Pendiente,
-                LoanId = model.LoanId,
-                Quota = maxQuota + 1,
-                MonthlyCapital = Math.Round((1 - Convert.ToDecimal(loan.Tea) / 100) * (loan.MonthlyQuota - accumulate), 2),
-                MonthlyFee = Math.Round(Convert.ToDecimal(loan.Tea) / 100 * (loan.MonthlyQuota - accumulate), 2),
-                MonthlyPayed = 0,
-                MonthlyQuota = loan.MonthlyQuota - accumulate,
-                ScheduledDateOnUtc = scheduledDateOnUtc.AddMonths(1),
-                Description = "Nueva Couta creada debido al pago parcial realizado con el monto: " + (loan.MonthlyQuota - accumulate).ToString("c")
-            };
-            _loanService.InsertLoanPayment(lastLoanPayment);
+                //create the last quota 
+                var lastLoanPayment = new LoanPayment
+                {
+                    IsAutomatic = true,
+                    StateId = (int)LoanState.Pendiente,
+                    LoanId = model.LoanId,
+                    Quota = maxQuota + 1,
+                    MonthlyCapital =
+                        Math.Round((1 - Convert.ToDecimal(loan.Tea) / 100) * (loan.MonthlyQuota - accumulate), 2),
+                    MonthlyFee = Math.Round(Convert.ToDecimal(loan.Tea) / 100 * (loan.MonthlyQuota - accumulate), 2),
+                    MonthlyPayed = 0,
+                    MonthlyQuota = loan.MonthlyQuota - accumulate,
+                    ScheduledDateOnUtc = scheduledDateOnUtc.AddMonths(1),
+                    Description =
+                        "Nueva Couta creada debido al pago personal realizado con el monto: " +
+                        (loan.MonthlyQuota - accumulate).ToString("c")
+                };
+
+                _loanService.InsertLoanPayment(lastLoanPayment);
+            }
+            else
+            {
+                var lastLoanPayment = new LoanPayment
+                {
+                    IsAutomatic = true,
+                    StateId = (int)LoanState.Devolucion,
+                    LoanId = model.LoanId,
+                    Quota = maxQuota + 1,
+                    MonthlyCapital = 0,
+                    MonthlyFee = 0,
+                    MonthlyPayed = 0,
+                    MonthlyQuota = loan.MonthlyQuota - accumulate,
+                    ScheduledDateOnUtc = DateTime.UtcNow,
+                    ProcessedDateOnUtc = DateTime.UtcNow,
+                    Description =
+                        "Devolucion debido al pago personal realizado con el monto: " +
+                        (loan.MonthlyQuota - accumulate).ToString("c"),
+                    BankName = "ACMR",
+                    AccountNumber = "ACMR",
+                    TransactionNumber = "ACMR",
+                    Reference = "Reembolso del Apoyo económico cancelado con anticipación"
+                };
+
+                _loanService.InsertLoanPayment(lastLoanPayment);
+
+                var returnPayment = new ReturnPayment
+                {
+                    AmountToPay = accumulate - loan.MonthlyQuota,
+                    CreatedOnUtc = DateTime.UtcNow,
+                    PaymentNumber = maxQuota + 1,
+                    ReturnPaymentTypeId = (int)ReturnPaymentType.ApoyoEconomico,
+                    CustomerId = model.CustomerId
+                };
+
+                _returnPaymentService.InsertReturnPayment(returnPayment);
+            }
 
             #endregion
 

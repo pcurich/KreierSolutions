@@ -723,10 +723,11 @@ namespace Ks.Services.Installation
                 CycleOfDelay = 6,
                 IsActiveAmount1 = true,
                 NameAmount1 = "Valor de aportación",
-                Amount1 = 34.85M,
+                //Amount1 = 34.85M,
+                Amount1 = 35M,
                 Amount2 = 0M,
                 Amount3 = 0M,
-                MaximumCharge = (decimal) (34.85*2)
+                MaximumCharge = (decimal) (70)
             });
 
             settingService.SaveSetting(new LoanSettings

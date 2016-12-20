@@ -1328,6 +1328,8 @@
     <Content Include="Views\CustomerBenefit\Edit.cshtml" />
     <Content Include="Views\Setting\ScheduleBatch.cshtml" />
     <Content Include="Views\Setting\Signature.cshtml" />
+    <Content Include="Views\Contributions\CreateCustomPayment.cshtml" />
+    <Content Include="Views\Contributions\_CreateOrUpdateCustomPayment.cshtml" />
     <None Include="Views\Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
