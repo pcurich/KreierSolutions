@@ -362,14 +362,15 @@ namespace Ks.Admin.Controllers
 
             #region Payed more then One Quota
 
-            var accumulate = 0M;
             var minNumber = allPayment.Min(x => x.Number);
             var maxNumber = allPayment.Max(x => x.Number);
+            var isNextQuota = false;
+            var valueNextQuotaAdd = 0.0M;
+            var valueNextNumber = 0;
 
             foreach (var payment in allPayment)
             {
-                accumulate += payment.AmountPayed;
-                if (accumulate <= model.AmountPayed)
+                if (payment.AmountTotal <= model.AmountPayed)
                 {
                     payment.IsAutomatic = false;
                     payment.AmountPayed = payment.AmountTotal;
@@ -390,67 +391,108 @@ namespace Ks.Admin.Controllers
                     contribution.IsDelay = false;
 
                     _contributionService.UpdateContribution(contribution);
+
+                    model.AmountPayed -= payment.AmountPayed;
                 }
                 else
                 {
-                    
-                        //just one time, 
-                        accumulate -= payment.AmountPayed;
-                        accumulate = model.AmountPayed - accumulate;
-                        payment.IsAutomatic = false;
-                        payment.AmountPayed = accumulate;
-                        payment.StateId = (int)LoanState.PagoPersonal;
-                        payment.BankName = GetBank(model.BankName);
-                        payment.AccountNumber = model.AccountNumber;
-                        payment.TransactionNumber = model.TransactionNumber;
-                        payment.Reference = model.Reference;
-                        payment.Description = "Couta pagada parcialmente por el adelanto realizado en la couta N° " + minNumber;
-                        payment.ProcessedDateOnUtc = DateTime.UtcNow;
+                    //If is Zero => break
+                    if (model.AmountPayed == 0)
+                        break;
 
-                        _contributionService.UpdateContributionPayment(payment);
+                    valueNextQuotaAdd = payment.AmountTotal - model.AmountPayed;
+                    valueNextNumber = payment.Number + 1;
+                    isNextQuota = true;
 
-                        contribution = _contributionService.GetContributionById(model.ContributionId);
+                    //just one time, 
+                    payment.IsAutomatic = false;
+                    payment.AmountPayed = model.AmountPayed;
+                    payment.StateId = (int)LoanState.PagoPersonal;
+                    payment.BankName = GetBank(model.BankName);
+                    payment.AccountNumber = model.AccountNumber;
+                    payment.TransactionNumber = model.TransactionNumber;
+                    payment.Reference = model.Reference;
+                    payment.Description = "Couta pagada parcialmente por el adelanto realizado en la couta N° " + minNumber;
+                    payment.ProcessedDateOnUtc = DateTime.UtcNow;
 
-                        contribution.UpdatedOnUtc = DateTime.UtcNow;
-                        contribution.AmountPayed += accumulate;
-                        contribution.IsDelay = false;
-                   
+                    _contributionService.UpdateContributionPayment(payment);
+
+                    contribution = _contributionService.GetContributionById(model.ContributionId);
+
+                    contribution.UpdatedOnUtc = DateTime.UtcNow;
+                    contribution.AmountPayed += model.AmountPayed;
+                    contribution.IsDelay = false;
+
+                    _contributionService.UpdateContribution(contribution);
+
+                    break;
                 }
             }
 
-            var contributionPayment = new ContributionPayment
+            #region No sale del bucle y hay aumento de coutas
+
+            var nextPayment = _contributionService.GetPaymentByContributionId(model.ContributionId).FirstOrDefault(x => x.Number == valueNextNumber);
+
+            if (isNextQuota)
             {
-                IsAutomatic = true,
-                StateId = (int)LoanState.Devolucion,
-                AmountOld = 0,
-                ContributionId = model.ContributionId,
-                Number = maxNumber + 1,
-                AmountTotal = 0,
-                AmountPayed = accumulate - contribution.AmountPayed,
-                ScheduledDateOnUtc = DateTime.UtcNow,
-                ProcessedDateOnUtc = DateTime.UtcNow,
-                Description =
-                    "Devolucion debido al pago personal realizado con el monto: " +
-                    (contribution.AmountPayed - accumulate).ToString("c"),
-                BankName = "ACMR",
-                AccountNumber = "ACMR",
-                TransactionNumber = "ACMR",
-                Reference = "Reembolso de aportacion cancelado con anticipación"
-            };
+                //Si entra aca es porque no salio del bucle y puede arreglar un caso limite cuando la couta a aumentar es la 420
+                if (nextPayment != null)
+                {
+                    //es una couta menor a la 420
+                    nextPayment.AmountTotal += valueNextQuotaAdd;
+                    nextPayment.NumberOld = valueNextNumber;
+                    nextPayment.AmountOld = valueNextQuotaAdd;
+                    nextPayment.Description =
+                        "El valor de la couta a aumentado debido a un prorrateo de una couta anterior N° " +
+                        valueNextNumber;
+                    _contributionService.UpdateContributionPayment(nextPayment);
+                }
+            }
 
-            _contributionService.InsertContributionPayment(contributionPayment);
+            #endregion<
 
-            var returnPayment = new ReturnPayment
+            #region Es el caso en que sale del bucle y defrente hay couta negativa
+
+            if (model.AmountPayed > 0)
             {
-                AmountToPay = accumulate - contribution.AmountPayed,
-                CreatedOnUtc = DateTime.UtcNow,
-                PaymentNumber = maxNumber + 1,
-                ReturnPaymentTypeId = (int)ReturnPaymentType.Aportacion,
-                CustomerId = model.CustomerId
-            };
+                #region ReturnPayment
+                //couta negativa
+                var contributionPayment = new ContributionPayment
+                {
+                    IsAutomatic = true,
+                    StateId = (int)ContributionState.Devolucion,
+                    AmountOld = 0,
+                    ContributionId = model.ContributionId,
+                    Number = maxNumber + 1,
+                    AmountTotal = 0,
+                    AmountPayed = model.AmountPayed * -1,
+                    ScheduledDateOnUtc = DateTime.UtcNow,
+                    ProcessedDateOnUtc = DateTime.UtcNow,
+                    Description =
+                        "Devolucion debido al pago personal realizado al numero de couta N°: " + (valueNextNumber - 1),
+                    BankName = "ACMR",
+                    AccountNumber = "ACMR",
+                    TransactionNumber = "ACMR",
+                    Reference = "Reembolso de aportacion cancelado con anticipación"
+                };
 
-            _returnPaymentService.InsertReturnPayment(returnPayment);
+                _contributionService.InsertContributionPayment(contributionPayment);
 
+                //todo se debe cerrar el contribution y crear el beneficio normal 
+
+                var returnPayment = new ReturnPayment
+                {
+                    AmountToPay = model.AmountPayed,
+                    CreatedOnUtc = DateTime.UtcNow,
+                    PaymentNumber = maxNumber + 1,
+                    ReturnPaymentTypeId = (int)ReturnPaymentType.Aportacion,
+                    CustomerId = model.CustomerId
+                };
+                _returnPaymentService.InsertReturnPayment(returnPayment);
+                #endregion
+            }
+
+            #endregion
 
             #endregion
 
