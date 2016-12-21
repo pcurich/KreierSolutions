@@ -8702,6 +8702,9 @@
   <LocaleResource Name="Admin.Customers.Customers.Contributions.BackToCustomer">
     <Value>Volver a los detalles del afiliado</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Contributions.Updated">
+    <Value>Aportacion Actualizada</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Customers.Contributions.Sumamry">
     <Value>Resumen</Value>
   </LocaleResource>
@@ -8722,6 +8725,9 @@
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Contributions.ValidPayment">
     <Value>Error, no se puede alterar la informacion del pago</Value>
+  </LocaleResource>
+   <LocaleResource Name="Admin.Customers.Contributions.CancelPayment">
+    <Value>Error, Solo se puede pagar la totalidad de la couta, en caso contrario realice un pago variable</Value>
   </LocaleResource>
    <LocaleResource Name="Admin.Customers.Contributions.AmountPayed">
     <Value>Error, el monto ingresado no es igual al pago de la aportación que se esperaba</Value>

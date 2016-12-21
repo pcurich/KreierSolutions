@@ -9,7 +9,8 @@ namespace Ks.Web.Controllers
         [KsHttpsRequirement(SslRequirement.No)]
         public ActionResult Index()
         {
-            return View();
+            return RedirectToAction("Index","Home",new {Area="Admin"});
+            //return View();
         }
     }
 }

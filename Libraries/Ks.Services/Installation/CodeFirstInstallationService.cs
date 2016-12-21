@@ -723,11 +723,12 @@ namespace Ks.Services.Installation
                 CycleOfDelay = 6,
                 IsActiveAmount1 = true,
                 NameAmount1 = "Valor de aportación",
-                //Amount1 = 34.85M,
-                Amount1 = 35M,
+                Amount1 = 34.85M,
+                //Amount1 = 35M,
                 Amount2 = 0M,
                 Amount3 = 0M,
-                MaximumCharge = (decimal) (70)
+                //MaximumCharge = (decimal) (70)
+                MaximumCharge = (decimal)(34.85*2)
             });
 
             settingService.SaveSetting(new LoanSettings
@@ -1069,10 +1070,10 @@ namespace Ks.Services.Installation
         {
             var benefits = new List<Benefit>
             {
-                new Benefit{Name ="Fallecimiento de un Hijo(a)", BenefitTypeId =(int)BenefitType.Auxilio, Discount = .25, LetterDeclaratory=false,CancelLoans =false, IsActive= true,DisplayOrder = 1, CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc =DateTime.UtcNow, Description ="Ayuda economica que recibe el asociado al fallecer un hijo(a), teniendo en cuenta un factor del 25% y los años que ha realizado aportaciones. No se considera los montos por pagar de los prestamos adquiridos" },
-                new Benefit{Name ="Fallecimiento de la Esposa", BenefitTypeId =(int)BenefitType.Auxilio, Discount = .50, LetterDeclaratory=false,CancelLoans =false, IsActive= true,DisplayOrder = 1, CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc =DateTime.UtcNow, Description ="Ayuda economica que recibe el asociado al fallecer un esposa, teniendo en cuenta un factor del 50% y los años que ha realizado aportaciones. No se considera los montos por pagar de los prestamos adquiridos"},
-                new Benefit{Name ="Falleciento del Asociado", BenefitTypeId =(int)BenefitType.Beneficio, Discount = 1, LetterDeclaratory=true,CancelLoans =false, IsActive= true,DisplayOrder = 1, CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc =DateTime.UtcNow, Description ="Ayuda economica que recibe el asociado al fallecer un hijo(a), teniendo en cuenta un factor del 25% y los años que ha realizado aportaciones. No se considera los montos por pagar de los prestamos adquiridos" },
-                new Benefit{Name ="Normal", BenefitTypeId =(int)BenefitType.Beneficio, Discount = 1, CancelLoans =false,LetterDeclaratory=false, IsActive= true,DisplayOrder = 1, CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc =DateTime.UtcNow, Description ="Ayuda economica que recibe el asociado al fallecer un hijo(a), teniendo en cuenta un factor del 25% y los años que ha realizado aportaciones. Si se considera los montos por pagar de los prestamos adquiridos" }
+                new Benefit{Name ="Fallecimiento de un Hijo(a)", BenefitTypeId =(int)BenefitType.Auxilio, Discount = .25, LetterDeclaratory=false,CancelLoans =true, IsActive= true,DisplayOrder = 1, CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc =DateTime.UtcNow, Description ="Ayuda economica que recibe el asociado al fallecer un hijo(a), teniendo en cuenta un factor del 25% y los años que ha realizado aportaciones. No se considera los montos por pagar de los prestamos adquiridos" },
+                new Benefit{Name ="Fallecimiento de la Esposa",  BenefitTypeId =(int)BenefitType.Auxilio, Discount = .50, LetterDeclaratory=false,CancelLoans =false, IsActive= true,DisplayOrder = 1, CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc =DateTime.UtcNow, Description ="Ayuda economica que recibe el asociado al fallecer un esposa, teniendo en cuenta un factor del 50% y los años que ha realizado aportaciones. No se considera los montos por pagar de los prestamos adquiridos"},
+                new Benefit{Name ="Falleciento del Asociado",  BenefitTypeId =(int)BenefitType.Beneficio, Discount = 1, LetterDeclaratory=true,CancelLoans =false, IsActive= true,DisplayOrder = 1, CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc =DateTime.UtcNow, Description ="Ayuda economica que recibe el asociado al fallecer un hijo(a), teniendo en cuenta un factor del 25% y los años que ha realizado aportaciones. No se considera los montos por pagar de los prestamos adquiridos" },
+                new Benefit{Name ="Normal", CloseContributions=true, BenefitTypeId =(int)BenefitType.Beneficio, Discount = 1,LetterDeclaratory=false,CancelLoans =true, IsActive= true,DisplayOrder = 1, CreatedOnUtc = DateTime.UtcNow,UpdatedOnUtc =DateTime.UtcNow, Description ="Ayuda economica que recibe el asociado al fallecer un hijo(a), teniendo en cuenta un factor del 25% y los años que ha realizado aportaciones. Si se considera los montos por pagar de los prestamos adquiridos" }
             };
 
             _benefitRepository.Insert(benefits);

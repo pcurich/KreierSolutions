@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
@@ -366,16 +367,13 @@ namespace Ks.Admin.Controllers
 
             #region Payed more then One Quota
 
-            var accumulate = 0M;
-            var countQuotas = 1;
-            var updateComplement = true;
-            var scheduledDateOnUtc = DateTime.UtcNow;
+            var countQuotas = 0;
+            var scheduledDateLast = allPayment.Max(x=>x.ScheduledDateOnUtc);
             var minQuota = allPayment.Min(x => x.Quota);
             var maxQuota = allPayment.Max(x => x.Quota);
             foreach (var payment in allPayment)
             {
-                accumulate += payment.MonthlyQuota;
-                if (updateComplement && accumulate <= model.MonthlyPayed)
+                if (payment.MonthlyQuota <= model.MonthlyPayed)
                 {
                     countQuotas++;
                     payment.IsAutomatic = false;
@@ -397,24 +395,26 @@ namespace Ks.Admin.Controllers
                     loan.IsDelay = false;
 
                     _loanService.UpdateLoan(loan);
+
+                    model.MonthlyPayed -= payment.MonthlyQuota;
                 }
                 else
                 {
-                    if (updateComplement)
+                    if (model.MonthlyPayed > 0)
                     {
-                        //just one time, 
-                        accumulate -= payment.MonthlyQuota;
-                        accumulate = model.MonthlyPayed - accumulate;
-                        updateComplement = false;
+                        countQuotas++;
+
+                        #region Se paga el pucho
 
                         payment.IsAutomatic = false;
-                        payment.MonthlyPayed = accumulate;
-                        payment.StateId = (int)LoanState.PagoPersonal;
+                        payment.MonthlyPayed = model.MonthlyPayed;
+                        payment.StateId = (int) LoanState.PagoPersonal;
                         payment.BankName = GetBank(model.BankName);
                         payment.AccountNumber = model.AccountNumber;
                         payment.TransactionNumber = model.TransactionNumber;
                         payment.Reference = model.Reference;
-                        payment.Description = "Couta pagada parcialmente por el adelanto realizado en la couta N° " + minQuota;
+                        payment.Description = "Couta pagada parcialmente por el adelanto realizado en la couta N° " +
+                                              minQuota;
                         payment.ProcessedDateOnUtc = DateTime.UtcNow;
 
                         _loanService.UpdateLoanPayment(payment);
@@ -422,44 +422,50 @@ namespace Ks.Admin.Controllers
                         loan = _loanService.GetLoanById(model.LoanId);
 
                         loan.UpdatedOnUtc = DateTime.UtcNow;
-                        loan.TotalPayed += accumulate;
+                        loan.TotalPayed += model.MonthlyPayed;
                         loan.IsDelay = false;
+
+                        #endregion
+
+                        #region Se ingresa una couta al final
+
+                        var newQupta = loan.MonthlyQuota - model.MonthlyPayed;
+
+                        var lastLoanPayment = new LoanPayment
+                        {
+                            IsAutomatic = true,
+                            StateId = (int)LoanState.Pendiente,
+                            LoanId = model.LoanId,
+                            Quota = maxQuota + 1,
+                            MonthlyCapital = Math.Round((newQupta / loan.MonthlyQuota)*payment.MonthlyCapital,2),
+                            MonthlyFee = Math.Round((newQupta / loan.MonthlyQuota)*payment.MonthlyFee,2),
+                            MonthlyPayed = 0,
+                            MonthlyQuota = newQupta,
+                            ScheduledDateOnUtc = scheduledDateLast.AddMonths(1 - countQuotas),
+                            Description =
+                                "Nueva Couta creada debido al pago personal realizado el : " +
+                                DateTime.Now.ToString(CultureInfo.InvariantCulture)
+                        };
+
+                        _loanService.InsertLoanPayment(lastLoanPayment);
+                        model.MonthlyQuota = 0;
+
+                        #endregion
+
+                        model.MonthlyPayed = 0;
                     }
                     else
                     {
-                        //here just update the Scheduled
-                        accumulate -= payment.MonthlyQuota; //fixed
-                        payment.ScheduledDateOnUtc = payment.ScheduledDateOnUtc.AddMonths(countQuotas * -1);
+                        payment.ScheduledDateOnUtc = payment.ScheduledDateOnUtc.AddMonths(countQuotas*-1);
                         payment.IsAutomatic = true;
-                        payment.Description = "Couta adelantada debido al pago parcial realizado en el cuota N° " + minQuota;
-                        scheduledDateOnUtc = payment.ScheduledDateOnUtc;
+                        payment.Description = "Couta adelantada debido al pago parcial realizado en el cuota N° " +minQuota;
+
                         _loanService.UpdateLoanPayment(payment);
                     }
                 }
             }
-            if ((loan.MonthlyQuota - accumulate) > 0)
-            {
-                //create the last quota 
-                var lastLoanPayment = new LoanPayment
-                {
-                    IsAutomatic = true,
-                    StateId = (int)LoanState.Pendiente,
-                    LoanId = model.LoanId,
-                    Quota = maxQuota + 1,
-                    MonthlyCapital =
-                        Math.Round((1 - Convert.ToDecimal(loan.Tea) / 100) * (loan.MonthlyQuota - accumulate), 2),
-                    MonthlyFee = Math.Round(Convert.ToDecimal(loan.Tea) / 100 * (loan.MonthlyQuota - accumulate), 2),
-                    MonthlyPayed = 0,
-                    MonthlyQuota = loan.MonthlyQuota - accumulate,
-                    ScheduledDateOnUtc = scheduledDateOnUtc.AddMonths(1),
-                    Description =
-                        "Nueva Couta creada debido al pago personal realizado con el monto: " +
-                        (loan.MonthlyQuota - accumulate).ToString("c")
-                };
 
-                _loanService.InsertLoanPayment(lastLoanPayment);
-            }
-            else
+            if ((model.MonthlyPayed) > 0)
             {
                 var lastLoanPayment = new LoanPayment
                 {
@@ -470,12 +476,10 @@ namespace Ks.Admin.Controllers
                     MonthlyCapital = 0,
                     MonthlyFee = 0,
                     MonthlyPayed = 0,
-                    MonthlyQuota = loan.MonthlyQuota - accumulate,
+                    MonthlyQuota = model.MonthlyPayed*-1,
                     ScheduledDateOnUtc = DateTime.UtcNow,
                     ProcessedDateOnUtc = DateTime.UtcNow,
-                    Description =
-                        "Devolucion debido al pago personal realizado con el monto: " +
-                        (loan.MonthlyQuota - accumulate).ToString("c"),
+                    Description ="Devolucion debido al pago personal realizado el: " +DateTime.Now,
                     BankName = "ACMR",
                     AccountNumber = "ACMR",
                     TransactionNumber = "ACMR",
@@ -486,7 +490,7 @@ namespace Ks.Admin.Controllers
 
                 var returnPayment = new ReturnPayment
                 {
-                    AmountToPay = accumulate - loan.MonthlyQuota,
+                    AmountToPay = model.MonthlyPayed,
                     CreatedOnUtc = DateTime.UtcNow,
                     PaymentNumber = maxQuota + 1,
                     ReturnPaymentTypeId = (int)ReturnPaymentType.ApoyoEconomico,

@@ -34,11 +34,15 @@ namespace Ks.Admin.Controllers
         private readonly IDateTimeHelper _dateTimeHelper;
         private readonly ICustomerActivityService _customerActivityService;
         private readonly ILocalizationService _localizationService;
+        private readonly IBenefitService _benefitService;
+        private readonly ITabService _tabService;
         private readonly IExportManager _exportManager;
         private readonly IReturnPaymentService _returnPaymentService;
 
         private readonly ContributionSettings _contributionSettings;
         private readonly BankSettings _bankSettings;
+        private readonly BenefitValueSetting _benefitValueSetting;
+        private readonly SequenceIdsSettings _sequenceIdsSettings;
 
         #endregion
 
@@ -55,7 +59,11 @@ namespace Ks.Admin.Controllers
             IExportManager exportManager,
             ContributionSettings contributionSettings,
             IReturnPaymentService returnPaymentService,
-            BankSettings bankSettings)
+            IBenefitService benefitService,
+            ITabService tabService,
+            BankSettings bankSettings,
+            SequenceIdsSettings sequenceIdsSettings,
+            BenefitValueSetting benefitValueSetting)
         {
             _permissionService = permissionService;
             _contributionService = contributionService;
@@ -68,6 +76,10 @@ namespace Ks.Admin.Controllers
             _contributionSettings = contributionSettings;
             _bankSettings = bankSettings;
             _returnPaymentService = returnPaymentService;
+            _benefitService = benefitService;
+            _tabService = tabService;
+            _benefitValueSetting = benefitValueSetting;
+            _sequenceIdsSettings = sequenceIdsSettings;
         }
 
         #endregion
@@ -248,17 +260,17 @@ namespace Ks.Admin.Controllers
                 return RedirectToAction("CreatePayment", new { id = contributionPayment.Id });
             }
 
-            //if (contributionPayment.AmountPayed != model.AmountPayed)
-            //{
-            //    ErrorNotification(_localizationService.GetResource("Admin.Customers.Contributions.AmountPayed"));
-            //    return RedirectToAction("CreatePayment", new { id = contributionPayment.Id });
-            //}
+            if (model.AmountPayed != contributionPayment.AmountTotal)
+            {
+                ErrorNotification(_localizationService.GetResource("Admin.Customers.Contributions.CancelPayment"));
+                return RedirectToAction("CreatePayment", new { id = contributionPayment.Id });
+            }
 
             if (!ModelState.IsValid)
                 return View(model);
 
             contributionPayment.IsAutomatic = false;
-            contributionPayment.StateId = (int)ContributionState.Pagado;
+            contributionPayment.StateId = (int)ContributionState.PagoPersonal;
             contributionPayment.ContributionId = model.ContributionId;
             contributionPayment.BankName = GetBank(model.BankName);
             contributionPayment.AccountNumber = model.AccountNumber;
@@ -266,14 +278,7 @@ namespace Ks.Admin.Controllers
             contributionPayment.Reference = model.Reference;
             contributionPayment.Description = model.Description;
             contributionPayment.ProcessedDateOnUtc = DateTime.UtcNow;
-            contributionPayment.AmountPayed = model.Amount1 + model.Amount2 + model.Amount3;
-
-            if (_contributionSettings.IsActiveAmount1)
-                contributionPayment.Amount1 = model.Amount1;
-            if (_contributionSettings.IsActiveAmount2)
-                contributionPayment.Amount2 = model.Amount2;
-            if (_contributionSettings.IsActiveAmount3)
-                contributionPayment.Amount3 = model.Amount3;
+            contributionPayment.AmountPayed = contributionPayment.AmountTotal;
 
             _contributionService.UpdateContributionPayment(contributionPayment);
 
@@ -283,6 +288,19 @@ namespace Ks.Admin.Controllers
 
             contribution.DelayCycles = 0;
             contribution.IsDelay = false;
+
+            if (contributionPayment.Number == _contributionSettings.TotalCycle)
+            {
+                contribution.Active = false;
+                _contributionService.UpdateContribution(contribution);
+                
+                var benefit = _benefitService.GetAllBenefits().Where(x => x.CloseContributions).FirstOrDefault();
+                var contributionBenefit = contribution.CreateBenefit(benefit, _benefitValueSetting.AmountBaseOfBenefit,
+                    _sequenceIdsSettings.NumberOfLiquidation, _contributionSettings.TotalCycle / 12);
+                
+                _benefitService.InsertContributionBenefit(contributionBenefit);
+            }
+
             _contributionService.UpdateContribution(contribution);
 
             SuccessNotification(_localizationService.GetResource("Admin.Customers.Customers.Contributions.Updated"));
@@ -407,7 +425,7 @@ namespace Ks.Admin.Controllers
                     //just one time, 
                     payment.IsAutomatic = false;
                     payment.AmountPayed = model.AmountPayed;
-                    payment.StateId = (int)LoanState.PagoPersonal;
+                    payment.StateId = (int)ContributionState.PagoPersonal;
                     payment.BankName = GetBank(model.BankName);
                     payment.AccountNumber = model.AccountNumber;
                     payment.TransactionNumber = model.TransactionNumber;
@@ -431,25 +449,39 @@ namespace Ks.Admin.Controllers
 
             #region No sale del bucle y hay aumento de coutas
 
-            var nextPayment = _contributionService.GetPaymentByContributionId(model.ContributionId).FirstOrDefault(x => x.Number == valueNextNumber);
-
-            if (isNextQuota)
+            while (isNextQuota)
             {
+                var nextPayment = _contributionService.GetPaymentByContributionId(model.ContributionId).FirstOrDefault(x => x.Number == valueNextNumber);
                 //Si entra aca es porque no salio del bucle y puede arreglar un caso limite cuando la couta a aumentar es la 420
                 if (nextPayment != null)
                 {
                     //es una couta menor a la 420
                     nextPayment.AmountTotal += valueNextQuotaAdd;
-                    nextPayment.NumberOld = valueNextNumber;
+                    nextPayment.NumberOld = valueNextNumber - 1;
                     nextPayment.AmountOld = valueNextQuotaAdd;
                     nextPayment.Description =
                         "El valor de la couta a aumentado debido a un prorrateo de una couta anterior N° " +
-                        valueNextNumber;
+                        (valueNextNumber - 1);
+
+                    if (nextPayment.AmountTotal > _contributionSettings.MaximumCharge)
+                    {
+                        var temp = nextPayment.AmountTotal - _contributionSettings.MaximumCharge;
+                        nextPayment.AmountTotal = _contributionSettings.MaximumCharge;
+                        valueNextQuotaAdd = temp;
+                        valueNextNumber++;
+                    }
+                    else
+                    {
+                        isNextQuota = false;
+                        model.AmountPayed = 0;
+                    }
+
                     _contributionService.UpdateContributionPayment(nextPayment);
+
                 }
             }
 
-            #endregion<
+            #endregion
 
             #region Es el caso en que sale del bucle y defrente hay couta negativa
 
@@ -490,6 +522,11 @@ namespace Ks.Admin.Controllers
                 };
                 _returnPaymentService.InsertReturnPayment(returnPayment);
                 #endregion
+
+                var benefit = _benefitService.GetAllBenefits().Where(x => x.CloseContributions).FirstOrDefault();
+                var contributionBenefit = contribution.CreateBenefit(benefit, _benefitValueSetting.AmountBaseOfBenefit,
+                    _sequenceIdsSettings.NumberOfLiquidation, _contributionSettings.TotalCycle / 12);
+                _benefitService.InsertContributionBenefit(contributionBenefit);
             }
 
             #endregion
