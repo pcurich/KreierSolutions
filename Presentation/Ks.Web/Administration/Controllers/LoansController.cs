@@ -204,6 +204,8 @@ namespace Ks.Admin.Controllers
             return Json(gridModel);
         }
 
+        #endregion
+
         #region CreatePayment
 
         public ActionResult CreatePayment(int id)
@@ -363,7 +365,7 @@ namespace Ks.Admin.Controllers
                 return View(model);
 
             var loan = _loanService.GetLoanById(model.LoanId);
-            var allPayment = _loanService.GetAllPayments(loanId: model.LoanId, stateId: (int)LoanState.Pendiente);
+            var allPayment = _loanService.GetAllPayments( model.LoanId, stateId: (int)LoanState.Pendiente);
 
             #region Payed more then One Quota
 
@@ -511,8 +513,6 @@ namespace Ks.Admin.Controllers
             return RedirectToAction("Edit", new { id = model.LoanId });
 
         }
-
-        #endregion
 
         #endregion
 

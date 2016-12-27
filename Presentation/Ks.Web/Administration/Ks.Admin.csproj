@@ -1372,6 +1372,7 @@
     <Compile Include="Controllers\MessageTemplateController.cs" />
     <Compile Include="Controllers\OnlineCustomerController.cs" />
     <Compile Include="Controllers\QueuedEmailController.cs" />
+    <Compile Include="Controllers\ReturnPaymentController.cs" />
     <Compile Include="Controllers\ScheduleBatchController.cs" />
     <Compile Include="Controllers\ScheduleTaskController.cs" />
     <Compile Include="Controllers\SecurityController.cs" />

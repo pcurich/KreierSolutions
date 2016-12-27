@@ -10,7 +10,6 @@ namespace Ks.Services.Contract
 {
     public class ReturnPaymentService : IReturnPaymentService
     {
-
         #region Constants
 
         /// <summary>
