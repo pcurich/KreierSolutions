@@ -7,7 +7,6 @@ namespace Ks.Core.Domain.Contract
         public int ReturnPaymentTypeId { get; set; }
         public int PaymentNumber { get; set; }
         public decimal AmountToPay { get; set; }
-        public int CustomerId { get; set; }
         public int StateId { get; set; }
 
         public ReturnPaymentState ReturnPaymentState
@@ -24,7 +23,7 @@ namespace Ks.Core.Domain.Contract
 
         public DateTime CreatedOnUtc { get; set; }
 
-        public DateTime? UpdateOnUtc { get; set; }
+        public DateTime UpdatedOnUtc { get; set; }
 
         #region Bank
 
@@ -35,11 +34,11 @@ namespace Ks.Core.Domain.Contract
         #endregion
 
         #region customer
-
-        public string CompleteName { get; set; }
-        public string Dni { get; set; }
-        public string RelationShip { get; set; }
-
+        public int CustomerId { get; set; }
+        public string CustomerName { get; set; }
+        public string CustomerDni { get; set; }
+        public string CustomerAdmCode { get; set; }
+        
         #endregion
     }
 }

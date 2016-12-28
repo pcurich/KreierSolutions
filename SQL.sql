@@ -334,13 +334,22 @@ ORDER BY Number
 --CLEAN DATA
 use ACMR
 UPDATE Contribution SET IsDelay=0, DelayCycles=0, Active=1, UpdatedOnUtc=NULL, AmountPayed=0
-UPDATE ContributionPayment SET  NumberOld =0, AmountOld =0, AmountPayed=0, AmountTotal=35, ProcessedDateOnUtc=null, StateId=1, IsAutomatic=1, BankName=null,Description=''
+UPDATE ContributionPayment SET  NumberOld =0, AmountOld =0, AmountPayed=0, AmountTotal=35, TransactionNumber='',AccountNumber='', ProcessedDateOnUtc=null, StateId=1, IsAutomatic=1, BankName=null,Description=''
 UPDATE Loan SET IsDelay=0,  Active=1, UpdatedOnUtc=NULL, TotalPayed=0
 UPDATE LoanPayment SET  MonthlyPayed =0,  ProcessedDateOnUtc=null, StateId=1, IsAutomatic=1, BankName=null,AccountNumber='',Description=''
 delete Report
 update ScheduleBatch set PeriodMonth=1, PeriodYear=2017,  NextExecutionOnUtc =GETUTCDATE() where  SystemName IN ('Ks.Batch.Copere.Out','Ks.Batch.Copere.In')
 update ScheduleBatch set PeriodMonth=1, PeriodYear=2017,  NextExecutionOnUtc =GETUTCDATE() where  SystemName IN ('Ks.Batch.Caja.In','Ks.Batch.Caja.Out')
+select * from ContributionPayment
+select * from  ContributionBenefit
+delete LoanPayment where Quota=13
+delete loan
 
+select * from Setting where name ='benefitvaluesetting.amountbaseofbenefit'
+exec SearchAllTables 'AmountBaseOfBenefit'
+
+UPDATE BENEFIT SET CancelLoans=1 WHERE ID=4
+select * from ContributionBenefit
 --fuerza el quarts
 select * from ScheduleBatch
 update ScheduleBatch set   NextExecutionOnUtc =GETUTCDATE() where id>0

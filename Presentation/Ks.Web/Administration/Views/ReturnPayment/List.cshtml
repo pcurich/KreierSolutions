@@ -1,34 +1,36 @@
-﻿@model  LoanListModel
+﻿@model  ReturnPaymentListModel
 @{
     var defaultGridPageSize = EngineContext.Current.Resolve<Ks.Core.Domain.Common.AdminAreaSettings>().DefaultGridPageSize;
     var gridPageSizes = EngineContext.Current.Resolve<Ks.Core.Domain.Common.AdminAreaSettings>().GridPageSizes;
 
     //page title
-    ViewBag.Title = T("Admin.Customers.Customers").Text;
+    ViewBag.Title = T("Admin.Contract.ReturnPayment").Text;
 }
+
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
     <div class="section-header">
         <div class="title">
             <img src="@Url.Content("~/Administration/Content/images/ico-customers.png")" alt="" />
-            @T("Admin.Customers.Customers")
+            @T("Admin.Contract.ReturnPayment")
         </div>
         <div class="options">
             @*<a href="@Url.Action("Create")" class="k-button">@T("Admin.Common.AddNew")</a>
-            <input type="submit" name="exportxml-all" class="k-button" value="@T("Admin.Common.ExportToXml.All")" />
-            <input type="button" id="exportxml-selected" class="k-button" value="@T("Admin.Common.ExportToXml.Selected")" />
-            <input type="submit" name="exportexcel-all" class="k-button" value="@T("Admin.Common.ExportToExcel.All")" />
-            <input type="button" id="exportexcel-selected" class="k-button" value="@T("Admin.Common.ExportToExcel.Selected")" />*@
+                <input type="submit" name="exportxml-all" class="k-button" value="@T("Admin.Common.ExportToXml.All")" />
+                <input type="button" id="exportxml-selected" class="k-button" value="@T("Admin.Common.ExportToXml.Selected")" />
+                <input type="submit" name="exportexcel-all" class="k-button" value="@T("Admin.Common.ExportToExcel.All")" />
+                <input type="button" id="exportexcel-selected" class="k-button" value="@T("Admin.Common.ExportToExcel.Selected")" />*@
         </div>
     </div>
+
     <table width="100%">
         <tr>
             <td class="adminTitle">
-                @Html.KsLabelFor(model => model.SearchLoanNumber):
+                @Html.KsLabelFor(model => model.SearchDni):
             </td>
             <td class="adminData">
-                @Html.EditorFor(model => model.SearchLoanNumber)
+                @Html.EditorFor(model => model.SearchDni)
             </td>
         </tr>
         <tr>
@@ -41,45 +43,58 @@
         </tr>
         <tr>
             <td class="adminTitle">
-                @Html.KsLabelFor(model => model.SearchDni):
+                @Html.KsLabelFor(model => model.PaymentNumber):
             </td>
             <td class="adminData">
-                @Html.EditorFor(model => model.SearchDni)
+                @Html.EditorFor(model => model.PaymentNumber)
             </td>
         </tr>
         <tr>
             <td class="adminTitle">
-                @Html.KsLabelFor(model => model.StateId):
+                @Html.KsLabelFor(model => model.SearchStateId):
             </td>
             <td class="adminData">
-                @Html.DropDownListFor(model => model.StateId, Model.States)
+                @Html.DropDownListFor(model => model.SearchStateId, Model.States)
                 <script>
                     $(document).ready(function() {
-                        $('#@Html.FieldIdFor(x => x.StateId)').kendoDropDownList();
+                        $('#@Html.FieldIdFor(x => x.SearchStateId)').kendoDropDownList();
+                    });
+                </script>
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.SearchStateId):
+            </td>
+            <td class="adminData">
+                @Html.DropDownListFor(model => model.SearchTypeId, Model.Types)
+                <script>
+                    $(document).ready(function() {
+                        $('#@Html.FieldIdFor(x => x.SearchTypeId)').kendoDropDownList();
                     });
                 </script>
             </td>
         </tr>
         <tr>
             <td colspan="2">
-                <input type="button" id="search-Loans" class="k-button" value="@T("Admin.Common.Search")"/>
+                <input type="button" id="return-payments" class="k-button" value="@T("Admin.Common.Search")" />
             </td>
         </tr>
     </table>
-    
+
     <table class="adminContent">
         <tr>
             <td>
-                <div id="Loans-grid"></div>
+                <div id="return-payments-grid"></div>
 
                 <script>
                     $(document).ready(function() {
-                        $("#Loans-grid").kendoGrid({
+                        $("#return-payments-grid").kendoGrid({
                             dataSource: {
                                 type: "json",
                                 transport: {
                                     read: {
-                                        url: "@Html.Raw(Url.Action("List", "Loans"))",
+                                        url: "@Html.Raw(Url.Action("List", "ReturnPayment"))",
                                         type: "POST",
                                         dataType: "json",
                                         data: additionalData
@@ -108,62 +123,45 @@
                             dataBound: onDataBound,
                             columns: [
                               {
-                                  field: "LoanNumber",
-                                  title: "@T("Admin.Contract.LoanPayments.Fields.Quota")",
-                                  width: 10
+                                  field: "ReturnPaymentTypeName",
+                                  title: "@T("Admin.Contract.ReturnPayment.SearchType")",
+                                  width: 30
                               }, {
-                                  field: "CustomerCompleteName",
-                                  title: "@T("Admin.Contract.Contribution.Fields.CustomerCompleteName")",
-                                  width: 80
+                                  field: "StateName",
+                                  title: "@T("Admin.Contract.ReturnPayment.SearchState")",
+                                  width: 30
+                              }, {
+                                  field: "PaymentNumber",
+                                  title: "@T("Admin.Contract.ReturnPayment.PaymentNumber")",
+                                  width: 20
+                              }, {
+                                  field: "CustomerName",
+                                  title: "@T("Admin.Contract.ReturnPayment.CustomerName")",
+                                  width: 40
                               }, {
                                   field: "CustomerDni",
-                                  title: "@T("Admin.Contract.Contribution.Fields.CustomerDni")",
+                                  title: "@T("Admin.Contract.ReturnPayment.CustomerDni")",
                                   width: 40
                               }, {
                                   field: "CustomerAdmCode",
-                                  title: "@T("Admin.Contract.Contribution.Fields.CustomerAdmCode")",
-                                  width: 50
-                              }, {
-                                  field: "LoanAmount",
-                                  title: "@T("Admin.Contract.Loan.Fields.LoanAmount")",
-                                  width: 50,
-                                  template:'#= kendo.toString(LoanAmount,"c","es-PE") #',
-                                  format:"{0:c2}"
-                              },  {
-                                  field: "TotalFeed",
-                                  title: "@T("Admin.Contract.Loan.Fields.TotalFeed")",
-                                  width: 50,
-                                  template:'#= kendo.toString(TotalFeed,"c","es-PE") #',
-                                  format:"{0:c2}"
+                                  title: "@T("Admin.Contract.ReturnPayment.CustomerAdmCode")",
+                                  width: 40
                               },{
-                                  field: "TotalAmount",
-                                  title: "@T("Admin.Contract.Loan.Fields.TotalAmount")",
+                                  field: "AmountToPay",
+                                  title: "@T("Admin.Contract.ReturnPayment.AmountToPay")",
                                   width: 50,
-                                  template:'#= kendo.toString(TotalAmount,"c","es-PE") #',
+                                  template:'#= kendo.toString(AmountToPay,"c","es-PE") #',
                                   format:"{0:c2}"
-                              },{
-                                  field: "TotalPayed",
-                                  title: "@T("Admin.Contract.Loan.Fields.TotalPayed")",
-                                  width: 50,
-                                  template:'#= kendo.toString(TotalPayed,"c","es-PE") #',
-                                  format:"{0:c2}"
-                              },{
-                                  field: "Active",
-                                  title: "@T("Admin.Contract.Loan.Fields.Active")",
-                                  width: 20,
-                                  headerAttributes: { style: "text-align:center" },
-                                  attributes: { style: "text-align:center" },
-                                  template: '<img src="@Url.Content("~/Administration/Content/images/")active-#=Active#.gif" />'
-                              }, {
+                              } , {
                                   field: "CreatedOn",
-                                  title: "@T("Admin.Contract.Loan.Fields.CreatedOn")",
+                                  title: "@T("Admin.Contract.ReturnPayment.CreatedOn")",
                                   width: 50,
                                   template:'#= CreatedOn!=null ? kendo.toString(CreatedOn,"dd/MM/yyyy","es-PE"): " "#',
                                   type: "date",
                                   format: "{0:G}"
                               }, {
                                   field: "UpdatedOn",
-                                  title: "@T("Admin.Contract.Loan.Fields.UpdatedOn")",
+                                  title: "@T("Admin.Contract.ReturnPayment.UpdatedOn")",
                                   width: 50,
                                   template:'#= UpdatedOn!=null ? kendo.toString(UpdatedOn,"dd/MM/yyyy","es-PE"): " "#',
                                   type: "date",
@@ -186,8 +184,8 @@
                     $(document).ready(function () {
 
                         //search button
-                        $('#search-Loans').click(function () {
-                            var grid = $('#Loans-grid').data('kendoGrid');
+                        $('#return-payments').click(function () {
+                            var grid = $('#"return-payments-grid').data('kendoGrid');
                             grid.dataSource.page(1); //new search. Set page size to 1
                             //grid.dataSource.read(); we already loaded the grid above using "page" function
                             //clear selected checkboxes
@@ -198,30 +196,24 @@
 
                         $("#@Html.FieldIdFor(model => model.SearchDni)").keydown(function (event) {
                             if (event.keyCode == 13) {
-                                $("#search-Loans").click();
+                                $("#return-payments").click();
                                 return false;
                             }
                         });
                         $("#@Html.FieldIdFor(model => model.SearchAdmCode)").keydown(function (event) {
                             if (event.keyCode == 13) {
-                                $("#search-Loans").click();
+                                $("return-payments").click();
                                 return false;
                             }
                         });
-                        $("#@Html.FieldIdFor(model => model.SearchLoanNumber)").keydown(function (event) {
-                            if (event.keyCode == 13) {
-                                $("#search-Loans").click();
-                                return false;
-                            }
-                        });
-
+                        
 
                         $('#mastercheckbox').click(function () {
                             $('.checkboxGroups').attr('checked', $(this).is(':checked')).change();
                         });
 
                         //wire up checkboxes.
-                        $('#Loans-grid').on('change', 'input[type=checkbox][id!=mastercheckbox]', function (e) {
+                        $('#return-payments-grid').on('change', 'input[type=checkbox][id!=mastercheckbox]', function (e) {
                             var $check = $(this);
                             if ($check.is(":checked") == true) {
                                 var checked = jQuery.inArray($check.val(), selectedIds);
@@ -265,8 +257,8 @@
                         var data = {
                             SearchDni: $('#@Html.FieldIdFor(model => model.SearchDni)').val(),
                             SearchAdmCode: $('#@Html.FieldIdFor(model => model.SearchAdmCode)').val(),
-                            SearchLoanNumber: $('#@Html.FieldIdFor(model => model.SearchLoanNumber)').val(),
-                            StateId: $('#@Html.FieldIdFor(model => model.StateId)').val()
+                            SearchTypeId: $('#@Html.FieldIdFor(model => model.SearchTypeId)').val(),
+                            SearchStateId: $('#@Html.FieldIdFor(model => model.SearchStateId)').val()
                         };
                         addAntiForgeryToken(data);
                         return data;
@@ -276,5 +268,4 @@
 
         </tr>
     </table>
-
 }

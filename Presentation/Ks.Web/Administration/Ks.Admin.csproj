@@ -1334,6 +1334,7 @@
     <Content Include="Views\Setting\Signature.cshtml" />
     <Content Include="Views\Contributions\CreateCustomPayment.cshtml" />
     <Content Include="Views\Contributions\_CreateOrUpdateCustomPayment.cshtml" />
+    <Content Include="Views\ReturnPayment\List.cshtml" />
     <None Include="Views\Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1404,6 +1405,8 @@
     <Compile Include="Models\Contract\LoanModel.cs" />
     <Compile Include="Models\Contract\ContributionPaymentsModel.cs" />
     <Compile Include="Models\Contract\LoanPaymentListModel.cs" />
+    <Compile Include="Models\Contract\ReturnPaymentListModel.cs" />
+    <Compile Include="Models\Contract\ReturnPaymentModel.cs" />
     <Compile Include="Models\Contract\TabDetailModel.cs" />
     <Compile Include="Models\Contract\TabModel.cs" />
     <Compile Include="Models\Customers\CustomerAddressModel.cs" />
@@ -1457,6 +1460,7 @@
     <Compile Include="Validators\Contract\ContributionValidator.cs" />
     <Compile Include="Validators\Contract\LoanPaymentValidator.cs" />
     <Compile Include="Validators\Contract\LoanValidator.cs" />
+    <Compile Include="Validators\Contract\ReturnPaymentValidator.cs" />
     <Compile Include="Validators\Customers\CustomerAttributeValidator.cs" />
     <Compile Include="Validators\Customers\CustomerAttributeValueValidator.cs" />
     <Compile Include="Validators\Customers\CustomerRoleValidator.cs" />

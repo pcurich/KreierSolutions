@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Mvc;
+using Ks.Admin.Extensions;
+using Ks.Admin.Models.Contract;
 using Ks.Core;
 using Ks.Core.Domain.Contract;
 using Ks.Services.Contract;
@@ -52,35 +54,37 @@ namespace Ks.Admin.Controllers
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageReturns))
                 return AccessDeniedView();
 
-            return View();
+            var model = new ReturnPaymentListModel
+            {
+                States = ReturnPaymentState.Aprobado.ToSelectList().ToList(),
+                Types = ReturnPaymentType.Aportacion.ToSelectList().ToList()
+            };
+
+            model.Types.Insert(0, new SelectListItem { Text = "-------------------------", Value = "0" });
+            model.States.Insert(0, new SelectListItem { Text = "-------------------------", Value = "0" });
+
+            return View(model);
         }
 
         [HttpPost]
-        public ActionResult List(DataSourceRequest command)
+        public ActionResult List(DataSourceRequest command, ReturnPaymentListModel model)
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageReturns))
                 return AccessDeniedView();
 
-            var benefits = _returnPaymentService.Search();
+            var returnPayment = _returnPaymentService.SearchReturnPayment(model.SearchDni, model.SearchAdmCode, model.SearchTypeId, model.PaymentNumber, command.Page, command.PageSize);
             var gridModel = new DataSourceResult
             {
-                Data = benefits.Select(x =>
+                Data = returnPayment.Select(x =>
                 {
-                    var model = x.ToModel();
-                    model.CreatedOn = _dateTimeHelper.ConvertToUserTime(x.CreatedOnUtc, TimeZoneInfo.Utc);
-                    model.UpdatedOn = _dateTimeHelper.ConvertToUserTime(x.UpdatedOnUtc, TimeZoneInfo.Utc);
-                    model.BenefitTypes = BenefitType.Auxilio.ToSelectList().ToList();
-                    model.BenefitTypes.Insert(0, new SelectListItem { Value = "0", Text = "" });
-                    var firstOrDefault = BenefitType.Auxilio.ToSelectList()
-                        .FirstOrDefault(r => r.Value == x.BenefitTypeId.ToString());
-                    if (firstOrDefault != null)
-                        model.BenefitTypeName =
-                            firstOrDefault
-                                .Text;
-
-                    return model;
+                    var toModel = x.ToModel();
+                    toModel.CreatedOn = _dateTimeHelper.ConvertToUserTime(x.CreatedOnUtc, TimeZoneInfo.Utc);
+                    toModel.UpdatedOn = _dateTimeHelper.ConvertToUserTime(x.UpdatedOnUtc, TimeZoneInfo.Utc);
+                    toModel.StateName = Enum.GetName(typeof(ReturnPaymentState), x.StateId);
+                    toModel.ReturnPaymentTypeName = Enum.GetName(typeof(ReturnPaymentType), x.ReturnPaymentTypeId);
+                    return toModel;
                 }),
-                Total = benefits.Count()
+                Total = returnPayment.Count()
             };
             return new JsonResult
             {

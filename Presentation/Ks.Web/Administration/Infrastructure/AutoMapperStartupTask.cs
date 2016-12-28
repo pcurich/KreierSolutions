@@ -334,6 +334,16 @@ namespace Ks.Admin.Infrastructure
                 .ForMember(dest => dest.ProcessedDateOnUtc, mo => mo.Ignore());
             #endregion
 
+            #region returnPayment
+            Mapper.CreateMap<ReturnPayment, ReturnPaymentModel>()
+                .ForMember(dest => dest.CreatedOn, mo => mo.Ignore())
+                .ForMember(dest => dest.UpdatedOn, mo => mo.Ignore())
+                .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
+            Mapper.CreateMap<ReturnPaymentModel, ReturnPayment>()
+                .ForMember(dest => dest.CreatedOnUtc, mo => mo.Ignore())
+                .ForMember(dest => dest.UpdatedOnUtc, mo => mo.Ignore());
+            #endregion
+
             #region tab
             Mapper.CreateMap<Tab, TabModel>()
                 .ForMember(dest => dest.CreatedOn, mo => mo.Ignore())

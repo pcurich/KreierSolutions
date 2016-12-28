@@ -8405,6 +8405,76 @@
   <LocaleResource Name="Admin.Contract.LoanPayments.Fields.TransactionNumber.NoValid">
     <Value>El comprobante de pago que esta registrando ya se encuentra en el sistema</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Contract.ReturnPayment">
+    <Value>Devoluciones</Value>
+  </LocaleResource>  
+  
+  <LocaleResource Name="Admin.Contract.ReturnPayment.SearchAdmCode">
+    <Value>Código Administrativo</Value>
+  </LocaleResource>   
+  <LocaleResource Name="Admin.Contract.ReturnPayment.SearchAdmCode.Hint">
+    <Value>Busqueda por el codigo administrativo</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.ReturnPayment.SearchDni">
+    <Value>N° Dni</Value>
+  </LocaleResource>   
+  <LocaleResource Name="Admin.Contract.ReturnPayment.SearchDni.Hint">
+    <Value>Buscar por dni</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.ReturnPayment.SearchType">
+    <Value>Tipo</Value>
+  </LocaleResource>   
+  <LocaleResource Name="Admin.Contract.ReturnPayment.SearchType.Hint">
+    <Value>Buscar por Apoyo económico o por aportación</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Contract.ReturnPayment.PaymentNumber">
+    <Value>N° de Pago</Value>
+  </LocaleResource>   
+  <LocaleResource Name="Admin.Contract.ReturnPayment.PaymentNumber.Hint">
+    <Value>Buscar por el numero de pago</Value>
+  </LocaleResource>   
+  <LocaleResource Name="Admin.Contract.ReturnPayment.AmountToPay">
+    <Value>Monto</Value>
+  </LocaleResource>   
+  <LocaleResource Name="Admin.Contract.ReturnPayment.AmountToPay.Hint">
+    <Value>Monto de la devolucion</Value>
+  </LocaleResource> 
+  <LocaleResource Name="Admin.Contract.ReturnPayment.SearchState">
+    <Value>Estado</Value>
+  </LocaleResource>   
+  <LocaleResource Name="Admin.Contract.ReturnPayment.SearchState.Hint">
+    <Value>Estado</Value>
+  </LocaleResource> 
+  <LocaleResource Name="Admin.Contract.ReturnPayment.BankName">
+    <Value>Banco</Value>
+  </LocaleResource>   
+  <LocaleResource Name="Admin.Contract.ReturnPayment.BankName.Hint">
+    <Value>Banco</Value>
+  </LocaleResource> 
+  <LocaleResource Name="Admin.Contract.ReturnPayment.AccountNumber">
+    <Value>N° de Cuenta</Value>
+  </LocaleResource>   
+  <LocaleResource Name="Admin.Contract.ReturnPayment.AccountNumber.Hint">
+    <Value>N° de Cuenta</Value>
+  </LocaleResource>   
+    <LocaleResource Name="Admin.Contract.ReturnPayment.CheckNumber">
+    <Value>N° de cheque</Value>
+  </LocaleResource>   
+  <LocaleResource Name="Admin.Contract.ReturnPayment.CheckNumber.Hint">
+    <Value>N° de cheque</Value>
+  </LocaleResource>   
+  <LocaleResource Name="Admin.Contract.ReturnPayment.CreatedOn">
+    <Value>Fecha de Creación</Value>
+  </LocaleResource>   
+  <LocaleResource Name="Admin.Contract.ReturnPayment.CreatedOn.Hint">
+    <Value>Fecha de Creación</Value>
+  </LocaleResource> 
+  <LocaleResource Name="Admin.Contract.ReturnPayment.UpdatedOn">
+    <Value>Última Modificación</Value>
+  </LocaleResource>   
+  <LocaleResource Name="Admin.Contract.ReturnPayment.UpdatedOn.Hint">
+    <Value>Última Modificación</Value>
+  </LocaleResource>   
   <LocaleResource Name="Admin.CurrentCarts">
     <Value>Carritos actuales</Value>
   </LocaleResource>

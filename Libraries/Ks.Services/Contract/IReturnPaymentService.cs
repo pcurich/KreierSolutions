@@ -11,7 +11,7 @@ namespace Ks.Services.Contract
 
         ReturnPayment GetReturnPaymentById(int returnPaymentId);
 
-        IPagedList<ReturnPayment> GetReturnPayments(int customerId, int stateId = -1, int pageIndex = 0,
-            int pageSize = Int32.MaxValue);
+        IPagedList<ReturnPayment> SearchReturnPayment(string searchDni, string searchAdmCode, int searchTypeId,
+            int paymentNumber, int pageIndex = 0, int pageSize = Int32.MaxValue);
     }
 }

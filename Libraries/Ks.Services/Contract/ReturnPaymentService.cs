@@ -3,6 +3,7 @@ using System.Linq;
 using Ks.Core;
 using Ks.Core.Caching;
 using Ks.Core.Data;
+using Ks.Core.Domain.Common;
 using Ks.Core.Domain.Contract;
 using Ks.Services.Events;
 
@@ -10,6 +11,19 @@ namespace Ks.Services.Contract
 {
     public class ReturnPaymentService : IReturnPaymentService
     {
+        #region Contructor
+
+        public ReturnPaymentService(IRepository<ReturnPayment> returnPaymentRepository,
+               ICacheManager cacheManager,
+            IEventPublisher eventPublisher)
+        {
+            _returnPaymentRepository = returnPaymentRepository;
+            _cacheManager = cacheManager;
+            _eventPublisher = eventPublisher;
+        }
+
+        #endregion
+
         #region Constants
 
         /// <summary>
@@ -24,18 +38,6 @@ namespace Ks.Services.Contract
         ///     Key pattern to clear cache
         /// </summary>
         private const string RETURN_PATTERN_KEY = "ks.return.";
-
-        #endregion
-
-        #region Contructor
-
-        public ReturnPaymentService(IRepository<ReturnPayment> returnPaymentRepository, ICacheManager cacheManager,
-            IEventPublisher eventPublisher)
-        {
-            _returnPaymentRepository = returnPaymentRepository;
-            _cacheManager = cacheManager;
-            _eventPublisher = eventPublisher;
-        }
 
         #endregion
 
@@ -86,24 +88,26 @@ namespace Ks.Services.Contract
             return query.FirstOrDefault();
         }
 
-        public virtual IPagedList<ReturnPayment> GetReturnPayments(int customerId, int stateId = -1, int pageIndex = 0,
-            int pageSize = Int32.MaxValue)
+        public virtual IPagedList<ReturnPayment> SearchReturnPayment(string searchDni, string searchAdmCode,
+            int searchTypeId, int paymentNumber, int pageIndex = 0, int pageSize = Int32.MaxValue)
         {
-            var key = string.Format(RETURN_BY_KEY, customerId);
-            return _cacheManager.Get(key, () =>
-            {
-                var query = from c in _returnPaymentRepository.Table
-                            select c;
-                if (stateId >= 0)
-                {
-                    query = query.Where(x => x.StateId == stateId);
-                }
+            var query = from rp in _returnPaymentRepository.Table
+                        select rp;
 
-                if (customerId != 0)
-                    query = query.Where(x => x.CustomerId == customerId);
+            if (!string.IsNullOrEmpty(searchDni))
+                query = query.Where(x => x.CustomerDni == searchDni);
 
-                return new PagedList<ReturnPayment>(query.ToList(), pageIndex, pageSize);
-            });
+            if (!string.IsNullOrEmpty(searchAdmCode))
+                query = query.Where(x => x.CustomerAdmCode == searchAdmCode);
+
+            if (searchTypeId != 0)
+                query = query.Where(x => x.StateId == searchTypeId);
+
+            if (paymentNumber != 0)
+                query = query.Where(x => x.PaymentNumber == paymentNumber);
+
+            return new PagedList<ReturnPayment>(query.ToList(), pageIndex, pageSize);
+
         }
 
         #endregion

@@ -320,6 +320,25 @@ namespace Ks.Admin.Extensions
 
         #endregion
 
+        #region ReturnPayment
+
+        public static ReturnPaymentModel ToModel(this ReturnPayment entity)
+        {
+            return entity.MapTo<ReturnPayment, ReturnPaymentModel>();
+        }
+
+        public static ReturnPayment ToEntity(this ReturnPaymentModel model)
+        {
+            return model.MapTo<ReturnPaymentModel, ReturnPayment>();
+        }
+
+        public static ReturnPayment ToEntity(this ReturnPaymentModel model, ReturnPayment destination)
+        {
+            return model.MapTo(destination);
+        }
+
+        #endregion
+
         #region Tab
 
         public static TabModel ToModel(this Tab entity)
