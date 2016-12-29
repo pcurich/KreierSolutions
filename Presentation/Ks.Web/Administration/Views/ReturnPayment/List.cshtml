@@ -185,7 +185,7 @@
 
                         //search button
                         $('#return-payments').click(function () {
-                            var grid = $('#"return-payments-grid').data('kendoGrid');
+                            var grid = $('#return-payments-grid').data('kendoGrid');
                             grid.dataSource.page(1); //new search. Set page size to 1
                             //grid.dataSource.read(); we already loaded the grid above using "page" function
                             //clear selected checkboxes
@@ -202,7 +202,7 @@
                         });
                         $("#@Html.FieldIdFor(model => model.SearchAdmCode)").keydown(function (event) {
                             if (event.keyCode == 13) {
-                                $("return-payments").click();
+                                $("#return-payments").click();
                                 return false;
                             }
                         });
@@ -237,7 +237,7 @@
 
                     function onDataBound(e) {
 
-                        $('#Loans-grid input[type=checkbox][id!=mastercheckbox]').each(function () {
+                        $('#return-payments-grid input[type=checkbox][id!=mastercheckbox]').each(function () {
                             var currentId = $(this).val();
                             var checked = jQuery.inArray(currentId, selectedIds);
                             //set checked based on if current checkbox's value is in selectedIds.
@@ -248,8 +248,8 @@
                     }
 
                     function updateMasterCheckbox() {
-                        var numChkBoxes = $('#Loans-grid input[type=checkbox][id!=mastercheckbox]').length;
-                        var numChkBoxesChecked = $('#Loans-grid input[type=checkbox][id!=mastercheckbox]:checked').length;
+                        var numChkBoxes = $('#return-payments-grid input[type=checkbox][id!=mastercheckbox]').length;
+                        var numChkBoxesChecked = $('#return-payments-grid input[type=checkbox][id!=mastercheckbox]:checked').length;
                         $('#mastercheckbox').attr('checked', numChkBoxes == numChkBoxesChecked && numChkBoxes > 0);
                     }
 

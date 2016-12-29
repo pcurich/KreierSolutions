@@ -72,7 +72,7 @@ namespace Ks.Admin.Controllers
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageReturns))
                 return AccessDeniedView();
 
-            var returnPayment = _returnPaymentService.SearchReturnPayment(model.SearchDni, model.SearchAdmCode, model.SearchTypeId, model.PaymentNumber, command.Page, command.PageSize);
+            var returnPayment = _returnPaymentService.SearchReturnPayment(model.SearchDni, model.SearchAdmCode, model.SearchTypeId, model.PaymentNumber, command.Page - 1, command.PageSize);
             var gridModel = new DataSourceResult
             {
                 Data = returnPayment.Select(x =>
