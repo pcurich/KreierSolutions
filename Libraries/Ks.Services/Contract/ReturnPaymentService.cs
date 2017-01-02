@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Ks.Core;
 using Ks.Core.Caching;
@@ -88,17 +89,15 @@ namespace Ks.Services.Contract
             return query.FirstOrDefault();
         }
 
-        public virtual IPagedList<ReturnPayment> SearchReturnPayment(string searchDni, string searchAdmCode,
+        public virtual IPagedList<ReturnPayment> SearchReturnPayment(int customerId,
             int searchTypeId, int paymentNumber, int pageIndex = 0, int pageSize = Int32.MaxValue)
         {
+            if(customerId==0)
+                return new PagedList<ReturnPayment>(new List<ReturnPayment>(), pageIndex, pageSize);
+
             var query = from rp in _returnPaymentRepository.Table
+                        where rp.CustomerId == customerId
                         select rp;
-
-            if (!string.IsNullOrEmpty(searchDni))
-                query = query.Where(x => x.CustomerDni == searchDni);
-
-            if (!string.IsNullOrEmpty(searchAdmCode))
-                query = query.Where(x => x.CustomerAdmCode == searchAdmCode);
 
             if (searchTypeId != 0)
                 query = query.Where(x => x.StateId == searchTypeId);

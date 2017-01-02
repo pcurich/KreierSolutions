@@ -320,7 +320,7 @@ namespace Ks.Services.Installation
                 Name = "Auxiliar Contable",
                 Active = true,
                 IsSystemRole = false,
-                SystemName = SystemCustomerRoleNames.AccountingAssistant,
+                SystemName = SystemCustomerRoleNames.Accountant,
             };
 
             var crSecretary = new CustomerRole
@@ -337,6 +337,13 @@ namespace Ks.Services.Installation
                 IsSystemRole = false,
                 SystemName = SystemCustomerRoleNames.Manager
             };
+            var crEmployer = new CustomerRole
+            {
+                Name = "Trabajador",
+                Active = true,
+                IsSystemRole = false,
+                SystemName = SystemCustomerRoleNames.Employee
+            };
             var crGuests = new CustomerRole
             {
                 Name = "Invitado",
@@ -350,7 +357,9 @@ namespace Ks.Services.Installation
                                     crAdministrators,
                                     crAuxAccountant,
                                     crSecretary,
-                                    crManager 
+                                    crEmployer,
+                                    crManager,
+                                    crAssociated
                                 };
             _customerRoleRepository.Insert(customerRoles);
 
@@ -387,12 +396,11 @@ namespace Ks.Services.Installation
             };
             adminUser.Addresses.Add(defaultAdminUserAddress);
             adminUser.CustomerRoles.Add(crAdministrators);
-            adminUser.CustomerRoles.Add(crAssociated);
             _customerRepository.Insert(adminUser);
             //set default customer name
             _genericAttributeService.SaveAttribute(adminUser, SystemCustomerAttributeNames.FirstName, "Pedro");
             _genericAttributeService.SaveAttribute(adminUser, SystemCustomerAttributeNames.LastName, "Curich");
-            _genericAttributeService.SaveAttribute(adminUser, SystemCustomerAttributeNames.AdmCode, "12345678910");
+            _genericAttributeService.SaveAttribute(adminUser, SystemCustomerAttributeNames.AdmCode, "123456789");
             _genericAttributeService.SaveAttribute(adminUser, SystemCustomerAttributeNames.Dni, "43617372");
 
             //search engine (crawler) built-in user

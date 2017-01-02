@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Web.Mvc;
 using FluentValidation.Attributes;
 using Ks.Admin.Validators.Contract;
 using Ks.Web.Framework;
@@ -9,6 +11,11 @@ namespace Ks.Admin.Models.Contract
     [Validator(typeof(ReturnPaymentValidator))]
     public class ReturnPaymentModel : BaseKsEntityModel
     {
+        public ReturnPaymentModel()
+        {
+            Banks= new List<SelectListItem>();
+            States= new List<SelectListItem>();
+        }
 
         [KsResourceDisplayName("Admin.Contract.ReturnPayment.SearchType")]
         public string ReturnPaymentTypeName { get; set; }
@@ -30,9 +37,11 @@ namespace Ks.Admin.Models.Contract
         [KsResourceDisplayName("Admin.Contract.ReturnPayment.SearchState")]
         public string StateName { get; set; }
         public int StateId { get; set; }
+        public List<SelectListItem> States { get; set; }
 
         [KsResourceDisplayName("Admin.Contract.ReturnPayment.BankName")]
         public string BankName { get; set; }
+        public List<SelectListItem> Banks { get; set; }
         [KsResourceDisplayName("Admin.Contract.ReturnPayment.AccountNumber")]
         public string AccountNumber { get; set; }
         [KsResourceDisplayName("Admin.Contract.ReturnPayment.CheckNumber")]

@@ -345,6 +345,13 @@ select * from  ContributionBenefit
 delete LoanPayment where Quota=13
 delete loan
 
+use acmr
+select * from returnPayment
+
+insert into returnPayment
+values 
+(1,100,125,1,GETUTCDATE(),GETUTCDATE(), null,null,null,1,'Pedro Curich','43617372','123456789')
+
 select * from Setting where name ='benefitvaluesetting.amountbaseofbenefit'
 exec SearchAllTables 'AmountBaseOfBenefit'
 

@@ -738,6 +738,16 @@
   <LocaleResource Name="ActivityLog.EditBenefit">
     <Value>Edición del beneficio ('{0}') por el usuario ('{1}')</Value>
   </LocaleResource>
+  <LocaleResource Name="ActivityLog.EditReturnPaymentBegin">
+    <Value>Edición de la devolucion ('{0}') por el usuario ('{1}'), se ha solicitado la aprobacion por un usuario con perfil ({'2'})</Value>
+  </LocaleResource>
+  <LocaleResource Name="ActivityLog.EditReturnPaymentMiddle">
+    <Value>Edición de la devolucion ('{0}') por el usuario ('{1}'), se ha confirmado la respuesta de la devolucion, se requiere un perfil ({'2'}) para terminar el flujo</Value>
+  </LocaleResource>
+  <LocaleResource Name="ActivityLog.EditReturnPaymentClose">
+    <Value>Edición de la devolucion ('{0}') por el usuario ('{1}'), se ha terminado la devolucion </Value>
+  </LocaleResource>
+  
     <LocaleResource Name="ActivityLog.EditContributionBenefit">
     <Value>Edición de la asignacion del beneficio ('{0}') al usuario ('{1}') por el usuario ('{2}')</Value>
   </LocaleResource>
@@ -3284,6 +3294,9 @@
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration">
     <Value>Configuración</Value>
+  </LocaleResource>
+    <LocaleResource Name="Admin.Returns">
+    <Value>Devoluciones</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Contributions">
     <Value>Aportaciones</Value>
@@ -8408,7 +8421,18 @@
   <LocaleResource Name="Admin.Contract.ReturnPayment">
     <Value>Devoluciones</Value>
   </LocaleResource>  
-  
+  <LocaleResource Name="Admin.Contract.ReturnPayment.Edit">
+    <Value>Editar Devolución</Value>
+  </LocaleResource> 
+  <LocaleResource Name="Admin.Contract.ReturnPayment.BackToList">
+    <Value>Retornar a la lista de Devoluciones</Value>
+  </LocaleResource>  
+ <LocaleResource Name="Admin.Contract.ReturnPayment.Info">
+    <Value>Información</Value>
+  </LocaleResource>  
+   <LocaleResource Name="Admin.Contract.ReturnPayment.Checks">
+    <Value>Pago</Value>
+  </LocaleResource>  
   <LocaleResource Name="Admin.Contract.ReturnPayment.SearchAdmCode">
     <Value>Código Administrativo</Value>
   </LocaleResource>   
@@ -8445,6 +8469,15 @@
   <LocaleResource Name="Admin.Contract.ReturnPayment.SearchState.Hint">
     <Value>Estado</Value>
   </LocaleResource> 
+  <LocaleResource Name="Admin.Contract.ReturnPayment.CustomerName">
+    <Value>Asociado</Value>
+  </LocaleResource>   
+  <LocaleResource Name="Admin.Contract.ReturnPayment.CustomerDni">
+    <Value>DNI</Value>
+  </LocaleResource>   
+  <LocaleResource Name="Admin.Contract.ReturnPayment.CustomerAdmCode">
+    <Value>N° Administrativo</Value>
+	</LocaleResource>     
   <LocaleResource Name="Admin.Contract.ReturnPayment.BankName">
     <Value>Banco</Value>
   </LocaleResource>   

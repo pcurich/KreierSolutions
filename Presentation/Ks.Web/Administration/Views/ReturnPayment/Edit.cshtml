@@ -1,0 +1,32 @@
+﻿@using Ks.Core.Domain.Contract
+@model ReturnPaymentModel
+@{
+    //page title
+    ViewBag.Title = T("Admin.Contract.ReturnPayment.Edit").Text;
+}
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "returnPatment-form" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="section-header">
+        <div class="title">
+            <img src="@Url.Content("~/Administration/Content/images/ico-catalog.png")" alt="" />
+            @T("Admin.Contract.ReturnPayment.Edit") @Html.ActionLink("(" + T("Admin.Contract.ReturnPayment.BackToList") + ")", "List")
+        </div>
+        <div class="options">
+            @{
+                if (Model.StateId == (int)ReturnPaymentState.Creado || 
+                    Model.StateId == (int)ReturnPaymentState.Aprobado)
+                {
+                    <input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")" />
+                    <input type="submit" name="save-continue" class="k-button" value="@T("Admin.Common.SaveContinue")" />
+                }
+
+                if (Model.StateId == (int) ReturnPaymentState.Entregado)
+                {
+                    <button name="" value="Descargar"></button>
+                }
+            }
+        </div>
+    </div>
+    @Html.Partial("_CreateOrUpdate", Model)
+}

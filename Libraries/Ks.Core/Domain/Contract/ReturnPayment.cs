@@ -5,6 +5,7 @@ namespace Ks.Core.Domain.Contract
     public class ReturnPayment : BaseEntity
     {
         public int ReturnPaymentTypeId { get; set; }
+        public int CustomerId { get; set; }
         public int PaymentNumber { get; set; }
         public decimal AmountToPay { get; set; }
         public int StateId { get; set; }
@@ -33,12 +34,6 @@ namespace Ks.Core.Domain.Contract
 
         #endregion
 
-        #region customer
-        public int CustomerId { get; set; }
-        public string CustomerName { get; set; }
-        public string CustomerDni { get; set; }
-        public string CustomerAdmCode { get; set; }
         
-        #endregion
     }
 }

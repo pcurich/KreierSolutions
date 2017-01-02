@@ -1335,6 +1335,8 @@
     <Content Include="Views\Contributions\CreateCustomPayment.cshtml" />
     <Content Include="Views\Contributions\_CreateOrUpdateCustomPayment.cshtml" />
     <Content Include="Views\ReturnPayment\List.cshtml" />
+    <Content Include="Views\ReturnPayment\Edit.cshtml" />
+    <Content Include="Views\ReturnPayment\_CreateOrUpdate.cshtml" />
     <None Include="Views\Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1380,6 +1382,7 @@
     <Compile Include="Controllers\SettingController.cs" />
     <Compile Include="Controllers\TabController.cs" />
     <Compile Include="Extensions\AttributeParserHelper.cs" />
+    <Compile Include="Extensions\BankHelper.cs" />
     <Compile Include="Extensions\BenefitHelper.cs" />
     <Compile Include="Extensions\HtmlExtensions.cs" />
     <Compile Include="Extensions\MappingExtensions.cs" />

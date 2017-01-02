@@ -1,0 +1,189 @@
+﻿@using System.Globalization
+@model ReturnPaymentModel
+
+@Html.ValidationSummary(false)
+@Html.HiddenFor(model => model.Id)
+
+<script>
+    $(document).ready(function () {
+        $("#return-payments-edit").kendoTabStrip({
+            animation: {
+                open: {
+                    effects: "fadeIn"
+                }
+            },
+            select: tabstrip_on_tab_select
+        });
+    });
+</script>
+<div id="return-payments-edit">
+    <ul>
+        <li @Html.RenderSelectedTabIndex(0, GetSelectedTabIndex())>
+            @T("Admin.Contract.ReturnPayment.Info")
+        </li>
+        <li @Html.RenderSelectedTabIndex(1, GetSelectedTabIndex())>
+            @T("Admin.Contract.ReturnPayment.Checks")
+        </li>
+    </ul>
+    <div>
+        @TabInfo()
+    </div>
+    <div>
+        @TabChecks()
+    </div>
+</div>
+
+@{
+    //custom tabs
+    var eventMessage = new AdminTabStripCreated(this.Html, "return-payments-edit");
+    EngineContext.Current.Resolve<IEventPublisher>().Publish(eventMessage);
+    foreach (var eventBlock in eventMessage.BlocksToRender)
+    {
+        @eventBlock
+    }
+}
+
+@*save selected tab index*@
+<input type="hidden" id="selected-tab-index" name="selected-tab-index" value="@(GetSelectedTabIndex())">
+
+@helper TabInfo()
+{
+    <table class="adminContent">
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.CustomerName):
+            </td>
+            <td class="adminData">
+                @Model.CustomerName
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.CustomerDni):
+            </td>
+            <td class="adminData">
+                @Model.CustomerDni
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.CustomerAdmCode):
+            </td>
+            <td class="adminData">
+                @Model.CustomerAdmCode
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.ReturnPaymentTypeName):
+            </td>
+            <td class="adminData">
+                @Model.ReturnPaymentTypeName
+                @Html.HiddenFor(model=>model.ReturnPaymentTypeId)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.PaymentNumber):
+            </td>
+            <td class="adminData">
+                @Model.PaymentNumber
+                @Html.HiddenFor(model => model.PaymentNumber)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.AmountToPay):
+            </td>
+            <td class="adminData">
+                @Model.AmountToPay.ToString("c", new CultureInfo("es-PE"))
+                @Html.HiddenFor(model => model.AmountToPay)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.StateName):
+            </td>
+            <td class="adminData">
+                @Html.DropDownListFor(model => model.StateId, Model.States)
+                <script>
+                    $(document).ready(function () {
+                        $('#@Html.FieldIdFor(model => model.StateId)').width(250).kendoDropDownList();
+                    });
+                </script>
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.CreatedOn):
+            </td>
+            <td class="adminData">
+                @Model.CreatedOn.ToLongDateString()
+            </td>
+        </tr>
+    </table>
+}
+
+@helper TabChecks()
+{
+    <table class="adminContent">
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.BankName):
+            </td>
+            <td class="adminData">
+                @{
+                    if (Model.BankName != null)
+                    {
+                        @Model.BankName
+                    }
+                    else
+                    {
+                        @Html.DropDownListFor(model => model.BankName, Model.Banks)
+                        <script>
+                            $(document).ready(function () {
+                                $('#@Html.FieldIdFor(model => model.BankName)').width(250).kendoDropDownList();
+                            });
+                        </script>
+                    }
+                }
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.AccountNumber):
+            </td>
+            <td class="adminData">
+                @Html.TextBoxFor(model => model.AccountNumber, new { @readonly = "readonly", @class = "text-box single-line" })
+                @Html.ValidationMessageFor(model => model.AccountNumber)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.CheckNumber):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.CheckNumber)
+                @Html.ValidationMessageFor(model => model.CheckNumber)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.UpdatedOn):
+            </td>
+            <td class="adminData">
+                @Model.UpdatedOn.ToLongDateString()
+            </td>
+        </tr>
+    </table>
+
+    <script>
+        $(document).ready(function () {
+            $("#@Html.FieldIdFor(model => model.BankName)").change(function () {
+                var selectedItem = $(this).val();
+                $("#@Html.FieldIdFor(model => model.AccountNumber)").val(selectedItem);
+            });
+        });
+    </script>
+}
+

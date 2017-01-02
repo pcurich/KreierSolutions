@@ -151,7 +151,7 @@ namespace Ks.Admin.Controllers
                 LoanId = id,
                 CustomerId = loan.CustomerId,
                 States = LoanState.EnProceso.ToSelectList(false).ToList(),
-                Banks = PrepareBanks(),
+                Banks = _bankSettings.PrepareBanks(),
                 Types = new List<SelectListItem>
                 {
                     new SelectListItem { Value = "0", Text = "--------------", Selected = true},
@@ -347,7 +347,7 @@ namespace Ks.Admin.Controllers
             var amountToCancel = allPayment.Sum(x => x.MonthlyQuota);
             var loanPaymentModel = new LoanPaymentsModel
             {
-                Banks = PrepareBanks(),
+                Banks = _bankSettings.PrepareBanks(),
                 LoanId = id,
                 AmountToCancel = amountToCancel
             };
@@ -519,30 +519,10 @@ namespace Ks.Admin.Controllers
         #region Utilities
 
         [NonAction]
-        protected virtual List<SelectListItem> PrepareBanks()
-        {
-            var model = new List<SelectListItem>();
-            model.Insert(0, new SelectListItem { Value = "0", Text = "----------------" });
-
-            if (_bankSettings.IsActive1)
-                model.Add(new SelectListItem { Value = _bankSettings.AccountNumber1, Text = _bankSettings.NameBank1 });
-            if (_bankSettings.IsActive2)
-                model.Add(new SelectListItem { Value = _bankSettings.AccountNumber2, Text = _bankSettings.NameBank2 });
-            if (_bankSettings.IsActive3)
-                model.Add(new SelectListItem { Value = _bankSettings.AccountNumber3, Text = _bankSettings.NameBank3 });
-            if (_bankSettings.IsActive4)
-                model.Add(new SelectListItem { Value = _bankSettings.AccountNumber4, Text = _bankSettings.NameBank4 });
-            if (_bankSettings.IsActive5)
-                model.Add(new SelectListItem { Value = _bankSettings.AccountNumber5, Text = _bankSettings.NameBank5 });
-
-            return model;
-        }
-
-        [NonAction]
         protected virtual LoanPaymentsModel PrepareLoanPayment(LoanPayment loanPayment)
         {
             var model = loanPayment.ToModel();
-            model.Banks = PrepareBanks();
+            model.Banks = _bankSettings.PrepareBanks(); 
             model.ScheduledDateOn = _dateTimeHelper.ConvertToUserTime(loanPayment.ScheduledDateOnUtc, DateTimeKind.Utc);
             if (loanPayment.ProcessedDateOnUtc.HasValue)
                 model.ProcessedDateOn = _dateTimeHelper.ConvertToUserTime(loanPayment.ProcessedDateOnUtc.Value, DateTimeKind.Utc);

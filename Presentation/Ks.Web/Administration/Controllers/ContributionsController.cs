@@ -169,7 +169,7 @@ namespace Ks.Admin.Controllers
                 ContributionId = id,
                 CustomerId = contribution.CustomerId,
                 States = ContributionState.EnProceso.ToSelectList(false).ToList(),
-                Banks = PrepareBanks(),
+                Banks = _bankSettings.PrepareBanks(),
                 Types = new List<SelectListItem>
                 {
                     new SelectListItem { Value = "0", Text = "--------------", Selected = true},
@@ -358,7 +358,7 @@ namespace Ks.Admin.Controllers
             var amountToCancel = allPayment.Sum(x => x.AmountTotal);
             var loanPaymentModel = new ContributionPaymentsModel
             {
-                Banks = PrepareBanks(),
+                Banks = _bankSettings.PrepareBanks(),
                 ContributionId = id,
                 AmountToCancel = amountToCancel
             };
@@ -548,30 +548,10 @@ namespace Ks.Admin.Controllers
         #region Utilities
 
         [NonAction]
-        protected virtual List<SelectListItem> PrepareBanks()
-        {
-            var model = new List<SelectListItem>();
-            model.Insert(0, new SelectListItem { Value = "0", Text = "----------------" });
-
-            if (_bankSettings.IsActive1)
-                model.Add(new SelectListItem { Value = _bankSettings.AccountNumber1, Text = _bankSettings.NameBank1 });
-            if (_bankSettings.IsActive2)
-                model.Add(new SelectListItem { Value = _bankSettings.AccountNumber2, Text = _bankSettings.NameBank2 });
-            if (_bankSettings.IsActive3)
-                model.Add(new SelectListItem { Value = _bankSettings.AccountNumber3, Text = _bankSettings.NameBank3 });
-            if (_bankSettings.IsActive4)
-                model.Add(new SelectListItem { Value = _bankSettings.AccountNumber4, Text = _bankSettings.NameBank4 });
-            if (_bankSettings.IsActive5)
-                model.Add(new SelectListItem { Value = _bankSettings.AccountNumber5, Text = _bankSettings.NameBank5 });
-
-            return model;
-        }
-
-        [NonAction]
         protected virtual ContributionPaymentsModel PrepareContributionPayment(ContributionPayment contributionPayment)
         {
             var model = contributionPayment.ToModel();
-            model.Banks = PrepareBanks();
+            model.Banks = _bankSettings.PrepareBanks(); 
             model.ScheduledDateOn = _dateTimeHelper.ConvertToUserTime(contributionPayment.ScheduledDateOnUtc, DateTimeKind.Utc);
             if (contributionPayment.ProcessedDateOnUtc.HasValue)
                 model.ProcessedDateOn = _dateTimeHelper.ConvertToUserTime(contributionPayment.ProcessedDateOnUtc.Value, DateTimeKind.Utc);

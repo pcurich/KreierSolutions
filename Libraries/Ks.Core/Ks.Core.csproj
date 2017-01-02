@@ -209,6 +209,7 @@
     <Compile Include="Domain\System\KsSystem.cs" />
     <Compile Include="Domain\System\KsSystemExtensions.cs" />
     <Compile Include="Domain\Tasks\ScheduleTask.cs" />
+    <Compile Include="Domain\Messages\WorkFlow.cs" />
     <Compile Include="Events\EntityDeleted.cs" />
     <Compile Include="Events\EntityInserted.cs" />
     <Compile Include="Events\EntityUpdated.cs" />
