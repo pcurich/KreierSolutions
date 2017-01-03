@@ -10,7 +10,7 @@ namespace Ks.Core
         {
             get
             {
-                return "1.00";
+                return "2.0.0";
             }
         }
     }

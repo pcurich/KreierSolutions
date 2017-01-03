@@ -2,154 +2,195 @@
 @Html.ValidationSummary(true)
 @Html.HiddenFor(model => model.Id)
 
-<table class="adminContent">
-    <tr>
-        <td class="adminTitle">
-            @Html.KsLabelFor(model => model.PriorityName):
-        </td>
-        <td class="adminData">
-            @Html.DisplayFor(model => model.PriorityName)
-        </td>
-    </tr>
-    <tr>
-        <td class="adminTitle">
-            @Html.KsLabelFor(model => model.From):
-        </td>
-        <td class="adminData">
-            @Html.EditorFor(model => model.From)
-            @Html.ValidationMessageFor(model => model.From)
-        </td>
-    </tr>
-    <tr>
-        <td class="adminTitle">
-            @Html.KsLabelFor(model => model.FromName):
-        </td>
-        <td class="adminData">
-            @Html.EditorFor(model => model.FromName)
-            @Html.ValidationMessageFor(model => model.FromName)
-        </td>
-    </tr>
-    <tr>
-        <td class="adminTitle">
-            @Html.KsLabelFor(model => model.To):
-        </td>
-        <td class="adminData">
-            @Html.EditorFor(model => model.To)
-            @Html.ValidationMessageFor(model => model.To)
-        </td>
-    </tr>
-    <tr>
-        <td class="adminTitle">
-            @Html.KsLabelFor(model => model.ToName):
-        </td>
-        <td class="adminData">
-            @Html.EditorFor(model => model.ToName)
-            @Html.ValidationMessageFor(model => model.ToName)
-        </td>
-    </tr>
-    <tr>
-        <td class="adminTitle">
-            @Html.KsLabelFor(model => model.ReplyTo):
-        </td>
-        <td class="adminData">
-            @Html.EditorFor(model => model.ReplyTo)
-            @Html.ValidationMessageFor(model => model.ReplyTo)
-        </td>
-    </tr>
-    <tr>
-        <td class="adminTitle">
-            @Html.KsLabelFor(model => model.ReplyToName):
-        </td>
-        <td class="adminData">
-            @Html.EditorFor(model => model.ReplyToName)
-            @Html.ValidationMessageFor(model => model.ReplyToName)
-        </td>
-    </tr>
-    <tr>
-        <td class="adminTitle">
-            @Html.KsLabelFor(model => model.Cc):
-        </td>
-        <td class="adminData">
-            @Html.EditorFor(model => model.Cc)
-            @Html.ValidationMessageFor(model => model.Cc)
-        </td>
-    </tr>
-    <tr>
-        <td class="adminTitle">
-            @Html.KsLabelFor(model => model.Bcc):
-        </td>
-        <td class="adminData">
-            @Html.EditorFor(model => model.Bcc)
-            @Html.ValidationMessageFor(model => model.Bcc)
-        </td>
-    </tr>
-    <tr>
-        <td class="adminTitle">
-            @Html.KsLabelFor(model => model.Subject):
-        </td>
-        <td class="adminData">
-            @Html.EditorFor(model => model.Subject)
-            @Html.ValidationMessageFor(model => model.Subject)
-        </td>
-    </tr>
-    <tr>
-        <td class="adminTitle">
-            @Html.KsLabelFor(model => model.Body):
-        </td>
-        <td class="adminData">
-            @Html.EditorFor(model => model.Body, "RichEditor")
-            @Html.ValidationMessageFor(model => model.Body)
-        </td>
-    </tr>
-    @if (!String.IsNullOrEmpty(Model.AttachmentFilePath))
+<script>
+    $(document).ready(function () {
+        $("#queved-email").kendoTabStrip({
+            animation: {
+                open: {
+                    effects: "fadeIn"
+                }
+            },
+            select: tabstrip_on_tab_select
+        });
+    });
+</script>
+
+<div id="queved-email">
+    <ul>
+        <li @Html.RenderSelectedTabIndex(0, GetSelectedTabIndex())>
+            @T("Admin.Common.Info")
+        </li>
+    </ul>
+    <div>
+        @TabInfo()
+    </div>
+</div>
+
+@{
+    //custom tabs
+    var eventMessage = new AdminTabStripCreated(this.Html, "queved-email");
+    EngineContext.Current.Resolve<IEventPublisher>().Publish(eventMessage);
+    foreach (var eventBlock in eventMessage.BlocksToRender)
     {
-    <tr>
-        <td class="adminTitle">
-            @Html.KsLabelFor(model => model.AttachmentFilePath):
-        </td>
-        <td class="adminData">
-            @Html.DisplayFor(model => model.AttachmentFilePath)
-        </td>
-    </tr>
+        @eventBlock
     }
-    <tr>
-        <td class="adminTitle">
-            @Html.KsLabelFor(model => model.CreatedOn):
-        </td>
-        <td class="adminData">
-            @Html.DisplayFor(model => model.CreatedOn)
-        </td>
-    </tr>
-    <tr>
-        <td class="adminTitle">
-            @Html.KsLabelFor(model => model.SentTries):
-        </td>
-        <td class="adminData">
-            @Html.EditorFor(model => model.SentTries)
-            @Html.ValidationMessageFor(model => model.SentTries)
-        </td>
-    </tr>
-    <tr>
-        <td class="adminTitle">
-            @Html.KsLabelFor(model => model.SentOn):
-        </td>
-        <td class="adminData">
-            @if (Model.SentOn.HasValue)
-            {
-                @Html.DisplayFor(model => model.SentOn)
-            }
-            else
-            {
-                @T("Admin.System.QueuedEmails.Fields.SentOn.NotSent")
-            }
-        </td>
-    </tr>
-    <tr>
-        <td class="adminTitle">
-            @Html.KsLabelFor(model => model.EmailAccountName):
-        </td>
-        <td class="adminData">
-            @Html.DisplayFor(model => model.EmailAccountName)
-        </td>
-    </tr>
-</table>
+}
+
+
+@*save selected tab index*@
+<input type="hidden" id="selected-tab-index" name="selected-tab-index" value="@(GetSelectedTabIndex())">
+
+@helper TabInfo()
+{
+    <table class="adminContent">
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.PriorityName):
+            </td>
+            <td class="adminData">
+                @Html.DisplayFor(model => model.PriorityName)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.From):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.From)
+                @Html.ValidationMessageFor(model => model.From)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.FromName):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.FromName)
+                @Html.ValidationMessageFor(model => model.FromName)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.To):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.To)
+                @Html.ValidationMessageFor(model => model.To)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.ToName):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.ToName)
+                @Html.ValidationMessageFor(model => model.ToName)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.ReplyTo):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.ReplyTo)
+                @Html.ValidationMessageFor(model => model.ReplyTo)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.ReplyToName):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.ReplyToName)
+                @Html.ValidationMessageFor(model => model.ReplyToName)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.Cc):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.Cc)
+                @Html.ValidationMessageFor(model => model.Cc)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.Bcc):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.Bcc)
+                @Html.ValidationMessageFor(model => model.Bcc)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.Subject):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.Subject)
+                @Html.ValidationMessageFor(model => model.Subject)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.Body):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.Body, "RichEditor")
+                @Html.ValidationMessageFor(model => model.Body)
+            </td>
+        </tr>
+        @if (!String.IsNullOrEmpty(Model.AttachmentFilePath))
+        {
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.AttachmentFilePath):
+                </td>
+                <td class="adminData">
+                    @Html.DisplayFor(model => model.AttachmentFilePath)
+                </td>
+            </tr>
+        }
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.CreatedOn):
+            </td>
+            <td class="adminData">
+                @Html.DisplayFor(model => model.CreatedOn)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.SentTries):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.SentTries)
+                @Html.ValidationMessageFor(model => model.SentTries)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.SentOn):
+            </td>
+            <td class="adminData">
+                @if (Model.SentOn.HasValue)
+                {
+                    @Html.DisplayFor(model => model.SentOn)
+                }
+                else
+                {
+                    @T("Admin.System.QueuedEmails.Fields.SentOn.NotSent")
+                }
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.EmailAccountName):
+            </td>
+            <td class="adminData">
+                @Html.DisplayFor(model => model.EmailAccountName)
+            </td>
+        </tr>
+    </table>
+}

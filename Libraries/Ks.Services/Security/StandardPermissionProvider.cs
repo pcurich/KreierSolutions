@@ -14,7 +14,12 @@ namespace Ks.Services.Security
 
         //Sistemas
         public static readonly PermissionRecord ManageSystemLog = new PermissionRecord { Name = "Admin area. Manage System Log", SystemName = "ManageSystemLog", Category = "Configuration" };
+		public static readonly PermissionRecord ManageMessageQueue = new PermissionRecord { Name = "Admin area. Manage Message Queue", SystemName = "ManageMessageQueue", Category = "Configuration" };
+		public static readonly PermissionRecord ManageMaintenance = new PermissionRecord { Name = "Admin area. Manage Maintenance", SystemName = "ManageMaintenance", Category = "Configuration" };
+		public static readonly PermissionRecord ManageScheduleTasks = new PermissionRecord { Name = "Admin area. Manage Schedule Tasks", SystemName = "ManageScheduleTasks", Category = "Configuration" };
+        public static readonly PermissionRecord ManageScheduleBatchs = new PermissionRecord { Name = "Admin area. Manage Schedule Batchs", SystemName = "ManageScheduleBatchs", Category = "Configuration"};
 
+		
         public static readonly PermissionRecord ManageAttributes = new PermissionRecord { Name = "Admin area. Manage Attributes", SystemName = "ManageAttributes", Category = "Catalog" };
         public static readonly PermissionRecord ManageCustomers = new PermissionRecord { Name = "Admin area. Manage Customers", SystemName = "ManageCustomers", Category = "Customers" };
         public static readonly PermissionRecord ManageContributionBenefit = new PermissionRecord { Name = "Admin area. Manage Contribution Benefit", SystemName = "ManageContributionBenefit", Category = "Customers" };
@@ -59,11 +64,9 @@ namespace Ks.Services.Security
         public static readonly PermissionRecord ManageKsSystem = new PermissionRecord { Name = "Admin area. Manage Systems", SystemName = "ManageSystem", Category = "Configuration" };
         public static readonly PermissionRecord ManagePlugins = new PermissionRecord { Name = "Admin area. Manage Plugins", SystemName = "ManagePlugins", Category = "Configuration" };
         
-        public static readonly PermissionRecord ManageMessageQueue = new PermissionRecord { Name = "Admin area. Manage Message Queue", SystemName = "ManageMessageQueue", Category = "Configuration" };
-        public static readonly PermissionRecord ManageMaintenance = new PermissionRecord { Name = "Admin area. Manage Maintenance", SystemName = "ManageMaintenance", Category = "Configuration" };
+        
+        
         public static readonly PermissionRecord HtmlEditorManagePictures = new PermissionRecord { Name = "Admin area. HTML Editor. Manage pictures", SystemName = "HtmlEditor.ManagePictures", Category = "Configuration" };
-        public static readonly PermissionRecord ManageScheduleTasks = new PermissionRecord { Name = "Admin area. Manage Schedule Tasks", SystemName = "ManageScheduleTasks", Category = "Configuration" };
-        public static readonly PermissionRecord ManageScheduleBatchs = new PermissionRecord { Name = "Admin area. Manage Schedule Batchs", SystemName = "ManageScheduleBatchs", Category = "Configuration" };
 
         //public store permissions
         public static readonly PermissionRecord DisplayPrices = new PermissionRecord { Name = "Public store. Display Prices", SystemName = "DisplayPrices", Category = "PublicStore" };
@@ -82,6 +85,17 @@ namespace Ks.Services.Security
         public static readonly PermissionRecord ManageProductTags = new PermissionRecord { Name = "Admin area. Manage Product Tags", SystemName = "ManageProductTags", Category = "Catalog" };
         public static readonly PermissionRecord ManageForums = new PermissionRecord { Name = "Admin area. Manage Forums", SystemName = "ManageForums", Category = "Content Management" };
         
+		public virtual IEnumerable<PermissionRecord> GetAdmPermissions()
+		{
+		    return new[]
+		    {
+		        AccessAdminPanel,
+		        ManageSystemLog,
+		        ManageMessageQueue,
+		        ManageMaintenance,
+		    };
+		}
+		
         public virtual IEnumerable<PermissionRecord> GetPermissions()
         {
             return new[] 
@@ -230,14 +244,8 @@ namespace Ks.Services.Security
                 },
                 new DefaultPermissionRecord 
                 {
-                    CustomerRoleSystemName = SystemCustomerRoleNames.Associated,
-                    PermissionRecords = new[] 
-                    {
-                        DisplayPrices,
-                        EnableShoppingCart,
-                        EnableWishlist,
-                        PublicStoreAllowNavigation
-                    }
+                    CustomerRoleSystemName = SystemCustomerRoleNames.Manager,
+                    PermissionRecords = GetAdmPermissions()
                 } 
             };
         }

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Language Name="Español">
+	<LocaleResource Name="Admin.System.ScheduleBatchs">
+		<Value>Programar servicios</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.ScheduleBatchs.BackToList">
+		<Value>Regresar a la lista de servicios</Value>
+	</LocaleResource>    
+	<LocaleResource Name="Admin.System.ScheduleBatchs.Error">
+		<Value>Primero debe de desactivar el servicio antes de modificarlo</Value>
+	</LocaleResource>	
+	<LocaleResource Name="Admin.System.ScheduleBatchs.Fields.Name.Required">
+		<Value>Se requiere un nombre de sistema</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.ScheduleBatchs.Fields.PeriodMonth.GreaterThanOrEqualTo1">
+		<Value>Seleccione un mes</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.ScheduleBatchs.Fields.PeriodYear.GreaterThanOrEqualTo1">
+		<Value>seleccione un año</Value>
+	</LocaleResource> 
+	<LocaleResource Name="Admin.System.ScheduleBatchs.Fields.Enabled">
+		<Value>Activo?</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.ScheduleBatchs.Fields.Enabled.Hint">
+		<Value>Establece el estado del servicio</Value>
+	</LocaleResource>  
+	<LocaleResource Name="Admin.System.ScheduleBatchs.Fields.FolderRead">
+		<Value>Directorio de Lectura</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.ScheduleBatchs.Fields.FolderRead.Hint">
+		<Value>Directorio donde se colocan los archivos para ser procesados</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.ScheduleBatchs.Fields.FolderLog">
+		<Value>Directorio de Logs</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.ScheduleBatchs.Fields.FolderLog.Hint">
+		<Value>Directorio donde se colocan los logs de los archivos leidos</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.ScheduleBatchs.Fields.FolderMoveToDone">
+		<Value>Directorio de Prosesados</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.ScheduleBatchs.Fields.FolderMoveToDone.Hint">
+		<Value>Directorio donde se colocan los archivos una vez que sean procesados</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.ScheduleBatchs.Fields.FolderMoveToError">
+		<Value>Directorio de Error</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.ScheduleBatchs.Fields.FolderMoveToError.Hint">
+		<Value>Directorio donde se colocan los archivos que poseen errores y no pudieron ser procesados</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.ScheduleBatchs.Fields.Frecuency">
+		<Value>Frecuencia de ejecución</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.ScheduleBatchs.Fields.Frecuency.Hint">
+		<Value>Establece la frecuencia con la que se ejecuta el servicio</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.ScheduleBatchs.Fields.Name">
+		<Value>Nombre</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.ScheduleBatchs.Fields.Name.Hint">
+		<Value>Nombre que se le va a colocar al servicio</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.ScheduleBatchs.Fields.NextExecutionOn">
+		<Value>Fecha de Próxima Ejecución</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.ScheduleBatchs.Fields.NextExecutionOn.Hint">
+		<Value>Establece la fecha de la proxima ejecution del servicio</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.ScheduleBatchs.Fields.PathBase">
+		<Value>Directorio Raiz</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.ScheduleBatchs.Fields.PathBase.Hint">
+		<Value>Directorio base del servicio que va a leer</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.ScheduleBatchs.Fields.PeriodYear">
+		<Value>Periodo (Año)</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.ScheduleBatchs.Fields.PeriodYear.Hint">
+		<Value>Año del periodo a ejecutar en la fecha de Inicio</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.ScheduleBatchs.Fields.PeriodMonth">
+		<Value>Periodo (Mes)</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.ScheduleBatchs.Fields.PeriodMonth.Hint">
+		<Value>Mes del periodo a ejecutar en la fecha de Inicio</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.ScheduleBatchs.Fields.StartExecutionOn">
+		<Value>Fecha de Inicio</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.ScheduleBatchs.Fields.StartExecutionOn.Hint">
+		<Value>Establece la fecha desde la cual empieza a ejecutarse el servicio</Value>
+	</LocaleResource>  
+	<LocaleResource Name="Admin.System.ScheduleBatchs.Fields.LastExecutionOn">
+		<Value>Ultima Ejecución</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.ScheduleBatchs.Fields.LastExecutionOn.Hint">
+		<Value>Establece la fecha de la última ejecution del servicio</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.ScheduleBatchs.StopService">
+		<Value>No se olvide de parar los servicios antes de proceder a modificarlos.</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.ScheduleBatchs.Updated">
+		<Value>El Servicio ha sido actualizado correctamente</Value>
+	</LocaleResource>	
+
+</Language>

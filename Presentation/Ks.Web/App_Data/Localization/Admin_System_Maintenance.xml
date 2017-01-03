@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Language Name="Español">
+	<LocaleResource Name="Admin.System.Maintenance">
+		<Value>Mantenimiento</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.Maintenance.DeleteExportedFiles">
+		<Value>Eliminación de viejos archivos exportados</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.Maintenance.DeleteExportedFiles.EndDate">
+		<Value>Fecha de finalización</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.Maintenance.DeleteExportedFiles.EndDate.Hint">
+		<Value>La fecha de finalización de la búsqueda.</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.Maintenance.DeleteExportedFiles.StartDate">
+		<Value>Fecha de inicio</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.Maintenance.DeleteExportedFiles.StartDate.Hint">
+		<Value>La fecha de inicio de la búsqueda</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.Maintenance.DeleteExportedFiles.TotalDeleted">
+		<Value>{0} archivos fueron borrados</Value>
+	</LocaleResource>
+	<LocaleResource Name="admin.system.maintenance.deleteguests">
+		<Value>Eliminación de los Asociados invitados</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.Maintenance.DeleteGuests.EndDate">
+		<Value>Fecha de finalización</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.Maintenance.DeleteGuests.EndDate.Hint">
+		<Value>La fecha de finalización de la búsqueda.</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.Maintenance.DeleteGuests.OnlyWithoutShoppingCart">
+		<Value>Sólo sin carrito</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.Maintenance.DeleteGuests.OnlyWithoutShoppingCart.Hint">
+		<Value>Un valor que indica si necesitamos buscar clientes sin carritos/listas de deseos. Si está desmarcado, entonces se buscarán todos los clientes.</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.Maintenance.DeleteGuests.StartDate">
+		<Value>Fecha de inicio</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.Maintenance.DeleteGuests.StartDate.Hint">
+		<Value>La fecha de inicio de la búsqueda</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.System.Maintenance.DeleteGuests.TotalDeleted">
+		<Value>{0} clientes se eliminaron</Value>
+	</LocaleResource>
+</Language>

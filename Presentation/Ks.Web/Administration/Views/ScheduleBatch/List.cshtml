@@ -5,7 +5,7 @@
 @Html.AntiForgeryToken()
 <div class="section-header">
     <div class="title">
-        <img src="@Url.Content("~/Administration/Content/images/ico-content.png")" alt="" />
+        <img src="@Url.Content("~/Administration/Content/images/ico-system.png")" alt="" />
         @T("Admin.System.ScheduleBatchs")
     </div>
 </div>
@@ -19,10 +19,15 @@
 <table class="adminContent">
     <tr>
         <td>
+            <strong>@T("Admin.System.ScheduleBatchs.StopService")</strong>
+        </td>
+    </tr>
+    <tr>
+        <td>
             <div id="schedule-batchs-grid"></div>
 
             <script>
-                $(document).ready(function () {
+                $(document).ready(function() {
                     $("#schedule-batchs-grid").kendoGrid({
                         dataSource: {
                             type: "json",
@@ -39,7 +44,7 @@
                                 total: "Total",
                                 errors: "Errors"
                             },
-                            error: function (e) {
+                            error: function(e) {
                                 display_kendoui_grid_error(e);
                                 // Cancel the changes
                                 this.cancelChanges();
@@ -59,12 +64,13 @@
                             mode: "inline"
                         },
                         scrollable: false,
-                        columns: [{
+                        columns: [
+                        {
                             field: "Name",
-                            title: "@T("Admin.System.ScheduleBatchs.Name")" 
+                            title: "@T("Admin.System.ScheduleBatchs.Name")"
                         }, {
                             field: "FrecuencyName",
-                            title: "@T("Admin.System.ScheduleBatchs.Frecuency")" 
+                            title: "@T("Admin.System.ScheduleBatchs.Frecuency")"
                         }, {
                             field: "StartExecutionOn",
                             title: "@T("Admin.System.ScheduleBatchs.StartExecutionOn")",
@@ -96,7 +102,8 @@
                             field: "Id",
                             title: "@T("Admin.Common.Edit")",
                             template: '<a href="Edit/#=Id#">@T("Admin.Common.Edit")</a>'
-                        }]
+                            }
+                        ]
                     });
                 });
             </script>

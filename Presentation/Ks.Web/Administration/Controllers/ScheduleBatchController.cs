@@ -8,6 +8,7 @@ using Ks.Core.Domain.Batchs;
 using Ks.Services.Batchs;
 using Ks.Services.Helpers;
 using Ks.Services.Localization;
+using Ks.Services.Logging;
 using Ks.Services.Security;
 using Ks.Web.Framework;
 using Ks.Web.Framework.Controllers;
@@ -23,7 +24,7 @@ namespace Ks.Admin.Controllers
         private readonly IPermissionService _permissionService;
         private readonly IDateTimeHelper _dateTimeHelper;
         private readonly ILocalizationService _localizationService;
-
+        private readonly ICustomerActivityService _customerActivityService;
         private readonly ScheduleBatchsSetting _scheduleBatchsSetting;
 
         #endregion
@@ -33,12 +34,14 @@ namespace Ks.Admin.Controllers
         public ScheduleBatchController(IScheduleBatchService scheduleBatchService,
             IPermissionService permissionService,
             IDateTimeHelper dateTimeHelper, ILocalizationService localizationService,
+            ICustomerActivityService customerActivityService,
             ScheduleBatchsSetting scheduleBatchsSetting)
         {
             this._scheduleBatchService = scheduleBatchService;
             this._permissionService = permissionService;
             this._dateTimeHelper = dateTimeHelper;
             this._localizationService = localizationService;
+            this._customerActivityService = customerActivityService;
             this._scheduleBatchsSetting = scheduleBatchsSetting;
         }
 
@@ -58,41 +61,12 @@ namespace Ks.Admin.Controllers
             if (batch.LastExecutionOnUtc.HasValue)
                 model.LastExecutionOn = _dateTimeHelper.ConvertToUserTime(batch.LastExecutionOnUtc.Value, DateTimeKind.Utc);
 
-            model.AvailableMonths = PrepareMonthsList();
-            model.AvailableYears = PrepareYearsList();
+            model.AvailableMonths = DateTime.Now.GetMonthsList(_localizationService);
+            model.AvailableYears = DateTime.Now.GetYearsList(_localizationService);
             return model;
         }
 
-        [NonAction]
-        protected virtual List<SelectListItem> PrepareMonthsList()
-        {
-            var listOfMonth = (from i in Enumerable.Range(0, 12)
-                               let now = DateTime.UtcNow.AddMonths(i)
-                               select new SelectListItem
-                               {
-                                   Text = now.ToString("MMMM"),
-                                   Value = now.Month.ToString()
-                               }).OrderBy(x => int.Parse(x.Value)).ToList();
 
-            listOfMonth.Insert(0, new SelectListItem { Value = "0", Text = _localizationService.GetResource("Common.Month") });
-
-            return listOfMonth;
-        }
-
-        [NonAction]
-        protected virtual List<SelectListItem> PrepareYearsList()
-        {
-            var listOfYear = (from i in Enumerable.Range(0, 10)
-                              let now = DateTime.UtcNow.AddYears(i)
-                              select new SelectListItem
-                              {
-                                  Text = now.Year.ToString(),
-                                  Value = now.Year.ToString()
-                              }).OrderBy(x => int.Parse(x.Value)).ToList();
-
-            listOfYear.Insert(0, new SelectListItem { Value = "0", Text = _localizationService.GetResource("Common.Year") });
-            return listOfYear;
-        }
 
         #endregion
 
@@ -120,6 +94,7 @@ namespace Ks.Admin.Controllers
             var models = _scheduleBatchService.GetAllBatchs(true)
                 .Select(PrepareScheduleBatchModel)
                 .ToList();
+
             var gridModel = new DataSourceResult
             {
                 Data = models,
@@ -143,8 +118,8 @@ namespace Ks.Admin.Controllers
             model.FrecuencyName = ((ScheduleBatchFrecuency)batch.FrecuencyId).ToString();
             model.AvailableFrecuencies = ScheduleBatchFrecuency.Diario.ToSelectList().ToList();
             model.AvailableFrecuencies.Insert(0, new SelectListItem { Value = "0", Text = "-----------" });
-            model.AvailableMonths = PrepareMonthsList();
-            model.AvailableYears = PrepareYearsList();
+            model.AvailableMonths = DateTime.Now.GetMonthsList(_localizationService);
+            model.AvailableYears = DateTime.Now.GetYearsList(_localizationService);
 
             if (!batch.StartExecutionOnUtc.HasValue)
             {
@@ -154,7 +129,7 @@ namespace Ks.Admin.Controllers
                 {
                     startExecution = new DateTime(DateTime.Now.Year, DateTime.Now.Month, _scheduleBatchsSetting.DayOfProcess1);
                     if (DateTime.Now.Day > _scheduleBatchsSetting.DayOfProcess1)
-                        startExecution = startExecution.AddMonths(1);    
+                        startExecution = startExecution.AddMonths(1);
                 }
 
                 if (batch.SystemName == _scheduleBatchsSetting.ServiceName2)
@@ -177,7 +152,7 @@ namespace Ks.Admin.Controllers
                 var minute = batch.StartExecutionOnUtc.Value.Minute;
                 var second = batch.StartExecutionOnUtc.Value.Second;
 
-                var startExecution = new DateTime(year,month,day, hour, minute, second);
+                var startExecution = new DateTime(year, month, day, hour, minute, second);
 
                 model.StartExecutionOn = _dateTimeHelper.ConvertToUserTime(startExecution, TimeZoneInfo.Utc);
                 if (batch.NextExecutionOnUtc != null)
@@ -209,7 +184,7 @@ namespace Ks.Admin.Controllers
                     ErrorNotification(_localizationService.GetResource("Admin.System.ScheduleBatchs.Error"));
                     return RedirectToAction("Edit", new { id = batch.Id });
                 }
-                
+
                 //Is not Enabled
                 batch = model.ToEntity(batch);
                 if (model.StartExecutionOn.HasValue)
@@ -221,7 +196,7 @@ namespace Ks.Admin.Controllers
                     var startExecution = DateTime.Now;
                     if (batch.SystemName == _scheduleBatchsSetting.ServiceName1)
                     {
-                        startExecution = new DateTime(DateTime.Now.Year, DateTime.Now.Month, _scheduleBatchsSetting.DayOfProcess1, hour,minute,second);
+                        startExecution = new DateTime(DateTime.Now.Year, DateTime.Now.Month, _scheduleBatchsSetting.DayOfProcess1, hour, minute, second);
                         if (DateTime.Now.Day > _scheduleBatchsSetting.DayOfProcess1)
                             startExecution = startExecution.AddMonths(1);
                     }
@@ -235,12 +210,12 @@ namespace Ks.Admin.Controllers
 
 
                     batch.StartExecutionOnUtc = _dateTimeHelper.ConvertToUtcTime(startExecution);
-                    batch.NextExecutionOnUtc = _dateTimeHelper.ConvertToUtcTime(startExecution); 
+                    batch.NextExecutionOnUtc = _dateTimeHelper.ConvertToUtcTime(startExecution);
                     batch.LastExecutionOnUtc = null;
                 }
-                    
-                _scheduleBatchService.UpdateBatch(batch);
 
+                _scheduleBatchService.UpdateBatch(batch);
+                //_customerActivityService.InsertActivity()
                 SuccessNotification(_localizationService.GetResource("Admin.System.ScheduleBatchs.Updated"));
                 return continueEditing ? RedirectToAction("Edit", new { id = batch.Id }) : RedirectToAction("List");
             }
@@ -248,11 +223,12 @@ namespace Ks.Admin.Controllers
             model.FrecuencyName = ((ScheduleBatchFrecuency)batch.FrecuencyId).ToString();
             model.AvailableFrecuencies = ScheduleBatchFrecuency.Diario.ToSelectList().ToList();
             model.AvailableFrecuencies.Insert(0, new SelectListItem { Value = "0", Text = "-----------" });
-            model.AvailableMonths = PrepareMonthsList();
-            model.AvailableYears = PrepareYearsList();
+            model.AvailableMonths = DateTime.Now.GetMonthsList(_localizationService);
+            model.AvailableYears = DateTime.Now.GetYearsList(_localizationService);
 
             return View(model);
         }
+
         #endregion
     }
 }

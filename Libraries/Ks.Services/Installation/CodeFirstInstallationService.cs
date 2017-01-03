@@ -378,6 +378,20 @@ namespace Ks.Services.Installation
                 LastActivityDateUtc = DateTime.UtcNow,
             };
 
+            var managerUser = new Customer
+            {
+                CustomerGuid = Guid.NewGuid(),
+                Email = "abc@xyz.com",
+                Username = "abc@xyz.com",
+                Password = "admin",
+                PasswordFormat = PasswordFormat.Clear,
+                PasswordSalt = "",
+                Active = true,
+                IsSystemAccount = true,
+                CreatedOnUtc = DateTime.UtcNow,
+                LastActivityDateUtc = DateTime.UtcNow,
+            };
+
             var defaultAdminUserAddress = new Address
             {
                 FirstName = "Pedro",
@@ -404,6 +418,11 @@ namespace Ks.Services.Installation
             _genericAttributeService.SaveAttribute(adminUser, SystemCustomerAttributeNames.LastName, "Curich");
             _genericAttributeService.SaveAttribute(adminUser, SystemCustomerAttributeNames.AdmCode, "123456789");
             _genericAttributeService.SaveAttribute(adminUser, SystemCustomerAttributeNames.Dni, "43617372");
+
+            //test manager rol
+            managerUser.CustomerRoles.Add(crManager);
+            managerUser.CustomerRoles.Add(crEmployer);
+            _customerRepository.Insert(managerUser);
 
             //search engine (crawler) built-in user
             var searchEngineUser = new Customer

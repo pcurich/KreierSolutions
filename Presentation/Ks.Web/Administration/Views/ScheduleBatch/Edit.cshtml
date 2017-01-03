@@ -1,7 +1,7 @@
 ﻿@model Ks.Admin.Models.Batchs.ScheduleBatchModel
 @{
     //page title
-    ViewBag.Title = T("Admin.System.EditScheduleBatchs").Text;
+    ViewBag.Title = T("Admin.System.ScheduleBatchs").Text;
 }
 @using (Html.BeginForm())
 {
@@ -9,7 +9,7 @@
     <div class="section-header">
         <div class="title">
             <img src="@Url.Content("~/Administration/Content/images/ico-promotions.png")" alt="" />
-            @T("Admin.System.EditScheduleBatchs") - @Model.Name @Html.ActionLink("(" + T("Admin.System.ScheduleBatchs.BackToList") + ")", "List")
+            @T("Admin.System.ScheduleBatchs") - @Model.Name @Html.ActionLink("(" + T("Admin.System.ScheduleBatchs.BackToList") + ")", "List")
         </div>
         <div class="options">
             <input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")" />

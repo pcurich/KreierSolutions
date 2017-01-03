@@ -1384,6 +1384,7 @@
     <Compile Include="Extensions\AttributeParserHelper.cs" />
     <Compile Include="Extensions\BankHelper.cs" />
     <Compile Include="Extensions\BenefitHelper.cs" />
+    <Compile Include="Extensions\DateHelper.cs" />
     <Compile Include="Extensions\HtmlExtensions.cs" />
     <Compile Include="Extensions\MappingExtensions.cs" />
     <Compile Include="Infrastructure\AutoMapperStartupTask.cs" />
