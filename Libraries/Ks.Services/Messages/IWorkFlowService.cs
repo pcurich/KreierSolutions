@@ -6,7 +6,7 @@ namespace Ks.Services.Messages
 {
     public interface IWorkFlowService
     {
-        IPagedList<WorkFlow> GetWorkFlowByRole(int roleId, int pageIndex = 0, int pageSize = Int32.MaxValue);
+        IPagedList<WorkFlow> GetWorkFlowByRole(string systemRole, int pageIndex = 0, int pageSize = Int32.MaxValue);
         IPagedList<WorkFlow> GetWorkFlowByCustomer(int customerId, int pageIndex = 0, int pageSize = Int32.MaxValue);
 
         WorkFlow GetWorkFlowById(int workFlowId);

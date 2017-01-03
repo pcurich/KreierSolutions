@@ -396,6 +396,8 @@ namespace Ks.Services.Installation
             };
             adminUser.Addresses.Add(defaultAdminUserAddress);
             adminUser.CustomerRoles.Add(crAdministrators);
+            adminUser.CustomerRoles.Add(crAssociated);
+            adminUser.CustomerRoles.Add(crEmployer);
             _customerRepository.Insert(adminUser);
             //set default customer name
             _genericAttributeService.SaveAttribute(adminUser, SystemCustomerAttributeNames.FirstName, "Pedro");

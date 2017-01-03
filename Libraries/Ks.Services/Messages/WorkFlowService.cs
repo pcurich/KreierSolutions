@@ -16,13 +16,13 @@ namespace Ks.Services.Messages
             _workFlowRepository = workFlowRepository;
         }
 
-        public virtual IPagedList<WorkFlow> GetWorkFlowByRole(int roleId, int pageIndex = 0, int pageSize = Int32.MaxValue)
+        public virtual IPagedList<WorkFlow> GetWorkFlowByRole(string systemRole, int pageIndex = 0, int pageSize = Int32.MaxValue)
         {
-            if (roleId == 0)
+            if (string.IsNullOrEmpty(systemRole))
                 return new PagedList<WorkFlow>(new List<WorkFlow>(), pageIndex, pageIndex);
 
             var query = from wf in _workFlowRepository.Table
-                        where wf.CustomerRoleId == roleId
+                        where wf.SystemRoleApproval == systemRole
                         select wf;
 
             return new PagedList<WorkFlow>(query.ToList(), pageIndex, pageIndex);

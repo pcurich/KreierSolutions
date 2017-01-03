@@ -82,7 +82,7 @@ namespace Ks.Core.Domain.Customers
         /// <returns>Result</returns>
         public static bool IsRegistered(this Customer customer, bool onlyActiveCustomerRoles = true)
         {
-            return IsInCustomerRole(customer, SystemCustomerRoleNames.Associated, onlyActiveCustomerRoles);
+            return IsInCustomerRole(customer, SystemCustomerRoleNames.Employee, onlyActiveCustomerRoles);
         }
 
         /// <summary>
