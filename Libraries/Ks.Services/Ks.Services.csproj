@@ -241,6 +241,7 @@
     <Compile Include="Localization\LocalizedEntityService.cs" />
     <Compile Include="Logging\ClearLogTask.cs" />
     <Compile Include="Logging\CustomerActivityService.cs" />
+    <Compile Include="Logging\DefaultActivityLogType.cs" />
     <Compile Include="Logging\DefaultLogger.cs" />
     <Compile Include="Logging\ICustomerActivityService.cs" />
     <Compile Include="Logging\ILogger.cs" />

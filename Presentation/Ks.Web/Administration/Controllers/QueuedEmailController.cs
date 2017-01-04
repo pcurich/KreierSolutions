@@ -6,8 +6,10 @@ using Ks.Admin.Extensions;
 using Ks.Admin.Models.Messages;
 using Ks.Core;
 using Ks.Core.Domain.Messages;
+using Ks.Services.Customers;
 using Ks.Services.Helpers;
 using Ks.Services.Localization;
+using Ks.Services.Logging;
 using Ks.Services.Messages;
 using Ks.Services.Security;
 using Ks.Web.Framework.Controllers;
@@ -21,18 +23,21 @@ namespace Ks.Admin.Controllers
         private readonly IDateTimeHelper _dateTimeHelper;
         private readonly ILocalizationService _localizationService;
         private readonly IPermissionService _permissionService;
+        private readonly ICustomerActivityService _customerActivityService;
         private readonly IWorkContext _workContext;
 
         public QueuedEmailController(IQueuedEmailService queuedEmailService,
             IDateTimeHelper dateTimeHelper,
             ILocalizationService localizationService,
             IPermissionService permissionService,
+            ICustomerActivityService customerActivityService,
             IWorkContext workContext)
         {
             this._queuedEmailService = queuedEmailService;
             this._dateTimeHelper = dateTimeHelper;
             this._localizationService = localizationService;
             this._permissionService = permissionService;
+            this._customerActivityService = customerActivityService;
             this._workContext = workContext;
         }
 
@@ -144,7 +149,9 @@ namespace Ks.Admin.Controllers
                 email = model.ToEntity(email);
                 _queuedEmailService.UpdateQueuedEmail(email);
 
+                _customerActivityService.InsertActivity(DefaultActivityLogType.ActivityLogEditQuevedEmail.SystemKeyword, string.Format(_localizationService.GetResource("ActivityLog.EditQuevedEmail"), email.Id,_workContext.CurrentCustomer.GetFullName()));
                 SuccessNotification(_localizationService.GetResource("Admin.System.QueuedEmails.Updated"));
+
                 return continueEditing ? RedirectToAction("Edit", new { id = email.Id }) : RedirectToAction("List");
             }
 
@@ -204,7 +211,6 @@ namespace Ks.Admin.Controllers
                 return RedirectToAction("List");
 
             _queuedEmailService.DeleteQueuedEmail(email);
-
             SuccessNotification(_localizationService.GetResource("Admin.System.QueuedEmails.Deleted"));
             return RedirectToAction("List");
         }
