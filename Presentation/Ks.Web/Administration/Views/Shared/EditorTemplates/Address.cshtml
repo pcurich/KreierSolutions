@@ -32,8 +32,6 @@
 @Html.HiddenFor(model => model.LastNameRequired)
 @Html.HiddenFor(model => model.EmailEnabled)
 @Html.HiddenFor(model => model.EmailRequired)
-@Html.HiddenFor(model => model.CompanyEnabled)
-@Html.HiddenFor(model => model.CompanyRequired)
 @Html.HiddenFor(model => model.CountryEnabled)
 @Html.HiddenFor(model => model.StateProvinceEnabled)
 @Html.HiddenFor(model => model.CityEnabled)
@@ -82,18 +80,6 @@
             <td class="adminData">
                 @Html.EditorFor(model => model.Email)
                 @Html.ValidationMessageFor(model => model.Email)
-            </td>
-        </tr>
-    }
-    @if (Model.CompanyEnabled)
-    {
-        <tr>
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.Company):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.Company)
-                @Html.ValidationMessageFor(model => model.Company)
             </td>
         </tr>
     }
