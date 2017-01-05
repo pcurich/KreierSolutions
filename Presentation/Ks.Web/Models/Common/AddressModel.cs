@@ -27,14 +27,7 @@ namespace Ks.Web.Models.Common
         [KsResourceDisplayName("Address.Fields.Email")]
         [AllowHtml]
         public string Email { get; set; }
-
-
-        public bool CompanyEnabled { get; set; }
-        public bool CompanyRequired { get; set; }
-        [KsResourceDisplayName("Address.Fields.Company")]
-        [AllowHtml]
-        public string Company { get; set; }
-
+ 
         public bool CountryEnabled { get; set; }
         [KsResourceDisplayName("Address.Fields.Country")]
         public int? CountryId { get; set; }

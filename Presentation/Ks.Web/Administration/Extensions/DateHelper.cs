@@ -23,7 +23,21 @@ namespace Ks.Admin.Extensions
             return listOfMonth;
         }
 
-        public static List<SelectListItem> GetYearsList(this DateTime date, ILocalizationService localizationService, int years=10)
+        public static List<SelectListItem> GetDaysList(this DateTime date, ILocalizationService localizationService)
+        {
+            var listOfYear = (from i in Enumerable.Range(1, 31)
+                              let now = i
+                              select new SelectListItem
+                              {
+                                  Text = now.ToString(),
+                                  Value = now.ToString()
+                              }).OrderBy(x => int.Parse(x.Value)).ToList();
+
+            listOfYear.Insert(0, new SelectListItem { Value = "0", Text = localizationService.GetResource("Common.Day") });
+            return listOfYear;
+        }
+
+        public static List<SelectListItem> GetYearsList(this DateTime date, ILocalizationService localizationService, int years = 10)
         {
             var listOfYear = (from i in Enumerable.Range(0, years)
                               let now = DateTime.UtcNow.AddYears(i)

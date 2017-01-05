@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.Routing;
 using Ks.Core;
 using Ks.Core.Domain;
 using Ks.Core.Domain.Catalog;
@@ -176,7 +175,7 @@ namespace Ks.Web.Controllers
                     model.DateOfBirthMonth = dateOfBirth.Value.Month;
                     model.DateOfBirthYear = dateOfBirth.Value.Year;
                 }
-                model.Company = customer.GetAttribute<string>(SystemCustomerAttributeNames.Company);
+
                 model.StreetAddress = customer.GetAttribute<string>(SystemCustomerAttributeNames.StreetAddress);
                 model.StreetAddress2 = customer.GetAttribute<string>(SystemCustomerAttributeNames.StreetAddress2);
                 model.ZipPostalCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.ZipPostalCode);
@@ -185,12 +184,6 @@ namespace Ks.Web.Controllers
                 model.StateProvinceId = customer.GetAttribute<int>(SystemCustomerAttributeNames.StateProvinceId);
                 model.Phone = customer.GetAttribute<string>(SystemCustomerAttributeNames.Phone);
                 model.Fax = customer.GetAttribute<string>(SystemCustomerAttributeNames.Fax);
-
-                //newsletter
-                //var newsletter = _newsLetterSubscriptionService.GetNewsLetterSubscriptionByEmailAndStoreId(customer.Email, _storeContext.CurrentStore.Id);
-                //model.Newsletter = newsletter != null && newsletter.Active;
-
-                model.Signature = customer.GetAttribute<string>(SystemCustomerAttributeNames.Signature);
 
                 model.Email = customer.Email;
                 model.Username = customer.Username;
@@ -270,8 +263,6 @@ namespace Ks.Web.Controllers
             model.GenderEnabled = _customerSettings.GenderEnabled;
             model.DateOfBirthEnabled = _customerSettings.DateOfBirthEnabled;
             model.DateOfBirthRequired = _customerSettings.DateOfBirthRequired;
-            model.CompanyEnabled = _customerSettings.CompanyEnabled;
-            model.CompanyRequired = _customerSettings.CompanyRequired;
             model.StreetAddressEnabled = _customerSettings.StreetAddressEnabled;
             model.StreetAddressRequired = _customerSettings.StreetAddressRequired;
             model.StreetAddress2Enabled = _customerSettings.StreetAddress2Enabled;
@@ -486,7 +477,7 @@ namespace Ks.Web.Controllers
                         break;
                     case AttributeControlType.Datepicker:
                         {
-                            
+
                         }
                         break;
                     case AttributeControlType.ColorSquares:
@@ -516,8 +507,6 @@ namespace Ks.Web.Controllers
             model.GenderEnabled = _customerSettings.GenderEnabled;
             model.DateOfBirthEnabled = _customerSettings.DateOfBirthEnabled;
             model.DateOfBirthRequired = _customerSettings.DateOfBirthRequired;
-            model.CompanyEnabled = _customerSettings.CompanyEnabled;
-            model.CompanyRequired = _customerSettings.CompanyRequired;
             model.StreetAddressEnabled = _customerSettings.StreetAddressEnabled;
             model.StreetAddressRequired = _customerSettings.StreetAddressRequired;
             model.StreetAddress2Enabled = _customerSettings.StreetAddress2Enabled;
@@ -534,8 +523,6 @@ namespace Ks.Web.Controllers
             model.PhoneRequired = _customerSettings.PhoneRequired;
             model.FaxEnabled = _customerSettings.FaxEnabled;
             model.FaxRequired = _customerSettings.FaxRequired;
-            //model.NewsletterEnabled = _customerSettings.NewsletterEnabled;
-            model.AcceptPrivacyPolicyEnabled = _customerSettings.AcceptPrivacyPolicyEnabled;
             model.UsernamesEnabled = _customerSettings.UsernamesEnabled;
             model.CheckUsernameAvailabilityEnabled = _customerSettings.CheckUsernameAvailabilityEnabled;
             model.HoneypotEnabled = _securitySettings.HoneypotEnabled;
@@ -579,7 +566,7 @@ namespace Ks.Web.Controllers
                             Value = "0"
                         });
 
-                        model.AvailableCities.Add(new SelectListItem 
+                        model.AvailableCities.Add(new SelectListItem
                         {
                             Text = _localizationService.GetResource(anyCountrySelected ? "Address.Other" : "Address.SelectCity"),
                             Value = "0"
@@ -925,9 +912,9 @@ namespace Ks.Web.Controllers
                         model.FirstName);
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.LastName,
                         model.LastName);
-                    _genericAttributeService.SaveAttribute(customer,SystemCustomerAttributeNames.AdmCode, 
+                    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.AdmCode,
                         model.Cpi);
-                    _genericAttributeService.SaveAttribute(customer,SystemCustomerAttributeNames.Dni, 
+                    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Dni,
                         model.Dni);
 
                     if (_customerSettings.DateOfBirthEnabled)
@@ -937,9 +924,6 @@ namespace Ks.Web.Controllers
                             dateOfBirth);
                     }
 
-                    if (_customerSettings.CompanyEnabled)
-                        _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Company,
-                            model.Company);
                     if (_customerSettings.StreetAddressEnabled)
                         _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.StreetAddress,
                             model.StreetAddress);
@@ -976,15 +960,14 @@ namespace Ks.Web.Controllers
                         FirstName = customer.GetAttribute<string>(SystemCustomerAttributeNames.FirstName),
                         LastName = customer.GetAttribute<string>(SystemCustomerAttributeNames.LastName),
                         Email = customer.Email,
-                        Company = customer.GetAttribute<string>(SystemCustomerAttributeNames.Company),
                         CountryId = customer.GetAttribute<int>(SystemCustomerAttributeNames.CountryId) > 0
-                            ? (int?) customer.GetAttribute<int>(SystemCustomerAttributeNames.CountryId)
+                            ? (int?)customer.GetAttribute<int>(SystemCustomerAttributeNames.CountryId)
                             : null,
                         StateProvinceId = customer.GetAttribute<int>(SystemCustomerAttributeNames.StateProvinceId) > 0
-                            ? (int?) customer.GetAttribute<int>(SystemCustomerAttributeNames.StateProvinceId)
+                            ? (int?)customer.GetAttribute<int>(SystemCustomerAttributeNames.StateProvinceId)
                             : null,
                         CityId = customer.GetAttribute<int>(SystemCustomerAttributeNames.CityId) > 0
-                            ? (int?) customer.GetAttribute<int>(SystemCustomerAttributeNames.CityId)
+                            ? (int?)customer.GetAttribute<int>(SystemCustomerAttributeNames.CityId)
                             : null,
                         Address1 = customer.GetAttribute<string>(SystemCustomerAttributeNames.StreetAddress),
                         Address2 = customer.GetAttribute<string>(SystemCustomerAttributeNames.StreetAddress2),
@@ -1018,38 +1001,38 @@ namespace Ks.Web.Controllers
                     switch (_customerSettings.UserRegistrationType)
                     {
                         case UserRegistrationType.EmailValidation:
-                        {
-                            //email validation message
-                            _genericAttributeService.SaveAttribute(customer,
-                                SystemCustomerAttributeNames.AccountActivationToken, Guid.NewGuid().ToString());
-                            _workflowMessageService.SendCustomerEmailValidationMessage(customer,
-                                _workContext.WorkingLanguage.Id);
+                            {
+                                //email validation message
+                                _genericAttributeService.SaveAttribute(customer,
+                                    SystemCustomerAttributeNames.AccountActivationToken, Guid.NewGuid().ToString());
+                                _workflowMessageService.SendCustomerEmailValidationMessage(customer,
+                                    _workContext.WorkingLanguage.Id);
 
-                            //result
-                            return RedirectToRoute("RegisterResult",
-                                new {resultId = (int) UserRegistrationType.EmailValidation});
-                        }
+                                //result
+                                return RedirectToRoute("RegisterResult",
+                                    new { resultId = (int)UserRegistrationType.EmailValidation });
+                            }
                         case UserRegistrationType.AdminApproval:
-                        {
-                            return RedirectToRoute("RegisterResult",
-                                new {resultId = (int) UserRegistrationType.AdminApproval});
-                        }
+                            {
+                                return RedirectToRoute("RegisterResult",
+                                    new { resultId = (int)UserRegistrationType.AdminApproval });
+                            }
                         case UserRegistrationType.Standard:
-                        {
-                            //send customer welcome message
-                            _workflowMessageService.SendCustomerWelcomeMessage(customer, _workContext.WorkingLanguage.Id);
+                            {
+                                //send customer welcome message
+                                _workflowMessageService.SendCustomerWelcomeMessage(customer, _workContext.WorkingLanguage.Id);
 
-                            var redirectUrl = Url.RouteUrl("RegisterResult",
-                                new {resultId = (int) UserRegistrationType.Standard});
-                            if (!String.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
-                                redirectUrl = _webHelper.ModifyQueryString(redirectUrl,
-                                    "returnurl=" + HttpUtility.UrlEncode(returnUrl), null);
-                            return Redirect(redirectUrl);
-                        }
+                                var redirectUrl = Url.RouteUrl("RegisterResult",
+                                    new { resultId = (int)UserRegistrationType.Standard });
+                                if (!String.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                                    redirectUrl = _webHelper.ModifyQueryString(redirectUrl,
+                                        "returnurl=" + HttpUtility.UrlEncode(returnUrl), null);
+                                return Redirect(redirectUrl);
+                            }
                         default:
-                        {
-                            return RedirectToRoute("HomePage");
-                        }
+                            {
+                                return RedirectToRoute("HomePage");
+                            }
                     }
                 }
                 //errors
@@ -1251,8 +1234,6 @@ namespace Ks.Web.Controllers
                         DateTime? dateOfBirth = model.ParseDateOfBirth();
                         _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.DateOfBirth, dateOfBirth);
                     }
-                    if (_customerSettings.CompanyEnabled)
-                        _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Company, model.Company);
                     if (_customerSettings.StreetAddressEnabled)
                         _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.StreetAddress, model.StreetAddress);
                     if (_customerSettings.StreetAddress2Enabled)
@@ -1547,108 +1528,7 @@ namespace Ks.Web.Controllers
         }
 
         #endregion
-
-        #region My account / Avatar
-
-        [KsHttpsRequirement(SslRequirement.Yes)]
-        public ActionResult Avatar()
-        {
-            if (!_workContext.CurrentCustomer.IsRegistered())
-                return new HttpUnauthorizedResult();
-
-            if (!_customerSettings.AllowCustomersToUploadAvatars)
-                return RedirectToRoute("CustomerInfo");
-
-            var customer = _workContext.CurrentCustomer;
-
-            var model = new CustomerAvatarModel();
-            model.AvatarUrl = _pictureService.GetPictureUrl(
-                customer.GetAttribute<int>(SystemCustomerAttributeNames.AvatarPictureId),
-                _mediaSettings.AvatarPictureSize,
-                false);
-            return View(model);
-        }
-
-        [HttpPost, ActionName("Avatar")]
-        [PublicAntiForgery]
-        [FormValueRequired("upload-avatar")]
-        public ActionResult UploadAvatar(CustomerAvatarModel model, HttpPostedFileBase uploadedFile)
-        {
-            if (!_workContext.CurrentCustomer.IsRegistered())
-                return new HttpUnauthorizedResult();
-
-            if (!_customerSettings.AllowCustomersToUploadAvatars)
-                return RedirectToRoute("CustomerInfo");
-
-            var customer = _workContext.CurrentCustomer;
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    var customerAvatar = _pictureService.GetPictureById(customer.GetAttribute<int>(SystemCustomerAttributeNames.AvatarPictureId));
-                    if ((uploadedFile != null) && (!String.IsNullOrEmpty(uploadedFile.FileName)))
-                    {
-                        int avatarMaxSize = _customerSettings.AvatarMaximumSizeBytes;
-                        if (uploadedFile.ContentLength > avatarMaxSize)
-                            throw new KsException(string.Format(_localizationService.GetResource("Account.Avatar.MaximumUploadedFileSize"), avatarMaxSize));
-
-                        byte[] customerPictureBinary = uploadedFile.GetPictureBits();
-                        if (customerAvatar != null)
-                            customerAvatar = _pictureService.UpdatePicture(customerAvatar.Id, customerPictureBinary, uploadedFile.ContentType, null);
-                        else
-                            customerAvatar = _pictureService.InsertPicture(customerPictureBinary, uploadedFile.ContentType, null);
-                    }
-
-                    int customerAvatarId = 0;
-                    if (customerAvatar != null)
-                        customerAvatarId = customerAvatar.Id;
-
-                    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.AvatarPictureId, customerAvatarId);
-
-                    model.AvatarUrl = _pictureService.GetPictureUrl(
-                        customer.GetAttribute<int>(SystemCustomerAttributeNames.AvatarPictureId),
-                        _mediaSettings.AvatarPictureSize,
-                        false);
-                    return View(model);
-                }
-                catch (Exception exc)
-                {
-                    ModelState.AddModelError("", exc.Message);
-                }
-            }
-
-
-            //If we got this far, something failed, redisplay form
-            model.AvatarUrl = _pictureService.GetPictureUrl(
-                customer.GetAttribute<int>(SystemCustomerAttributeNames.AvatarPictureId),
-                _mediaSettings.AvatarPictureSize,
-                false);
-            return View(model);
-        }
-
-        [HttpPost, ActionName("Avatar")]
-        [PublicAntiForgery]
-        [FormValueRequired("remove-avatar")]
-        public ActionResult RemoveAvatar(CustomerAvatarModel model, HttpPostedFileBase uploadedFile)
-        {
-            if (!_workContext.CurrentCustomer.IsRegistered())
-                return new HttpUnauthorizedResult();
-
-            if (!_customerSettings.AllowCustomersToUploadAvatars)
-                return RedirectToRoute("CustomerInfo");
-
-            var customer = _workContext.CurrentCustomer;
-
-            var customerAvatar = _pictureService.GetPictureById(customer.GetAttribute<int>(SystemCustomerAttributeNames.AvatarPictureId));
-            if (customerAvatar != null)
-                _pictureService.DeletePicture(customerAvatar);
-            _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.AvatarPictureId, 0);
-
-            return RedirectToRoute("CustomerAvatar");
-        }
-
-        #endregion
+ 
 
     }
 }

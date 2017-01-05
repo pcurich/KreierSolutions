@@ -13,7 +13,7 @@ namespace Ks.Services.Customers
             DateTime? createdToUtc = null, int[] customerRoleIds = null, string email = null, string username = null,
             string firstName = null, string lastName = null,
             int dayOfBirth = 0, int monthOfBirth = 0, string admCode = null, string dni = null,
-            string company = null, string phone = null, string zipPostalCode = null,
+            string phone = null, string zipPostalCode = null,
             int pageIndex = 0, int pageSize = 2147483647);
 
         /// <summary>

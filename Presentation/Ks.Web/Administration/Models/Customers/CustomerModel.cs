@@ -53,8 +53,10 @@ namespace Ks.Admin.Models.Customers
         //public int VendorId { get; set; }
         //public IList<SelectListItem> AvailableVendors { get; set; }
 
+
         //form fields & properties
         public bool GenderEnabled { get; set; }
+        public bool GenderRequired { get; set; }
         [KsResourceDisplayName("Admin.Customers.Customers.Fields.Gender")]
         public string Gender { get; set; }
 
@@ -78,14 +80,10 @@ namespace Ks.Admin.Models.Customers
         public string FullName { get; set; }
 
         public bool DateOfBirthEnabled { get; set; }
+        public bool DateOfBirthRequired { get; set; }
         [UIHint("DateNullable")]
         [KsResourceDisplayName("Admin.Customers.Customers.Fields.DateOfBirth")]
         public DateTime? DateOfBirth { get; set; }
-
-        public bool CompanyEnabled { get; set; }
-        [KsResourceDisplayName("Admin.Customers.Customers.Fields.Company")]
-        [AllowHtml]
-        public string Company { get; set; }
 
         public bool StreetAddressEnabled { get; set; }
         [KsResourceDisplayName("Admin.Customers.Customers.Fields.StreetAddress")]

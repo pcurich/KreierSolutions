@@ -83,12 +83,6 @@ namespace Ks.Web.Models.Customer
             return dateOfBirth;
         }
 
-        public bool CompanyEnabled { get; set; }
-        public bool CompanyRequired { get; set; }
-        [KsResourceDisplayName("Account.Fields.Company")]
-        [AllowHtml]
-        public string Company { get; set; }
-
         public bool StreetAddressEnabled { get; set; }
         public bool StreetAddressRequired { get; set; }
         [KsResourceDisplayName("Account.Fields.StreetAddress")]
@@ -137,12 +131,7 @@ namespace Ks.Web.Models.Customer
         [KsResourceDisplayName("Account.Fields.Fax")]
         [AllowHtml]
         public string Fax { get; set; }
-
-        //public bool NewsletterEnabled { get; set; }
-        //[KsResourceDisplayName("Account.Fields.Newsletter")]
-        //public bool Newsletter { get; set; }
-
-        public bool AcceptPrivacyPolicyEnabled { get; set; }
+         
 
         #endregion
 

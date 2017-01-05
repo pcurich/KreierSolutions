@@ -113,7 +113,7 @@ namespace Ks.Services.Customers
             DateTime? createdToUtc = null, int[] customerRoleIds = null, string email = null, string username = null,
             string firstName = null, string lastName = null,
             int dayOfBirth = 0, int monthOfBirth = 0, string admCode = null, string dni = null,
-            string company = null, string phone = null, string zipPostalCode = null,
+            string phone = null, string zipPostalCode = null,
             int pageIndex = 0, int pageSize = 2147483647)
         {
             var query = _customerRepository.Table;
@@ -213,16 +213,7 @@ namespace Ks.Services.Customers
                         z.Attribute.Value.Contains(dateOfBirthStr)))
                     .Select(z => z.Customer);
             }
-            //search by company
-            if (!String.IsNullOrWhiteSpace(company))
-            {
-                query = query
-                    .Join(_gaRepository.Table, x => x.Id, y => y.EntityId, (x, y) => new { Customer = x, Attribute = y })
-                    .Where((z => z.Attribute.KeyGroup == "Customer" &&
-                        z.Attribute.Key == SystemCustomerAttributeNames.Company &&
-                        z.Attribute.Value.Contains(company)))
-                    .Select(z => z.Customer);
-            }
+            
             //search by phone
             if (!String.IsNullOrWhiteSpace(phone))
             {
@@ -683,7 +674,7 @@ namespace Ks.Services.Customers
             {
                 var query = from cr in _customerRoleRepository.Table
                             orderby cr.Name
-                            where (showHidden || cr.Active)
+                            where (showHidden || cr.Active) && !cr.IsSystemRole
                             select cr;
                 var customerRoles = query.ToList();
                 return customerRoles;

@@ -37,7 +37,6 @@ namespace Ks.Services.Common
                 ((String.IsNullOrEmpty(a.PhoneNumber) && String.IsNullOrEmpty(phoneNumber)) || a.PhoneNumber == phoneNumber) &&
                 ((String.IsNullOrEmpty(a.Email) && String.IsNullOrEmpty(email)) || a.Email == email) &&
                 ((String.IsNullOrEmpty(a.FaxNumber) && String.IsNullOrEmpty(faxNumber)) || a.FaxNumber == faxNumber) &&
-                ((String.IsNullOrEmpty(a.Company) && String.IsNullOrEmpty(company)) || a.Company == company) &&
                 ((String.IsNullOrEmpty(a.Address1) && String.IsNullOrEmpty(address1)) || a.Address1 == address1) &&
                 ((String.IsNullOrEmpty(a.Address2) && String.IsNullOrEmpty(address2)) || a.Address2 == address2) &&
                 ((a.CityId.IsNullOrDefault() && cityId.IsNullOrDefault()) || a.CityId == cityId) &&

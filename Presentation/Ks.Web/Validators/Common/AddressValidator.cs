@@ -75,14 +75,6 @@ namespace Ks.Web.Validators.Common
                 });
             }
 
-            //if (addressSettings.CityRequired && addressSettings.CityEnabled)
-            //{
-            //    RuleFor(x => x.City).NotEmpty().WithMessage(localizationService.GetResource("Account.Fields.City.Required"));
-            //}
-            if (addressSettings.CompanyRequired && addressSettings.CompanyEnabled)
-            {
-                RuleFor(x => x.Company).NotEmpty().WithMessage(localizationService.GetResource("Account.Fields.Company.Required"));
-            }
             if (addressSettings.StreetAddressRequired && addressSettings.StreetAddressEnabled)
             {
                 RuleFor(x => x.Address1).NotEmpty().WithMessage(localizationService.GetResource("Account.Fields.StreetAddress.Required"));

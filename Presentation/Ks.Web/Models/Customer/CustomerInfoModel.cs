@@ -74,12 +74,6 @@ namespace Ks.Web.Models.Customer
             return dateOfBirth;
         }
 
-        public bool CompanyEnabled { get; set; }
-        public bool CompanyRequired { get; set; }
-        [KsResourceDisplayName("Account.Fields.Company")]
-        [AllowHtml]
-        public string Company { get; set; }
-
         public bool StreetAddressEnabled { get; set; }
         public bool StreetAddressRequired { get; set; }
         [KsResourceDisplayName("Account.Fields.StreetAddress")]
@@ -132,12 +126,7 @@ namespace Ks.Web.Models.Customer
         [KsResourceDisplayName("Account.Fields.Newsletter")]
         public bool Newsletter { get; set; }
 
-        //preferences
-        public bool SignatureEnabled { get; set; }
-        [KsResourceDisplayName("Account.Fields.Signature")]
-        [AllowHtml]
-        public string Signature { get; set; }
-
+   
         //time zone
         [KsResourceDisplayName("Account.Fields.TimeZone")]
         public string TimeZoneId { get; set; }

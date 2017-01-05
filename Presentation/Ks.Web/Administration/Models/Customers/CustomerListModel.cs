@@ -1,11 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Web.Mvc;
+using Ks.Admin.Extensions;
 using Ks.Web.Framework;
 
 namespace Ks.Admin.Models.Customers
 {
     public class CustomerListModel
     {
+        public CustomerListModel()
+        {
+            MonthOfBirthValues =new List<SelectListItem>();
+            DayOfBirthValues = new List<SelectListItem>();
+        }
+
         [KsResourceDisplayName("Admin.Customers.Customers.List.CustomerRoles")]
         [AllowHtml]
         public List<CustomerRoleModel> AvailableCustomerRoles { get; set; }
@@ -45,13 +53,6 @@ namespace Ks.Admin.Models.Customers
         public string SearchMonthOfBirth { get; set; }
         public bool DateOfBirthEnabled { get; set; }
 
-
-
-        [KsResourceDisplayName("Admin.Customers.Customers.List.SearchCompany")]
-        [AllowHtml]
-        public string SearchCompany { get; set; }
-        public bool CompanyEnabled { get; set; }
-
         [KsResourceDisplayName("Admin.Customers.Customers.List.SearchPhone")]
         [AllowHtml]
         public string SearchPhone { get; set; }
@@ -61,5 +62,8 @@ namespace Ks.Admin.Models.Customers
         [AllowHtml]
         public string SearchZipPostalCode { get; set; }
         public bool ZipPostalCodeEnabled { get; set; }
+
+        public List<SelectListItem> MonthOfBirthValues { get; set; }
+        public List<SelectListItem> DayOfBirthValues { get; set; }
     }
 }

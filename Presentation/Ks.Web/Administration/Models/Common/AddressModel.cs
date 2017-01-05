@@ -30,10 +30,6 @@ namespace Ks.Admin.Models.Common
         [AllowHtml]
         public string Email { get; set; }
 
-        [KsResourceDisplayName("Admin.Address.Fields.Company")]
-        [AllowHtml]
-        public string Company { get; set; }
-
         [KsResourceDisplayName("Admin.Address.Fields.Country")]
         public int? CountryId { get; set; }
 
@@ -92,8 +88,6 @@ namespace Ks.Admin.Models.Common
         public bool LastNameRequired { get; set; }
         public bool EmailEnabled { get; set; }
         public bool EmailRequired { get; set; }
-        public bool CompanyEnabled { get; set; }
-        public bool CompanyRequired { get; set; }
         public bool CountryEnabled { get; set; }
         public bool StateProvinceEnabled { get; set; }
         public bool CityEnabled { get; set; }

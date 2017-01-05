@@ -6,15 +6,6 @@ namespace Ks.Core.Domain.Common
     public class AddressSettings : ISettings
     {
         /// <summary>
-        /// Gets or sets a value indicating whether 'Company' is enabled
-        /// </summary>
-        public bool CompanyEnabled { get; set; }
-        /// <summary>
-        /// Gets or sets a value indicating whether 'Company' is required
-        /// </summary>
-        public bool CompanyRequired { get; set; }
-
-        /// <summary>
         /// Gets or sets a value indicating whether 'Street address' is enabled
         /// </summary>
         public bool StreetAddressEnabled { get; set; }

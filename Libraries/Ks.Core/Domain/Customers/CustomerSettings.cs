@@ -50,16 +50,6 @@ namespace Ks.Core.Domain.Customers
         public bool AllowCustomersToUploadAvatars { get; set; }
 
         /// <summary>
-        /// Gets or sets a maximum avatar size (in bytes)
-        /// </summary>
-        public int AvatarMaximumSizeBytes { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether to display default user avatar.
-        /// </summary>
-        public bool DefaultAvatarEnabled { get; set; }
-
-        /// <summary>
         /// Gets or sets a value indicating whether customers location is shown
         /// </summary>
         public bool ShowCustomersLocation { get; set; }
@@ -105,7 +95,7 @@ namespace Ks.Core.Domain.Customers
         /// Gets or sets a value indicating whether 'Gender' is enabled
         /// </summary>
         public bool GenderEnabled { get; set; }
-
+        public bool GenderRequired { get; set; }
         /// <summary>
         /// Gets or sets a value indicating whether 'Date of Birth' is enabled
         /// </summary>
@@ -118,15 +108,6 @@ namespace Ks.Core.Domain.Customers
         /// Gets or sets a minimum age. Null if ignored
         /// </summary>
         public int? DateOfBirthMinimumAge { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether 'Company' is enabled
-        /// </summary>
-        public bool CompanyEnabled { get; set; }
-        /// <summary>
-        /// Gets or sets a value indicating whether 'Company' is required
-        /// </summary>
-        public bool CompanyRequired { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether 'Street address' is enabled
@@ -199,11 +180,6 @@ namespace Ks.Core.Domain.Customers
         /// Gets or sets a value indicating whether 'Fax number' is required
         /// </summary>
         public bool FaxRequired { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether privacy policy should accepted during registration
-        /// </summary>
-        public bool AcceptPrivacyPolicyEnabled { get; set; }
 
         #endregion
     }

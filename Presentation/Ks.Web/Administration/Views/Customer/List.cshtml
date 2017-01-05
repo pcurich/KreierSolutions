@@ -1,5 +1,4 @@
 ﻿@model CustomerListModel
-@using System.Globalization;
 @{
     var defaultGridPageSize = EngineContext.Current.Resolve<Ks.Core.Domain.Common.AdminAreaSettings>().DefaultGridPageSize;
     var gridPageSizes = EngineContext.Current.Resolve<Ks.Core.Domain.Common.AdminAreaSettings>().GridPageSizes;
@@ -93,37 +92,23 @@
                     @Html.KsLabelFor(model => model.SearchDayOfBirth):
                 </td>
                 <td class="adminData">
-                    @{
-            var monthOfBirthValues = new List<SelectListItem>();
-            monthOfBirthValues.Add(new SelectListItem { Text = T("Admin.Customers.Customers.List.SearchDateOfBirth.Month").Text, Value = "0" });
-            for (int i = 1; i <= 12; i++)
-            {
-                monthOfBirthValues.Add(new SelectListItem { Text = i.ToString(CultureInfo.InvariantCulture), Value = i.ToString(CultureInfo.InvariantCulture) });
-            }
-            var dayOfBirthValues = new List<SelectListItem>();
-            dayOfBirthValues.Add(new SelectListItem { Text = T("Admin.Customers.Customers.List.SearchDateOfBirth.Day").Text, Value = "0" });
-            for (int i = 1; i <= 31; i++)
-            {
-                dayOfBirthValues.Add(new SelectListItem { Text = i.ToString(CultureInfo.InvariantCulture), Value = i.ToString(CultureInfo.InvariantCulture) });
-            }
-                    }
-                    @Html.DropDownListFor(model => model.SearchMonthOfBirth, monthOfBirthValues)
-                    @Html.DropDownListFor(model => model.SearchDayOfBirth, dayOfBirthValues)
+                     
+                    @Html.DropDownListFor(model => model.SearchMonthOfBirth, Model.MonthOfBirthValues)
+                    @Html.DropDownListFor(model => model.SearchDayOfBirth, Model.DayOfBirthValues)
+                    <script>
+                        $(document).ready(function() {
+                            $('#@Html.FieldIdFor(model => model.SearchMonthOfBirth)').width(125).kendoDropDownList();
+                        });
+                    </script>
+                    <script>
+                    $(document).ready(function () {
+                        $('#@Html.FieldIdFor(model => model.SearchDayOfBirth)').width(125).kendoDropDownList();
+                    });
+                </script>
                 </td>
             </tr>
         }
 
-        @if (Model.CompanyEnabled)
-        {
-            <tr>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.SearchCompany):
-                </td>
-                <td class="adminData">
-                    @Html.EditorFor(model => model.SearchCompany)
-                </td>
-            </tr>
-        }
         @if (Model.PhoneEnabled)
         {
             <tr>
@@ -225,15 +210,6 @@
                                     width: 200
                                 },
 
-                                @if (Model.CompanyEnabled)
-                                {
-                                    <text>{
-                                    field: "Company",
-                                    title: "@T("Admin.Customers.Customers.Fields.Company")",
-                                    width: 200
-                                },</text>
-                                }
-
                                 @if (Model.PhoneEnabled)
                                 {
                                     <text>{
@@ -323,7 +299,13 @@
                                 return false;
                             }
                         });
-                        $("#@Html.FieldIdFor(model => model.SearchCompany)").keydown(function (event) {
+                        $("#@Html.FieldIdFor(model => model.SearchAdmCode)").keydown(function (event) {
+                            if (event.keyCode == 13) {
+                                $("#search-customers").click();
+                                return false;
+                            }
+                        });
+                        $("#@Html.FieldIdFor(model => model.SearchDni)").keydown(function (event) {
                             if (event.keyCode == 13) {
                                 $("#search-customers").click();
                                 return false;
@@ -401,7 +383,8 @@
                             SearchLastName: $('#@Html.FieldIdFor(model => model.SearchLastName)').val(),
                             SearchDayOfBirth: $('#@Html.FieldIdFor(model => model.SearchDayOfBirth)').val(),
                             SearchMonthOfBirth: $('#@Html.FieldIdFor(model => model.SearchMonthOfBirth)').val(),
-                            SearchCompany: $('#@Html.FieldIdFor(model => model.SearchCompany)').val(),
+                            SearchAdmCode: $('#@Html.FieldIdFor(model => model.SearchAdmCode)').val(),
+                            SearchDni: $('#@Html.FieldIdFor(model => model.SearchDni)').val(),                  
                             SearchPhone: $('#@Html.FieldIdFor(model => model.SearchPhone)').val(),
                             SearchZipPostalCode: $('#@Html.FieldIdFor(model => model.SearchZipPostalCode)').val()
                         };

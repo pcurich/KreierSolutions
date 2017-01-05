@@ -101,10 +101,6 @@ namespace Ks.Web.Validators.Customer
                     return null;
                 });
             }
-            if (customerSettings.CompanyRequired && customerSettings.CompanyEnabled)
-            {
-                RuleFor(x => x.Company).NotEmpty().WithMessage(localizationService.GetResource("Account.Fields.Company.Required"));
-            }
             if (customerSettings.StreetAddressRequired && customerSettings.StreetAddressEnabled)
             {
                 RuleFor(x => x.StreetAddress).NotEmpty().WithMessage(localizationService.GetResource("Account.Fields.StreetAddress.Required"));

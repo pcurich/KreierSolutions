@@ -399,7 +399,6 @@ namespace Ks.Services.Installation
                 PhoneNumber = "973 905 013",
                 Email = "pcurich@kreiersolutions.com",
                 FaxNumber = "",
-                Company = "Kreier Solutions",
                 Address1 = "",
                 Address2 = "",
                 City = _cityRepository.Table.FirstOrDefault(ct => ct.Name == "Cercado de Lima"),
@@ -502,12 +501,8 @@ namespace Ks.Services.Installation
 
             var customerAttributeValues = new List<CustomerAttributeValue>
             {
-				new CustomerAttributeValue{Name = "COPERE",DisplayOrder = 1, CustomerAttributeId = 2},
-                new CustomerAttributeValue{Name = "CPMP",DisplayOrder = 2, CustomerAttributeId = 2},
-
-                new CustomerAttributeValue{Name = "6008",DisplayOrder = 1, CustomerAttributeId = 3},
-                new CustomerAttributeValue{Name = "8001",DisplayOrder = 2, CustomerAttributeId = 3},
-                
+				new CustomerAttributeValue{Name = "COPERE (8001)",DisplayOrder = 1, CustomerAttributeId = 2},
+                new CustomerAttributeValue{Name = "CPMP (6008)",DisplayOrder = 2, CustomerAttributeId = 2},
 
                 new CustomerAttributeValue{Name = "SUB-TENIENTE",DisplayOrder = 1, CustomerAttributeId =4},
                 new CustomerAttributeValue{Name = "TENIENTE",DisplayOrder = 2, CustomerAttributeId =4},
@@ -655,21 +650,15 @@ namespace Ks.Services.Installation
                 PasswordRecoveryLinkDaysValid = 7,
                 UserRegistrationType = UserRegistrationType.Standard,
                 AllowCustomersToUploadAvatars = false,
-                AvatarMaximumSizeBytes = 200000,
-                DefaultAvatarEnabled = true,
                 ShowCustomersLocation = false,
                 ShowCustomersJoinDate = false,
                 AllowViewingProfiles = false,
                 NotifyNewCustomerRegistration = false,
-                //HideDownloadableProductsTab = false,
-                //HideBackInStockSubscriptionsTab = false,
-                //DownloadableProductsValidateUser = false,
                 CustomerNameFormat = CustomerNameFormat.ShowFirstName,
                 GenderEnabled = true,
                 DateOfBirthEnabled = true,
                 DateOfBirthRequired = false,
                 DateOfBirthMinimumAge = null,
-                CompanyEnabled = false,
                 StreetAddressEnabled = true,
                 StreetAddress2Enabled = false,
                 ZipPostalCodeEnabled = false,
@@ -680,11 +669,6 @@ namespace Ks.Services.Installation
                 StateProvinceRequired = false,
                 PhoneEnabled = false,
                 FaxEnabled = false,
-                AcceptPrivacyPolicyEnabled = false,
-                //NewsletterEnabled = true,
-                //NewsletterTickedByDefault = true,
-                //HideNewsletterBlock = false,
-                //NewsletterBlockAllowToUnsubscribe = false,
                 OnlineCustomerMinutes = 20,
                 KsSystemLastVisitedPage = false,
                 SuffixDeletedCustomers = false,
@@ -696,6 +680,12 @@ namespace Ks.Services.Installation
                 GridPageSizes = "10, 15, 20, 50, 100",
                 RichEditorAdditionalSettings = null,
                 RichEditorAllowJavaScript = false
+            });
+
+            settingService.SaveSetting(new DateTimeSettings
+            {
+                AllowCustomersToSetTimeZone = false,
+                DefaultStoreTimeZoneId = "SA Pacific Standard Time"
             });
 
             var eaGeneral = _emailAccountRepository.Table.FirstOrDefault();
@@ -742,7 +732,7 @@ namespace Ks.Services.Installation
                 DeclaratoryLetter = 11671,
                 RegistrationForm = 54651,
                 AuthorizeLoan = 1000,
-                NumberOfLiquidation=1291
+                NumberOfLiquidation = 1291
             });
 
             settingService.SaveSetting(new ContributionSettings
@@ -757,7 +747,7 @@ namespace Ks.Services.Installation
                 Amount2 = 0M,
                 Amount3 = 0M,
                 //MaximumCharge = (decimal) (70)
-                MaximumCharge = (decimal)(34.85*2)
+                MaximumCharge = (decimal)(34.85 * 2)
             });
 
             settingService.SaveSetting(new LoanSettings

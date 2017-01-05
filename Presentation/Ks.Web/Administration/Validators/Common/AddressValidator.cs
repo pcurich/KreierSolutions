@@ -25,10 +25,6 @@ namespace Ks.Admin.Validators.Common
                 .EmailAddress()
                 .WithMessage(localizationService.GetResource("Admin.Common.WrongEmail"))
                 .When(x => x.EmailEnabled && x.EmailRequired);
-            RuleFor(x => x.Company)
-                .NotEmpty()
-                .WithMessage(localizationService.GetResource("Admin.Address.Fields.Company.Required"))
-                .When(x => x.CompanyEnabled && x.CompanyRequired);
             RuleFor(x => x.CountryId)
                 .NotNull()
                 .WithMessage(localizationService.GetResource("Admin.Address.Fields.Country.Required"))

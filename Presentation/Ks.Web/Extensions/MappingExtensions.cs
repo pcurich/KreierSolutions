@@ -60,7 +60,6 @@ namespace Ks.Web.Extensions
                 model.FirstName = address.FirstName;
                 model.LastName = address.LastName;
                 model.Email = address.Email;
-                model.Company = address.Company;
                 model.CountryId = address.CountryId;
                 model.CountryName = address.Country != null ? address.Country.GetLocalized(x => x.Name) : null;
                 model.StateProvinceId = address.StateProvinceId;
@@ -81,7 +80,6 @@ namespace Ks.Web.Extensions
                 model.Email = customer.Email;
                 model.FirstName = customer.GetAttribute<string>(SystemCustomerAttributeNames.FirstName);
                 model.LastName = customer.GetAttribute<string>(SystemCustomerAttributeNames.LastName);
-                model.Company = customer.GetAttribute<string>(SystemCustomerAttributeNames.Company);
                 model.Address1 = customer.GetAttribute<string>(SystemCustomerAttributeNames.StreetAddress);
                 model.Address2 = customer.GetAttribute<string>(SystemCustomerAttributeNames.StreetAddress2);
                 model.ZipPostalCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.ZipPostalCode);
@@ -171,8 +169,6 @@ namespace Ks.Web.Extensions
             }
 
             //form fields
-            model.CompanyEnabled = addressSettings.CompanyEnabled;
-            model.CompanyRequired = addressSettings.CompanyRequired;
             model.StreetAddressEnabled = addressSettings.StreetAddressEnabled;
             model.StreetAddressRequired = addressSettings.StreetAddressRequired;
             model.StreetAddress2Enabled = addressSettings.StreetAddress2Enabled;
@@ -311,8 +307,6 @@ namespace Ks.Web.Extensions
                     model.LastName = model.LastName.Trim();
                 if (model.Email != null)
                     model.Email = model.Email.Trim();
-                if (model.Company != null)
-                    model.Company = model.Company.Trim();
                 if (model.Address1 != null)
                     model.Address1 = model.Address1.Trim();
                 if (model.Address2 != null)
@@ -328,7 +322,6 @@ namespace Ks.Web.Extensions
             destination.FirstName = model.FirstName;
             destination.LastName = model.LastName;
             destination.Email = model.Email;
-            destination.Company = model.Company;
             destination.CountryId = model.CountryId;
             destination.StateProvinceId = model.StateProvinceId;
             destination.CityId = model.CityId;

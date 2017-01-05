@@ -21,11 +21,6 @@ namespace Ks.Core.Domain.Common
         public string Email { get; set; }
 
         /// <summary>
-        ///     Gets or sets the company
-        /// </summary>
-        public string Company { get; set; }
-
-        /// <summary>
         ///     Gets or sets the country identifier
         /// </summary>
         public int? CountryId { get; set; }
@@ -97,7 +92,6 @@ namespace Ks.Core.Domain.Common
                 FirstName = FirstName,
                 LastName = LastName,
                 Email = Email,
-                Company = Company,
                 Country = Country,
                 CountryId = CountryId,
                 StateProvince = StateProvince,

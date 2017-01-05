@@ -42,8 +42,6 @@ namespace Ks.Admin.Infrastructure
                 .ForMember(dest => dest.LastNameRequired, mo => mo.Ignore())
                 .ForMember(dest => dest.EmailEnabled, mo => mo.Ignore())
                 .ForMember(dest => dest.EmailRequired, mo => mo.Ignore())
-                .ForMember(dest => dest.CompanyEnabled, mo => mo.Ignore())
-                .ForMember(dest => dest.CompanyRequired, mo => mo.Ignore())
                 .ForMember(dest => dest.CountryEnabled, mo => mo.Ignore())
                 .ForMember(dest => dest.StateProvinceEnabled, mo => mo.Ignore())
                 .ForMember(dest => dest.CityEnabled, mo => mo.Ignore())
@@ -224,8 +222,6 @@ namespace Ks.Admin.Infrastructure
                 .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
             Mapper.CreateMap<CustomerUserSettingsModel.CustomerSettingsModel, CustomerSettings>()
                 .ForMember(dest => dest.HashedPasswordFormat, mo => mo.Ignore())
-                .ForMember(dest => dest.AvatarMaximumSizeBytes, mo => mo.Ignore())
-                //.ForMember(dest => dest.DownloadableProductsValidateUser, mo => mo.Ignore())
                 .ForMember(dest => dest.OnlineCustomerMinutes, mo => mo.Ignore())
                 .ForMember(dest => dest.SuffixDeletedCustomers, mo => mo.Ignore());
             Mapper.CreateMap<AddressSettings, CustomerUserSettingsModel.AddressSettingsModel>()

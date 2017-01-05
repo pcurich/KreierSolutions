@@ -44,10 +44,6 @@ namespace Ks.Admin.Validators.Customers
                     return null;
                 });
             }
-            if (customerSettings.CompanyRequired && customerSettings.CompanyEnabled)
-                RuleFor(x => x.Company)
-                    .NotEmpty()
-                    .WithMessage(localizationService.GetResource("Admin.Customers.Customers.Fields.Company.Required"));
             if (customerSettings.StreetAddressRequired && customerSettings.StreetAddressEnabled)
                 RuleFor(x => x.StreetAddress)
                     .NotEmpty()

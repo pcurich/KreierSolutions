@@ -21,11 +21,11 @@
         <li @Html.RenderSelectedTabIndex(0, GetSelectedTabIndex())>
             @T("Admin.Customers.Customers.Info")
         </li>
-        <li @Html.RenderSelectedTabIndex(1, GetSelectedTabIndex())>
-            @T("Admin.Customers.Customers.CustomerRoles")
-        </li>
         @if (Model.Id > 0)
         {
+            <li @Html.RenderSelectedTabIndex(1, GetSelectedTabIndex())>
+                @T("Admin.Customers.Customers.CustomerRoles")
+            </li>
             <li @Html.RenderSelectedTabIndex(2, GetSelectedTabIndex())>
                 @T("Admin.Customers.Customers.Addresses")
             </li>
@@ -49,11 +49,12 @@
     <div>
         @TabInfo()
     </div>
-    <div>
-        @TabCustomerRoles()
-    </div>
+
     @if (Model.Id > 0)
     {
+        <div>
+            @TabCustomerRoles()
+        </div>
         <div>
             @TabAddresses()
         </div>
@@ -160,7 +161,7 @@
                     </td>
                     <td class="adminData">
                         @Html.EditorFor(model => model.Username)
-                        @Html.ValidationMessageFor(model => model.Username)
+                       @Html.ValidationMessageFor(model => model.Username)
                     </td>
                 </tr>
             }
@@ -207,14 +208,19 @@
                 </td>
                 <td class="adminData">
                     <div class="gender">
-                        @Html.RadioButton("Gender", "M", (Model.Gender == "M"), new { id = "Gender_Male" })
+                        @Html.RadioButton("Gender", "M", (Model.Gender == "M"), new {id = "Gender_Male"})
                         <label class="forcheckbox" for="Gender_Male">@T("Admin.Customers.Customers.Fields.Gender.Male")</label>
                     </div>
                     <div class="gender">
-                        @Html.RadioButton("Gender", "F", (Model.Gender == "F"), new { id = "Gender_Female" })
+                        @Html.RadioButton("Gender", "F", (Model.Gender == "F"), new {id = "Gender_Female"})
                         <label class="forcheckbox" for="Gender_Female">@T("Admin.Customers.Customers.Fields.Gender.Female")</label>
                     </div>
+                        @if (Model.GenderRequired)
+                        {
+                            @Html.RequiredHint()
+                        }
                 </td>
+               
             </tr>
         }
         <tr>
@@ -223,6 +229,7 @@
             </td>
             <td class="adminData">
                 @Html.EditorFor(model => model.FirstName)
+                @Html.RequiredHint()
                 @Html.ValidationMessageFor(model => model.FirstName)
             </td>
         </tr>
@@ -232,6 +239,7 @@
             </td>
             <td class="adminData">
                 @Html.EditorFor(model => model.LastName)
+                @Html.RequiredHint()
                 @Html.ValidationMessageFor(model => model.LastName)
             </td>
         </tr>
@@ -241,6 +249,7 @@
             </td>
             <td class="adminData">
                 @Html.EditorFor(model => model.AdmCode)
+                @Html.RequiredHint()
                 @Html.ValidationMessageFor(model => model.AdmCode)
             </td>
         </tr>
@@ -250,6 +259,7 @@
             </td>
             <td class="adminData">
                 @Html.EditorFor(model => model.Dni)
+                @Html.RequiredHint()
                 @Html.ValidationMessageFor(model => model.Dni)
             </td>
         </tr>
@@ -261,9 +271,10 @@
                 @Html.DropDownListFor(model => model.MilitarySituationId, Model.AvailableMilitarySituations)
                 <script>
                     $(document).ready(function() {
-                        $('#@Html.FieldIdFor(model=>model.MilitarySituationId)').kendoDropDownList();
+                        $('#@Html.FieldIdFor(model => model.MilitarySituationId)').width(250).kendoDropDownList();
                     });
                 </script>
+                @Html.RequiredHint()
             </td>
         </tr>
         @if (Model.DateOfBirthEnabled)
@@ -274,19 +285,11 @@
                 </td>
                 <td class="adminData">
                     @Html.EditorFor(model => model.DateOfBirth)
+                    @if (Model.DateOfBirthRequired)
+                    {
+                        @Html.RequiredHint()
+                    }
                     @Html.ValidationMessageFor(model => model.DateOfBirth)
-                </td>
-            </tr>
-        }
-        @if (Model.CompanyEnabled)
-        {
-            <tr>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.Company):
-                </td>
-                <td class="adminData">
-                    @Html.EditorFor(model => model.Company)
-                    @Html.ValidationMessageFor(model => model.Company)
                 </td>
             </tr>
         }

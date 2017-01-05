@@ -223,10 +223,6 @@ namespace Ks.Services.Common
             if (String.IsNullOrWhiteSpace(address.Email))
                 return false;
 
-            if (_addressSettings.CompanyEnabled &&
-                _addressSettings.CompanyRequired &&
-                String.IsNullOrWhiteSpace(address.Company))
-                return false;
 
             if (_addressSettings.StreetAddressEnabled &&
                 _addressSettings.StreetAddressRequired &&

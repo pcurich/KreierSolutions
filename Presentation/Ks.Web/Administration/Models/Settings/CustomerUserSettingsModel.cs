@@ -92,19 +92,17 @@ namespace Ks.Admin.Models.Settings
 
             [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.GenderEnabled")]
             public bool GenderEnabled { get; set; }
+            [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.GenderRequired")]
+            public bool GenderRequired { get; set; }
 
             [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.DateOfBirthEnabled")]
             public bool DateOfBirthEnabled { get; set; }
             [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.DateOfBirthRequired")]
             public bool DateOfBirthRequired { get; set; }
+
             [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.DateOfBirthMinimumAge")]
             [UIHint("Int32Nullable")]
             public int? DateOfBirthMinimumAge { get; set; }
-
-            [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.CompanyEnabled")]
-            public bool CompanyEnabled { get; set; }
-            [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.CompanyRequired")]
-            public bool CompanyRequired { get; set; }
 
             [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.StreetAddressEnabled")]
             public bool StreetAddressEnabled { get; set; }
@@ -146,16 +144,10 @@ namespace Ks.Admin.Models.Settings
             [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.FaxRequired")]
             public bool FaxRequired { get; set; }
 
-            [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.AcceptPrivacyPolicyEnabled")]
-            public bool AcceptPrivacyPolicyEnabled { get; set; }
         }
 
         public partial class AddressSettingsModel : BaseKsModel
         {
-            [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.AddressFormFields.CompanyEnabled")]
-            public bool CompanyEnabled { get; set; }
-            [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.AddressFormFields.CompanyRequired")]
-            public bool CompanyRequired { get; set; }
 
             [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.AddressFormFields.StreetAddressEnabled")]
             public bool StreetAddressEnabled { get; set; }

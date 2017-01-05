@@ -218,7 +218,6 @@ namespace Ks.Admin.Controllers
                 Email = customer.IsRegistered() ? customer.Email : _localizationService.GetResource("Admin.Customers.Guest"),
                 Username = customer.Username,
                 FullName = customer.GetFullName(),
-                Company = customer.GetAttribute<string>(SystemCustomerAttributeNames.Company),
                 Phone = customer.GetAttribute<string>(SystemCustomerAttributeNames.Phone),
                 ZipPostalCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.ZipPostalCode),
                 CustomerRoleNames = GetCustomerRolesNames(customer.CustomerRoles.ToList()),
@@ -370,7 +369,6 @@ namespace Ks.Admin.Controllers
                     model.MilitarySituationId = customer.GetAttribute<int>(SystemCustomerAttributeNames.MilitarySituationId);
                     model.Gender = customer.GetAttribute<string>(SystemCustomerAttributeNames.Gender);
                     model.DateOfBirth = customer.GetAttribute<DateTime?>(SystemCustomerAttributeNames.DateOfBirth);
-                    model.Company = customer.GetAttribute<string>(SystemCustomerAttributeNames.Company);
                     model.StreetAddress = customer.GetAttribute<string>(SystemCustomerAttributeNames.StreetAddress);
                     model.StreetAddress2 = customer.GetAttribute<string>(SystemCustomerAttributeNames.StreetAddress2);
                     model.ZipPostalCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.ZipPostalCode);
@@ -392,8 +390,9 @@ namespace Ks.Admin.Controllers
             PrepareCustomerAttributeModel(model, customer);
 
             model.GenderEnabled = _customerSettings.GenderEnabled;
+            model.GenderRequired = _customerSettings.GenderRequired;
             model.DateOfBirthEnabled = _customerSettings.DateOfBirthEnabled;
-            model.CompanyEnabled = _customerSettings.CompanyEnabled;
+            model.DateOfBirthRequired = _customerSettings.DateOfBirthRequired;
             model.StreetAddressEnabled = _customerSettings.StreetAddressEnabled;
             model.StreetAddress2Enabled = _customerSettings.StreetAddress2Enabled;
             model.ZipPostalCodeEnabled = _customerSettings.ZipPostalCodeEnabled;
@@ -516,8 +515,6 @@ namespace Ks.Admin.Controllers
             model.Address.LastNameRequired = true;
             model.Address.EmailEnabled = true;
             model.Address.EmailRequired = true;
-            model.Address.CompanyEnabled = _addressSettings.CompanyEnabled;
-            model.Address.CompanyRequired = _addressSettings.CompanyRequired;
             model.Address.CountryEnabled = _addressSettings.CountryEnabled;
             model.Address.StateProvinceEnabled = _addressSettings.StateProvinceEnabled;
             model.Address.CityEnabled = _addressSettings.CityEnabled;
@@ -649,37 +646,6 @@ namespace Ks.Admin.Controllers
 
             return attributesXml;
         }
-
-        [NonAction]
-        protected virtual List<SelectListItem> PrepareMonthsList()
-        {
-            var listOfMonth = (from i in Enumerable.Range(0, 12)
-                               let now = DateTime.UtcNow.AddMonths(i)
-                               select new SelectListItem
-                               {
-                                   Text = now.ToString("MMMM"),
-                                   Value = now.Month.ToString()
-                               }).OrderBy(x => int.Parse(x.Value)).ToList();
-
-            listOfMonth.Insert(0, new SelectListItem { Value = "0", Text = _localizationService.GetResource("Common.Month") });
-
-            return listOfMonth;
-        }
-
-        [NonAction]
-        protected virtual List<SelectListItem> PrepareYearsList()
-        {
-            var listOfYear = (from i in Enumerable.Range(0, 10)
-                              let now = DateTime.UtcNow.AddYears(i)
-                              select new SelectListItem
-                              {
-                                  Text = now.Year.ToString(),
-                                  Value = now.Year.ToString()
-                              }).OrderBy(x => int.Parse(x.Value)).ToList();
-
-            listOfYear.Insert(0, new SelectListItem { Value = "0", Text = _localizationService.GetResource("Common.Year") });
-            return listOfYear;
-        }
         #endregion
 
         #region Customers
@@ -700,7 +666,8 @@ namespace Ks.Admin.Controllers
             {
                 UsernamesEnabled = _customerSettings.UsernamesEnabled,
                 DateOfBirthEnabled = _customerSettings.DateOfBirthEnabled,
-                CompanyEnabled = _customerSettings.CompanyEnabled,
+                MonthOfBirthValues = DateTime.Now.GetMonthsList(_localizationService),
+                DayOfBirthValues = DateTime.Now.GetDaysList(_localizationService),
                 PhoneEnabled = _customerSettings.PhoneEnabled,
                 ZipPostalCodeEnabled = _customerSettings.ZipPostalCodeEnabled,
                 AvailableCustomerRoles = _customerService.GetAllCustomerRoles(true).Select(cr => cr.ToModel()).ToList(),
@@ -734,7 +701,6 @@ namespace Ks.Admin.Controllers
                 monthOfBirth: searchMonthOfBirth,
                 admCode: model.SearchAdmCode,
                 dni: model.SearchDni,
-                company: model.SearchCompany,
                 phone: model.SearchPhone,
                 zipPostalCode: model.SearchZipPostalCode,
                 pageIndex: command.Page - 1,
@@ -787,6 +753,9 @@ namespace Ks.Admin.Controllers
             foreach (var customerRole in allCustomerRoles)
                 if (model.SelectedCustomerRoleIds != null && model.SelectedCustomerRoleIds.Contains(customerRole.Id))
                     newCustomerRoles.Add(customerRole);
+
+            if(newCustomerRoles.Count==0)
+                newCustomerRoles.Add(allCustomerRoles.FirstOrDefault(x => x.SystemName == SystemCustomerRoleNames.Associated));
             var customerRolesError = ValidateCustomerRoles(newCustomerRoles);
             if (!String.IsNullOrEmpty(customerRolesError))
             {
@@ -826,9 +795,7 @@ namespace Ks.Admin.Controllers
                 _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.MilitarySituationId, model.MilitarySituationId);
                 if (_customerSettings.DateOfBirthEnabled)
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.DateOfBirth, model.DateOfBirth);
-                if (_customerSettings.CompanyEnabled)
-                    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Company, model.Company);
-                if (_customerSettings.StreetAddressEnabled)
+               if (_customerSettings.StreetAddressEnabled)
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.StreetAddress, model.StreetAddress);
                 if (_customerSettings.StreetAddress2Enabled)
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.StreetAddress2, model.StreetAddress2);
@@ -971,8 +938,6 @@ namespace Ks.Admin.Controllers
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.MilitarySituationId, model.MilitarySituationId);
                     if (_customerSettings.DateOfBirthEnabled)
                         _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.DateOfBirth, model.DateOfBirth);
-                    if (_customerSettings.CompanyEnabled)
-                        _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Company, model.Company);
                     if (_customerSettings.StreetAddressEnabled)
                         _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.StreetAddress, model.StreetAddress);
                     if (_customerSettings.StreetAddress2Enabled)
@@ -1172,8 +1137,6 @@ namespace Ks.Admin.Controllers
                 {
                     var model = x.ToModel();
                     var addressHtmlSb = new StringBuilder("<div>");
-                    if (_addressSettings.CompanyEnabled && !String.IsNullOrEmpty(model.Company))
-                        addressHtmlSb.AppendFormat("{0}<br />", Server.HtmlEncode(model.Company));
                     if (_addressSettings.StreetAddressEnabled && !String.IsNullOrEmpty(model.Address1))
                         addressHtmlSb.AppendFormat("{0}<br />", Server.HtmlEncode(model.Address1));
                     if (_addressSettings.StreetAddress2Enabled && !String.IsNullOrEmpty(model.Address2))
@@ -1369,8 +1332,8 @@ namespace Ks.Admin.Controllers
                 CreatedOn = DateTime.UtcNow,
                 AuthorizeDiscount = _sequenceIdsSettings.AuthorizeDiscount,
                 DayOfPayment = _contributionSettings.DayOfPaymentContribution,
-                MonthsList = PrepareMonthsList(),
-                YearsList = PrepareYearsList()
+                MonthsList = DateTime.Now.GetMonthsList(_localizationService),
+                YearsList = DateTime.Now.GetYearsList(_localizationService)
             };
 
             return View(model);
@@ -1388,8 +1351,8 @@ namespace Ks.Admin.Controllers
                 //No customer found with the specified id
                 return RedirectToAction("List");
 
-            model.MonthsList = PrepareMonthsList();
-            model.YearsList = PrepareYearsList();
+            model.MonthsList = DateTime.Now.GetMonthsList(_localizationService);
+            model.YearsList = DateTime.Now.GetYearsList(_localizationService);
 
             if (ModelState.IsValid)
             {
