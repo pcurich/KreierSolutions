@@ -1038,13 +1038,33 @@ namespace Ks.Admin.Controllers
 
             try
             {
-                _customerService.DeleteCustomer(customer);
+                var loans=_loanService.GetLoansByCustomer(customer.Id);
+                if (loans != null && loans.Count > 0)
+                {
+                    ErrorNotification("El asociado cuenta con  " + loans.Count +
+                                      " apoyo económico activos, primero cancele dichos apoyos y despues proceda a desactivar al asociado");
+                }
+                else
+                {
+                    var contributions=_contributionService.GetContributionsByCustomer(customer.Id);
+                    foreach (var contribution in contributions)
+                    {
+                        contribution.Active = false;
+                        _contributionService.UpdateContribution(contribution);
+                    }
 
-                //activity log
-                _customerActivityService.InsertActivity("DeleteMilitaryPerson", _localizationService.GetResource("ActivityLog.DeleteMilitaryPerson"), customer.Id, customer.Username ?? customer.Email);
+                    //no necesito hacer nada con los beneficios ya que se amarran al estado de la aportacion 
 
-                SuccessNotification(_localizationService.GetResource("Admin.Customers.Customers.Deleted"));
-                return RedirectToAction("List");
+                    customer.Active = !customer.Active;
+                    _customerService.UpdateCustomer(customer);
+                    //_customerService.DeleteCustomer(customer);
+
+                    //activity log
+                    _customerActivityService.InsertActivity(DefaultActivityLogType.ActivityLogEditCustomer.Name, _localizationService.GetResource("ActivityLog.DeleteMilitaryPerson"), customer.Id, customer.Username ?? customer.Email);
+
+                    SuccessNotification(_localizationService.GetResource("Admin.Customers.Customers.Deleted"));
+                }
+                return RedirectToAction("Edit", new { id = customer.Id });
             }
             catch (Exception exc)
             {

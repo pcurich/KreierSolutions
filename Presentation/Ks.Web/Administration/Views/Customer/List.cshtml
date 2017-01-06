@@ -120,17 +120,6 @@
                 </td>
             </tr>
         }
-        @if (Model.ZipPostalCodeEnabled)
-        {
-            <tr>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.SearchZipPostalCode):
-                </td>
-                <td class="adminData">
-                    @Html.EditorFor(model => model.SearchZipPostalCode)
-                </td>
-            </tr>
-        }
         <tr>
             <td colspan="2">
                 <input type="button" id="search-customers" class="k-button" value="@T("Admin.Common.Search")" />
@@ -219,14 +208,6 @@
                                 },</text>
                                 }
 
-                                @if (Model.ZipPostalCodeEnabled)
-                                {
-                                    <text>{
-                                    field: "ZipPostalCode",
-                                    title: "@T("Admin.Customers.Customers.Fields.ZipPostalCode")",
-                                    width: 200
-                                },</text>
-                                }
                             {
                                 field: "Active",
                                 title: "@T("Admin.Customers.Customers.Fields.Active")",
@@ -317,13 +298,7 @@
                                 return false;
                             }
                         });
-                        $("#@Html.FieldIdFor(model => model.SearchZipPostalCode)").keydown(function (event) {
-                            if (event.keyCode == 13) {
-                                $("#search-customers").click();
-                                return false;
-                            }
-                        });
-
+   
                         $('#mastercheckbox').click(function () {
                             $('.checkboxGroups').attr('checked', $(this).is(':checked')).change();
                         });
@@ -385,8 +360,7 @@
                             SearchMonthOfBirth: $('#@Html.FieldIdFor(model => model.SearchMonthOfBirth)').val(),
                             SearchAdmCode: $('#@Html.FieldIdFor(model => model.SearchAdmCode)').val(),
                             SearchDni: $('#@Html.FieldIdFor(model => model.SearchDni)').val(),                  
-                            SearchPhone: $('#@Html.FieldIdFor(model => model.SearchPhone)').val(),
-                            SearchZipPostalCode: $('#@Html.FieldIdFor(model => model.SearchZipPostalCode)').val()
+                            SearchPhone: $('#@Html.FieldIdFor(model => model.SearchPhone)').val()
                         };
                         addAntiForgeryToken(data);
                         return data;

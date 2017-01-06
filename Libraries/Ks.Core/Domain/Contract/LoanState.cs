@@ -9,6 +9,7 @@
         SinLiquidez = 5,
         Anulado = 6,
         PagoPersonal = 7,
-        Devolucion=8
+        Devolucion=8,
+        Cancelado=9
     }
 }

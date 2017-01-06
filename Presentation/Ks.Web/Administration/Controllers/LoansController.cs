@@ -37,6 +37,7 @@ namespace Ks.Admin.Controllers
         private readonly ILocalizationService _localizationService;
         private readonly IExportManager _exportManager;
         private readonly IReturnPaymentService _returnPaymentService;
+        private readonly IWorkContext _workContext;
 
         private readonly BankSettings _bankSettings;
 
@@ -49,7 +50,7 @@ namespace Ks.Admin.Controllers
             IGenericAttributeService genericAttributeService,
             IDateTimeHelper dateTimeHelper, ICustomerActivityService customerActivityService,
             ILocalizationService localizationService, IExportManager exportManager,
-            BankSettings bankSettings,
+            BankSettings bankSettings, IWorkContext workContext,
             IReturnPaymentService returnPaymentService)
         {
             _permissionService = permissionService;
@@ -61,6 +62,7 @@ namespace Ks.Admin.Controllers
             _localizationService = localizationService;
             _exportManager = exportManager;
             _bankSettings = bankSettings;
+            _workContext = workContext;
             _returnPaymentService = returnPaymentService;
         }
 
@@ -202,6 +204,29 @@ namespace Ks.Admin.Controllers
             };
 
             return Json(gridModel);
+        }
+
+        [HttpPost]
+        public ActionResult Delete(int id)
+        {
+            var loan = _loanService.GetLoanById(id);
+            var loanPayments = _loanService.GetAllPayments(loan.Id);
+            foreach (var payment in loanPayments)
+            {
+                if (payment.StateId == (int)LoanState.Pendiente)
+                {
+                    payment.StateId = (int)LoanState.Cancelado;
+                    payment.Description = "Apoyo economico cancelado por el usuario " +
+                                          _workContext.CurrentCustomer.GetFullName();
+                    payment.ProcessedDateOnUtc = DateTime.UtcNow;
+                    _loanService.UpdateLoanPayment(payment);
+                }
+            }
+            loan.Active = false;
+            loan.UpdatedOnUtc = DateTime.UtcNow;
+            _loanService.UpdateLoan(loan);
+            SuccessNotification("El apoyo social ha sido cancelado correctamente");
+            return RedirectToAction("List");
         }
 
         #endregion
@@ -365,12 +390,12 @@ namespace Ks.Admin.Controllers
                 return View(model);
 
             var loan = _loanService.GetLoanById(model.LoanId);
-            var allPayment = _loanService.GetAllPayments( model.LoanId, stateId: (int)LoanState.Pendiente);
+            var allPayment = _loanService.GetAllPayments(model.LoanId, stateId: (int)LoanState.Pendiente);
 
             #region Payed more then One Quota
 
             var countQuotas = 0;
-            var scheduledDateLast = allPayment.Max(x=>x.ScheduledDateOnUtc);
+            var scheduledDateLast = allPayment.Max(x => x.ScheduledDateOnUtc);
             var minQuota = allPayment.Min(x => x.Quota);
             var maxQuota = allPayment.Max(x => x.Quota);
             foreach (var payment in allPayment)
@@ -410,7 +435,7 @@ namespace Ks.Admin.Controllers
 
                         payment.IsAutomatic = false;
                         payment.MonthlyPayed = model.MonthlyPayed;
-                        payment.StateId = (int) LoanState.PagoPersonal;
+                        payment.StateId = (int)LoanState.PagoPersonal;
                         payment.BankName = GetBank(model.BankName);
                         payment.AccountNumber = model.AccountNumber;
                         payment.TransactionNumber = model.TransactionNumber;
@@ -439,8 +464,8 @@ namespace Ks.Admin.Controllers
                             StateId = (int)LoanState.Pendiente,
                             LoanId = model.LoanId,
                             Quota = maxQuota + 1,
-                            MonthlyCapital = Math.Round((newQupta / loan.MonthlyQuota)*payment.MonthlyCapital,2),
-                            MonthlyFee = Math.Round((newQupta / loan.MonthlyQuota)*payment.MonthlyFee,2),
+                            MonthlyCapital = Math.Round((newQupta / loan.MonthlyQuota) * payment.MonthlyCapital, 2),
+                            MonthlyFee = Math.Round((newQupta / loan.MonthlyQuota) * payment.MonthlyFee, 2),
                             MonthlyPayed = 0,
                             MonthlyQuota = newQupta,
                             ScheduledDateOnUtc = scheduledDateLast.AddMonths(1 - countQuotas),
@@ -458,9 +483,9 @@ namespace Ks.Admin.Controllers
                     }
                     else
                     {
-                        payment.ScheduledDateOnUtc = payment.ScheduledDateOnUtc.AddMonths(countQuotas*-1);
+                        payment.ScheduledDateOnUtc = payment.ScheduledDateOnUtc.AddMonths(countQuotas * -1);
                         payment.IsAutomatic = true;
-                        payment.Description = "Couta adelantada debido al pago parcial realizado en el cuota N° " +minQuota;
+                        payment.Description = "Couta adelantada debido al pago parcial realizado en el cuota N° " + minQuota;
 
                         _loanService.UpdateLoanPayment(payment);
                     }
@@ -478,10 +503,10 @@ namespace Ks.Admin.Controllers
                     MonthlyCapital = 0,
                     MonthlyFee = 0,
                     MonthlyPayed = 0,
-                    MonthlyQuota = model.MonthlyPayed*-1,
+                    MonthlyQuota = model.MonthlyPayed * -1,
                     ScheduledDateOnUtc = DateTime.UtcNow,
                     ProcessedDateOnUtc = DateTime.UtcNow,
-                    Description ="Devolucion debido al pago personal realizado el: " +DateTime.Now,
+                    Description = "Devolucion debido al pago personal realizado el: " + DateTime.Now,
                     BankName = "ACMR",
                     AccountNumber = "ACMR",
                     TransactionNumber = "ACMR",
@@ -522,7 +547,7 @@ namespace Ks.Admin.Controllers
         protected virtual LoanPaymentsModel PrepareLoanPayment(LoanPayment loanPayment)
         {
             var model = loanPayment.ToModel();
-            model.Banks = _bankSettings.PrepareBanks(); 
+            model.Banks = _bankSettings.PrepareBanks();
             model.ScheduledDateOn = _dateTimeHelper.ConvertToUserTime(loanPayment.ScheduledDateOnUtc, DateTimeKind.Utc);
             if (loanPayment.ProcessedDateOnUtc.HasValue)
                 model.ProcessedDateOn = _dateTimeHelper.ConvertToUserTime(loanPayment.ProcessedDateOnUtc.Value, DateTimeKind.Utc);

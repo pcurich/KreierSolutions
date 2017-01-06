@@ -3,7 +3,8 @@ using System.Collections.Generic;
 
 namespace Ks.Core.Domain.Contract
 {
-    public class ContributionBenefit : BaseEntity
+    public class 
+        ContributionBenefit : BaseEntity
     {
         private ICollection<ContributionBenefitBank> _contributionBenefitBanks;
         public int BenefitId { get; set; }

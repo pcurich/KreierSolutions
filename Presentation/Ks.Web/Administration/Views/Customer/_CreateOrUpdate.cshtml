@@ -2,6 +2,7 @@
 @model CustomerModel
 @Html.ValidationSummary(false)
 @Html.HiddenFor(model => model.Id)
+@Html.HiddenFor(model => model.Active)
 
 <script>
     $(document).ready(function() {
@@ -29,9 +30,13 @@
             <li @Html.RenderSelectedTabIndex(3, GetSelectedTabIndex())>
                 @T("Admin.Customers.Customers.ActivityLog")
             </li>
-            <li @Html.RenderSelectedTabIndex(4, GetSelectedTabIndex())>
-                @T("Admin.Customers.Customers.Contributions")
-            </li>
+            if (Model.Active)
+            {
+                <li @Html.RenderSelectedTabIndex(4, GetSelectedTabIndex())>
+                    @T("Admin.Customers.Customers.Contributions")
+                </li>
+            }
+
             if (Model.HasContributions)
             {
                 <li @Html.RenderSelectedTabIndex(5, GetSelectedTabIndex())>
@@ -52,12 +57,15 @@
         <div>
             @TabCustomerRoles()
         </div>
-    <div>
+        <div>
             @TabActivityLog()
         </div>
-        <div>
-            @TabContribution()
-        </div>
+        if (Model.Active)
+        {
+            <div>
+                @TabContribution()
+            </div>
+        }
         if (Model.HasContributions)
         {
             <div>
@@ -408,15 +416,6 @@
             <td class="adminData">
                 @Html.TextAreaFor(model => model.AdminComment, new { style = "Width: 250px; Height: 150px;" })
                 @Html.ValidationMessageFor(model => model.AdminComment)
-            </td>
-        </tr>
-        <tr>
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.Active):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.Active)
-                @Html.ValidationMessageFor(model => model.Active)
             </td>
         </tr>
         @if (Model.Id > 0)

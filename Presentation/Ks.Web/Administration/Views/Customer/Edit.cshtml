@@ -2,6 +2,7 @@
 @{
     //page title
     ViewBag.Title = T("Admin.Customers.Customers.EditCustomerDetails").Text;
+    var state = Model.Active ? "Desactivar" : "Activar";
 }
 @using (Html.BeginForm())
 {
@@ -15,12 +16,13 @@
         <div class="options">
             <input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")" />
             <input type="submit" name="save-continue" class="k-button" value="@T("Admin.Common.SaveContinue")" />
-            <span id="customer-delete" class="k-button">@T("Admin.Common.Delete")</span>
+            <span id="customer-delete" class="k-button">@state</span>
         </div>
     </div>
     @Html.Partial("_CreateOrUpdate", Model)
 }
 @Html.DeleteConfirmation("customer-delete")
+  
 
  
 

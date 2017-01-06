@@ -62,6 +62,7 @@ namespace Ks.Admin.Models.Customers
         public int TotalReationShip { get; set; }
         [KsResourceDisplayName("Admin.Customers.Customers.Benefit.CreatedOn")]
         public DateTime CreatedOn { get; set; }
+        public bool Active { get; set;}
         public List<SelectListItem> BenefitModels { get; set; }
  
 

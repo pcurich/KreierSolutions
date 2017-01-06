@@ -118,7 +118,7 @@ namespace Ks.Web.Framework
             });
         }
 
-        public static MvcHtmlString DeleteConfirmation<T>(this HtmlHelper<T> helper, string buttonsSelector) where T : BaseKsEntityModel
+        public static MvcHtmlString DeleteConfirmation<T>(this HtmlHelper<T> helper, string buttonsSelector)
         {
             return DeleteConfirmation(helper, "", buttonsSelector);
         }

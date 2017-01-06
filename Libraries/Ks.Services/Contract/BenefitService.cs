@@ -175,12 +175,12 @@ namespace Ks.Services.Contract
 
         #region ContributionBenefit
 
-        public virtual void DeleteContributionBenefit(ContributionBenefit contributionBenefit)
+        public virtual void DeleteContributionBenefit(ContributionBenefit contributionBenefit )
         {
             if (contributionBenefit == null)
                 throw new ArgumentNullException("contributionBenefit");
-
-            _contributionBenefitRepository.Delete(contributionBenefit);
+ 
+                _contributionBenefitRepository.Delete(contributionBenefit);
 
             //cache
             _cacheManager.RemoveByPattern(CONTRIBUTIONBENEFITS_PATTERN_KEY);
