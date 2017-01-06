@@ -151,10 +151,8 @@ namespace Ks.Services.Helpers
             TimeZoneInfo timeZoneInfo = null;
             if (_dateTimeSettings.AllowCustomersToSetTimeZone)
             {
-                string timeZoneId = string.Empty;
-                if (customer != null)
-                    timeZoneId = customer.GetAttribute<string>(SystemCustomerAttributeNames.TimeZoneId, _genericAttributeService);
-
+                string timeZoneId = "S.A. Pacific Standard Time";
+                
                 try
                 {
                     if (!String.IsNullOrEmpty(timeZoneId))
@@ -220,17 +218,6 @@ namespace Ks.Services.Helpers
             }
             set
             {
-                if (!_dateTimeSettings.AllowCustomersToSetTimeZone)
-                    return;
-
-                string timeZoneId = string.Empty;
-                if (value != null)
-                {
-                    timeZoneId = value.Id;
-                }
-
-                _genericAttributeService.SaveAttribute(_workContext.CurrentCustomer,
-                    SystemCustomerAttributeNames.TimeZoneId, timeZoneId);
             }
         }
     }

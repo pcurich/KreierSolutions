@@ -109,10 +109,7 @@ namespace Ks.Web.Validators.Customer
             {
                 RuleFor(x => x.StreetAddress2).NotEmpty().WithMessage(localizationService.GetResource("Account.Fields.StreetAddress2.Required"));
             }
-            if (customerSettings.ZipPostalCodeRequired && customerSettings.ZipPostalCodeEnabled)
-            {
-                RuleFor(x => x.ZipPostalCode).NotEmpty().WithMessage(localizationService.GetResource("Account.Fields.ZipPostalCode.Required"));
-            }
+           
             if (customerSettings.PhoneRequired && customerSettings.PhoneEnabled)
             {
                 RuleFor(x => x.Phone).NotEmpty().WithMessage(localizationService.GetResource("Account.Fields.Phone.Required"));

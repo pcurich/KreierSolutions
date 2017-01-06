@@ -86,12 +86,6 @@ namespace Ks.Web.Models.Customer
         [AllowHtml]
         public string StreetAddress2 { get; set; }
 
-        public bool ZipPostalCodeEnabled { get; set; }
-        public bool ZipPostalCodeRequired { get; set; }
-        [KsResourceDisplayName("Account.Fields.ZipPostalCode")]
-        [AllowHtml]
-        public string ZipPostalCode { get; set; }
-
         public bool CountryEnabled { get; set; }
         public bool CountryRequired { get; set; }
         [KsResourceDisplayName("Account.Fields.Country")]

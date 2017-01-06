@@ -26,9 +26,6 @@
             <li @Html.RenderSelectedTabIndex(1, GetSelectedTabIndex())>
                 @T("Admin.Customers.Customers.CustomerRoles")
             </li>
-            <li @Html.RenderSelectedTabIndex(2, GetSelectedTabIndex())>
-                @T("Admin.Customers.Customers.Addresses")
-            </li>
             <li @Html.RenderSelectedTabIndex(3, GetSelectedTabIndex())>
                 @T("Admin.Customers.Customers.ActivityLog")
             </li>
@@ -55,10 +52,7 @@
         <div>
             @TabCustomerRoles()
         </div>
-        <div>
-            @TabAddresses()
-        </div>
-        <div>
+    <div>
             @TabActivityLog()
         </div>
         <div>
@@ -161,7 +155,7 @@
                     </td>
                     <td class="adminData">
                         @Html.EditorFor(model => model.Username)
-                       @Html.ValidationMessageFor(model => model.Username)
+                        @Html.ValidationMessageFor(model => model.Username)
                     </td>
                 </tr>
             }
@@ -208,19 +202,19 @@
                 </td>
                 <td class="adminData">
                     <div class="gender">
-                        @Html.RadioButton("Gender", "M", (Model.Gender == "M"), new {id = "Gender_Male"})
+                        @Html.RadioButton("Gender", "M", (Model.Gender == "M"), new { id = "Gender_Male" })
                         <label class="forcheckbox" for="Gender_Male">@T("Admin.Customers.Customers.Fields.Gender.Male")</label>
                     </div>
                     <div class="gender">
-                        @Html.RadioButton("Gender", "F", (Model.Gender == "F"), new {id = "Gender_Female"})
+                        @Html.RadioButton("Gender", "F", (Model.Gender == "F"), new { id = "Gender_Female" })
                         <label class="forcheckbox" for="Gender_Female">@T("Admin.Customers.Customers.Fields.Gender.Female")</label>
                     </div>
-                        @if (Model.GenderRequired)
-                        {
-                            @Html.RequiredHint()
-                        }
+                    @if (Model.GenderRequired)
+                    {
+                        @Html.RequiredHint()
+                    }
                 </td>
-               
+
             </tr>
         }
         <tr>
@@ -277,6 +271,16 @@
                 @Html.RequiredHint()
             </td>
         </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.DateOfAdmission):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.DateOfAdmission)
+                @Html.RequiredHint()
+                @Html.ValidationMessageFor(model => model.DateOfAdmission)
+            </td>
+        </tr>
         @if (Model.DateOfBirthEnabled)
         {
             <tr>
@@ -317,18 +321,7 @@
                 </td>
             </tr>
         }
-        @if (Model.ZipPostalCodeEnabled)
-        {
-            <tr>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.ZipPostalCode):
-                </td>
-                <td class="adminData">
-                    @Html.EditorFor(model => model.ZipPostalCode)
-                    @Html.ValidationMessageFor(model => model.ZipPostalCode)
-                </td>
-            </tr>
-        }
+
         @if (Model.CountryEnabled)
         {
             <tr>
@@ -336,13 +329,13 @@
                     @Html.KsLabelFor(model => model.CountryId):
                 </td>
                 <td class="adminData">
-                    @Html.DropDownList("CountryId", Model.AvailableCountries)
+                    @Html.DropDownListFor(model => model.CountryId, Model.AvailableCountries)
                     @Html.ValidationMessageFor(model => model.CountryId)
                     @*<script>
-                            $(document).ready(function() {
-                                $('#CountryId').kendoDropDownList();
-                            });
-                        </script>*@
+                        $(document).ready(function () {
+                            $('#@Html.FieldIdFor(model => model.CountryId)').width(250).kendoDropDownList();
+                        });
+                    </script>*@
                 </td>
             </tr>
         }
@@ -353,13 +346,13 @@
                     @Html.KsLabelFor(model => model.StateProvinceId):
                 </td>
                 <td class="adminData">
-                    @Html.DropDownList("StateProvinceId", Model.AvailableStates)
+                    @Html.DropDownListFor(model => model.StateProvinceId, Model.AvailableStates)
                     @Html.ValidationMessageFor(model => model.StateProvinceId)
                     @*<script>
-                            $(document).ready(function() {
-                                $('#StateProvinceId').kendoDropDownList();
-                            });
-                        </script>*@
+                        $(document).ready(function () {
+                            $('#@Html.FieldIdFor(model => model.StateProvinceId)').width(250).kendoDropDownList();
+                        });
+                    </script>*@
                 </td>
             </tr>
         }
@@ -367,16 +360,16 @@
         {
             <tr>
                 <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.City):
+                    @Html.KsLabelFor(model => model.CityId):
                 </td>
                 <td class="adminData">
-                    @Html.DropDownList("CityId", Model.AvailableCities)
+                    @Html.DropDownListFor(model => model.CityId, Model.AvailableCities)
                     @Html.ValidationMessageFor(model => model.CityId)
                     @*<script>
-                            $(document).ready(function() {
-                                $('#CityId').kendoDropDownList();
-                            });
-                        </script>*@
+                        $(document).ready(function () {
+                            $('#@Html.FieldIdFor(model => model.CityId)').width(250).kendoDropDownList();
+                        });
+                    </script>*@
                 </td>
             </tr>
         }
@@ -417,18 +410,6 @@
                 @Html.ValidationMessageFor(model => model.AdminComment)
             </td>
         </tr>
-        @if (Model.AllowCustomersToSetTimeZone)
-        {
-            <tr>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.TimeZoneId):
-                </td>
-                <td class="adminData">
-                    @Html.DropDownList("TimeZoneId", Model.AvailableTimeZones)
-                    @Html.ValidationMessageFor(model => model.TimeZoneId)
-                </td>
-            </tr>
-        }
         <tr>
             <td class="adminTitle">
                 @Html.KsLabelFor(model => model.Active):
@@ -500,94 +481,6 @@
     {
         @T("Admin.Customers.Customers.Fields.CustomerRoles.NoRoles")
     }
-}
-
-@helper TabAddresses()
-{
-    <div id="customer-addresses-grid"></div>
-
-    <script>
-        $(document).ready(function () {
-            $("#customer-addresses-grid").kendoGrid({
-                dataSource: {
-                    type: "json",
-                    transport: {
-                        read: {
-                            url: "@Html.Raw(Url.Action("AddressesSelect", "Customer", new { customerId = Model.Id }))",
-                            type: "POST",
-                            dataType: "json",
-                            data: addAntiForgeryToken
-                        },
-                        destroy: {
-                            url: "@Html.Raw(Url.Action("AddressDelete", "Customer", new { customerId = Model.Id }))",
-                            type: "POST",
-                            dataType: "json",
-                            data: addAntiForgeryToken
-                        }
-                    },
-                    schema: {
-                        data: "Data",
-                        total: "Total",
-                        errors: "Errors",
-                        model: {
-                            id: "Id"
-                        }
-                    },
-                    error: function (e) {
-                        display_kendoui_grid_error(e);
-                        // Cancel the changes
-                        this.cancelChanges();
-                    },
-                    serverPaging: true,
-                    serverFiltering: true,
-                    serverSorting: true
-                },
-                pageable: {
-                    refresh: true,
-                    numeric: false,
-                    previousNext: false,
-                    info: false
-                },
-                editable: {
-                    confirmation: false,
-                    mode: "inline"
-                },
-                scrollable: false,
-                columns: [{
-                    field: "FirstName",
-                    title: "@T("Admin.Address.Fields.FirstName")"
-                }, {
-                    field: "LastName",
-                    title: "@T("Admin.Address.Fields.LastName")"
-                }, {
-                    field: "Email",
-                    title: "@T("Admin.Address.Fields.Email")"
-                }, {
-                    field: "PhoneNumber",
-                    title: "@T("Admin.Address.Fields.PhoneNumber")"
-                }, {
-                    field: "FaxNumber",
-                    title: "@T("Admin.Address.Fields.FaxNumber")"
-                }, {
-                    field: "AddressHtml",
-                    title: "@T("Admin.Address")",
-                    encoded: false
-                }, {
-                    field: "Id",
-                    title: "@T("Admin.Common.Edit")",
-                    width: 100,
-                    template: '<a href="@Url.Content("~/Admin/Customer/AddressEdit?customerId=")@Model.Id&addressid=#=Id#">@T("Admin.Common.Edit")</a>'
-                }, {
-                    command: { name: "destroy", text: "@T("Admin.Common.Delete")" },
-                    title: "@T("Admin.Common.Delete")",
-                    width: 100
-                }]
-            });
-        });
-    </script>
-    <p>
-        <input type="button" class="k-button" onclick="location.href='@Url.Action("AddressCreate", new { customerId = Model.Id })'" value='@T("Admin.Customers.Customers.Addresses.AddButton")' />
-    </p>
 }
 
 @helper TabActivityLog()
@@ -740,7 +633,7 @@
                 </table>
             </div>
             <div style="width: 60%; float: right;">
-                @Html.Partial("_CreateOrUpdateChartContribution",Model.Contribution)
+                @Html.Partial("_CreateOrUpdateChartContribution", Model.Contribution)
             </div>
         </div>
 
@@ -759,82 +652,82 @@
     {
         <ul id="panelbarloans">
             @{
-                foreach (var loan in Model.LoanModels)
-                {
-                    var loan1 = loan;
-                    <li>
-                        <span class="k-link">@loan.LoanNumber</span>
-                        <div style="padding: 10px;">
-                            <table class="adminContent">
-                                <tr>
-                                    <td class="adminTitle">
-                                        @Html.KsLabelFor(model => loan1.Period):
-                                    </td>
-                                    <td class="adminData">
-                                        @loan1.Period - (@T("Common.Month"))
-                                    </td>
-                                    <td class="adminTitle">
-                                        @Html.KsLabelFor(model => loan1.LoanAmount):
-                                    </td>
-                                    <td class="adminData">
-                                        @loan1.LoanAmount.ToString("c", new CultureInfo("es-PE"))
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="adminTitle">
-                                        @Html.KsLabelFor(model => loan1.Tea):
-                                    </td>
-                                    <td class="adminData">
-                                        @loan1.Tea %
-                                    </td>
-                                    <td class="adminTitle">
-                                        @Html.KsLabelFor(model => loan1.Safe):
-                                    </td>
-                                    <td class="adminData">
-                                        @loan1.Safe %
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="adminTitle">
-                                        @Html.KsLabelFor(model => loan1.TotalFeed):
-                                    </td>
-                                    <td class="adminData">
-                                        @loan1.TotalFeed.ToString("c", new CultureInfo("es-PE"))
-                                    </td>
-                                    <td class="adminTitle">
-                                        @Html.KsLabelFor(model => loan1.TotalSafe):
-                                    </td>
-                                    <td class="adminData">
-                                        @loan1.TotalSafe.ToString("c", new CultureInfo("es-PE"))
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="adminTitle">
-                                        @Html.KsLabelFor(model => loan1.MonthlyQuota):
-                                    </td>
-                                    <td class="adminData">
-                                        @loan1.MonthlyQuota.ToString("c", new CultureInfo("es-PE"))
-                                    </td>
-                                    <td class="adminTitle">
-                                        @Html.KsLabelFor(model => loan1.TotalAmount):
-                                    </td>
-                                    <td class="adminData">
-                                        @loan1.TotalAmount.ToString("c", new CultureInfo("es-PE"))
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="adminTitle">
-                                        @Html.KsLabelFor(model => loan1.TotalToPay):
-                                    </td>
-                                    <td class="adminData">
-                                        @loan1.TotalToPay.ToString("c", new CultureInfo("es-PE"))
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                    </li>
+        foreach (var loan in Model.LoanModels)
+        {
+            var loan1 = loan;
+            <li>
+                <span class="k-link">@loan.LoanNumber</span>
+                <div style="padding: 10px;">
+                    <table class="adminContent">
+                        <tr>
+                            <td class="adminTitle">
+                                @Html.KsLabelFor(model => loan1.Period):
+                            </td>
+                            <td class="adminData">
+                                @loan1.Period - (@T("Common.Month"))
+                            </td>
+                            <td class="adminTitle">
+                                @Html.KsLabelFor(model => loan1.LoanAmount):
+                            </td>
+                            <td class="adminData">
+                                @loan1.LoanAmount.ToString("c", new CultureInfo("es-PE"))
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="adminTitle">
+                                @Html.KsLabelFor(model => loan1.Tea):
+                            </td>
+                            <td class="adminData">
+                                @loan1.Tea %
+                            </td>
+                            <td class="adminTitle">
+                                @Html.KsLabelFor(model => loan1.Safe):
+                            </td>
+                            <td class="adminData">
+                                @loan1.Safe %
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="adminTitle">
+                                @Html.KsLabelFor(model => loan1.TotalFeed):
+                            </td>
+                            <td class="adminData">
+                                @loan1.TotalFeed.ToString("c", new CultureInfo("es-PE"))
+                            </td>
+                            <td class="adminTitle">
+                                @Html.KsLabelFor(model => loan1.TotalSafe):
+                            </td>
+                            <td class="adminData">
+                                @loan1.TotalSafe.ToString("c", new CultureInfo("es-PE"))
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="adminTitle">
+                                @Html.KsLabelFor(model => loan1.MonthlyQuota):
+                            </td>
+                            <td class="adminData">
+                                @loan1.MonthlyQuota.ToString("c", new CultureInfo("es-PE"))
+                            </td>
+                            <td class="adminTitle">
+                                @Html.KsLabelFor(model => loan1.TotalAmount):
+                            </td>
+                            <td class="adminData">
+                                @loan1.TotalAmount.ToString("c", new CultureInfo("es-PE"))
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="adminTitle">
+                                @Html.KsLabelFor(model => loan1.TotalToPay):
+                            </td>
+                            <td class="adminData">
+                                @loan1.TotalToPay.ToString("c", new CultureInfo("es-PE"))
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </li>
 
-                }
+        }
             }
         </ul>
 
@@ -847,7 +740,7 @@
         </script>
     }
     <p>
-        <input type="button" class="k-button" onclick="location.href='@Url.Action("LoanCreate", new {customerId = Model.Id})' " value='@T("Admin.Customers.Customers.Loan.AddButton")'/>
+        <input type="button" class="k-button" onclick="location.href='@Url.Action("LoanCreate", new {customerId = Model.Id})' " value='@T("Admin.Customers.Customers.Loan.AddButton")' />
     </p>
 }
 
@@ -855,4 +748,4 @@
 {
     @Html.Partial("_CreateOrUpdateBenefit", Model)
 }
-     
+

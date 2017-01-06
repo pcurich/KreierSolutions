@@ -36,15 +36,6 @@ namespace Ks.Admin.Models.Settings
             [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.UserRegistrationType")]
             public int UserRegistrationType { get; set; }
 
-            [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.AllowCustomersToUploadAvatars")]
-            public bool AllowCustomersToUploadAvatars { get; set; }
-
-            [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.DefaultAvatarEnabled")]
-            public bool DefaultAvatarEnabled { get; set; }
-
-            [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.ShowCustomersLocation")]
-            public bool ShowCustomersLocation { get; set; }
-
             [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.ShowCustomersJoinDate")]
             public bool ShowCustomersJoinDate { get; set; }
 
@@ -72,24 +63,18 @@ namespace Ks.Admin.Models.Settings
             [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.DefaultPasswordFormat")]
             public int DefaultPasswordFormat { get; set; }
 
-            [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.NewsletterEnabled")]
-            public bool NewsletterEnabled { get; set; }
-
-            [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.NewsletterTickedByDefault")]
-            public bool NewsletterTickedByDefault { get; set; }
-
-            [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.HideNewsletterBlock")]
-            public bool HideNewsletterBlock { get; set; }
-
-            [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.NewsletterBlockAllowToUnsubscribe")]
-            public bool NewsletterBlockAllowToUnsubscribe { get; set; }
-
             [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.StoreLastVisitedPage")]
             public bool StoreLastVisitedPage { get; set; }
 
 
-
-
+            [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.AdmiCodeEnabled")]
+            public bool AdmiCodeEnabled { get; set; }
+            [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.AdmiCodeRequired")]
+            public bool AdmiCodeRequired { get; set; }
+            [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.DniEnabled")]
+            public bool DniEnabled { get; set; }
+            [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.DniRequired")]
+            public bool DniRequired { get; set; }
             [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.GenderEnabled")]
             public bool GenderEnabled { get; set; }
             [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.GenderRequired")]
@@ -114,16 +99,6 @@ namespace Ks.Admin.Models.Settings
             [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.StreetAddress2Required")]
             public bool StreetAddress2Required { get; set; }
 
-            [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.ZipPostalCodeEnabled")]
-            public bool ZipPostalCodeEnabled { get; set; }
-            [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.ZipPostalCodeRequired")]
-            public bool ZipPostalCodeRequired { get; set; }
-
-            [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.CityEnabled")]
-            public bool CityEnabled { get; set; }
-            [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.CityRequired")]
-            public bool CityRequired { get; set; }
-
             [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.CountryEnabled")]
             public bool CountryEnabled { get; set; }
             [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.CountryRequired")]
@@ -133,6 +108,11 @@ namespace Ks.Admin.Models.Settings
             public bool StateProvinceEnabled { get; set; }
             [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.StateProvinceRequired")]
             public bool StateProvinceRequired { get; set; }
+
+            [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.CityEnabled")]
+            public bool CityEnabled { get; set; }
+            [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.CityRequired")]
+            public bool CityRequired { get; set; }
 
             [KsResourceDisplayName("Admin.Configuration.Settings.CustomerUser.PhoneEnabled")]
             public bool PhoneEnabled { get; set; }

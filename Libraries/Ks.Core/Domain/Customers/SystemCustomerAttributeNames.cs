@@ -10,12 +10,12 @@
         public static string AdmCode { get { return "AdmCode"; } }
         public static string Dni { get { return "Dni"; } }
         public static string MilitarySituationId { get { return "MilitarySituationId"; } }
+        public static string DateOfAdmission { get { return "DateOfAdmission"; } }
 
         public static string DateOfBirth { get { return "DateOfBirth"; } }
         public static string StreetAddress { get { return "StreetAddress"; } }
         public static string StreetAddress2 { get { return "StreetAddress2"; } }
-        public static string ZipPostalCode { get { return "ZipPostalCode"; } }
-        
+       
         public static string CityId { get { return "CityId"; } }
         public static string CountryId { get { return "CountryId"; } }
         public static string StateProvinceId { get { return "StateProvinceId"; } }
@@ -32,7 +32,6 @@
         //depends on System
         public static string CurrencyId { get { return "CurrencyId"; } }
         public static string LanguageId { get { return "LanguageId"; } }
-        public static string TimeZoneId { get { return "TimeZoneId"; } }
         public static string LanguageAutomaticallyDetected { get { return "LanguageAutomaticallyDetected"; } }
         public static string WorkingThemeName { get { return "WorkingThemeName"; } }
 

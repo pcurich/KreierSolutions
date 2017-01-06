@@ -23,6 +23,11 @@ namespace Ks.Admin.Validators.Customers
                     .NotEqual(0)
                     .WithMessage(localizationService.GetResource("Account.Fields.Country.Required"));
             }
+            if (customerSettings.CityRequired && customerSettings.CityEnabled)
+                RuleFor(x => x.CityId)
+                    .NotEmpty()
+                    .WithMessage(localizationService.GetResource("Admin.Customers.Customers.Fields.City.Required"));
+
             if (customerSettings.CountryEnabled &&
                 customerSettings.StateProvinceEnabled &&
                 customerSettings.StateProvinceRequired)
@@ -54,15 +59,8 @@ namespace Ks.Admin.Validators.Customers
                     .NotEmpty()
                     .WithMessage(
                         localizationService.GetResource("Admin.Customers.Customers.Fields.StreetAddress2.Required"));
-            if (customerSettings.ZipPostalCodeRequired && customerSettings.ZipPostalCodeEnabled)
-                RuleFor(x => x.ZipPostalCode)
-                    .NotEmpty()
-                    .WithMessage(
-                        localizationService.GetResource("Admin.Customers.Customers.Fields.ZipPostalCode.Required"));
-            if (customerSettings.CityRequired && customerSettings.CityEnabled)
-                RuleFor(x => x.City)
-                    .NotEmpty()
-                    .WithMessage(localizationService.GetResource("Admin.Customers.Customers.Fields.City.Required"));
+
+
             if (customerSettings.PhoneRequired && customerSettings.PhoneEnabled)
                 RuleFor(x => x.Phone)
                     .NotEmpty()
@@ -71,7 +69,14 @@ namespace Ks.Admin.Validators.Customers
                 RuleFor(x => x.Fax)
                     .NotEmpty()
                     .WithMessage(localizationService.GetResource("Admin.Customers.Customers.Fields.Fax.Required"));
-
+            if (customerSettings.AdmiCodeRequired && customerSettings.AdmiCodeEnabled)
+                RuleFor(x => x.AdmCode)
+                    .NotEmpty()
+                    .WithMessage(localizationService.GetResource("Admin.Customers.Customers.Fields.AdmCode.Required"));
+            if (customerSettings.DniRequired && customerSettings.DniEnabled)
+                RuleFor(x => x.Dni)
+                    .NotEmpty()
+                    .WithMessage(localizationService.GetResource("Admin.Customers.Customers.Fields.Dni.Required"));
             RuleFor(x => x.MilitarySituationId)
                 .GreaterThan(0)
                 .WithMessage(
@@ -81,18 +86,18 @@ namespace Ks.Admin.Validators.Customers
             {
                 if (x.AdmCode == null || x.AdmCode.Length != 9)
                     return new ValidationFailure("AdmCode",
-                        localizationService.GetResource("Account.Fields.AdmCode.Length"));
+                        localizationService.GetResource("Admin.Customers.Customers.Fields.AdmCode.Length"));
 
                 if (customerService.GetCustomerByAdmCode(x.AdmCode.Trim()) != null && x.Id==0)
                     return new ValidationFailure("AdmCode",
-                        localizationService.GetResource("Account.Fields.AdmCode.IsRegister"));
+                        localizationService.GetResource("Admin.Customers.Customers.Fields.AdmCode.IsRegister"));
 
                 if (x.Dni == null || x.Dni.Length != 8)
-                    return new ValidationFailure("Dni", localizationService.GetResource("Account.Fields.Dni.Length"));
+                    return new ValidationFailure("Dni", localizationService.GetResource("Admin.Customers.Customers.Fields.Dni.Length"));
 
                 if (customerService.GetCustomerByDni(x.Dni.Trim()) != null && x.Id == 0)
                     return new ValidationFailure("Dni",
-                        localizationService.GetResource("Account.Fields.Dni.IsRegister"));
+                        localizationService.GetResource("Admin.Customers.Customers.Fields.Dni.IsRegister"));
 
                 return null;
             });

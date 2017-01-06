@@ -113,8 +113,7 @@ namespace Ks.Services.Customers
             DateTime? createdToUtc = null, int[] customerRoleIds = null, string email = null, string username = null,
             string firstName = null, string lastName = null,
             int dayOfBirth = 0, int monthOfBirth = 0, string admCode = null, string dni = null,
-            string phone = null, string zipPostalCode = null,
-            int pageIndex = 0, int pageSize = 2147483647)
+            string phone = null, int pageIndex = 0, int pageSize = 2147483647)
         {
             var query = _customerRepository.Table;
             if (createdFromUtc.HasValue)
@@ -222,16 +221,6 @@ namespace Ks.Services.Customers
                     .Where((z => z.Attribute.KeyGroup == "Customer" &&
                         z.Attribute.Key == SystemCustomerAttributeNames.Phone &&
                         z.Attribute.Value.Contains(phone)))
-                    .Select(z => z.Customer);
-            }
-            //search by zip
-            if (!String.IsNullOrWhiteSpace(zipPostalCode))
-            {
-                query = query
-                    .Join(_gaRepository.Table, x => x.Id, y => y.EntityId, (x, y) => new { Customer = x, Attribute = y })
-                    .Where((z => z.Attribute.KeyGroup == "Customer" &&
-                        z.Attribute.Key == SystemCustomerAttributeNames.ZipPostalCode &&
-                        z.Attribute.Value.Contains(zipPostalCode)))
                     .Select(z => z.Customer);
             }
 

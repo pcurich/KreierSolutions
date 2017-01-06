@@ -219,7 +219,6 @@ namespace Ks.Admin.Controllers
                 Username = customer.Username,
                 FullName = customer.GetFullName(),
                 Phone = customer.GetAttribute<string>(SystemCustomerAttributeNames.Phone),
-                ZipPostalCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.ZipPostalCode),
                 CustomerRoleNames = GetCustomerRolesNames(customer.CustomerRoles.ToList()),
                 Active = customer.Active,
                 CreatedOn = _dateTimeHelper.ConvertToUserTime(customer.CreatedOnUtc, DateTimeKind.Utc),
@@ -354,7 +353,6 @@ namespace Ks.Admin.Controllers
                     model.AdminComment = customer.AdminComment;
                     model.Active = customer.Active;
 
-                    model.TimeZoneId = customer.GetAttribute<string>(SystemCustomerAttributeNames.TimeZoneId);
                     model.CreatedOn = _dateTimeHelper.ConvertToUserTime(customer.CreatedOnUtc, DateTimeKind.Utc);
                     model.LastActivityDate = _dateTimeHelper.ConvertToUserTime(customer.LastActivityDateUtc, DateTimeKind.Utc);
                     model.LastIpAddress = customer.LastIpAddress;
@@ -367,11 +365,11 @@ namespace Ks.Admin.Controllers
                     model.AdmCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode);
                     model.Dni = customer.GetAttribute<string>(SystemCustomerAttributeNames.Dni);
                     model.MilitarySituationId = customer.GetAttribute<int>(SystemCustomerAttributeNames.MilitarySituationId);
+                    model.DateOfAdmission = customer.GetAttribute<DateTime?>(SystemCustomerAttributeNames.DateOfAdmission);
                     model.Gender = customer.GetAttribute<string>(SystemCustomerAttributeNames.Gender);
                     model.DateOfBirth = customer.GetAttribute<DateTime?>(SystemCustomerAttributeNames.DateOfBirth);
                     model.StreetAddress = customer.GetAttribute<string>(SystemCustomerAttributeNames.StreetAddress);
                     model.StreetAddress2 = customer.GetAttribute<string>(SystemCustomerAttributeNames.StreetAddress2);
-                    model.ZipPostalCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.ZipPostalCode);
                     model.CountryId = customer.GetAttribute<int>(SystemCustomerAttributeNames.CountryId);
                     model.StateProvinceId = customer.GetAttribute<int>(SystemCustomerAttributeNames.StateProvinceId);
                     model.CityId = customer.GetAttribute<int>(SystemCustomerAttributeNames.CityId);
@@ -383,9 +381,6 @@ namespace Ks.Admin.Controllers
 
             model.UsernamesEnabled = _customerSettings.UsernamesEnabled;
             model.AllowUsersToChangeUsernames = _customerSettings.AllowUsersToChangeUsernames;
-            model.AllowCustomersToSetTimeZone = _dateTimeSettings.AllowCustomersToSetTimeZone;
-            foreach (var tzi in _dateTimeHelper.GetSystemTimeZones())
-                model.AvailableTimeZones.Add(new SelectListItem { Text = tzi.DisplayName, Value = tzi.Id, Selected = (tzi.Id == model.TimeZoneId) });
 
             PrepareCustomerAttributeModel(model, customer);
 
@@ -395,15 +390,15 @@ namespace Ks.Admin.Controllers
             model.DateOfBirthRequired = _customerSettings.DateOfBirthRequired;
             model.StreetAddressEnabled = _customerSettings.StreetAddressEnabled;
             model.StreetAddress2Enabled = _customerSettings.StreetAddress2Enabled;
-            model.ZipPostalCodeEnabled = _customerSettings.ZipPostalCodeEnabled;
             model.CityEnabled = _customerSettings.CityEnabled;
             model.CountryEnabled = _customerSettings.CountryEnabled;
             model.StateProvinceEnabled = _customerSettings.StateProvinceEnabled;
             model.PhoneEnabled = _customerSettings.PhoneEnabled;
             model.FaxEnabled = _customerSettings.FaxEnabled;
 
-            model.AvailableMilitarySituations = CustomerMilitarySituation.Actividad.ToSelectList().ToList();
+            model.AvailableMilitarySituations = Ks.Web.Framework.Extensions.GetDescriptions(typeof(CustomerMilitarySituation));
             model.AvailableMilitarySituations.Insert(0, new SelectListItem { Value = "0", Text = "-------------" });
+ 
 
             //countries and states
             if (_customerSettings.CountryEnabled)
@@ -669,7 +664,6 @@ namespace Ks.Admin.Controllers
                 MonthOfBirthValues = DateTime.Now.GetMonthsList(_localizationService),
                 DayOfBirthValues = DateTime.Now.GetDaysList(_localizationService),
                 PhoneEnabled = _customerSettings.PhoneEnabled,
-                ZipPostalCodeEnabled = _customerSettings.ZipPostalCodeEnabled,
                 AvailableCustomerRoles = _customerService.GetAllCustomerRoles(true).Select(cr => cr.ToModel()).ToList(),
                 SearchCustomerRoleIds = defaultRoleIds,
             };
@@ -702,7 +696,6 @@ namespace Ks.Admin.Controllers
                 admCode: model.SearchAdmCode,
                 dni: model.SearchDni,
                 phone: model.SearchPhone,
-                zipPostalCode: model.SearchZipPostalCode,
                 pageIndex: command.Page - 1,
                 pageSize: command.PageSize);
             var gridModel = new DataSourceResult
@@ -784,8 +777,6 @@ namespace Ks.Admin.Controllers
                 _customerService.InsertCustomer(customer);
 
                 //form fields
-                if (_dateTimeSettings.AllowCustomersToSetTimeZone)
-                    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.TimeZoneId, model.TimeZoneId);
                 if (_customerSettings.GenderEnabled)
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Gender, model.Gender);
                 _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.FirstName, model.FirstName);
@@ -793,15 +784,14 @@ namespace Ks.Admin.Controllers
                 _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.AdmCode, model.AdmCode);
                 _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Dni, model.Dni);
                 _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.MilitarySituationId, model.MilitarySituationId);
+                _genericAttributeService.SaveAttribute(customer,SystemCustomerAttributeNames.DateOfAdmission,model.DateOfAdmission);
                 if (_customerSettings.DateOfBirthEnabled)
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.DateOfBirth, model.DateOfBirth);
                if (_customerSettings.StreetAddressEnabled)
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.StreetAddress, model.StreetAddress);
                 if (_customerSettings.StreetAddress2Enabled)
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.StreetAddress2, model.StreetAddress2);
-                if (_customerSettings.ZipPostalCodeEnabled)
-                    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.ZipPostalCode, model.ZipPostalCode);
-                if (_customerSettings.CountryEnabled)
+               if (_customerSettings.CountryEnabled)
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.CountryId, model.CountryId);
                 if (_customerSettings.CountryEnabled && _customerSettings.StateProvinceEnabled)
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.StateProvinceId, model.StateProvinceId);
@@ -927,8 +917,6 @@ namespace Ks.Admin.Controllers
 
 
                     //form fields
-                    if (_dateTimeSettings.AllowCustomersToSetTimeZone)
-                        _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.TimeZoneId, model.TimeZoneId);
                     if (_customerSettings.GenderEnabled)
                         _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Gender, model.Gender);
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.FirstName, model.FirstName);
@@ -936,14 +924,13 @@ namespace Ks.Admin.Controllers
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.AdmCode, model.AdmCode);
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Dni, model.Dni);
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.MilitarySituationId, model.MilitarySituationId);
+                    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.DateOfAdmission, model.DateOfAdmission);
                     if (_customerSettings.DateOfBirthEnabled)
                         _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.DateOfBirth, model.DateOfBirth);
                     if (_customerSettings.StreetAddressEnabled)
                         _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.StreetAddress, model.StreetAddress);
                     if (_customerSettings.StreetAddress2Enabled)
                         _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.StreetAddress2, model.StreetAddress2);
-                    if (_customerSettings.ZipPostalCodeEnabled)
-                        _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.ZipPostalCode, model.ZipPostalCode);
                     if (_customerSettings.CountryEnabled)
                         _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.CountryId, model.CountryId);
                     if (_customerSettings.CountryEnabled && _customerSettings.StateProvinceEnabled)

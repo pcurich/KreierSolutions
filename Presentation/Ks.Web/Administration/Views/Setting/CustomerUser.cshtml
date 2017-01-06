@@ -45,9 +45,6 @@
             <li @Html.RenderSelectedTabIndex(3, GetSelectedTabIndex())>
                 @T("Admin.Configuration.Settings.CustomerUser.DateTimeSettings")
             </li>
-            @*<li @Html.RenderSelectedTabIndex(4, GetSelectedTabIndex())>
-                @T("Admin.Configuration.Settings.CustomerUser.ExternalAuthenticationSettings")
-            </li>*@
         </ul>
         <div>
             @TabCustomerSettings()
@@ -61,9 +58,6 @@
         <div>
             @TabDateTimeSettings()
         </div>
-        @*<div>
-            @TabExternalAuthenticationSettings()
-        </div>*@
     </div>
 
     {
@@ -85,22 +79,10 @@
     <script type="text/javascript">
         $(document).ready(function () {
 
-            $("#@Html.FieldIdFor(model => model.CustomerSettings.AllowCustomersToUploadAvatars)").click(toggleAvatar);
             $("#@Html.FieldIdFor(model => model.CustomerSettings.UsernamesEnabled)").click(toggleUsername);
-
-
-            toggleAvatar();
             toggleUsername();
         });
 
-        function toggleAvatar() {
-            if ($('#@Html.FieldIdFor(model => model.CustomerSettings.AllowCustomersToUploadAvatars)').is(':checked')) {
-                $('#pnlDefaultAvatarEnabled').show();
-            }
-            else {
-                $('#pnlDefaultAvatarEnabled').hide();
-            }
-        }
 
         function toggleUsername() {
             if ($('#@Html.FieldIdFor(model => model.CustomerSettings.UsernamesEnabled)').is(':checked')) {
@@ -149,33 +131,6 @@
             <td class="adminData">
                 @Html.DropDownListFor(model => model.CustomerSettings.UserRegistrationType, ((UserRegistrationType)Model.CustomerSettings.UserRegistrationType).ToSelectList())
                 @Html.ValidationMessageFor(model => model.CustomerSettings.UserRegistrationType)
-            </td>
-        </tr>
-        <tr>
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.CustomerSettings.AllowCustomersToUploadAvatars):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.CustomerSettings.AllowCustomersToUploadAvatars)
-                @Html.ValidationMessageFor(model => model.CustomerSettings.AllowCustomersToUploadAvatars)
-            </td>
-        </tr>
-        <tr id="pnlDefaultAvatarEnabled">
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.CustomerSettings.DefaultAvatarEnabled):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.CustomerSettings.DefaultAvatarEnabled)
-                @Html.ValidationMessageFor(model => model.CustomerSettings.DefaultAvatarEnabled)
-            </td>
-        </tr>
-        <tr>
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.CustomerSettings.ShowCustomersLocation):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.CustomerSettings.ShowCustomersLocation)
-                @Html.ValidationMessageFor(model => model.CustomerSettings.ShowCustomersLocation)
             </td>
         </tr>
         <tr>
@@ -261,24 +216,6 @@
         </tr>
         <tr>
             <td class="adminTitle">
-                @Html.KsLabelFor(model => model.CustomerSettings.HideNewsletterBlock):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.CustomerSettings.HideNewsletterBlock)
-                @Html.ValidationMessageFor(model => model.CustomerSettings.HideNewsletterBlock)
-            </td>
-        </tr>
-        <tr id="pnlNewsletterBlockAllowToUnsubscribe">
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.CustomerSettings.NewsletterBlockAllowToUnsubscribe):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.CustomerSettings.NewsletterBlockAllowToUnsubscribe)
-                @Html.ValidationMessageFor(model => model.CustomerSettings.NewsletterBlockAllowToUnsubscribe)
-            </td>
-        </tr>
-        <tr>
-            <td class="adminTitle">
                 @Html.KsLabelFor(model => model.CustomerSettings.StoreLastVisitedPage):
             </td>
             <td class="adminData">
@@ -292,29 +229,23 @@
 {
     <script type="text/javascript">
         $(document).ready(function () {
-
+            $("#@Html.FieldIdFor(model => model.CustomerSettings.AdmiCodeEnabled)").click(toggleCustomerRequiredFormField);
+            $("#@Html.FieldIdFor(model => model.CustomerSettings.DniEnabled)").click(toggleCustomerRequiredFormField);
             $("#@Html.FieldIdFor(model => model.CustomerSettings.DateOfBirthEnabled)").click(toggleCustomerRequiredFormField);
             $("#@Html.FieldIdFor(model => model.CustomerSettings.DateOfBirthRequired)").click(toggleCustomerRequiredFormField);
-            $("#@Html.FieldIdFor(model => model.CustomerSettings.CountryEnabled)").click(toggleCustomerCountryFormField);
-            $("#@Html.FieldIdFor(model => model.CustomerSettings.StateProvinceEnabled)").click(toggleCustomerStateProvinceFormField);
-            $("#@Html.FieldIdFor(model => model.CustomerSettings.CityEnabled)").click(toggleCustomerCityFormField);
-            $("#@Html.FieldIdFor(model => model.CustomerSettings.CompanyEnabled)").click(toggleCustomerRequiredFormField);
             $("#@Html.FieldIdFor(model => model.CustomerSettings.StreetAddressEnabled)").click(toggleCustomerRequiredFormField);
             $("#@Html.FieldIdFor(model => model.CustomerSettings.StreetAddress2Enabled)").click(toggleCustomerRequiredFormField);
-            $("#@Html.FieldIdFor(model => model.CustomerSettings.ZipPostalCodeEnabled)").click(toggleCustomerRequiredFormField);
             $("#@Html.FieldIdFor(model => model.CustomerSettings.CityEnabled)").click(toggleCustomerRequiredFormField);
             $("#@Html.FieldIdFor(model => model.CustomerSettings.PhoneEnabled)").click(toggleCustomerRequiredFormField);
             $("#@Html.FieldIdFor(model => model.CustomerSettings.FaxEnabled)").click(toggleCustomerRequiredFormField);
-            $("#@Html.FieldIdFor(model => model.CustomerSettings.NewsletterEnabled)").click(toggleNewsletterEnabledField);
-            $("#@Html.FieldIdFor(model => model.CustomerSettings.HideNewsletterBlock)").click(toggleHideNewsletterBlock);
-
+            $("#@Html.FieldIdFor(model => model.CustomerSettings.CountryEnabled)").click(toggleCustomerCountryFormField);
+            $("#@Html.FieldIdFor(model => model.CustomerSettings.StateProvinceEnabled)").click(toggleCustomerStateProvinceFormField);
+            $("#@Html.FieldIdFor(model => model.CustomerSettings.CityEnabled)").click(toggleCustomerCityFormField);
 
             toggleCustomerCountryFormField();
             toggleCustomerStateProvinceFormField();
             toggleCustomerCityFormField();
             toggleCustomerRequiredFormField();
-            toggleNewsletterEnabledField();
-            toggleHideNewsletterBlock();
         });
 
         function toggleCustomerCountryFormField() {
@@ -348,7 +279,20 @@
                 $('#pnlCustomerCityRequired').hide();
             }
         }
+
         function toggleCustomerRequiredFormField() {
+            if ($('#@Html.FieldIdFor(model => model.CustomerSettings.AdmiCodeEnabled)').is(':checked')) {
+                $('#pnlCustomerAdmiCodeRequired').show();
+            } else {
+                $('#pnlCustomerAdmiCodeRequired').hide();
+            }
+
+            if ($('#@Html.FieldIdFor(model => model.CustomerSettings.DniEnabled)').is(':checked')) {
+                $('#pnlCustomerDniRequired').show();
+            } else {
+                $('#pnlCustomerDniRequired').hide();
+            }
+
             if ($('#@Html.FieldIdFor(model => model.CustomerSettings.DateOfBirthEnabled)').is(':checked')) {
                 $('#pnlCustomerDateOfBirthRequired').show();
             } else {
@@ -362,12 +306,6 @@
                 $('#pnlDateOfBirthMinimumAge').hide();
             }
 
-            if ($('#@Html.FieldIdFor(model => model.CustomerSettings.CompanyEnabled)').is(':checked')) {
-                $('#pnlCustomerCompanyRequired').show();
-            } else {
-                $('#pnlCustomerCompanyRequired').hide();
-            }
-
             if ($('#@Html.FieldIdFor(model => model.CustomerSettings.StreetAddressEnabled)').is(':checked')) {
                 $('#pnlCustomerStreetAddressRequired').show();
             } else {
@@ -378,12 +316,6 @@
                 $('#pnlCustomerStreetAddress2Required').show();
             } else {
                 $('#pnlCustomerStreetAddress2Required').hide();
-            }
-
-            if ($('#@Html.FieldIdFor(model => model.CustomerSettings.ZipPostalCodeEnabled)').is(':checked')) {
-                $('#pnlCustomerZipPostalCodeRequired').show();
-            } else {
-                $('#pnlCustomerZipPostalCodeRequired').hide();
             }
 
             if ($('#@Html.FieldIdFor(model => model.CustomerSettings.CityEnabled)').is(':checked')) {
@@ -405,22 +337,6 @@
             }
         }
 
-        function toggleNewsletterEnabledField() {
-            if ($('#@Html.FieldIdFor(model => model.CustomerSettings.NewsletterEnabled)').is(':checked')) {
-                $('#pnlCustomerNewsletterTickedByDefault').show();
-            } else {
-                $('#pnlCustomerNewsletterTickedByDefault').hide();
-            }
-        }
-
-        function toggleHideNewsletterBlock() {
-            if ($('#@Html.FieldIdFor(model => model.CustomerSettings.HideNewsletterBlock)').is(':checked')) {
-                $('#pnlNewsletterBlockAllowToUnsubscribe').hide();
-            }
-            else {
-                $('#pnlNewsletterBlockAllowToUnsubscribe').show();
-            }
-        }
 
     </script>
     <table class="adminContent">
@@ -436,6 +352,42 @@
             <td class="adminData">
                 @Html.EditorFor(model => model.CustomerSettings.GenderEnabled)
                 @Html.ValidationMessageFor(model => model.CustomerSettings.GenderEnabled)
+            </td>
+        </tr>
+    <tr>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.CustomerSettings.AdmiCodeEnabled):
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.CustomerSettings.AdmiCodeEnabled)
+            @Html.ValidationMessageFor(model => model.CustomerSettings.AdmiCodeEnabled)
+        </td>
+    </tr>
+    <tr id="pnlCustomerAdmiCodeRequired">
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.CustomerSettings.AdmiCodeRequired):
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.CustomerSettings.AdmiCodeRequired)
+            @Html.ValidationMessageFor(model => model.CustomerSettings.AdmiCodeRequired)
+        </td>
+    </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.CustomerSettings.DniEnabled):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.CustomerSettings.DniEnabled)
+                @Html.ValidationMessageFor(model => model.CustomerSettings.DniEnabled)
+            </td>
+        </tr>
+        <tr id="pnlCustomerDniRequired">
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.CustomerSettings.DniRequired):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.CustomerSettings.DniRequired)
+                @Html.ValidationMessageFor(model => model.CustomerSettings.DniRequired)
             </td>
         </tr>
         <tr>
@@ -463,24 +415,6 @@
             <td class="adminData">
                 @Html.EditorFor(model => model.CustomerSettings.DateOfBirthMinimumAge)
                 @Html.ValidationMessageFor(model => model.CustomerSettings.DateOfBirthMinimumAge)
-            </td>
-        </tr>
-        <tr>
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.CustomerSettings.CompanyEnabled):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.CustomerSettings.CompanyEnabled)
-                @Html.ValidationMessageFor(model => model.CustomerSettings.CompanyEnabled)
-            </td>
-        </tr>
-        <tr id="pnlCustomerCompanyRequired">
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.CustomerSettings.CompanyRequired):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.CustomerSettings.CompanyRequired)
-                @Html.ValidationMessageFor(model => model.CustomerSettings.CompanyRequired)
             </td>
         </tr>
         <tr>
@@ -517,24 +451,6 @@
             <td class="adminData">
                 @Html.EditorFor(model => model.CustomerSettings.StreetAddress2Required)
                 @Html.ValidationMessageFor(model => model.CustomerSettings.StreetAddress2Required)
-            </td>
-        </tr>
-        <tr>
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.CustomerSettings.ZipPostalCodeEnabled):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.CustomerSettings.ZipPostalCodeEnabled)
-                @Html.ValidationMessageFor(model => model.CustomerSettings.ZipPostalCodeEnabled)
-            </td>
-        </tr>
-        <tr id="pnlCustomerZipPostalCodeRequired">
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.CustomerSettings.ZipPostalCodeRequired):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.CustomerSettings.ZipPostalCodeRequired)
-                @Html.ValidationMessageFor(model => model.CustomerSettings.ZipPostalCodeRequired)
             </td>
         </tr>
         <tr>
@@ -627,33 +543,7 @@
                 @Html.ValidationMessageFor(model => model.CustomerSettings.FaxRequired)
             </td>
         </tr>
-        <tr>
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.CustomerSettings.AcceptPrivacyPolicyEnabled):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.CustomerSettings.AcceptPrivacyPolicyEnabled)
-                @Html.ValidationMessageFor(model => model.CustomerSettings.AcceptPrivacyPolicyEnabled)
-            </td>
-        </tr>
-        <tr>
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.CustomerSettings.NewsletterEnabled):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.CustomerSettings.NewsletterEnabled)
-                @Html.ValidationMessageFor(model => model.CustomerSettings.NewsletterEnabled)
-            </td>
-        </tr>
-        <tr id="pnlCustomerNewsletterTickedByDefault">
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.CustomerSettings.NewsletterTickedByDefault):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.CustomerSettings.NewsletterTickedByDefault)
-                @Html.ValidationMessageFor(model => model.CustomerSettings.NewsletterTickedByDefault)
-            </td>
-        </tr>
+
     </table>
     //render custom customer attributes
     @Html.Action("ListBlock", "CustomerAttribute")
@@ -661,95 +551,88 @@
 @helper TabAddressFormFields()
 {
     <script type="text/javascript">
-    $(document).ready(function () {
+        $(document).ready(function () {
 
-        $("#@Html.FieldIdFor(model => model.AddressSettings.CompanyEnabled)").click(toggleAddressRequiredFormField);
-        $("#@Html.FieldIdFor(model => model.AddressSettings.StreetAddressEnabled)").click(toggleAddressRequiredFormField);
-        $("#@Html.FieldIdFor(model => model.AddressSettings.StreetAddress2Enabled)").click(toggleAddressRequiredFormField);
-        $("#@Html.FieldIdFor(model => model.AddressSettings.CountryEnabled)").click(toggleAddressCountryFormField);
-        $("#@Html.FieldIdFor(model => model.AddressSettings.StateProvinceEnabled)").click(toggleAddressStateProvinceFormField);
-        $("#@Html.FieldIdFor(model => model.AddressSettings.CityEnabled)").click(toggleAddressRequiredFormField);
-        $("#@Html.FieldIdFor(model => model.AddressSettings.ZipPostalCodeEnabled)").click(toggleAddressRequiredFormField);
-        $("#@Html.FieldIdFor(model => model.AddressSettings.PhoneEnabled)").click(toggleAddressRequiredFormField);
-        $("#@Html.FieldIdFor(model => model.AddressSettings.FaxEnabled)").click(toggleAddressRequiredFormField);
+            $("#@Html.FieldIdFor(model => model.AddressSettings.StreetAddressEnabled)").click(toggleAddressRequiredFormField);
+            $("#@Html.FieldIdFor(model => model.AddressSettings.StreetAddress2Enabled)").click(toggleAddressRequiredFormField);
+            $("#@Html.FieldIdFor(model => model.AddressSettings.CountryEnabled)").click(toggleAddressCountryFormField);
+            $("#@Html.FieldIdFor(model => model.AddressSettings.StateProvinceEnabled)").click(toggleAddressStateProvinceFormField);
+            $("#@Html.FieldIdFor(model => model.AddressSettings.CityEnabled)").click(toggleAddressRequiredFormField);
+            $("#@Html.FieldIdFor(model => model.AddressSettings.ZipPostalCodeEnabled)").click(toggleAddressRequiredFormField);
+            $("#@Html.FieldIdFor(model => model.AddressSettings.PhoneEnabled)").click(toggleAddressRequiredFormField);
+            $("#@Html.FieldIdFor(model => model.AddressSettings.FaxEnabled)").click(toggleAddressRequiredFormField);
 
-        toggleAddressCountryFormField();
-        toggleAddressStateProvinceFormField();
-        toggleAddressRequiredFormField();
-    });
+            toggleAddressCountryFormField();
+            toggleAddressStateProvinceFormField();
+            toggleAddressRequiredFormField();
+        });
 
-    function toggleAddressCountryFormField() {
-        if ($('#@Html.FieldIdFor(model => model.AddressSettings.CountryEnabled)').is(':checked')) {
-            $('#pnlAddressStateProvinceEnabled').show();
-        }
-        else {
-            $('#pnlAddressStateProvinceEnabled').hide();
-        }
-    }
-
-    function toggleAddressStateProvinceFormField() {
-        if ($('#@Html.FieldIdFor(model => model.AddressSettings.StateProvinceEnabled)').is(':checked')) {
-            $('#pnlAddressCityEnabled').show();
-            $('#pnlAddressStateProvinceRequired').show();
-        }
-        else {
-            $('#pnlAddressCityEnabled').hide();
-            $('#pnlAddressStateProvinceRequired').hide();
-        }
-    }
-
-    function toggleAddressRequiredFormField() {
-        if ($('#@Html.FieldIdFor(model => model.AddressSettings.CompanyEnabled)').is(':checked')) {
-            $('#pnlAddressCompanyRequired').show();
-        }
-        else {
-            $('#pnlAddressCompanyRequired').hide();
+        function toggleAddressCountryFormField() {
+            if ($('#@Html.FieldIdFor(model => model.AddressSettings.CountryEnabled)').is(':checked')) {
+                $('#pnlAddressStateProvinceEnabled').show();
+            }
+            else {
+                $('#pnlAddressStateProvinceEnabled').hide();
+            }
         }
 
-        if ($('#@Html.FieldIdFor(model => model.AddressSettings.StreetAddressEnabled)').is(':checked')) {
-            $('#pnlAddressStreetAddressRequired').show();
-        }
-        else {
-            $('#pnlAddressStreetAddressRequired').hide();
-        }
-
-        if ($('#@Html.FieldIdFor(model => model.AddressSettings.StreetAddress2Enabled)').is(':checked')) {
-            $('#pnlAddressStreetAddress2Required').show();
-        }
-        else {
-            $('#pnlAddressStreetAddress2Required').hide();
+        function toggleAddressStateProvinceFormField() {
+            if ($('#@Html.FieldIdFor(model => model.AddressSettings.StateProvinceEnabled)').is(':checked')) {
+                $('#pnlAddressCityEnabled').show();
+                $('#pnlAddressStateProvinceRequired').show();
+            }
+            else {
+                $('#pnlAddressCityEnabled').hide();
+                $('#pnlAddressStateProvinceRequired').hide();
+            }
         }
 
-        if ($('#@Html.FieldIdFor(model => model.AddressSettings.CityEnabled)').is(':checked')) {
-            $('#pnlAddressCityRequired').show();
-        }
-        else {
-            $('#pnlAddressCityRequired').hide();
+        function toggleAddressRequiredFormField() {
+
+            if ($('#@Html.FieldIdFor(model => model.AddressSettings.StreetAddressEnabled)').is(':checked')) {
+                $('#pnlAddressStreetAddressRequired').show();
+            }
+            else {
+                $('#pnlAddressStreetAddressRequired').hide();
+            }
+
+            if ($('#@Html.FieldIdFor(model => model.AddressSettings.StreetAddress2Enabled)').is(':checked')) {
+                $('#pnlAddressStreetAddress2Required').show();
+            }
+            else {
+                $('#pnlAddressStreetAddress2Required').hide();
+            }
+
+            if ($('#@Html.FieldIdFor(model => model.AddressSettings.CityEnabled)').is(':checked')) {
+                $('#pnlAddressCityRequired').show();
+            }
+            else {
+                $('#pnlAddressCityRequired').hide();
+            }
+
+            if ($('#@Html.FieldIdFor(model => model.AddressSettings.ZipPostalCodeEnabled)').is(':checked')) {
+                $('#pnlAddressZipPostalCodeRequired').show();
+            }
+            else {
+                $('#pnlAddressZipPostalCodeRequired').hide();
+            }
+
+            if ($('#@Html.FieldIdFor(model => model.AddressSettings.PhoneEnabled)').is(':checked')) {
+                $('#pnlAddressPhoneRequired').show();
+            }
+            else {
+                $('#pnlAddressPhoneRequired').hide();
+            }
+
+            if ($('#@Html.FieldIdFor(model => model.AddressSettings.FaxEnabled)').is(':checked')) {
+                $('#pnlAddressFaxRequired').show();
+            }
+            else {
+                $('#pnlAddressFaxRequired').hide();
+            }
         }
 
-        if ($('#@Html.FieldIdFor(model => model.AddressSettings.ZipPostalCodeEnabled)').is(':checked')) {
-            $('#pnlAddressZipPostalCodeRequired').show();
-        }
-        else {
-            $('#pnlAddressZipPostalCodeRequired').hide();
-        }
-
-        if ($('#@Html.FieldIdFor(model => model.AddressSettings.PhoneEnabled)').is(':checked')) {
-            $('#pnlAddressPhoneRequired').show();
-        }
-        else {
-            $('#pnlAddressPhoneRequired').hide();
-        }
-
-        if ($('#@Html.FieldIdFor(model => model.AddressSettings.FaxEnabled)').is(':checked')) {
-            $('#pnlAddressFaxRequired').show();
-        }
-        else {
-            $('#pnlAddressFaxRequired').hide();
-        }
-    }
-
-</script>
+    </script>
     <table class="adminContent">
         <tr>
             <td colspan="2">
@@ -799,25 +682,6 @@
             <td class="adminData">
                 @Html.EditorFor(model => model.AddressSettings.CityRequired)
                 @Html.ValidationMessageFor(model => model.AddressSettings.CityRequired)
-            </td>
-        </tr>
-
-        <tr>
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.AddressSettings.CompanyEnabled):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.AddressSettings.CompanyEnabled)
-                @Html.ValidationMessageFor(model => model.AddressSettings.CompanyEnabled)
-            </td>
-        </tr>
-        <tr id="pnlAddressCompanyRequired">
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.AddressSettings.CompanyRequired):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.AddressSettings.CompanyRequired)
-                @Html.ValidationMessageFor(model => model.AddressSettings.CompanyRequired)
             </td>
         </tr>
         <tr>
@@ -937,18 +801,5 @@
         </tr>
     </table>
 }
-@*@helper TabExternalAuthenticationSettings()
-{
-    <table class="adminContent">
-        <tr>
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.ExternalAuthenticationSettings.AutoRegisterEnabled):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.ExternalAuthenticationSettings.AutoRegisterEnabled)
-                @Html.ValidationMessageFor(model => model.ExternalAuthenticationSettings.AutoRegisterEnabled)
-            </td>
-        </tr>
-    </table>
-}*@
+
 

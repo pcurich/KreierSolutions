@@ -16,16 +16,13 @@ namespace Ks.Admin.Models.Customers
     {
         public CustomerModel()
         {
-            this.AvailableTimeZones = new List<SelectListItem>();
             this.SendEmail = new SendEmailModel();
-            this.SendPm = new SendPmModel();
             this.AvailableCustomerRoles = new List<CustomerRoleModel>();
             this.AssociatedExternalAuthRecords = new List<AssociatedExternalAuthModel>();
             this.AvailableCountries = new List<SelectListItem>();
             this.AvailableStates = new List<SelectListItem>();
             this.AvailableCities = new List<SelectListItem>();
             this.AvailableMilitarySituations = new List<SelectListItem>();
-            //this.AvailableVendors = new List<SelectListItem>();
             this.CustomerAttributes = new List<CustomerAttributeModel>();
             this.AvailableNewsletterSubscriptionStores = new List<StoreModel>();
             
@@ -49,11 +46,6 @@ namespace Ks.Admin.Models.Customers
         [AllowHtml]
         public string Password { get; set; }
 
-        //[KsResourceDisplayName("Admin.Customers.Customers.Fields.Vendor")]
-        //public int VendorId { get; set; }
-        //public IList<SelectListItem> AvailableVendors { get; set; }
-
-
         //form fields & properties
         public bool GenderEnabled { get; set; }
         public bool GenderRequired { get; set; }
@@ -72,6 +64,9 @@ namespace Ks.Admin.Models.Customers
         [KsResourceDisplayName("Admin.Customers.Customers.Fields.MilitarySituation")]
         public int MilitarySituationId { get; set; }
         public IList<SelectListItem> AvailableMilitarySituations { get; set; }
+        [KsResourceDisplayName("Admin.Customers.Customers.Fields.DateOfAdmission")]
+        [UIHint("DateNullable")]
+        public DateTime? DateOfAdmission { get; set; }
 
         [KsResourceDisplayName("Admin.Customers.Customers.Fields.LastName")]
         [AllowHtml]
@@ -95,16 +90,6 @@ namespace Ks.Admin.Models.Customers
         [AllowHtml]
         public string StreetAddress2 { get; set; }
 
-        public bool ZipPostalCodeEnabled { get; set; }
-        [KsResourceDisplayName("Admin.Customers.Customers.Fields.ZipPostalCode")]
-        [AllowHtml]
-        public string ZipPostalCode { get; set; }
-
-        public bool CityEnabled { get; set; }
-        [KsResourceDisplayName("Admin.Customers.Customers.Fields.City")]
-        [AllowHtml]
-        public string City { get; set; }
-
         public bool CountryEnabled { get; set; }
         [KsResourceDisplayName("Admin.Customers.Customers.Fields.Country")]
         public int CountryId { get; set; }
@@ -115,6 +100,7 @@ namespace Ks.Admin.Models.Customers
         public int StateProvinceId { get; set; }
         public IList<SelectListItem> AvailableStates { get; set; }
 
+        public bool CityEnabled { get; set; }
         [KsResourceDisplayName("Admin.Customers.Customers.Fields.City")]
         public int CityId { get; set; }
         public IList<SelectListItem> AvailableCities { get; set; }
@@ -128,6 +114,7 @@ namespace Ks.Admin.Models.Customers
         [KsResourceDisplayName("Admin.Customers.Customers.Fields.Fax")]
         [AllowHtml]
         public string Fax { get; set; }
+        
 
         public List<CustomerAttributeModel> CustomerAttributes { get; set; }
 
@@ -139,29 +126,8 @@ namespace Ks.Admin.Models.Customers
         [AllowHtml]
         public string AdminComment { get; set; }
 
-        //[KsResourceDisplayName("Admin.Customers.Customers.Fields.IsTaxExempt")]
-        //public bool IsTaxExempt { get; set; }
-
         [KsResourceDisplayName("Admin.Customers.Customers.Fields.Active")]
         public bool Active { get; set; }
-
-        //[KsResourceDisplayName("Admin.Customers.Customers.Fields.Affiliate")]
-        //public int AffiliateId { get; set; }
-        //[KsResourceDisplayName("Admin.Customers.Customers.Fields.Affiliate")]
-        //public string AffiliateName { get; set; }
-
-
-
-
-        //time zone
-        [KsResourceDisplayName("Admin.Customers.Customers.Fields.TimeZoneId")]
-        [AllowHtml]
-        public string TimeZoneId { get; set; }
-
-        public bool AllowCustomersToSetTimeZone { get; set; }
-
-        public IList<SelectListItem> AvailableTimeZones { get; set; }
-
 
 
 
@@ -197,8 +163,6 @@ namespace Ks.Admin.Models.Customers
 
         //send email model
         public SendEmailModel SendEmail { get; set; }
-        //send PM model
-        public SendPmModel SendPm { get; set; }
         //send the welcome message
         public bool AllowSendingOfWelcomeMessage { get; set; }
         //re-send the activation message

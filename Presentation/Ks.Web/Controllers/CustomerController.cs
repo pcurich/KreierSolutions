@@ -162,13 +162,14 @@ namespace Ks.Web.Controllers
 
             if (!excludeProperties)
             {
-                //model.VatNumber = customer.GetAttribute<string>(SystemCustomerAttributeNames.VatNumber);
+                //model.DateOfAdmission = customer.GetAttribute<string>(SystemCustomerAttributeNames.DateOfAdmission);
                 model.FirstName = customer.GetAttribute<string>(SystemCustomerAttributeNames.FirstName);
                 model.LastName = customer.GetAttribute<string>(SystemCustomerAttributeNames.LastName);
                 model.Cpi = customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode);
                 model.Dni = customer.GetAttribute<string>(SystemCustomerAttributeNames.Dni);
                 model.Gender = customer.GetAttribute<string>(SystemCustomerAttributeNames.Gender);
                 var dateOfBirth = customer.GetAttribute<DateTime?>(SystemCustomerAttributeNames.DateOfBirth);
+
                 if (dateOfBirth.HasValue)
                 {
                     model.DateOfBirthDay = dateOfBirth.Value.Day;
@@ -178,7 +179,6 @@ namespace Ks.Web.Controllers
 
                 model.StreetAddress = customer.GetAttribute<string>(SystemCustomerAttributeNames.StreetAddress);
                 model.StreetAddress2 = customer.GetAttribute<string>(SystemCustomerAttributeNames.StreetAddress2);
-                model.ZipPostalCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.ZipPostalCode);
                 model.CityId = customer.GetAttribute<int>(SystemCustomerAttributeNames.CityId);
                 model.CountryId = customer.GetAttribute<int>(SystemCustomerAttributeNames.CountryId);
                 model.StateProvinceId = customer.GetAttribute<int>(SystemCustomerAttributeNames.StateProvinceId);
@@ -267,8 +267,6 @@ namespace Ks.Web.Controllers
             model.StreetAddressRequired = _customerSettings.StreetAddressRequired;
             model.StreetAddress2Enabled = _customerSettings.StreetAddress2Enabled;
             model.StreetAddress2Required = _customerSettings.StreetAddress2Required;
-            model.ZipPostalCodeEnabled = _customerSettings.ZipPostalCodeEnabled;
-            model.ZipPostalCodeRequired = _customerSettings.ZipPostalCodeRequired;
             model.CityEnabled = _customerSettings.CityEnabled;
             model.CityRequired = _customerSettings.CityRequired;
             model.CountryEnabled = _customerSettings.CountryEnabled;
@@ -279,31 +277,11 @@ namespace Ks.Web.Controllers
             model.PhoneRequired = _customerSettings.PhoneRequired;
             model.FaxEnabled = _customerSettings.FaxEnabled;
             model.FaxRequired = _customerSettings.FaxRequired;
-            //model.NewsletterEnabled = _customerSettings.NewsletterEnabled;
             model.UsernamesEnabled = _customerSettings.UsernamesEnabled;
             model.AllowUsersToChangeUsernames = _customerSettings.AllowUsersToChangeUsernames;
             model.CheckUsernameAvailabilityEnabled = _customerSettings.CheckUsernameAvailabilityEnabled;
-            //model.SignatureEnabled = _forumSettings.ForumsEnabled && _forumSettings.SignaturesEnabled;
-
-            ////external authentication
-            //model.NumberOfExternalAuthenticationProviders = _openAuthenticationService
-            //    .LoadActiveExternalAuthenticationMethods(_ksSystemContext.CurrentSystem.Id)
-            //    .Count;
-            //foreach (var ear in _openAuthenticationService.GetExternalIdentifiersFor(customer))
-            //{
-            //    var authMethod = _openAuthenticationService.LoadExternalAuthenticationMethodBySystemName(ear.ProviderSystemName);
-            //    if (authMethod == null || !authMethod.IsMethodActive(_externalAuthenticationSettings))
-            //        continue;
-
-            //    model.AssociatedExternalAuthRecords.Add(new CustomerInfoModel.AssociatedExternalAuthModel
-            //    {
-            //        Id = ear.Id,
-            //        Email = ear.Email,
-            //        ExternalIdentifier = ear.ExternalIdentifier,
-            //        AuthMethodName = authMethod.GetLocalizedFriendlyName(_localizationService, _workContext.WorkingLanguage.Id)
-            //    });
-            //}
-
+             
+ 
             //custom customer attributes
             var customAttributes = PrepareCustomCustomerAttributes(customer, overrideCustomCustomerAttributesXml);
             customAttributes.ForEach(model.CustomerAttributes.Add);
@@ -511,8 +489,6 @@ namespace Ks.Web.Controllers
             model.StreetAddressRequired = _customerSettings.StreetAddressRequired;
             model.StreetAddress2Enabled = _customerSettings.StreetAddress2Enabled;
             model.StreetAddress2Required = _customerSettings.StreetAddress2Required;
-            model.ZipPostalCodeEnabled = _customerSettings.ZipPostalCodeEnabled;
-            model.ZipPostalCodeRequired = _customerSettings.ZipPostalCodeRequired;
             model.CityEnabled = _customerSettings.CityEnabled;
             model.CityRequired = _customerSettings.CityRequired;
             model.CountryEnabled = _customerSettings.CountryEnabled;
@@ -896,14 +872,7 @@ namespace Ks.Web.Controllers
                 var registrationResult = _customerRegistrationService.RegisterCustomer(registrationRequest);
                 if (registrationResult.Success)
                 {
-                    if (_dateTimeSettings.AllowCustomersToSetTimeZone)
-                    {
-                        _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.TimeZoneId,
-                            model.TimeZoneId);
-                    }
-
-
-                    //form fields
+                     //form fields
                     if (_customerSettings.GenderEnabled)
                         _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Gender,
                             model.Gender);
@@ -916,6 +885,8 @@ namespace Ks.Web.Controllers
                         model.Cpi);
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Dni,
                         model.Dni);
+                    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.DateOfAdmission,
+                        model.DateOfAdmission);
 
                     if (_customerSettings.DateOfBirthEnabled)
                     {
@@ -930,9 +901,6 @@ namespace Ks.Web.Controllers
                     if (_customerSettings.StreetAddress2Enabled)
                         _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.StreetAddress2,
                             model.StreetAddress2);
-                    if (_customerSettings.ZipPostalCodeEnabled)
-                        _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.ZipPostalCode,
-                            model.ZipPostalCode);
                     if (_customerSettings.CityEnabled)
                         _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.CityId,
                             model.CityId);
@@ -971,7 +939,6 @@ namespace Ks.Web.Controllers
                             : null,
                         Address1 = customer.GetAttribute<string>(SystemCustomerAttributeNames.StreetAddress),
                         Address2 = customer.GetAttribute<string>(SystemCustomerAttributeNames.StreetAddress2),
-                        ZipPostalCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.ZipPostalCode),
                         PhoneNumber = customer.GetAttribute<string>(SystemCustomerAttributeNames.Phone),
                         FaxNumber = customer.GetAttribute<string>(SystemCustomerAttributeNames.Fax),
                         CreatedOnUtc = customer.CreatedOnUtc
@@ -1215,13 +1182,6 @@ namespace Ks.Web.Controllers
                         }
                     }
 
-                    //properties
-                    if (_dateTimeSettings.AllowCustomersToSetTimeZone)
-                    {
-                        _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.TimeZoneId, model.TimeZoneId);
-                    }
-
-
                     //form fields
                     if (_customerSettings.GenderEnabled)
                         _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Gender, model.Gender);
@@ -1229,6 +1189,7 @@ namespace Ks.Web.Controllers
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.LastName, model.LastName);
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.AdmCode, model.Cpi);
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Dni, model.Dni);
+                    
                     if (_customerSettings.DateOfBirthEnabled)
                     {
                         DateTime? dateOfBirth = model.ParseDateOfBirth();
@@ -1238,8 +1199,6 @@ namespace Ks.Web.Controllers
                         _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.StreetAddress, model.StreetAddress);
                     if (_customerSettings.StreetAddress2Enabled)
                         _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.StreetAddress2, model.StreetAddress2);
-                    if (_customerSettings.ZipPostalCodeEnabled)
-                        _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.ZipPostalCode, model.ZipPostalCode);
                     if (_customerSettings.CountryEnabled)
                         _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.CountryId, model.CountryId);
                     if (_customerSettings.CountryEnabled && _customerSettings.StateProvinceEnabled)

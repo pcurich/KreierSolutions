@@ -56,11 +56,13 @@ namespace Ks.Web.Models.Customer
         [KsResourceDisplayName("Account.Fields.Cpi")]
         [AllowHtml]
         public string Cpi { get; set; }
-        [KsResourceDisplayName("Account.Fields.Dni")]
+        [KsResourceDisplayName("Account.Fields.DateOfAdmission")]
+        [AllowHtml]
+        public DateTime DateOfAdmission { get; set; }
+
+        [KsResourceDisplayName("Account.Fields.DateOfAdmission")]
         [AllowHtml]
         public string Dni { get; set; }
-
-
         public bool DateOfBirthEnabled { get; set; }
         [KsResourceDisplayName("Account.Fields.DateOfBirth")]
         public int? DateOfBirthDay { get; set; }
@@ -95,12 +97,6 @@ namespace Ks.Web.Models.Customer
         [AllowHtml]
         public string StreetAddress2 { get; set; }
 
-        public bool ZipPostalCodeEnabled { get; set; }
-        public bool ZipPostalCodeRequired { get; set; }
-        [KsResourceDisplayName("Account.Fields.ZipPostalCode")]
-        [AllowHtml]
-        public string ZipPostalCode { get; set; }
- 
 
         public bool CountryEnabled { get; set; }
         public bool CountryRequired { get; set; }
@@ -141,11 +137,7 @@ namespace Ks.Web.Models.Customer
         public bool AllowCustomersToSetTimeZone { get; set; }
         public IList<SelectListItem> AvailableTimeZones { get; set; }
 
-        //EU VAT
-        //[KsResourceDisplayName("Account.Fields.VatNumber")]
-        //public string VatNumber { get; set; }
-        //public bool DisplayVatNumber { get; set; }
-
+ 
         public bool HoneypotEnabled { get; set; }
         public bool DisplayCaptcha { get; set; }
 

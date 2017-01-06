@@ -82,7 +82,6 @@ namespace Ks.Web.Extensions
                 model.LastName = customer.GetAttribute<string>(SystemCustomerAttributeNames.LastName);
                 model.Address1 = customer.GetAttribute<string>(SystemCustomerAttributeNames.StreetAddress);
                 model.Address2 = customer.GetAttribute<string>(SystemCustomerAttributeNames.StreetAddress2);
-                model.ZipPostalCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.ZipPostalCode);
                 //ignore country, state and city for prepopulation. it can cause some issues when posting pack with errors, etc
                 //model.CountryId = customer.GetAttribute<int>(SystemCustomerAttributeNames.CountryId);
                 //model.StateProvinceId = customer.GetAttribute<int>(SystemCustomerAttributeNames.StateProvinceId);

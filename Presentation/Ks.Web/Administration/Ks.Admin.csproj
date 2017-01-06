@@ -1337,6 +1337,7 @@
     <Content Include="Views\ReturnPayment\List.cshtml" />
     <Content Include="Views\ReturnPayment\Edit.cshtml" />
     <Content Include="Views\ReturnPayment\_CreateOrUpdate.cshtml" />
+    <Content Include="Views\Shared\DeleteCustomer.cshtml" />
     <None Include="Views\Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

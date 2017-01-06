@@ -291,9 +291,7 @@
 	<LocaleResource Name="Account.Fields.LastName.Required">
 		<Value>Se requiere el apellido.</Value>
 	</LocaleResource>
-	<LocaleResource Name="Account.Fields.Newsletter">
-		<Value>Suscripción a noticias</Value>
-	</LocaleResource>
+	
 	<LocaleResource Name="Account.Fields.Password">
 		<Value>Constraseña</Value>
 	</LocaleResource>
@@ -318,18 +316,6 @@
 	<LocaleResource Name="Account.Fields.StateProvince.Required">
 		<Value>Se requiere departamento</Value>
 	</LocaleResource>
-	<LocaleResource Name="Account.Fields.AdmCode.Length">
-		<Value>El código administrativo debe ser de 9 caracteres</Value>
-	</LocaleResource>
-	<LocaleResource Name="Account.Fields.AdmCode.IsRegister">
-		<Value>El código administrativo ya se encuentra registrado</Value>
-	</LocaleResource>
-	<LocaleResource Name="Account.Fields.Dni.Length">
-		<Value>El DNI debe ser de 8 caracteres</Value>
-	</LocaleResource>
-	<LocaleResource Name="Account.Fields.Dni.IsRegister">
-		<Value>El Dni ya se encuentra registrado</Value>
-	</LocaleResource>
 	<LocaleResource Name="Account.Fields.StreetAddress">
 		<Value>Dirección</Value>
 	</LocaleResource>
@@ -350,48 +336,6 @@
 	</LocaleResource>
 	<LocaleResource Name="Account.Fields.Username.Required">
 		<Value>Se requiere nombre de usuario.</Value>
-	</LocaleResource>
-	<LocaleResource Name="Account.Fields.VatNumber">
-		<Value>RUC</Value>
-	</LocaleResource>
-	<LocaleResource Name="Account.Fields.VatNumber.Note">
-		<Value>NOTA: Ingresa el número de RUC conformado por digitos</Value>
-	</LocaleResource>
-	<LocaleResource Name="Account.Fields.VatNumber.Status">
-		<Value>Estado</Value>
-	</LocaleResource>
-	<LocaleResource Name="Account.Fields.VatNumberStatus">
-		<Value>Estado: {0}</Value>
-	</LocaleResource>
-	<LocaleResource Name="Account.Fields.ZipPostalCode">
-		<Value>Código Postal</Value>
-	</LocaleResource>
-	<LocaleResource Name="Account.Fields.ZipPostalCode.Required">
-		<Value>Se requiere Código Postal</Value>
-	</LocaleResource>
-	<LocaleResource Name="Account.ForumSubscriptions">
-		<Value>Suscripciones al Foro</Value>
-	</LocaleResource>
-	<LocaleResource Name="Account.ForumSubscriptions.DeleteSelected">
-		<Value>Eliminar seleccionados</Value>
-	</LocaleResource>
-	<LocaleResource Name="Account.ForumSubscriptions.Description">
-		<Value>Recibirás un email cuando se cree un nuevo tema en el foro o un nuevo post.</Value>
-	</LocaleResource>
-	<LocaleResource Name="Account.ForumSubscriptions.InfoColumn">
-		<Value>Foro/Tema</Value>
-	</LocaleResource>
-	<LocaleResource Name="Account.ForumSubscriptions.NoSubscriptions">
-		<Value>Usted no está suscrito a ningún foro</Value>
-	</LocaleResource>
-	<LocaleResource Name="Account.ImpersonatedAs">
-		<Value>Suplantada como {0}</Value>
-	</LocaleResource>
-	<LocaleResource Name="Account.ImpersonatedAs.Finish">
-		<Value>finalizar sesión impersonalizado</Value>
-	</LocaleResource>
-	<LocaleResource Name="Account.ImpersonatedAs.Finish.Hint">
-		<Value>Haga clic aqui para terminar sesión impersonalizada</Value>
 	</LocaleResource>
 	<LocaleResource Name="Account.Login">
 		<Value>Inicio de sesión</Value>
@@ -3471,17 +3415,23 @@
 	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.AddressFormFields.ZipPostalCodeRequired.Hint">
 		<Value>Compruebe si se requiere el 'código postal'.</Value>
 	</LocaleResource>
+	<LocaleResource Name="admin.configuration.settings.customeruser.AdmiCodeEnabled">
+		<Value>Código Administrativo habilitado</Value>
+	</LocaleResource>
+	<LocaleResource Name="admin.configuration.settings.customeruser.AdmiCodeEnabled.Hint">
+		<Value>Permitir a los Usuarios - Asociados ingresar el codigo Código Administrativo</Value>
+	</LocaleResource>
+	<LocaleResource Name="admin.configuration.settings.customeruser.AdmiCodeRequired">
+		<Value>Código Administrativo requerido</Value>
+	</LocaleResource>
+	<LocaleResource Name="admin.configuration.settings.customeruser.AdmiCodeRequired.Hint">
+		<Value>Permitir a los Usuarios - Asociados ingresar el codigo Código Administrativo</Value>
+	</LocaleResource>
 	<LocaleResource Name="admin.configuration.settings.customeruser.allowcustomerstosettimezone">
 		<Value>Permitir a los Usuarios - Asociados seleccionar la zona horaria</Value>
 	</LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.AllowCustomersToSetTimeZone.Hint">
 		<Value>Compruebe que los clientes puedan seleccionar la zona horaria. Si se selecciona, a continuación, la zona horaria se puede seleccionar en la tienda pública (página de cuenta). Si no es así, entonces se usará la zona horaria predeterminada.</Value>
-	</LocaleResource>
-	<LocaleResource Name="admin.configuration.settings.customeruser.allowcustomerstouploadavatars">
-		<Value>Permitir a los Usuarios - Asociados que carguen avatars</Value>
-	</LocaleResource>
-	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.AllowCustomersToUploadAvatars.Hint">
-		<Value>Un valor que indica si los clientes pueden subir avatars.</Value>
 	</LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.AllowUsersToChangeUsernames">
 		<Value>Permite a los clientes a cambiar sus nombres de usuario</Value>
@@ -3561,12 +3511,6 @@
 	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.DateTimeSettings">
 		<Value>Configurar valores de Fecha Hora</Value>
 	</LocaleResource>
-	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.DefaultAvatarEnabled">
-		<Value>Avatar predeterminado habilitado</Value>
-	</LocaleResource>
-	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.DefaultAvatarEnabled.Hint">
-		<Value>Un valor que indica si se debe mostrar avatar de usuario predeterminado.</Value>
-	</LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.DefaultPasswordFormat">
 		<Value>El formato por defecto de la contraseña</Value>
 	</LocaleResource>
@@ -3578,6 +3522,18 @@
 	</LocaleResource>
 	<LocaleResource Name="admin.configuration.settings.customeruser.defaultstoretimezone.hint">
 		<Value>Zona horaria de la Asociación por defecto usada para mostrar las fechas</Value>
+	</LocaleResource>
+	<LocaleResource Name="admin.configuration.settings.customeruser.DniEnabled">
+		<Value>Dni habilitado</Value>
+	</LocaleResource>
+	<LocaleResource Name="admin.configuration.settings.customeruser.DniEnabled.Hint">
+		<Value>Permitir a los Usuarios - Asociados ingresar el numero de DNI</Value>
+	</LocaleResource>
+	<LocaleResource Name="admin.configuration.settings.customeruser.DniRequired">
+		<Value>DNI requerido</Value>
+	</LocaleResource>
+	<LocaleResource Name="admin.configuration.settings.customeruser.DniRequired.Hint">
+		<Value>Permitir a los Usuarios - Asociados ingresar el numero de DNI</Value>
 	</LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.ExternalAuthenticationAutoRegisterEnabled">
 		<Value>Registro automático activado</Value>
@@ -3621,24 +3577,6 @@
 	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.HideDownloadableProductsTab">
 		<Value>Ocultar tab de 'productos descargables'</Value>
 	</LocaleResource>
-	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.HideDownloadableProductsTab.Hint">
-		<Value>Compruebe que está oculto 'Productos Descargables' en el tab de 'Mi Cuenta'</Value>
-	</LocaleResource>
-	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.HideNewsletterBlock">
-		<Value>Ocultar cuadro boletín</Value>
-	</LocaleResource>
-	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.HideNewsletterBlock.Hint">
-		<Value>Compruebe si quieres ocultar el cuadro de suscripción a un boletín.</Value>
-	</LocaleResource>
-	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.NewsletterEnabled">
-		<Value>'Suscripción de noticias' Activado</Value>
-	</LocaleResource>
-	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.NewsletterEnabled.Hint">
-		<Value>Establecer si 'Newsletter' está habilitado</Value>
-	</LocaleResource>
-	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.NewsletterTickedByDefault">
-		<Value>Boletín marcada por defecto</Value>
-	</LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.NewsletterTickedByDefault.Hint">
 		<Value>Valor  que indica si el checkbox de 'Boletín'  esta marcado por default en la páguina de registro</Value>
 	</LocaleResource>
@@ -3671,12 +3609,6 @@
 	</LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.ShowCustomersJoinDate.Hint">
 		<Value>Un valor que indica si se muestra la fecha de unión de los clientes.</Value>
-	</LocaleResource>
-	<LocaleResource Name="admin.configuration.settings.customeruser.showcustomerslocation">
-		<Value>Mostrar localización de los Usuarios - Asociados</Value>
-	</LocaleResource>
-	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.ShowCustomersLocation.Hint">
-		<Value>Un valor que indica si se muestra localización de los clientes.</Value>
 	</LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.StateProvinceEnabled">
 		<Value>Departamento' Activado</Value>
@@ -3731,18 +3663,6 @@
 	</LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.UserRegistrationType.Hint">
 		<Value>Determina el método de registro de clientes. Estándar - modo en que los visitantes pueden registrarse y no necesitan aprobación. Validación de email - modo en que el usuario debe responder al  email de validación que se les envía antes de que se activen. Aprobación de administrador - modo en que los visitantes pueden registrarse pero la aprobación de un administrador es requerida. Deshabilitada - modo donde el registro está deshabilitado.</Value>
-	</LocaleResource>
-	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.ZipPostalCodeEnabled">
-		<Value>'Código postal' habilitado</Value>
-	</LocaleResource>
-	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.ZipPostalCodeEnabled.Hint">
-		<Value>Establece si el ' codigo postal' esta habilitado.</Value>
-	</LocaleResource>
-	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.ZipPostalCodeRequired">
-		<Value>'Código postal' requerido</Value>
-	</LocaleResource>
-	<LocaleResource Name="Admin.Configuration.Settings.CustomerUser.ZipPostalCodeRequired.Hint">
-		<Value>Compruebe si se requiere el 'código postal'.</Value>
 	</LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.DeclaratoryLetter">
 		<Value>Configuración de la Carta Declaratoria</Value>
@@ -6709,6 +6629,9 @@
 	<LocaleResource Name="Admin.Customers.Customers.Fields.AdmCode.Hint">
 		<Value>Código Administrativo</Value>
 	</LocaleResource>
+	<LocaleResource Name="Admin.Customers.Customers.Fields.AdmCode.Required">
+		<Value>El código administrativo es obligatorio</Value>
+	</LocaleResource>
 	<LocaleResource Name="Admin.Customers.Customers.Fields.AdminComment">
 		<Value>Comentario del administrador</Value>
 	</LocaleResource>
@@ -6756,6 +6679,21 @@
 	</LocaleResource>
 	<LocaleResource Name="Admin.Customers.Customers.Fields.Dni.Hint">
 		<Value>Documento Nacional de Identidad</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Customers.Customers.Fields.Dni.Required">
+		<Value>El Documento Nacional de Identidad es obligatorio</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Customers.Customers.Fields.AdmCode.Length">
+		<Value>El código administrativo debe ser de 9 caracteres</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Customers.Customers.Fields.AdmCode.IsRegister">
+		<Value>El código administrativo ya se encuentra registrado</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Customers.Customers.Fields.Dni.Length">
+		<Value>El DNI debe ser de 8 caracteres</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Customers.Customers.Fields.Dni.IsRegister">
+		<Value>El Dni ya se encuentra registrado</Value>
 	</LocaleResource>
 	<LocaleResource Name="Admin.Customers.Customers.Fields.MilitarySituation">
 		<Value>Situación Militar</Value>
@@ -6814,11 +6752,11 @@
 	<LocaleResource Name="Admin.Customers.Customers.Fields.IPAddress.Hint">
 		<Value>La última dirección IP utilizada.</Value>
 	</LocaleResource>
-	<LocaleResource Name="Admin.Customers.Customers.Fields.IsTaxExempt">
-		<Value>Está exenta de impuestos</Value>
+	<LocaleResource Name="Admin.Customers.Customers.Fields.DateOfAdmission">
+		<Value>Fecha de Ingreso ACMR</Value>
 	</LocaleResource>
-	<LocaleResource Name="Admin.Customers.Customers.Fields.IsTaxExempt.Hint">
-		<Value>Determina si el cliente está exento de impuestos.</Value>
+	<LocaleResource Name="Admin.Customers.Customers.Fields.DateOfAdmission.Hint">
+		<Value>Determina la fecha de ingreso a la asociacion.</Value>
 	</LocaleResource>
 	<LocaleResource Name="Admin.Customers.Customers.Fields.LastActivityDate">
 		<Value>La última actividad</Value>
@@ -6907,12 +6845,6 @@
 	<LocaleResource Name="Admin.Customers.Customers.Fields.SystemName.Hint">
 		<Value>El nombre del sistema de la función del cliente.</Value>
 	</LocaleResource>
-	<LocaleResource Name="Admin.Customers.Customers.Fields.TimeZoneId">
-		<Value>Zona horaria</Value>
-	</LocaleResource>
-	<LocaleResource Name="Admin.Customers.Customers.Fields.TimeZoneId.Hint">
-		<Value>La zona horaria.</Value>
-	</LocaleResource>
 	<LocaleResource Name="Admin.Customers.Customers.Fields.Username">
 		<Value>Nombre de usuario</Value>
 	</LocaleResource>
@@ -6921,51 +6853,6 @@
 	</LocaleResource>
 	<LocaleResource Name="Admin.Customers.Customers.Fields.Username.Required">
 		<Value>Por favor proporcione un nombre de usuario.</Value>
-	</LocaleResource>
-	<LocaleResource Name="Admin.Customers.Customers.Fields.VatNumber">
-		<Value>RUC</Value>
-	</LocaleResource>
-	<LocaleResource Name="Admin.Customers.Customers.Fields.VatNumber.Hint">
-		<Value>Ingresa el RUC de la empresa</Value>
-	</LocaleResource>
-	<LocaleResource Name="Admin.Customers.Customers.Fields.VatNumber.MarkAsInvalid">
-		<Value>Marcar RUC como no válido</Value>
-	</LocaleResource>
-	<LocaleResource Name="Admin.Customers.Customers.Fields.VatNumber.MarkAsValid">
-		<Value>Marcar RUC como válido</Value>
-	</LocaleResource>
-	<LocaleResource Name="Admin.Customers.Customers.Fields.VatNumberStatus">
-		<Value>Estado: {0}</Value>
-	</LocaleResource>
-	<LocaleResource Name="Admin.Customers.Customers.Fields.Vendor">
-		<Value>Gerente del vendedor</Value>
-	</LocaleResource>
-	<LocaleResource Name="Admin.Customers.Customers.Fields.Vendor.Hint">
-		<Value>Elija un vendedor asociado para esta cuenta. Cuando lo asocias a este cliente serás capaz de iniciar sesión en el portal del vendedor y gestionar sus productos y pedidos.</Value>
-	</LocaleResource>
-	<LocaleResource Name="Admin.Customers.Customers.Fields.Vendor.None">
-		<Value>No es un vendedor</Value>
-	</LocaleResource>
-	<LocaleResource Name="Admin.Customers.Customers.Fields.ZipPostalCode">
-		<Value>Código Postal</Value>
-	</LocaleResource>
-	<LocaleResource Name="Admin.Customers.Customers.Fields.ZipPostalCode.Hint">
-		<Value>El código postal.</Value>
-	</LocaleResource>
-	<LocaleResource Name="Admin.Customers.Customers.Fields.ZipPostalCode.Required">
-		<Value>Se requiere Código Postal</Value>
-	</LocaleResource>
-	<LocaleResource Name="Admin.Customers.Customers.Impersonate">
-		<Value>Realizar pedido (Impersonalizado)</Value>
-	</LocaleResource>
-	<LocaleResource Name="Admin.Customers.Customers.Impersonate.Button">
-		<Value>Poner el pedido</Value>
-	</LocaleResource>
-	<LocaleResource Name="Admin.Customers.Customers.Impersonate.Description1">
-		<Value>Durante el proceso de colocación de la orden, usted verá casi exactamente lo que el cliente ve al navegar este sitio, con la excepción del menú de la cabecera (usted verá el texto siguiente 'Personificando a cliente@email.aquí - Finalizar sesión'). Navegue a los productos que el cliente desea y agréguelos al carrito exactamente como el cliente lo haría, luego use el botón 'Comprobar' para proseguir con el proceso normal.</Value>
-	</LocaleResource>
-	<LocaleResource Name="Admin.Customers.Customers.Impersonate.Description2">
-		<Value>Nota: haga clic en enlace 'sesión terminada' con el fin de terminar esta sesión</Value>
 	</LocaleResource>
 	<LocaleResource Name="admin.customers.customers.info">
 		<Value>Información del Asociado</Value>
@@ -9696,7 +9583,7 @@
 		<Value>Borrar (seleccionado)</Value>
 	</LocaleResource>
 	<LocaleResource Name="Admin.Common.DeleteConfirmation">
-		<Value>Está seguro que desea eliminar este artículo?</Value>
+		<Value>Está seguro que desea eliminar?</Value>
 	</LocaleResource>
 	<LocaleResource Name="Admin.Common.DeleteConfirmationParam">
 		<Value>Está seguro de que desea eliminar '{0}'</Value>
@@ -9834,7 +9721,7 @@
 		<Value>Borrar</Value>
 	</LocaleResource>
 	<LocaleResource Name="Common.DeleteConfirmation">
-		<Value>Está seguro que desea eliminar este artículo?</Value>
+		<Value>Está seguro que desea elimina?</Value>
 	</LocaleResource>
 	<LocaleResource Name="Common.DeleteConfirmationParam">
 		<Value>Está seguro de que desea eliminar '{0}'?</Value>

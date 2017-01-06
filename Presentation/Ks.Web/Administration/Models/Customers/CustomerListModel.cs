@@ -58,10 +58,6 @@ namespace Ks.Admin.Models.Customers
         public string SearchPhone { get; set; }
         public bool PhoneEnabled { get; set; }
 
-        [KsResourceDisplayName("Admin.Customers.Customers.List.SearchZipCode")]
-        [AllowHtml]
-        public string SearchZipPostalCode { get; set; }
-        public bool ZipPostalCodeEnabled { get; set; }
 
         public List<SelectListItem> MonthOfBirthValues { get; set; }
         public List<SelectListItem> DayOfBirthValues { get; set; }
