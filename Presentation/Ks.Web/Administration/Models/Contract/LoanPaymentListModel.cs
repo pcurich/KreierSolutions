@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Web.Mvc;
 using Ks.Web.Framework;
+using Ks.Web.Framework.Mvc;
 
 namespace Ks.Admin.Models.Contract
 {
-    public class LoanPaymentListModel
+    public class LoanPaymentListModel : BaseKsEntityModel
     {
         public LoanPaymentListModel()
         {

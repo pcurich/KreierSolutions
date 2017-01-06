@@ -420,6 +420,8 @@ namespace Ks.Admin.Controllers
                     loan.UpdatedOnUtc = DateTime.UtcNow;
                     loan.TotalPayed += loan.MonthlyQuota;
                     loan.IsDelay = false;
+                    if (loan.TotalAmount == loan.TotalPayed)
+                        loan.Active = false;
 
                     _loanService.UpdateLoan(loan);
 
@@ -519,6 +521,7 @@ namespace Ks.Admin.Controllers
                 {
                     AmountToPay = model.MonthlyPayed,
                     CreatedOnUtc = DateTime.UtcNow,
+                    UpdatedOnUtc = DateTime.UtcNow,
                     PaymentNumber = maxQuota + 1,
                     ReturnPaymentTypeId = (int)ReturnPaymentType.ApoyoEconomico,
                     CustomerId = model.CustomerId

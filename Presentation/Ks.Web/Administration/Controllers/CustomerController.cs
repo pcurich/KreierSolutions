@@ -215,7 +215,7 @@ namespace Ks.Admin.Controllers
             return new CustomerModel
             {
                 Id = customer.Id,
-                Email = customer.IsRegistered() ? customer.Email : _localizationService.GetResource("Admin.Customers.Guest"),
+                Email = customer.Email,
                 Username = customer.Username,
                 FullName = customer.GetFullName(),
                 Phone = customer.GetAttribute<string>(SystemCustomerAttributeNames.Phone),
@@ -398,7 +398,7 @@ namespace Ks.Admin.Controllers
 
             model.AvailableMilitarySituations = Ks.Web.Framework.Extensions.GetDescriptions(typeof(CustomerMilitarySituation));
             model.AvailableMilitarySituations.Insert(0, new SelectListItem { Value = "0", Text = "-------------" });
- 
+
 
             //countries and states
             if (_customerSettings.CountryEnabled)
@@ -747,7 +747,7 @@ namespace Ks.Admin.Controllers
                 if (model.SelectedCustomerRoleIds != null && model.SelectedCustomerRoleIds.Contains(customerRole.Id))
                     newCustomerRoles.Add(customerRole);
 
-            if(newCustomerRoles.Count==0)
+            if (newCustomerRoles.Count == 0)
                 newCustomerRoles.Add(allCustomerRoles.FirstOrDefault(x => x.SystemName == SystemCustomerRoleNames.Associated));
             var customerRolesError = ValidateCustomerRoles(newCustomerRoles);
             if (!String.IsNullOrEmpty(customerRolesError))
@@ -784,14 +784,14 @@ namespace Ks.Admin.Controllers
                 _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.AdmCode, model.AdmCode);
                 _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Dni, model.Dni);
                 _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.MilitarySituationId, model.MilitarySituationId);
-                _genericAttributeService.SaveAttribute(customer,SystemCustomerAttributeNames.DateOfAdmission,model.DateOfAdmission);
+                _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.DateOfAdmission, model.DateOfAdmission);
                 if (_customerSettings.DateOfBirthEnabled)
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.DateOfBirth, model.DateOfBirth);
-               if (_customerSettings.StreetAddressEnabled)
+                if (_customerSettings.StreetAddressEnabled)
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.StreetAddress, model.StreetAddress);
                 if (_customerSettings.StreetAddress2Enabled)
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.StreetAddress2, model.StreetAddress2);
-               if (_customerSettings.CountryEnabled)
+                if (_customerSettings.CountryEnabled)
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.CountryId, model.CountryId);
                 if (_customerSettings.CountryEnabled && _customerSettings.StateProvinceEnabled)
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.StateProvinceId, model.StateProvinceId);
@@ -1038,7 +1038,7 @@ namespace Ks.Admin.Controllers
 
             try
             {
-                var loans=_loanService.GetLoansByCustomer(customer.Id);
+                var loans = _loanService.GetLoansByCustomer(customer.Id);
                 if (loans != null && loans.Count > 0)
                 {
                     ErrorNotification("El asociado cuenta con  " + loans.Count +
@@ -1046,7 +1046,7 @@ namespace Ks.Admin.Controllers
                 }
                 else
                 {
-                    var contributions=_contributionService.GetContributionsByCustomer(customer.Id);
+                    var contributions = _contributionService.GetContributionsByCustomer(customer.Id);
                     foreach (var contribution in contributions)
                     {
                         contribution.Active = false;
