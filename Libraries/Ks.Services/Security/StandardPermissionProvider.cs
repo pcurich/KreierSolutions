@@ -28,6 +28,7 @@ namespace Ks.Services.Security
         public static readonly PermissionRecord ManageTabs = new PermissionRecord { Name = "Admin area. Manage Tabs", SystemName = "ManageTabs", Category = "Content Management" };
         public static readonly PermissionRecord ManageBenefits = new PermissionRecord { Name = "Admin area. Manage Benefits", SystemName = "ManageBenefits", Category = "Customers" };
         public static readonly PermissionRecord ManageReturns = new PermissionRecord { Name = "Admin area. Manage Returns", SystemName = "ManageReturns", Category = "Customers" };
+        public static readonly PermissionRecord ManageReports = new PermissionRecord { Name = "Admin area. Manage Reports", SystemName = "ManageReports", Category = "Customers" };
         
 
         public static readonly PermissionRecord ManageVendors = new PermissionRecord { Name = "Admin area. Manage Vendors", SystemName = "ManageVendors", Category = "Customers" };
@@ -93,6 +94,7 @@ namespace Ks.Services.Security
 		        ManageSystemLog,
 		        ManageMessageQueue,
 		        ManageMaintenance,
+                ManageReports,
 		    };
 		}
 		
@@ -153,6 +155,7 @@ namespace Ks.Services.Security
                 HtmlEditorManagePictures,
                 ManageScheduleTasks,
                 ManageScheduleBatchs,
+                ManageReports,
                 DisplayPrices,
                 EnableShoppingCart,
                 EnableWishlist,
@@ -184,6 +187,7 @@ namespace Ks.Services.Security
                         ManageLoans,
                         ManageBenefits,
                         ManageReturns,
+                        ManageReports,
                         ManageVendors,
                         ManageCurrentCarts,
                         ManageOrders,

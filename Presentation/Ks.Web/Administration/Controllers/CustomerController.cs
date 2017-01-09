@@ -549,12 +549,10 @@ namespace Ks.Admin.Controllers
 
             //ensure a customer is not added to both 'Guests' and 'Registered' customer roles
             //ensure that a customer is in at least one required role ('Guests' and 'Registered')
-            bool isInGuestsRole = customerRoles.FirstOrDefault(cr => cr.SystemName == SystemCustomerRoleNames.Guests) != null;
-            bool isInRegisteredRole = customerRoles.FirstOrDefault(cr => cr.SystemName == SystemCustomerRoleNames.Associated) != null;
-            if (isInGuestsRole && isInRegisteredRole)
-                return "The customer cannot be in both 'Guests' and 'Registered' customer roles";
-            if (!isInGuestsRole && !isInRegisteredRole)
-                return "Add the customer to 'Guests' or 'Registered' customer role";
+            bool isInEmployerRole = customerRoles.FirstOrDefault(cr => cr.SystemName == SystemCustomerRoleNames.Employee) != null;
+            bool isInAssociatedRole = customerRoles.FirstOrDefault(cr => cr.SystemName == SystemCustomerRoleNames.Associated) != null;
+            if (!isInEmployerRole && !isInAssociatedRole)
+                return "Ingrese por lo menos un rol de Trabajador o de Asociado";
 
             //no errors
             return "";

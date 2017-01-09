@@ -1,0 +1,213 @@
+﻿@model Ks.Admin.Models.Report.ReportListModel
+@Html.ValidationSummary(false)
+
+@{
+
+    //page title
+    ViewBag.Title = T("Admin.Catalog.Report").Text;
+}
+
+<div class="section-header">
+    <div class="title">
+        <img src="@Url.Content("~/Administration/Content/images/ico-stat1.png")" alt="" />
+        @T("Admin.Catalog.Report")
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#report-edit").kendoTabStrip({
+            animation: {
+                open: {
+                    effects: "fadeIn"
+                }
+            },
+            select: tabstrip_on_tab_select
+        });
+    });
+</script>
+<div id="report-edit">
+    <ul>
+        <li @Html.RenderSelectedTabIndex(0, GetSelectedTabIndex())>
+            @T("Admin.Catalog.Report.Global")
+        </li>
+        <li @Html.RenderSelectedTabIndex(1, GetSelectedTabIndex())>
+            @T("Admin.Catalog.Report.Check")
+        </li>
+        <li @Html.RenderSelectedTabIndex(2, GetSelectedTabIndex())>
+            @T("Admin.Catalog.Report.Loans")
+        </li>
+        <li @Html.RenderSelectedTabIndex(3, GetSelectedTabIndex())>
+            @T("Admin.Catalog.Report.Return")
+        </li>
+    </ul>
+    <div>
+        @TabGlobal()
+    </div>
+    <div>
+        @TabCheck()
+    </div>
+    <div>
+        @TabLoanGeneral()
+    </div>
+    <div>
+        @TabReturn()
+    </div>
+</div>
+
+@{
+    //custom tabs
+    var eventMessage = new AdminTabStripCreated(this.Html, "report-edit");
+    EngineContext.Current.Resolve<IEventPublisher>().Publish(eventMessage);
+    foreach (var eventBlock in eventMessage.BlocksToRender)
+    {
+        @eventBlock
+    }
+}
+
+
+@*save selected tab index*@
+<input type="hidden" id="selected-tab-index" name="selected-tab-index" value="@(GetSelectedTabIndex())">
+
+@helper TabGlobal()
+{
+    using (Html.BeginForm("GlobalReport", "Report", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <table width="100%">
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ReportGlobal.SourceId):
+                </td>
+                <td class="adminData">
+                    @Html.DropDownListFor(model => model.ReportGlobal.SourceId, Model.ReportGlobal.Sources)
+                    @Html.ValidationMessageFor(model => model.ReportGlobal.SourceId)
+                    <script>
+                        $(document).ready(function () {
+                            $('#@Html.FieldIdFor(model => model.ReportGlobal.SourceId)').width(250).kendoDropDownList();
+                        });
+                    </script>
+                </td>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ReportGlobal.TypeId):
+                </td>
+                <td class="adminData">
+                    @Html.DropDownListFor(model => model.ReportGlobal.TypeId, Model.ReportGlobal.Types)
+                    @Html.ValidationMessageFor(model => model.ReportGlobal.TypeId)
+                    <script>
+                        $(document).ready(function () {
+                            $('#@Html.FieldIdFor(model => model.ReportGlobal.TypeId)').width(250).kendoDropDownList();
+                        });
+                    </script>
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ReportGlobal.Year):
+                </td>
+                <td class="adminData">
+                    @Html.DropDownListFor(model => model.ReportGlobal.Year, Model.ReportGlobal.Years)
+                    @Html.ValidationMessageFor(model => model.ReportGlobal.Year)
+                    <script>
+                        $(document).ready(function () {
+                            $('#@Html.FieldIdFor(model => model.ReportGlobal.Year)').width(250).kendoDropDownList();
+                        });
+                    </script>
+                </td>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ReportGlobal.Month):
+                </td>
+                <td class="adminData">
+                    @Html.DropDownListFor(model => model.ReportGlobal.Month, Model.ReportGlobal.Months)
+                    @Html.ValidationMessageFor(model => model.ReportGlobal.Month)
+                    <script>
+                        $(document).ready(function () {
+                            $('#@Html.FieldIdFor(model => model.ReportGlobal.Month)').width(250).kendoDropDownList();
+                        });
+                    </script>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td colspan="2">
+                    <input type="submit"   class="k-button" value="@T("Admin.Common.ExportToExcel")" />
+                </td>
+            </tr>
+        </table>
+    }
+}
+
+@helper TabCheck()
+{
+    using (Html.BeginForm("CheckReport", "Report"))
+    {
+         
+    }
+}
+@helper TabLoanGeneral()
+{
+    using (Html.BeginForm("LoanGeneralReport", "Report", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <table width="100%">
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ReportLoan.From):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.ReportLoan.From)
+                    @Html.ValidationMessageFor(model => model.ReportLoan.From)
+                </td>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ReportLoan.To):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.ReportLoan.To)
+                    @Html.ValidationMessageFor(model => model.ReportLoan.To)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ReportLoan.TypeId):
+                </td>
+                <td class="adminData">
+                    @Html.DropDownListFor(model => model.ReportLoan.TypeId, Model.ReportLoan.Types)
+                    @Html.ValidationMessageFor(model => model.ReportGlobal.Year)
+                    <script>
+                        $(document).ready(function () { 
+                            $('#@Html.FieldIdFor(model => model.ReportLoan.TypeId )').width(250).kendoDropDownList();
+                        });
+                    </script>
+                </td>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ReportLoan.StatesId):
+                </td>
+                <td class="adminData">
+                    @Html.DropDownListFor(model => model.ReportLoan.StatesId, Model.ReportLoan.States)
+                    @Html.ValidationMessageFor(model => model.ReportLoan.StatesId)
+                    <script>
+                        $(document).ready(function () {
+                            $('#@Html.FieldIdFor(model => model.ReportLoan.StatesId)').width(250).kendoDropDownList();
+                        });
+                    </script>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td colspan="2">
+                    <input type="submit" class="k-button" value="@T("Admin.Common.ExportToExcel")" />
+                </td>
+            </tr>
+        </table>
+    }
+}
+@helper TabReturn()
+{
+
+}

@@ -128,6 +128,7 @@
     <Content Include="Content\images\ajax_loader_small.gif" />
     <Content Include="Content\images\blue_button_bg.gif" />
     <Content Include="Content\images\error-message.gif" />
+    <Content Include="Content\images\Escudo.png" />
     <Content Include="Content\images\google-maps.gif" />
     <Content Include="Content\images\grey_button_bg.gif" />
     <Content Include="Content\images\ico-blacklist.png" />
@@ -141,7 +142,7 @@
     <Content Include="Content\images\ico-news.gif" />
     <Content Include="Content\images\ico-promotions.png" />
     <Content Include="Content\images\ico-sales.png" />
-    <Content Include="Content\images\ico-stat1.gif" />
+    <Content Include="Content\images\ico-stat1.png" />
     <Content Include="Content\images\ico-system.png" />
     <Content Include="Content\images\ico-warnings.gif" />
     <Content Include="Content\images\Logo.png" />
@@ -1338,6 +1339,7 @@
     <Content Include="Views\ReturnPayment\Edit.cshtml" />
     <Content Include="Views\ReturnPayment\_CreateOrUpdate.cshtml" />
     <Content Include="Views\Shared\DeleteCustomer.cshtml" />
+    <Content Include="Views\Report\List.cshtml" />
     <None Include="Views\Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1442,7 +1444,7 @@
     <Compile Include="Models\Messages\QueuedEmailListModel.cs" />
     <Compile Include="Models\Messages\QueuedEmailModel.cs" />
     <Compile Include="Models\Messages\TestMessageTemplateModel.cs" />
-    <Compile Include="Models\ReportContributionPaymentModel.cs" />
+    <Compile Include="Models\Report\ReportListModel.cs" />
     <Compile Include="Models\Security\PermissionMappingModel.cs" />
     <Compile Include="Models\Security\PermissionRecordModel.cs" />
     <Compile Include="Models\Settings\BankSettingsModel.cs" />
@@ -1457,6 +1459,7 @@
     <Compile Include="Models\Systems\KsSystemModel.cs" />
     <Compile Include="Models\Tasks\ScheduleTaskModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Validators\Batchs\ScheduleBatchValidator.cs" />
     <Compile Include="Validators\Common\AddressAttributeValidator.cs" />
     <Compile Include="Validators\Common\AddressAttributeValueValidator.cs" />

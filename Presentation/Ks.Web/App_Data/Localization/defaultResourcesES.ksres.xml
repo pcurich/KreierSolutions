@@ -291,7 +291,7 @@
 	<LocaleResource Name="Account.Fields.LastName.Required">
 		<Value>Se requiere el apellido.</Value>
 	</LocaleResource>
-	
+
 	<LocaleResource Name="Account.Fields.Password">
 		<Value>Constraseña</Value>
 	</LocaleResource>
@@ -2943,7 +2943,7 @@
 	<LocaleResource Name="Admin.Configuration.ActivityLog.ActivityLogType.Updated">
 		<Value>Los tipos se han actualizado correctamente.</Value>
 	</LocaleResource>
-	
+
 	<LocaleResource Name="Admin.Configuration.Settings">
 		<Value>Configuración</Value>
 	</LocaleResource>
@@ -5906,6 +5906,30 @@
 	<LocaleResource Name="Admin.Contract.ContributionPayments.Fields.Type.Hint">
 		<Value>Automatico o Manual</Value>
 	</LocaleResource>
+	<LocaleResource Name="Admin.Contract.ContributionPayments.Fields.CustomerName">
+		<Value>Asociado</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Contract.ContributionPayments.Fields.CustomerName.Hint">
+		<Value>Asociado</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Contract.ContributionPayments.Fields.CustomerAdminCode">
+		<Value>Número Administrativo</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Contract.ContributionPayments.Fields.CustomerAdminCode.Hint">
+		<Value>Número Administrativo</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Contract.ContributionPayments.Fields.CustomerDni">
+		<Value>Dni</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Contract.ContributionPayments.Fields.CustomerDni.Hint">
+		<Value>Dni</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Contract.ContributionPayments.Fields.CustomerFrom">
+		<Value>Creado</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Contract.ContributionPayments.Fields.CustomerFrom.Hint">
+		<Value>Creado</Value>
+	</LocaleResource>
 	<LocaleResource Name="Admin.Contract.ContributionPayments.Fields.AccountNumber">
 		<Value>N° Cuenta.</Value>
 	</LocaleResource>
@@ -6001,6 +6025,12 @@
 	</LocaleResource>
 	<LocaleResource Name="Admin.Contract.Loan.Fields.CreatedOn.Hint">
 		<Value>Fecha en que incio el contrato</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Contract.Loan.Fields.ApprovalOn">
+		<Value>Fecha Aprobación</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Contract.Loan.Fields.ApprovalOn.Hint">
+		<Value>Fecha en que se aprobo el apoyo economico</Value>
 	</LocaleResource>
 	<LocaleResource Name="Admin.Contract.Loan.Fields.UpdatedOn">
 		<Value>Fecha de la ultima actualización</Value>
@@ -6098,6 +6128,24 @@
 	<LocaleResource Name="Admin.Contract.Loan.Fields.TotalPayed.Hint">
 		<Value>Valor de lo pagado hasta el momento </Value>
 	</LocaleResource>
+	<LocaleResource Name="Admin.Contract.Loan.Fields.AccountNumber">
+		<Value>N° Cuenta</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Contract.Loan.Fields.AccountNumber.Hint">
+		<Value>N° Cuenta</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Contract.Loan.Fields.BankName">
+		<Value>Banco</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Contract.Loan.Fields.BankName.Hint">
+		<Value>Banco</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Contract.Loan.Fields.CheckNumber">
+		<Value>N° Cheque</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Contract.Loan.Fields.CheckNumber.Hint">
+		<Value>N° Cheque</Value>
+	</LocaleResource>
 	<LocaleResource Name="Admin.Contract.Loan.StateActivity">
 		<Value>Categorización</Value>
 	</LocaleResource>
@@ -6154,6 +6202,30 @@
 	</LocaleResource>
 	<LocaleResource Name="Admin.Contract.LoanPayments.Fields.Type.Hint">
 		<Value>Tipo del apoyo económico {Automático o Manual}</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Contract.LoanPayments.Fields.CustomerName">
+		<Value>Asociado</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Contract.LoanPayments.Fields.CustomerName.Hint">
+		<Value>Asociado</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Contract.LoanPayments.Fields.CustomerAdminCode">
+		<Value>Número Administrativo</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Contract.LoanPayments.Fields.CustomerAdminCode.Hint">
+		<Value>Número Administrativo</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Contract.LoanPayments.Fields.CustomerDni">
+		<Value>Dni</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Contract.LoanPayments.Fields.CustomerDni.Hint">
+		<Value>Dni</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Contract.LoanPayments.Fields.CustomerFrom">
+		<Value>Creado</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Contract.LoanPayments.Fields.CustomerFrom.Hint">
+		<Value>Creado</Value>
 	</LocaleResource>
 	<LocaleResource Name="Admin.Contract.LoanPayments.Fields.MonthlyQuota">
 		<Value>Cuota Mensual</Value>
@@ -8052,7 +8124,7 @@
 	<LocaleResource Name="StoreTheme">
 		<Value>Selecciona el tema de la tienda</Value>
 	</LocaleResource> 
-	
+
 	<LocaleResource Name="ActivityLog.EditQuevedEmail">
 		<Value>El email con Id ({'0'}) ha sido modificado por el usuario ({'1'})</Value>
 	</LocaleResource>  
@@ -8140,10 +8212,10 @@
 	<LocaleResource Name="ActivityLog.PublicStore.ViewContribution">
 		<Value>El asociado con Codigo administrativo N° {0} ha ingresado a las aportaciones</Value>
 	</LocaleResource>
-		<LocaleResource Name="ActivityLog.PublicStore.ViewLoan">
+	<LocaleResource Name="ActivityLog.PublicStore.ViewLoan">
 		<Value>El asociado con Codigo administrativo N° {0} ha ingresado a los prestamos</Value>
 	</LocaleResource>
-	
+
 	<LocaleResource Name="Admin.Configuration.Countries">
 		<Value>Países</Value>
 	</LocaleResource>
@@ -8351,7 +8423,7 @@
 	<LocaleResource Name="Admin.Configuration.Countries.Updated">
 		<Value>El país se ha actualizado correctamente.</Value>
 	</LocaleResource>
-	
+
 	<LocaleResource Name="Admin.Configuration.Currencies">
 		<Value>Monedas</Value>
 	</LocaleResource>
@@ -8502,7 +8574,7 @@
 	<LocaleResource Name="Admin.Configuration.Currencies.Updated">
 		<Value>La moneda se ha actualizado correctamente.</Value>
 	</LocaleResource>
-	
+
 	<LocaleResource Name="Admin.Configuration.EmailAccounts">
 		<Value>Cuentas de email</Value>
 	</LocaleResource>
@@ -8602,7 +8674,7 @@
 	<LocaleResource Name="Admin.Configuration.EmailAccounts.Updated">
 		<Value>El email se ha actualizado correctamente.</Value>
 	</LocaleResource>
-	
+
 	<LocaleResource Name="Admin.Configuration.KsSystem">
 		<Value>Sistema</Value>
 	</LocaleResource>
@@ -8693,7 +8765,7 @@
 	<LocaleResource Name="Admin.Configuration.KsSystem.Updated">
 		<Value>El sistema se ha actualizado correctamente.</Value>
 	</LocaleResource>
-	
+
 	<LocaleResource Name="Admin.Configuration.Languages">
 		<Value>Idiomas</Value>
 	</LocaleResource>
@@ -8844,7 +8916,7 @@
 	<LocaleResource Name="Admin.Configuration.Languages.XmlFile.Note2">
 		<Value>NOTA: NO haga clic dos veces.</Value>
 	</LocaleResource>
-	
+
 	<LocaleResource Name="Admin.Configuration.Measures">
 		<Value>Medidas</Value>
 	</LocaleResource>
@@ -8914,7 +8986,7 @@
 	<LocaleResource Name="Admin.Configuration.Measures.Weights.Fields.SystemKeyword.Required">
 		<Value>Proporcione una palabra clave del sistema.</Value>
 	</LocaleResource>   
-	
+
 	<LocaleResource Name="Admin.System">
 		<Value>Sistema</Value>
 	</LocaleResource>
@@ -9011,7 +9083,7 @@
 	<LocaleResource Name="Admin.System.Log.ViewLogDetails">
 		<Value>Ver detalles de la entrada de log </Value>
 	</LocaleResource>
-	
+
 	<LocaleResource Name="Admin.System.Maintenance">
 		<Value>Mantenimiento</Value>
 	</LocaleResource>
@@ -9057,7 +9129,7 @@
 	<LocaleResource Name="Admin.System.Maintenance.DeleteGuests.TotalDeleted">
 		<Value>{0} asociados se eliminaron</Value>
 	</LocaleResource>
-	
+
 	<LocaleResource Name="Admin.System.QueuedEmails">
 		<Value>Mensaje encolado</Value>
 	</LocaleResource>
@@ -9250,7 +9322,7 @@
 	<LocaleResource Name="Admin.System.QueuedEmails.Updated">
 		<Value>El email en cola se ha actualizado correctamente.</Value>
 	</LocaleResource>
-	
+
 	<LocaleResource Name="Admin.System.ScheduleBatchs">
 		<Value>Programar servicios</Value>
 	</LocaleResource>
@@ -9353,7 +9425,7 @@
 	<LocaleResource Name="Admin.System.ScheduleBatchs.Updated">
 		<Value>El Servicio ha sido actualizado correctamente</Value>
 	</LocaleResource>	
-	
+
 	<LocaleResource Name="Admin.System.SystemInfo">
 		<Value>Información del sistema</Value>
 	</LocaleResource>
@@ -9417,7 +9489,7 @@
 	<LocaleResource Name="Admin.System.SystemInfo.UTCTime.Hint">
 		<Value>Tiempo del Meridiano de Greenwich (GMT / UTC)</Value>
 	</LocaleResource>
-	
+
 	<LocaleResource Name="Admin.System.ScheduleTasks">
 		<Value>Programar tareas</Value>
 	</LocaleResource>
@@ -9460,7 +9532,7 @@
 	<LocaleResource Name="Admin.System.ScheduleTasks.StopOnError">
 		<Value>Detener en error</Value>
 	</LocaleResource>
-	
+
 	<LocaleResource Name="Admin.System.Warnings">
 		<Value>Advertencias</Value>
 	</LocaleResource>
@@ -9542,7 +9614,7 @@
 	<LocaleResource Name="Admin.System.Warnings.URL.NoMatch">
 		<Value>El URL especificado de la tienda  ({0}) no coincide con esta URL de la  tienda ({1})</Value>
 	</LocaleResource>
-	
+
 	<LocaleResource Name="Admin.Common.AddNew">
 		<Value>Nuevo</Value>
 	</LocaleResource>
@@ -9819,6 +9891,86 @@
 	<LocaleResource Name="Common.Yes">
 		<Value>Si</Value>
 	</LocaleResource>
-	
-	
+
+	<LocaleResource Name="Admin.Catalog.Report">
+		<Value>Reportes</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.Report.Global">
+		<Value>Globales</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.Report.Check">
+		<Value>Cheques</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.Report.Loans">
+		<Value>Apoyo Económico</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.Report.Return">
+		<Value>Devoluciones</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportGlobal.Fields.Source">
+		<Value>Origen</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportGlobal.Fields.Source.Hint">
+		<Value>Determina si es de Copere o de la Caja</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportGlobal.Fields.Type">
+		<Value>Tipo</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportGlobal.Fields.Type.Hint">
+		<Value>Aportacion o Apoyo Social Económico</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportGlobal.Fields.Month">
+		<Value>Mes</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportGlobal.Fields.Month.Hint">
+		<Value>Mes</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportGlobal.Fields.Year">
+		<Value>Año</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportGlobal.Fields.Year.Hint">
+		<Value>Año</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportGlobal.Fields.Type.Required">
+		<Value>Seleccione un tipo</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportGlobal.Fields.Source.Required">
+		<Value>Seleccione un Origen</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportGlobal.Fields.Year.Required">
+		<Value>Seleccione un Año</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportGlobal.Fields.Month.Required">
+		<Value>Seleccione un Mes</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportLoan.Fields.State">
+		<Value>Estado</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportLoan.Fields.State.Hint">
+		<Value>Estado</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportLoan.Fields.From">
+		<Value>Desde</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportLoan.Fields.From.Hint">
+		<Value>Fecha desde</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportLoan.Fields.From.Required">
+		<Value>Ingrese una fecha de inicio</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportLoan.Fields.To">
+		<Value>Hasta</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportLoan.Fields.To.Hint">
+		<Value>Fecha hasta</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportLoan.Fields.To.Required">
+		<Value>Ingrese una fecha fin</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportLoan.Fields.Type">
+		<Value>Tipo</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportLoan.Fields.Type.Hint">
+		<Value>Tipo, copere o la caja </Value>
+	</LocaleResource>	
 </Language>

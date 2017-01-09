@@ -162,6 +162,13 @@
                                   type: "date",
                                   format: "{0:G}"
                               }, {
+                                  field: "ApprovalOn",
+                                  title: "@T("Admin.Contract.Loan.Fields.ApprovalOn")",
+                                  width: 50,
+                                  template:'#= ApprovalOn!=null ? kendo.toString(ApprovalOn,"dd/MM/yyyy","es-PE"): " "#',
+                                  type: "date",
+                                  format: "{0:G}"
+                              },{
                                   field: "UpdatedOn",
                                   title: "@T("Admin.Contract.Loan.Fields.UpdatedOn")",
                                   width: 50,

@@ -32,6 +32,7 @@ using Ks.Services.Localization;
 using Ks.Services.Logging;
 using Ks.Services.Media;
 using Ks.Services.Messages;
+using Ks.Services.Reports;
 using Ks.Services.Security;
 using Ks.Services.Seo;
 using Ks.Services.Tasks;
@@ -207,7 +208,7 @@ namespace Ks.Web.Framework
 
             builder.RegisterType<MessageTemplateService>().As<IMessageTemplateService>().InstancePerLifetimeScope();
             builder.RegisterType<QueuedEmailService>().As<IQueuedEmailService>().InstancePerLifetimeScope();
-            //builder.RegisterType<NewsLetterSubscriptionService>().As<INewsLetterSubscriptionService>().InstancePerLifetimeScope();
+            builder.RegisterType<ReportService>().As<IReportService>().InstancePerLifetimeScope();
             //builder.RegisterType<CampaignService>().As<ICampaignService>().InstancePerLifetimeScope();
             builder.RegisterType<EmailAccountService>().As<IEmailAccountService>().InstancePerLifetimeScope();
             builder.RegisterType<WorkflowMessageService>().As<IWorkflowMessageService>().InstancePerLifetimeScope();

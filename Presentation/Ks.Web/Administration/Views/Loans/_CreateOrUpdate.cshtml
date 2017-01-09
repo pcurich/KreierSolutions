@@ -14,6 +14,12 @@
         <td class="adminData">
             @Html.EditorFor(model => model.Quota)
         </td>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.CustomerName):
+        </td>
+        <td class="adminData">
+            @Model.CustomerName
+        </td>
     </tr>
     <tr>
         <td class="adminTitle">
@@ -22,10 +28,17 @@
         <td class="adminData">
             @Html.DropDownListFor(model => model.StateId, Model.States)
             <script>
-                $(document).ready(function() {
-                    $('#StateId').kendoDropDownList();
+                $(document).ready(function () {
+                    $('#@Html.FieldIdFor(model => model.StateId)').width(250).kendoDropDownList();
                 });
             </script>
+
+        </td>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.CustomerDni):
+        </td>
+        <td class="adminData">
+            @Model.CustomerDni
         </td>
     </tr>
     <tr>
@@ -35,10 +48,16 @@
         <td class="adminData">
             @Html.DropDownListFor(model => model.BankName, Model.Banks)
             <script>
-                $(document).ready(function() {
-                    $('#BankName').kendoDropDownList();
+                $(document).ready(function () {
+                    $('#@Html.FieldIdFor(model => model.BankName)').width(250).kendoDropDownList();
                 });
             </script>
+        </td>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.CustomerAdminCode):
+        </td>
+        <td class="adminData">
+            @Model.CustomerAdminCode
         </td>
     </tr>
     <tr>
@@ -48,10 +67,17 @@
         <td class="adminData">
             @Html.DropDownListFor(model => model.Type, Model.Types)
             <script>
-                $(document).ready(function() {
-                    $('#Type').kendoDropDownList();
+                $(document).ready(function () {
+                    $('#@Html.FieldIdFor(model => model.Type)').width(250).kendoDropDownList();
                 });
             </script>
+
+        </td>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.CustomerFrom):
+        </td>
+        <td class="adminData">
+            @Model.CustomerFrom
         </td>
     </tr>
     <tr>

@@ -193,9 +193,11 @@
     <Compile Include="Domain\Reports\ReportContributionBenefit.cs" />
     <Compile Include="Domain\Reports\ReportContributionPayment.cs" />
     <Compile Include="Domain\Reports\Report.cs" />
+    <Compile Include="Domain\Reports\ReportLoanDetail.cs" />
     <Compile Include="Domain\Reports\ReportLoanPayment.cs" />
     <Compile Include="Domain\Reports\ReportLoanPaymentKardex.cs" />
     <Compile Include="Domain\Reports\ReportState.cs" />
+    <Compile Include="Domain\Reports\ReportGlobal.cs" />
     <Compile Include="Domain\Security\AclRecord.cs" />
     <Compile Include="Domain\Security\DefaultPermissionRecord.cs" />
     <Compile Include="Domain\Security\IAclSupported.cs" />

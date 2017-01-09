@@ -121,7 +121,7 @@ namespace Ks.Admin.Controllers
             if (loans == null)
                 loans = new PagedList<Loan>(new List<Loan>(), 0, 10);
 
-            var contributionsModel = loans.Select(x =>
+            var loanModel = loans.Select(x =>
             {
                 var toModel = x.ToModel();
                 toModel.CustomerCompleteName = x.Customer.GetFullName();
@@ -130,12 +130,16 @@ namespace Ks.Admin.Controllers
                 toModel.CreatedOn = _dateTimeHelper.ConvertToUserTime(x.CreatedOnUtc, DateTimeKind.Utc);
                 if (x.UpdatedOnUtc.HasValue)
                     toModel.UpdatedOn = _dateTimeHelper.ConvertToUserTime(x.UpdatedOnUtc.Value, DateTimeKind.Utc);
+
+                if (x.ApprovalOnUtc.HasValue)
+                    toModel.ApprovalOn = _dateTimeHelper.ConvertToUserTime(x.ApprovalOnUtc.Value, DateTimeKind.Utc); 
+                
                 return toModel;
             });
 
             var gridModel = new DataSourceResult
             {
-                Data = contributionsModel,
+                Data = loanModel,
                 Total = loans.TotalCount
             };
 
@@ -148,12 +152,17 @@ namespace Ks.Admin.Controllers
                 return AccessDeniedView();
 
             var loan = _loanService.GetLoanById(id);
+            var customer = _customerService.GetCustomerById(loan.CustomerId);
             var model = new LoanPaymentListModel
             {
                 LoanId = id,
                 CustomerId = loan.CustomerId,
                 States = LoanState.EnProceso.ToSelectList(false).ToList(),
                 Banks = _bankSettings.PrepareBanks(),
+                CustomerName = customer.GetFullName(),
+                CustomerAdminCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode),
+                CustomerDni = customer.GetAttribute<string>(SystemCustomerAttributeNames.Dni),
+                CustomerFrom = _dateTimeHelper.ConvertToUserTime(loan.CreatedOnUtc,DateTimeKind.Utc),
                 Types = new List<SelectListItem>
                 {
                     new SelectListItem { Value = "0", Text = "--------------", Selected = true},

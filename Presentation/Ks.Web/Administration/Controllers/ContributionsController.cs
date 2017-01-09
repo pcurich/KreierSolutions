@@ -164,12 +164,17 @@ namespace Ks.Admin.Controllers
                 return AccessDeniedView();
 
             var contribution = _contributionService.GetContributionById(id);
+            var customer = _customerService.GetCustomerById(contribution.CustomerId);
             var model = new ContributionPaymentListModel
             {
                 ContributionId = id,
                 CustomerId = contribution.CustomerId,
                 States = ContributionState.EnProceso.ToSelectList(false).ToList(),
                 Banks = _bankSettings.PrepareBanks(),
+                CustomerName = customer.GetFullName(),
+                CustomerAdminCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode),
+                CustomerDni = customer.GetAttribute<string>(SystemCustomerAttributeNames.Dni),
+                CustomerFrom = _dateTimeHelper.ConvertToUserTime(contribution.CreatedOnUtc,DateTimeKind.Utc),
                 Types = new List<SelectListItem>
                 {
                     new SelectListItem { Value = "0", Text = "--------------", Selected = true},

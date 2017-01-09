@@ -3,6 +3,10 @@
 @Html.HiddenFor(model => model.Id)
 @Html.HiddenFor(model => model.SystemName)
 @Html.HiddenFor(model => model.PathBase)
+@Html.HiddenFor(model => model.FolderRead)
+@Html.HiddenFor(model => model.FolderLog)
+@Html.HiddenFor(model => model.FolderMoveToDone)
+@Html.HiddenFor(model => model.FolderMoveToError)
 
 <script>
     $(document).ready(function () {
@@ -19,7 +23,7 @@
 <div id="country-edit">
     <ul>
         <li @Html.RenderSelectedTabIndex(0, GetSelectedTabIndex())>
-            @T("Admin.System.ScheduleBatchs.Info")
+            @T("Admin.Common.Info")
         </li>
     </ul>
     <div>
@@ -61,7 +65,7 @@
                 @Html.DropDownListFor(model => model.FrecuencyId, Model.AvailableFrecuencies)
                 @Html.ValidationMessageFor(model => model.FrecuencyId)
                 <script>
-                    $(document).ready(function() {
+                    $(document).ready(function () {
                         $('#@Html.FieldIdFor(model => model.FrecuencyId)').kendoDropDownList();
                     });
                 </script>
@@ -76,7 +80,7 @@
                 @Html.DropDownListFor(model => model.PeriodYear, Model.AvailableYears)
                 @Html.ValidationMessageFor(model => model.PeriodYear)
                 <script>
-                    $(document).ready(function() {
+                    $(document).ready(function () {
                         $('#@Html.FieldIdFor(model => model.PeriodYear)').kendoDropDownList();
                     });
                 </script>
@@ -91,7 +95,7 @@
                 @Html.DropDownListFor(model => model.PeriodMonth, Model.AvailableMonths)
                 @Html.ValidationMessageFor(model => model.PeriodMonth)
                 <script>
-                    $(document).ready(function() {
+                    $(document).ready(function () {
                         $('#@Html.FieldIdFor(model => model.PeriodMonth)').kendoDropDownList();
                     });
                 </script>
@@ -108,74 +112,18 @@
         </tr>
         <tr>
             <td class="adminTitle">
-                @Html.KsLabelFor(model => model.FolderRead):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.FolderRead)
-                @Html.ValidationMessageFor(model => model.FolderRead)
-                @*<script>
-                    $(document).ready(function () {
-                        $('#@Html.FieldIdFor(model => model.PathRead)').width(800);
-                    });
-                </script>*@
-            </td>
-        </tr>
-        <tr>
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.FolderLog):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.FolderLog)
-                @Html.ValidationMessageFor(model => model.FolderLog)
-                @*<script>
-                    $(document).ready(function () {
-                        $('#@Html.FieldIdFor(model => model.PathLog)').width(800);
-                    });
-                </script>*@
-            </td>
-        </tr>
-        <tr>
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.FolderMoveToDone):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.FolderMoveToDone)
-                @Html.ValidationMessageFor(model => model.FolderMoveToDone)
-                @*<script>
-                    $(document).ready(function () {
-                        $('#@Html.FieldIdFor(model => model.PathMoveToDone)').width(800);
-                    });
-                </script>*@
-            </td>
-        </tr>
-        <tr>
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.FolderMoveToError):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.FolderMoveToError)
-                @Html.ValidationMessageFor(model => model.FolderMoveToError)
-                @*<script>
-                    $(document).ready(function () {
-                        $('#@Html.FieldIdFor(model => model.PathMoveToError)').width(800);
-                    });
-                </script>*@
-            </td>
-        </tr>
-        <tr>
-            <td class="adminTitle">
                 @Html.KsLabelFor(model => model.StartExecutionOn):
             </td>
             <td class="adminData">
                 @Html.EditorFor(model => model.StartExecutionOn)
                 @Html.ValidationMessageFor(model => model.StartExecutionOn)
                 @*<script>
-                    $(document).ready(function () {
-                        $('#@Html.FieldIdFor(model => model.StartExecutionOn)').kendoDateTimePicker({
-                            ARIATemplate: "Date: #=kendo.toString(@Model.StartExecutionOn, 'G')#"
-                    });
-                    });
-                </script>*@
+                        $(document).ready(function () {
+                            $('#@Html.FieldIdFor(model => model.StartExecutionOn)').kendoDateTimePicker({
+                                ARIATemplate: "Date: #=kendo.toString(@Model.StartExecutionOn, 'G')#"
+                        });
+                        });
+                    </script>*@
             </td>
         </tr>
         <tr>
@@ -200,7 +148,7 @@
                 @Html.KsLabelFor(model => model.Enabled):
             </td>
             <td class="adminData">
-                @Html.CheckBoxFor(model => model.Enabled, new { @disabled = "disabled"})
+                @Html.CheckBoxFor(model => model.Enabled, new { @disabled = "disabled" })
             </td>
         </tr>
     </table>

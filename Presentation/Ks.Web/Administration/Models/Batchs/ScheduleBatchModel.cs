@@ -19,7 +19,7 @@ namespace Ks.Admin.Models.Batchs
             AvailableYears = new List<SelectListItem>();
         }
 
-        [KsResourceDisplayName("Admin.System.ScheduleBatchs.Fields.Fields.Name")]
+        [KsResourceDisplayName("Admin.System.ScheduleBatchs.Fields.Name")]
         [AllowHtml]
         public string Name { get; set; }
 

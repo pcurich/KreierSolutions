@@ -310,7 +310,7 @@ namespace Ks.Services.Contract
             //return products
             var totalRecords = (pTotalRecords.Value != DBNull.Value) ? Convert.ToInt32(pTotalRecords.Value) : 0;
             var firstOrDefault = data.FirstOrDefault();
-            if (firstOrDefault != null)
+            if (firstOrDefault != null && firstOrDefault.Value != null)
                 return new PagedList<ReportContributionPayment>(XmlHelper.XmlToObject<List<ReportContributionPayment>>(firstOrDefault.Value), pageIndex, pageSize, totalRecords);
 
             return new List<ReportContributionPayment>();

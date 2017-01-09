@@ -73,7 +73,11 @@ namespace Ks.Core.Domain.Contract
         ///     Gets or sets a value indicating whether this instance is RequiereAuthorized.
         /// </summary>
         public bool IsAuthorized { get; set; }
-         
+
+        public string AccountNumber { get; set; }
+        public string BankName { get; set; }
+        public string CheckNumber { get; set; }
+
         /// <summary>
         ///     Gets or sets a value indicating whether this instance is delay.
         /// </summary>
@@ -88,6 +92,9 @@ namespace Ks.Core.Domain.Contract
         ///     Gets or sets the date and time of instance creation
         /// </summary>
         public DateTime CreatedOnUtc { get; set; }
+
+
+        public DateTime? ApprovalOnUtc { get; set; }
 
         /// <summary>
         ///     Gets or sets the updated on UTC.

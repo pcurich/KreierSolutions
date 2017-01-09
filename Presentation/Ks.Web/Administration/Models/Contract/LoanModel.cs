@@ -70,6 +70,12 @@ namespace Ks.Admin.Models.Contract
         [UIHint("Decimal")]
         public decimal TotalPayed { get; set; }
         public bool IsAuthorized { get; set; }
+        [KsResourceDisplayName("Admin.Contract.Loan.Fields.AccountNumber")]
+        public string AccountNumber { get; set; }
+        [KsResourceDisplayName("Admin.Contract.Loan.Fields.BankName")]
+        public string BankName { get; set; }
+        [KsResourceDisplayName("Admin.Contract.Loan.Fields.CheckNumber")]
+        public string CheckNumber { get; set; }
         public StateActivityModel StateActivityModels { get; set; } //SyngleSignature Warranty
         public CashFlowModel CashFlowModels { get; set; }
         public PreCashFlowModel PreCashFlow { get; set; }
@@ -77,6 +83,9 @@ namespace Ks.Admin.Models.Contract
 
         [KsResourceDisplayName("Admin.Contract.Loan.Fields.CreatedOn")]
         public DateTime CreatedOn { get; set; }
+        [KsResourceDisplayName("Admin.Contract.Loan.Fields.ApprovalOn")]
+        public DateTime? ApprovalOn  { get; set; }
+
         [KsResourceDisplayName("Admin.Contract.Loan.Fields.UpdatedOn")]
         public DateTime? UpdatedOn { get; set; }
 

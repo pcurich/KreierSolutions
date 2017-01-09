@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Ks.Core.Domain.Directory;
 using System.IO;
 using Ks.Core.Domain.Contract;
@@ -24,5 +25,7 @@ namespace Ks.Services.ExportImport
         void ExportReportLoanPaymentToXlsx(Stream stream, Customer customer, Loan loan, IList<ReportLoanPayment> reportLoanPayment);
         void ExportReportLoanPaymentKardexToXlsx(Stream stream, Customer customer, Loan loan, IList<ReportLoanPaymentKardex> reportLoanPaymentKardex);
         void ExportReportContributionBenefitToXlsx(Stream stream, Customer customer, ContributionBenefit contributionBenefit, IList<ReportContributionBenefit> reportContributionBenefit);
+        void ExportGlobalReportToXlsx(MemoryStream stream, int year, int month, IList<ReportGlobal> globalReport);
+        void ExportDetailLoanToXlsx(MemoryStream stream, DateTime from, DateTime to, string source, IList<ReportLoanDetail> reportLoan);
     }
 }
