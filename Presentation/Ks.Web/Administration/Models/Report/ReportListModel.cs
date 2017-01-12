@@ -10,8 +10,9 @@ namespace Ks.Admin.Models.Report
     public class ReportListModel
     {
         public ReportGlobal ReportGlobal { get; set; }
-        public ReportCheck ReportCheck { get; set; }
+        public ReportBenefit ReportBenefit  { get; set; }
         public ReportLoan ReportLoan { get; set; }
+        public ReportContribution ReportContribution { get; set; }
 
     }
 
@@ -71,9 +72,46 @@ namespace Ks.Admin.Models.Report
         public List<SelectListItem> Types { get; set; }
     }
 
-    public class ReportCheck
+    public class ReportContribution
     {
+        public ReportContribution()
+        {
+            Types = new List<SelectListItem>();
+            To = new List<SelectListItem>();
+            From = new List<SelectListItem>();
+        }
 
+        [KsResourceDisplayName("Admin.Catalog.ReportContribution.Fields.From")]
+        public int FromId { get; set; }
+        [KsResourceDisplayName("Admin.Catalog.ReportContribution.Fields.To")]
+        public int ToId { get; set; }
+        [KsResourceDisplayName("Admin.Catalog.ReportContribution.Fields.Type")]
+        public int TypeId { get; set; }
+        public List<SelectListItem> Types { get; set; }
+        public List<SelectListItem> To { get; set; }
+        public List<SelectListItem> From { get; set; }
+    }
+
+    public class ReportBenefit
+    {
+        public ReportBenefit()
+        {
+            Types = new List<SelectListItem>();
+            Sources= new List<SelectListItem>();
+        }
+
+        [KsResourceDisplayName("Admin.Catalog.ReportBenefit.Fields.From")]
+        [UIHint("DateNullable")]
+        public DateTime? From { get; set; }
+        [KsResourceDisplayName("Admin.Catalog.ReportBenefit.Fields.To")]
+        [UIHint("DateNullable")]
+        public DateTime? To { get; set; }
+        [KsResourceDisplayName("Admin.Catalog.ReportBenefit.Fields.Type")]
+        public int TypeId { get; set; }
+        public List<SelectListItem> Types { get; set; }
+        [KsResourceDisplayName("Admin.Catalog.ReportBenefit.Fields.Source")]
+        public int SourceId { get; set; }
+        public List<SelectListItem> Sources { get; set; }
     }
 
     #endregion

@@ -524,7 +524,7 @@ namespace Ks.Services.ExportImport
             {
                 // get handle to the existing worksheet
                 var worksheet = xlPackage.Workbook.Worksheets.Add("Apoyo Social Económico Kardex");
-                 
+
                 try
                 {
                     var image = new Bitmap(new MemoryStream(Convert.FromBase64String(IMAGE)));
@@ -980,7 +980,7 @@ namespace Ks.Services.ExportImport
             }
         }
 
-        public virtual void ExportDetailLoanToXlsx(MemoryStream stream, DateTime from, DateTime to,string source, IList<ReportLoanDetail> reportLoan)
+        public virtual void ExportDetailLoanToXlsx(MemoryStream stream, DateTime from, DateTime to, string source, IList<ReportLoanDetail> reportLoan)
         {
             if (stream == null)
                 throw new ArgumentNullException("stream");
@@ -1019,7 +1019,7 @@ namespace Ks.Services.ExportImport
                 //Create Headers and format them 
                 var properties = new[]
                     {
-                        "Fecha de Giro","Estado de Apoyo","N° de orden","N° Cheque","Estado Asociado","Asociado","N° Administrativo","Importe Solicitado","Gravamen","Importe Girado",
+                        "Fecha de Giro","Estado de Apoyo","N° de orden","N° Cheque","Estado Asociado","Fuente","Asociado","N° Administrativo","Importe Solicitado","Gravamen","Importe Girado",
                         "Interes Total","Total Deuda (Capital+Interes)", "Total pagado a la fecha","Capital de lo pagado","interes de lo pagado",
                         "Total saldo a la fecha","N° Cotas","Cuota Mensual","Capital de la Cuota","Interes de la couta","Ultimo Pago"
                     };
@@ -1057,6 +1057,8 @@ namespace Ks.Services.ExportImport
                     worksheet.Cells[row, col].Value = p.CheckNumber;
                     col++;
                     worksheet.Cells[row, col].Value = p.CustomerState;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.Source;
                     col++;
                     worksheet.Cells[row, col].Value = p.LastName + " ,  " + p.FirstName;
                     col++;
@@ -1100,36 +1102,36 @@ namespace Ks.Services.ExportImport
                     worksheet.Cells[row, col].Value = p.QoutaTax.ToString("c", new CultureInfo("es-PE"));
                     totalQoutaTax += p.QoutaTax;
                     col++;
-                    worksheet.Cells[row, col].Value = p.LastDate ;
+                    worksheet.Cells[row, col].Value = p.LastDate;
                     col++;
- 
+
                     row++;
                 }
 
-                worksheet.Cells[row, 8].Style.Font.Bold = true;
-                worksheet.Cells[row, 8].Value = totalLoanAmount.ToString("c", new CultureInfo("es-PE"));
                 worksheet.Cells[row, 9].Style.Font.Bold = true;
-                worksheet.Cells[row, 9].Value = totalTotalSafe.ToString("c", new CultureInfo("es-PE"));
+                worksheet.Cells[row, 9].Value = totalLoanAmount;
                 worksheet.Cells[row, 10].Style.Font.Bold = true;
-                worksheet.Cells[row, 10].Value = totalTotalToPay.ToString("c", new CultureInfo("es-PE"));
+                worksheet.Cells[row, 10].Value = totalTotalSafe;
                 worksheet.Cells[row, 11].Style.Font.Bold = true;
-                worksheet.Cells[row, 11].Value = totalTotalFeed.ToString("c", new CultureInfo("es-PE"));
+                worksheet.Cells[row, 11].Value = totalTotalToPay;
                 worksheet.Cells[row, 12].Style.Font.Bold = true;
-                worksheet.Cells[row, 12].Value = totalTotalAmount.ToString("c", new CultureInfo("es-PE"));
+                worksheet.Cells[row, 12].Value = totalTotalFeed;
                 worksheet.Cells[row, 13].Style.Font.Bold = true;
-                worksheet.Cells[row, 13].Value = totalTotalPayed.ToString("c", new CultureInfo("es-PE"));
+                worksheet.Cells[row, 13].Value = totalTotalAmount;
                 worksheet.Cells[row, 14].Style.Font.Bold = true;
-                worksheet.Cells[row, 14].Value = totalPayedCapital.ToString("c", new CultureInfo("es-PE"));
+                worksheet.Cells[row, 14].Value = totalTotalPayed;
                 worksheet.Cells[row, 15].Style.Font.Bold = true;
-                worksheet.Cells[row, 15].Value = totalPayedTax.ToString("c", new CultureInfo("es-PE"));
+                worksheet.Cells[row, 15].Value = totalPayedCapital;
                 worksheet.Cells[row, 16].Style.Font.Bold = true;
-                worksheet.Cells[row, 16].Value = totalDebit.ToString("c", new CultureInfo("es-PE"));
-                worksheet.Cells[row, 18].Style.Font.Bold = true;
-                worksheet.Cells[row, 18].Value = totalMonthlyQuota.ToString("c", new CultureInfo("es-PE"));
+                worksheet.Cells[row, 16].Value = totalPayedTax;
+                worksheet.Cells[row, 17].Style.Font.Bold = true;
+                worksheet.Cells[row, 17].Value = totalDebit;
                 worksheet.Cells[row, 19].Style.Font.Bold = true;
-                worksheet.Cells[row, 19].Value = totalQoutaCapital.ToString("c", new CultureInfo("es-PE"));
+                worksheet.Cells[row, 19].Value = totalMonthlyQuota;
                 worksheet.Cells[row, 20].Style.Font.Bold = true;
-                worksheet.Cells[row, 20].Value = totalQoutaTax.ToString("c", new CultureInfo("es-PE"));
+                worksheet.Cells[row, 20].Value = totalQoutaCapital;
+                worksheet.Cells[row, 21].Style.Font.Bold = true;
+                worksheet.Cells[row, 21].Value = totalQoutaTax;
 
                 for (var i = 1; i <= worksheet.Dimension.Columns; i++)
                 {
@@ -1137,6 +1139,150 @@ namespace Ks.Services.ExportImport
                 }
                 xlPackage.Save();
             }
+        }
+
+        public virtual void ExportSummaryContributionToXlsx(MemoryStream stream, int fromId, int toId, int typeId, IList<ReportSummaryContribution> summaryContribution)
+        {
+            if (stream == null)
+                throw new ArgumentNullException("stream");
+
+            using (var xlPackage = new ExcelPackage(stream))
+            {
+                // get handle to the existing worksheet
+                var worksheet = xlPackage.Workbook.Worksheets.Add("Aportacines");
+                // var imagePath = _webHelper.MapPath(@"C:\inetpub\wwwroot\Acmr\Administration\Content\images\logo.png");
+                try
+                {
+
+                    var image = new Bitmap(new MemoryStream(Convert.FromBase64String(IMAGE)));
+                    var excelImage = worksheet.Drawings.AddPicture("ACMR", image);
+                    excelImage.From.Column = 0;
+                    excelImage.From.Row = 0;
+                }
+                catch (Exception e)
+                {
+                }
+
+                #region Summary
+                worksheet.Cells["A5:O5"].Merge = true;
+                worksheet.Cells["A6:O6"].Merge = true;
+                worksheet.Cells["A5:O6"].Style.Font.Bold = true;
+                worksheet.Cells["A5:O6"].Style.Font.Size = 20;
+                worksheet.Cells["A5:O6"].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
+                worksheet.Cells["A5"].Value = "CONSOLIDADO DE APORTACIONES";
+                worksheet.Cells["A6"].Value = "ENERO " + fromId + " DICIEMBRE " + toId;
+
+                #endregion
+
+                //Create Headers and format them 
+                var properties = new[]
+                    {
+                        "N° Administrativo","Asociado","Fuente",
+                        "Enero","Febrero","Marzo","Abril","Mayo",
+                        "Junio","Julio","Agosto","Setiembre","Octubre",
+                        "Noviembre","Diciembre","Total"
+                    };
+                for (var i = 0; i < properties.Length; i++)
+                {
+                    worksheet.Cells[9, i + 1].Value = properties[i];
+                    worksheet.Cells[9, i + 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    worksheet.Cells[9, i + 1].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(128, 235, 142));
+                    worksheet.Cells[9, i + 1].Style.Fill.BackgroundColor.Tint = 0.599993896298105M;
+                    worksheet.Cells[9, i + 1].Style.Font.Bold = true;
+                }
+
+                var row = 10;
+                var totalEne = 0M;
+                var totalFeb = 0M;
+                var totalMar = 0M;
+                var totalAbr = 0M;
+                var totalMay = 0M;
+                var totalJun = 0M;
+                var totalJul = 0M;
+                var totalAgo = 0M;
+                var totalSep = 0M;
+                var totalOct = 0M;
+                var totalNov = 0M;
+                var totalDic = 0M;
+                var totalLine = 0M;
+
+                foreach (var p in summaryContribution)
+                {
+                    var col = 1;
+                    worksheet.Cells[row, col].Value = p.CustomerAdmCode;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.CustomerLastName + " ," + p.CustomerName;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.TypeSource;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.Ene;
+                    totalEne += p.Ene;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.Feb;
+                    totalFeb += p.Feb;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.Mar;
+                    totalMar += p.Mar;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.Abr;
+                    totalAbr += p.Abr;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.May;
+                    totalMay += p.May;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.Jun;
+                    totalJun += p.Jun;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.Jul;
+                    totalJul += p.Jul;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.Ago;
+                    totalAgo += p.Ago;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.Sep;
+                    totalSep += p.Sep;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.Oct;
+                    totalOct += p.Oct;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.Nov;
+                    totalNov += p.Nov;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.Dic;
+                    totalDic += p.Dic;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.Ene + p.Feb + p.Mar + p.Abr + p.May + p.Jul + p.Jun + p.Ago + p.Sep + p.Oct + p.Nov + p.Dic;
+                    totalLine+=p.Ene + p.Feb + p.Mar + p.Abr + p.May + p.Jul + p.Jun + p.Ago + p.Sep + p.Oct + p.Nov + p.Dic;
+                    col++;
+                    row++;
+                }
+
+                worksheet.Cells[row, 4].Value = totalEne;
+                worksheet.Cells[row, 5].Value = totalFeb;
+                worksheet.Cells[row, 6].Value = totalMar;
+                worksheet.Cells[row, 7].Value = totalAbr;
+                worksheet.Cells[row, 8].Value = totalMay;
+                worksheet.Cells[row, 9].Value = totalJun;
+                worksheet.Cells[row, 10].Value = totalJul;
+                worksheet.Cells[row, 11].Value = totalAgo;
+                worksheet.Cells[row, 12].Value = totalSep;
+                worksheet.Cells[row, 13].Value = totalOct;
+                worksheet.Cells[row, 14].Value = totalNov;
+                worksheet.Cells[row, 15].Value = totalDic;
+                worksheet.Cells[row, 16].Value = totalLine;
+
+
+                for (var i = 1; i <= worksheet.Dimension.Columns; i++)
+                {
+                    worksheet.Column(i).AutoFit();
+                }
+                xlPackage.Save();
+            }
+        }
+
+        public virtual void ExportBenefitToXlsx(MemoryStream stream, Benefit getBenefitById, IList<ReportBenefit> benefit)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

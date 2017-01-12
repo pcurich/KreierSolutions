@@ -190,6 +190,7 @@
     <Compile Include="Domain\Messages\MessageTemplatesSettings.cs" />
     <Compile Include="Domain\Messages\QueuedEmail.cs" />
     <Compile Include="Domain\Messages\QueuedEmailPriority.cs" />
+    <Compile Include="Domain\Reports\ReportBenefit.cs" />
     <Compile Include="Domain\Reports\ReportContributionBenefit.cs" />
     <Compile Include="Domain\Reports\ReportContributionPayment.cs" />
     <Compile Include="Domain\Reports\Report.cs" />
@@ -198,6 +199,7 @@
     <Compile Include="Domain\Reports\ReportLoanPaymentKardex.cs" />
     <Compile Include="Domain\Reports\ReportState.cs" />
     <Compile Include="Domain\Reports\ReportGlobal.cs" />
+    <Compile Include="Domain\Reports\ReportSummaryContribution.cs" />
     <Compile Include="Domain\Security\AclRecord.cs" />
     <Compile Include="Domain\Security\DefaultPermissionRecord.cs" />
     <Compile Include="Domain\Security\IAclSupported.cs" />

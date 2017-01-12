@@ -7,6 +7,7 @@
         public string LoanState { get; set; }
         public string CheckNumber { get; set; }
         public int CustomerId { get; set; }
+        public string Source { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string AdmCode { get; set; }

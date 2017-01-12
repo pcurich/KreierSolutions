@@ -22,6 +22,7 @@ namespace Ks.Data
             : base(nameOrConnectionString)
         {
             //((IObjectContextAdapter) this).ObjectContext.ContextOptions.LazyLoadingEnabled = true;
+            ((IObjectContextAdapter)this).ObjectContext.CommandTimeout = 180;
         }
 
         #endregion

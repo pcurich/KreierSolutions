@@ -121,16 +121,31 @@ namespace Ks.Admin.Controllers
                     States = new List<SelectListItem>
                     {
                         new SelectListItem {Value = "0", Text = "-----------------"},
-                        new SelectListItem {Value = "1", Text = "Vigente"},
-                        new SelectListItem {Value = "2", Text = "Cancelado"},
+                        new SelectListItem {Value = "1", Text = "Todos"},
+                        new SelectListItem {Value = "2", Text = "Vigente"},
+                        new SelectListItem {Value = "3", Text = "Cancelado"},
                     },
                     Types = new List<SelectListItem>
                     {
                         new SelectListItem {Value = "0", Text = "-----------------"},
-                        new SelectListItem {Value = "1", Text = "Copere"},
-                        new SelectListItem {Value = "2", Text = "Caja Pensión Militar Policial"}
+                        new SelectListItem {Value = "1", Text = "Todos"},
+                        new SelectListItem {Value = "2", Text = "Copere"},
+                        new SelectListItem {Value = "3", Text = "Caja Pensión Militar Policial"}
                     },
-                }
+                },
+                ReportContribution = new ReportContribution
+                {
+                    To =DateTime.Now.GetYearsList(_localizationService ,-80,81),
+                    From = DateTime.Now.GetYearsList(_localizationService, -80, 81),
+                    Types = new List<SelectListItem>
+                    {
+                        new SelectListItem {Value = "0", Text = "-----------------"},
+                        new SelectListItem {Value = "1", Text = "Todos"},
+                        new SelectListItem {Value = "2", Text = "Copere"},
+                        new SelectListItem {Value = "3", Text = "Caja Pensión Militar Policial"}
+                    },
+                },
+                ReportBenefit = new ReportBenefit()
             };
 
             return View(model);
@@ -221,20 +236,20 @@ namespace Ks.Admin.Controllers
                 var reportLoan = _reportService.GetDetailLoan(
                 model.ReportLoan.From.Value.Year, model.ReportLoan.From.Value.Month, model.ReportLoan.From.Value.Day,
                 model.ReportLoan.To.Value.Year, model.ReportLoan.To.Value.Month, model.ReportLoan.To.Value.Day,
-                model.ReportLoan.TypeId,model.ReportLoan.StatesId);
+                model.ReportLoan.TypeId, model.ReportLoan.StatesId);
                 try
                 {
                     byte[] bytes;
                     using (var stream = new MemoryStream())
                     {
-                        _exportManager.ExportDetailLoanToXlsx(stream, model.ReportLoan.From.Value, model.ReportLoan.To.Value,  
-                            model.ReportLoan.TypeId == 1 ? "COPERE" : "CAJA PENSION MILITAR POLICIAL", 
+                        _exportManager.ExportDetailLoanToXlsx(stream, model.ReportLoan.From.Value, model.ReportLoan.To.Value,
+                            model.ReportLoan.TypeId == 1 ? "COPERE" : "CAJA PENSION MILITAR POLICIAL",
                             reportLoan);
                         bytes = stream.ToArray();
                     }
                     //Response.ContentType = "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
                     //Response.AddHeader("content-disposition", "attachment; filename=Aportaciones.xlsx");
-                    return File(bytes, "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Reporte Global.xlsx");
+                    return File(bytes, "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Reporte Apoyo Social Economico.xlsx");
                 }
                 catch (Exception exc)
                 {
@@ -245,12 +260,112 @@ namespace Ks.Admin.Controllers
             ErrorNotification(errorMessage);
             return RedirectToAction("List");
 
+        }
 
+        [HttpPost]
+        public ActionResult SummaryContributionReport(ReportListModel model)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageReports))
+                return AccessDeniedView();
 
+            var hasError = false;
+            var errorMessage = string.Empty;
 
+            if (model.ReportContribution.FromId==0)
+            {
+                errorMessage += _localizationService.GetResource("Admin.Catalog.ReportContribution.Fields.From.Required") + " - ";
+                hasError = true;
+            }
+            if (model.ReportContribution.ToId==0)
+            {
+                errorMessage += _localizationService.GetResource("Admin.Catalog.ReportContribution.Fields.To.Required") + " - ";
+                hasError = true;
+            }
+            if (!hasError)
+            {
+                var summaryContribution = _reportService.GetSummaryContribution(model.ReportContribution.FromId,
+                    model.ReportContribution.ToId, model.ReportContribution.TypeId);
+                try
+                {
+                    byte[] bytes;
+                    using (var stream = new MemoryStream())
+                    {
+                        _exportManager.ExportSummaryContributionToXlsx(stream, model.ReportContribution.FromId,model.ReportContribution.ToId,
+                            model.ReportContribution.TypeId,summaryContribution);
+                        bytes = stream.ToArray();
+                    }
+                    //Response.ContentType = "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                    //Response.AddHeader("content-disposition", "attachment; filename=Aportaciones.xlsx");
+                    return File(bytes, "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Reporte Consolidado Aportaciones.xlsx");
+                }
+                catch (Exception exc)
+                {
+                    ErrorNotification(exc);
+                    return RedirectToAction("List");
+                }
+            }
+            ErrorNotification(errorMessage);
+            return RedirectToAction("List");
 
         }
 
+
+        [HttpPost]
+        public ActionResult BenefitReport(ReportListModel model)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageReports))
+                return AccessDeniedView();
+
+            var hasError = false;
+            var errorMessage = string.Empty;
+
+            if (!model.ReportBenefit.From.HasValue)
+            {
+                errorMessage += _localizationService.GetResource("Admin.Catalog.ReportBenefit.Fields.From.Required") + " - ";
+                hasError = true;
+            }
+            if (!model.ReportBenefit.To.HasValue)
+            {
+                errorMessage += _localizationService.GetResource("Admin.Catalog.ReportBenefit.Fields.To.Required") + " - ";
+                hasError = true;
+            }
+            if (model.ReportBenefit.TypeId==0)
+            {
+                errorMessage += _localizationService.GetResource("Admin.Catalog.ReportBenefit.Fields.Type.Required") + " - ";
+                hasError = true;
+            }
+            if (model.ReportBenefit.SourceId==0)
+            {
+                errorMessage += _localizationService.GetResource("Admin.Catalog.ReportBenefit.Fields.Source.Required") + " - ";
+                hasError = true;
+            }
+
+
+            if (!hasError)
+            {
+                var benefit = _reportService.GetBenefit(model.ReportBenefit.From.Value,
+                    model.ReportBenefit.To.Value,model.ReportBenefit.TypeId,model.ReportBenefit.SourceId);
+                try
+                {
+                    byte[] bytes;
+                    using (var stream = new MemoryStream())
+                    {
+                        _exportManager.ExportBenefitToXlsx(stream, _benefitService.GetBenefitById(model.ReportBenefit.TypeId), benefit);
+                        bytes = stream.ToArray();
+                    }
+                    //Response.ContentType = "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                    //Response.AddHeader("content-disposition", "attachment; filename=Aportaciones.xlsx");
+                    return File(bytes, "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Reporte Beneficios.xlsx");
+                }
+                catch (Exception exc)
+                {
+                    ErrorNotification(exc);
+                    return RedirectToAction("List");
+                }
+            }
+            ErrorNotification(errorMessage);
+            return RedirectToAction("List");
+        }
 
         #endregion
     }

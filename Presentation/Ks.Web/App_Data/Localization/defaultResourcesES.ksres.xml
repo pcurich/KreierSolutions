@@ -9898,10 +9898,13 @@
 	<LocaleResource Name="Admin.Catalog.Report.Global">
 		<Value>Globales</Value>
 	</LocaleResource>
-	<LocaleResource Name="Admin.Catalog.Report.Check">
-		<Value>Cheques</Value>
+	<LocaleResource Name="Admin.Catalog.Report.Contribution">
+		<Value>Aportaciones</Value>
 	</LocaleResource>
-	<LocaleResource Name="Admin.Catalog.Report.Loans">
+	<LocaleResource Name="Admin.Catalog.Report.Benefit">
+		<Value>Beneficio</Value>
+	</LocaleResource>
+		<LocaleResource Name="Admin.Catalog.Report.Loans">
 		<Value>Apoyo Económico</Value>
 	</LocaleResource>
 	<LocaleResource Name="Admin.Catalog.Report.Return">
@@ -9972,5 +9975,71 @@
 	</LocaleResource>
 	<LocaleResource Name="Admin.Catalog.ReportLoan.Fields.Type.Hint">
 		<Value>Tipo, copere o la caja </Value>
-	</LocaleResource>	
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportLoan.Fields.From.Hint">
+		<Value>Fecha desde</Value>
+	</LocaleResource>
+
+	<LocaleResource Name="Admin.Catalog.ReportContribution.Fields.From">
+		<Value>Año desde</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportContribution.Fields.From.Hint">
+		<Value>Año desde</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportContribution.Fields.From.Required">
+		<Value>Ingrese un año de inicio</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportContribution.Fields.To">
+		<Value>Año Hasta</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportContribution.Fields.To.Hint">
+		<Value>Año hasta</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportContribution.Fields.To.Required">
+		<Value>Ingrese un Año fin</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportContribution.Fields.Type">
+		<Value>Tipo</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportContribution.Fields.Type.Hint">
+		<Value>Tipo, copere o la caja </Value>
+	</LocaleResource>
+	
+	<LocaleResource Name="Admin.Catalog.ReportBenefit.Fields.From">
+		<Value>Desde</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportBenefit.Fields.From.Hint">
+		<Value>desde</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportBenefit.Fields.From.Required">
+		<Value>Ingrese una fecha de inicio</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportBenefit.Fields.To">
+		<Value>Hasta</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportBenefit.Fields.To.Hint">
+		<Value>hasta</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportBenefit.Fields.To.Required">
+		<Value>Ingrese una fecha fin</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportBenefit.Fields.Type">
+		<Value>Tipo Beneficio</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportBenefit.Fields.Type.Hint">
+		<Value>Tipo de beneficio </Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportBenefit.Fields.Type.Required">
+		<Value>Seleccione un tipo de beneficio</Value>
+	</LocaleResource>
+		<LocaleResource Name="Admin.Catalog.ReportBenefit.Fields.Source">
+		<Value>Origen</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportBenefit.Fields.Source.Hint">
+		<Value>Origen, Copere o caja</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportBenefit.Fields.Source.Required">
+		<Value>Seleccione un origen de beneficio</Value>
+	</LocaleResource>
+ 	
 </Language>
