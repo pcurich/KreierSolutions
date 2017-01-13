@@ -135,7 +135,7 @@ namespace Ks.Admin.Controllers
                 },
                 ReportContribution = new ReportContribution
                 {
-                    To =DateTime.Now.GetYearsList(_localizationService ,-80,81),
+                    To = DateTime.Now.GetYearsList(_localizationService, -80, 81),
                     From = DateTime.Now.GetYearsList(_localizationService, -80, 81),
                     Types = new List<SelectListItem>
                     {
@@ -271,12 +271,12 @@ namespace Ks.Admin.Controllers
             var hasError = false;
             var errorMessage = string.Empty;
 
-            if (model.ReportContribution.FromId==0)
+            if (model.ReportContribution.FromId == 0)
             {
                 errorMessage += _localizationService.GetResource("Admin.Catalog.ReportContribution.Fields.From.Required") + " - ";
                 hasError = true;
             }
-            if (model.ReportContribution.ToId==0)
+            if (model.ReportContribution.ToId == 0)
             {
                 errorMessage += _localizationService.GetResource("Admin.Catalog.ReportContribution.Fields.To.Required") + " - ";
                 hasError = true;
@@ -290,8 +290,8 @@ namespace Ks.Admin.Controllers
                     byte[] bytes;
                     using (var stream = new MemoryStream())
                     {
-                        _exportManager.ExportSummaryContributionToXlsx(stream, model.ReportContribution.FromId,model.ReportContribution.ToId,
-                            model.ReportContribution.TypeId,summaryContribution);
+                        _exportManager.ExportSummaryContributionToXlsx(stream, model.ReportContribution.FromId, model.ReportContribution.ToId,
+                            model.ReportContribution.TypeId, summaryContribution);
                         bytes = stream.ToArray();
                     }
                     //Response.ContentType = "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
@@ -329,12 +329,12 @@ namespace Ks.Admin.Controllers
                 errorMessage += _localizationService.GetResource("Admin.Catalog.ReportBenefit.Fields.To.Required") + " - ";
                 hasError = true;
             }
-            if (model.ReportBenefit.TypeId==0)
+            if (model.ReportBenefit.TypeId == 0)
             {
                 errorMessage += _localizationService.GetResource("Admin.Catalog.ReportBenefit.Fields.Type.Required") + " - ";
                 hasError = true;
             }
-            if (model.ReportBenefit.SourceId==0)
+            if (model.ReportBenefit.SourceId == 0)
             {
                 errorMessage += _localizationService.GetResource("Admin.Catalog.ReportBenefit.Fields.Source.Required") + " - ";
                 hasError = true;
@@ -343,8 +343,9 @@ namespace Ks.Admin.Controllers
 
             if (!hasError)
             {
-                var benefit = _reportService.GetBenefit(model.ReportBenefit.From.Value,
-                    model.ReportBenefit.To.Value,model.ReportBenefit.TypeId,model.ReportBenefit.SourceId);
+                var benefit = _reportService.GetContributionBenefit(model.ReportBenefit.From.Value.Year, model.ReportBenefit.From.Value.Month,
+                    model.ReportBenefit.To.Value.Year, model.ReportBenefit.To.Value.Month,
+                    model.ReportBenefit.TypeId, model.ReportBenefit.SourceId);
                 try
                 {
                     byte[] bytes;

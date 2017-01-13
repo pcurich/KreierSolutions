@@ -221,9 +221,71 @@ namespace Ks.Services.Reports
             return new List<ReportSummaryContribution>();
         }
 
-        public virtual IList<ReportBenefit> GetBenefit(DateTime value, DateTime dateTime, int typeId, int sourceId)
+        public virtual IList<ReportBenefit> GetContributionBenefit(int fromMonth, int fromYear, int toMonth, int toYear, int typeId, int sourceId)
         {
-            throw new NotImplementedException();
+            if (typeId == 0 || sourceId == 0)
+                return new List<ReportBenefit>();
+
+            var pFromMonth = _dataProvider.GetParameter();
+            pFromMonth.ParameterName = "FromMonth";
+            pFromMonth.Value = fromMonth;
+            pFromMonth.DbType = DbType.Int32;
+
+            var pFromYear = _dataProvider.GetParameter();
+            pFromYear.ParameterName = "FromYear";
+            pFromYear.Value = fromYear;
+            pFromYear.DbType = DbType.Int32;
+
+            var pToMonth = _dataProvider.GetParameter();
+            pToMonth.ParameterName = "ToMonth";
+            pToMonth.Value = toMonth;
+            pToMonth.DbType = DbType.Int32;
+
+            var pToYear = _dataProvider.GetParameter();
+            pToYear.ParameterName = "ToYear";
+            pToYear.Value = toYear;
+            pToYear.DbType = DbType.Int32;
+
+            var pType = _dataProvider.GetParameter();
+            pType.ParameterName = "Type"; //1 todos 2copere 3 caja
+            pType.Value = typeId == 2 ? 1 : typeId == 3 ? 2 : 0;
+            pType.DbType = DbType.Int32;
+
+            var pBenefitId = _dataProvider.GetParameter();
+            pBenefitId.ParameterName = "BenefitId";
+            pBenefitId.Value = sourceId;
+            pBenefitId.DbType = DbType.Int32;
+
+            var pNameReport = _dataProvider.GetParameter();
+            pNameReport.ParameterName = "NameReport";
+            pNameReport.Value = "SummaryContributionReport";
+            pNameReport.DbType = DbType.String;
+
+            var pReportState = _dataProvider.GetParameter();
+            pReportState.ParameterName = "ReportState";
+            pReportState.Value = (int)ReportState.Completed;
+            pReportState.DbType = DbType.Int32;
+
+            var pSource = _dataProvider.GetParameter();
+            pSource.ParameterName = "Source";
+            pSource.Value = "Ks.Services.Report.GetContributionBenefit";
+            pSource.DbType = DbType.String;
+
+            var pTotalRecords = _dataProvider.GetParameter();
+            pTotalRecords.ParameterName = "TotalRecords";
+            pTotalRecords.Direction = ParameterDirection.Output;
+            pTotalRecords.DbType = DbType.Int32;
+
+            //invoke stored procedure
+            var data = _dbContext.ExecuteStoredProcedureList<Report>("ReportContributionBenefit", pFromYear, pFromMonth, pToYear,pToMonth,pType,pBenefitId, pNameReport, pReportState, pSource, pTotalRecords);
+
+            //return products
+            var totalRecords = (pTotalRecords.Value != DBNull.Value) ? Convert.ToInt32(pTotalRecords.Value) : 0;
+            var firstOrDefault = data.FirstOrDefault();
+            if (firstOrDefault != null && firstOrDefault.Value != null)
+                return new List<ReportBenefit>(XmlHelper.XmlToObject<List<ReportBenefit>>(firstOrDefault.Value));
+
+            return new List<ReportBenefit>();
         }
 
         #endregion
