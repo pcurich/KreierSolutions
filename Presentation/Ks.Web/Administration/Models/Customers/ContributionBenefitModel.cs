@@ -17,6 +17,7 @@ namespace Ks.Admin.Models.Customers
             RelaTionShips = new List<SelectListItem>();
         }
 
+        public bool IsManager { get; set; }
         public List<SelectListItem> Banks { get; set; }
         public List<SelectListItem> RelaTionShips { get; set; }
 

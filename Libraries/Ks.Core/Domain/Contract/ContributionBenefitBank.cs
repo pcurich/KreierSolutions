@@ -13,7 +13,9 @@ namespace Ks.Core.Domain.Contract
         public string AccountNumber { get; set; }
         public string BankName { get; set; }
         public string CheckNumber { get; set; }
+        public bool Approved { get; set; }
         public DateTime CreatedOnUtc { get; set; }
+        public DateTime? ApprovedOnUtc { get; set; }
         public virtual ContributionBenefit ContributionBenefit { get; set; }
     }
 }

@@ -36,6 +36,25 @@ namespace Ks.Admin.Extensions
             return Mapper.Map(source, destination);
         }
 
+        #region Admin
+
+        public static WorkFlowModel ToModel(this WorkFlow entity)
+        {
+            return entity.MapTo<WorkFlow, WorkFlowModel>();
+        }
+
+        public static WorkFlow ToEntity(this WorkFlowModel model)
+        {
+            return model.MapTo<WorkFlowModel, WorkFlow>();
+        }
+
+        public static WorkFlow ToEntity(this WorkFlowModel model, WorkFlow destination)
+        {
+            return model.MapTo(destination);
+        }
+
+        #endregion
+
         #region Languages
 
         public static LanguageModel ToModel(this Language entity)

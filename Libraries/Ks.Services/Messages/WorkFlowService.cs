@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Ks.Core;
 using Ks.Core.Data;
+using Ks.Core.Domain.Customers;
 using Ks.Core.Domain.Messages;
 
 namespace Ks.Services.Messages
@@ -16,16 +17,18 @@ namespace Ks.Services.Messages
             _workFlowRepository = workFlowRepository;
         }
 
-        public virtual IPagedList<WorkFlow> GetWorkFlowByRole(string systemRole, int pageIndex = 0, int pageSize = Int32.MaxValue)
+        public virtual IPagedList<WorkFlow> GetWorkFlowByRoles(ICollection<CustomerRole> systemRole, int pageIndex = 0, int pageSize = Int32.MaxValue)
         {
-            if (string.IsNullOrEmpty(systemRole))
+            if (systemRole == null || systemRole.Count==0)
                 return new PagedList<WorkFlow>(new List<WorkFlow>(), pageIndex, pageIndex);
 
+            var roles = systemRole.Select(x => x.SystemName);
+
             var query = from wf in _workFlowRepository.Table
-                        where wf.SystemRoleApproval == systemRole
+                        where roles.Contains(wf.SystemRoleApproval)
                         select wf;
 
-            return new PagedList<WorkFlow>(query.ToList(), pageIndex, pageIndex);
+            return new PagedList<WorkFlow>(query.ToList(), pageIndex, pageSize);
         }
 
         public virtual IPagedList<WorkFlow> GetWorkFlowByCustomer(int customerId, int pageIndex = 0, int pageSize = Int32.MaxValue)

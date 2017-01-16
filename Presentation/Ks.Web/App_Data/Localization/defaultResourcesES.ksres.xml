@@ -5229,12 +5229,18 @@
 	<LocaleResource Name="Admin.Configuration.ContributionBenefitBank.Ratio">
 		<Value>Porcentaje(%)</Value>
 	</LocaleResource>
+	<LocaleResource Name="Admin.Configuration.ContributionBenefitBank.Approved">
+		<Value>Aprobado?</Value>
+	</LocaleResource>
 	<LocaleResource Name="Admin.Configuration.ContributionBenefitBank.AmountToPay">
 		<Value>Monto</Value>
 	</LocaleResource>
 	<LocaleResource Name="Admin.Configuration.ContributionBenefitBank.CreatedOn">
 		<Value>Fecha de Creación</Value>
 	</LocaleResource>  
+	<LocaleResource Name="Admin.Configuration.ContributionBenefitBank.ApprovedOn">
+		<Value>Fecha de Aprobación</Value>
+	</LocaleResource> 
 	<LocaleResource Name="Admin.Configuration.Tabs">
 		<Value>Tabuladores</Value>
 	</LocaleResource>
@@ -6134,6 +6140,12 @@
 	<LocaleResource Name="Admin.Contract.Loan.Fields.AccountNumber.Hint">
 		<Value>N° Cuenta</Value>
 	</LocaleResource>
+	<LocaleResource Name="Admin.Contract.Loan.Fields.IsAuthorized">
+		<Value>Autorizado?</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Contract.Loan.Fields.IsAuthorized.Hint">
+		<Value>Autorizado?</Value>
+	</LocaleResource>
 	<LocaleResource Name="Admin.Contract.Loan.Fields.BankName">
 		<Value>Banco</Value>
 	</LocaleResource>
@@ -6772,6 +6784,12 @@
 	</LocaleResource>
 	<LocaleResource Name="Admin.Customers.Customers.Fields.MilitarySituation.Hint">
 		<Value>Situación Militar</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Customers.Customers.Fields.DeclaratoryLetter">
+		<Value>N° Carta Declaratoria</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Customers.Customers.Fields.DeclaratoryLetter.Hint">
+		<Value>N° Carta Declaratoria</Value>
 	</LocaleResource>
 	<LocaleResource Name="Admin.Customers.Customers.Fields.Email">
 		<Value>Email</Value>
@@ -10042,4 +10060,44 @@
 		<Value>Seleccione un origen de beneficio</Value>
 	</LocaleResource>
  	
+	<LocaleResource Name="Admin.Home.WorkFlow.Field.Title">
+		<Value>Título</Value>
+	</LocaleResource> 
+	<LocaleResource Name="Admin.Home.WorkFlow.Field.Description">
+		<Value>Descripción</Value>
+	</LocaleResource> 
+	<LocaleResource Name="Admin.Home.WorkFlow.Field.CustomerCreatedName">
+		<Value>Creador</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Home.WorkFlow.Field.EntityId">
+		<Value>Número</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Home.WorkFlow.Field.EntityName">
+		<Value>Type</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Home.WorkFlow.Field.RequireSystemRole">
+		<Value>Aprueba Rol?</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Home.WorkFlow.Field.SystemRoleApproval">
+		<Value>Rol Aprobador</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Home.WorkFlow.Field.RequireCustomer">
+		<Value>Aprueba Usuario?</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Home.WorkFlow.Field.CustomerApprovalId">
+		<Value>Usuario Aprobador</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Home.WorkFlow.Field.GoTo">
+		<Value>Ir</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Home.WorkFlow.Field.Active">
+		<Value>Activo</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Home.WorkFlow.Field.CreatedOn">
+		<Value>Creación</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Home.WorkFlow.Field.UpdatedOn">
+		<Value>Modificación</Value>
+	</LocaleResource>
+	
 </Language>

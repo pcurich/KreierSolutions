@@ -63,6 +63,11 @@ namespace Ks.Admin.Models.Customers
         public string Dni { get; set; }
         [KsResourceDisplayName("Admin.Customers.Customers.Fields.MilitarySituation")]
         public int MilitarySituationId { get; set; }
+
+
+        [KsResourceDisplayName("Admin.Customers.Customers.Fields.DeclaratoryLetter")]
+        public int DeclaratoryLetter { get; set; }
+        
         public IList<SelectListItem> AvailableMilitarySituations { get; set; }
         [KsResourceDisplayName("Admin.Customers.Customers.Fields.DateOfAdmission")]
         [UIHint("DateNullable")]

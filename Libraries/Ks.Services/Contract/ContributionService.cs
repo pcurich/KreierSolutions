@@ -11,7 +11,7 @@ using Ks.Core.Domain.Customers;
 using Ks.Core.Domain.Reports;
 using Ks.Data;
 using Ks.Services.Events;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
+ 
 
 namespace Ks.Services.Contract
 {

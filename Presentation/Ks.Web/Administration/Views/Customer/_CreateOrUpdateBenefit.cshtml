@@ -7,7 +7,7 @@
 <div class="section-header">
     <div class="title">
         <img src="@Url.Content("~/Administration/Content/images/ico-configuration.png")" alt="" />
-        @T("Admin.Configuration.Benefits")
+        @T("Admin.Configuration.Benefits") - @Html.LabelFor(model => model.DeclaratoryLetter):  @Model.DeclaratoryLetter
     </div>
     <div class="options">
         <input type="button" class="k-button" onclick="location.href='@Url.Action("Create","CustomerBenefit", new { customerId = Model.Id, contributionId = Model.Contribution.Id })' " value='@T("Admin.Common.AddNew")' />
@@ -68,8 +68,8 @@
                                     format: "{0:c2}"
                                 }, {
                                     field: "YearInActivity",
-                                    title: "@T("Admin.Customers.Customers.Benefit.YearInActivity")" 
-                                },                                {
+                                    title: "@T("Admin.Customers.Customers.Benefit.YearInActivity")"
+                                }, {
                                     field: "TotalContributionCaja",
                                     title: "@T("Admin.Customers.Customers.Benefit.TotalContributionCaja")",
                                     template: '#= kendo.toString(TotalContributionCaja,"c","es-PE") #',

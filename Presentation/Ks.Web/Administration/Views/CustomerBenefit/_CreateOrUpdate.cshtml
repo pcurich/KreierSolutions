@@ -144,16 +144,16 @@
                 @{
                     if (Model.Id > 0)
                     {
-                @Model.BenefitName
+                        @Model.BenefitName
                     }
                     else
                     {
-                @Html.DropDownListFor(model => model.BenefitId, Model.BenefitModels)
-                <script>
+                        @Html.DropDownListFor(model => model.BenefitId, Model.BenefitModels)
+                        <script>
                             $(document).ready(function() {
                                 $("#@Html.FieldIdFor(model => model.BenefitId)").width(200).kendoDropDownList();
                             });
-                </script>
+                        </script>
                     }
                 }
 
@@ -338,6 +338,7 @@
                                             Ratio:{editable: true,type: "number"},
                                             AmountToPay:{editable: false,type: "number"},
                                             CreatedOn:{editable: false,type: "date"},
+                                            Approved:{editable: false,type: "boolean"},
                                             Id: { editable: false, type: "number" }
                                         }
                                     }
@@ -422,7 +423,14 @@
                                     template: '#= kendo.toString(AmountToPay,"c","es-PE") #',
                                     format: "{0:c2}",
                                     width: 100
-                                },   {
+                                }, {
+                                    field: "Approved",
+                                    title: "@T("Admin.Configuration.ContributionBenefitBank.Approved")",
+                                    width: 100,
+                                    headerAttributes: { style: "text-align:center" },
+                                    attributes: { style: "text-align:center" },
+                                    template: '<img src="@Url.Content("~/Administration/Content/images/")active-#=Approved#.gif" />'
+                                },{
                                     command: [{
                                         name: "destroy",
                                         text: "@T("Admin.Common.Delete")"

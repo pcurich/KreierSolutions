@@ -72,5 +72,11 @@
         <td class="adminData">
             @Model.TotalToPay.ToString("c", new CultureInfo("es-PE"))
         </td>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.IsAuthorized):
+        </td>
+        <td class="adminData">
+            @Model.StateName
+        </td>
     </tr>
 </table>

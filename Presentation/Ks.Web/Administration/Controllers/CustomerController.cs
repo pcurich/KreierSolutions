@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Web.Mvc;
 using Ks.Admin.Extensions;
@@ -47,7 +46,7 @@ namespace Ks.Admin.Controllers
         private readonly ICustomerRegistrationService _customerRegistrationService;
         private readonly IDateTimeHelper _dateTimeHelper;
         private readonly ILocalizationService _localizationService;
-        private readonly DateTimeSettings _dateTimeSettings;
+        private readonly IWorkFlowService _workFlowService;
         //private readonly TaxSettings _taxSettings;
         //private readonly RewardPointsSettings _rewardPointsSettings;
         private readonly ICountryService _countryService;
@@ -98,7 +97,7 @@ namespace Ks.Admin.Controllers
             IEncryptionService encryptionService,
             IDateTimeHelper dateTimeHelper,
             ILocalizationService localizationService,
-            DateTimeSettings dateTimeSettings,
+            IWorkFlowService  workFlowService,
             ICountryService countryService,
             IStateProvinceService stateProvinceService,
             ICityService cityService,
@@ -133,7 +132,7 @@ namespace Ks.Admin.Controllers
             this._encryptionService = encryptionService;
             this._dateTimeHelper = dateTimeHelper;
             this._localizationService = localizationService;
-            this._dateTimeSettings = dateTimeSettings;
+            this._workFlowService = workFlowService;
             //this._taxSettings = taxSettings;
             //this._rewardPointsSettings = rewardPointsSettings;
             this._countryService = countryService;
@@ -326,7 +325,12 @@ namespace Ks.Admin.Controllers
                 if (loans != null && loans.Count > 0)
                 {
                     model.HasLoans = true;
-                    model.LoanModels = loans.Select(x => x.ToModel()).ToList();
+                    model.LoanModels = loans.Select(x =>
+                    {
+                        var toModel = x.ToModel();
+                        toModel.StateName = x.IsAuthorized ? "Aprovado" : "No Aprobado";
+                        return toModel;
+                    }).ToList();
                 }
 
                 var benefits = _benefitService.GetAllContributionBenefitByCustomer(customer.Id);
@@ -339,10 +343,13 @@ namespace Ks.Admin.Controllers
                     model.Contribution.AmountPayed = contribution.AmountPayed;
                     model.Contribution.AmountMeta = contribution.AmountMeta;
                     model.Contribution.DelayCycles = contribution.DelayCycles;
-                    model.Contribution.TotalOfCycles = contribution.TotalOfCycles;
                     model.Contribution.CreatedOn = _dateTimeHelper.ConvertToUserTime(contribution.CreatedOnUtc, DateTimeKind.Utc);
                     if (contribution.UpdatedOnUtc.HasValue)
+                    {
+                        model.Contribution.TotalOfCycles = ((contribution.UpdatedOnUtc.Value.Year - contribution.CreatedOnUtc.Year) * 12) + contribution.UpdatedOnUtc.Value.Month - contribution.CreatedOnUtc.Month;
+                        model.Contribution.TotalOfCycles = Convert.ToInt32(Math.Round(contribution.UpdatedOnUtc.Value.Subtract(contribution.CreatedOnUtc).Days / (365.25 / 12),2));
                         model.Contribution.UpdatedOn = _dateTimeHelper.ConvertToUserTime(contribution.UpdatedOnUtc.Value, DateTimeKind.Utc);
+                    }
                     model.Contribution.Description = contribution.Description;
                 }
 
@@ -365,6 +372,7 @@ namespace Ks.Admin.Controllers
                     model.AdmCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode);
                     model.Dni = customer.GetAttribute<string>(SystemCustomerAttributeNames.Dni);
                     model.MilitarySituationId = customer.GetAttribute<int>(SystemCustomerAttributeNames.MilitarySituationId);
+                    model.DeclaratoryLetter = customer.GetAttribute<int>(SystemCustomerAttributeNames.DeclaratoryLetter);
                     model.DateOfAdmission = customer.GetAttribute<DateTime?>(SystemCustomerAttributeNames.DateOfAdmission);
                     model.Gender = customer.GetAttribute<string>(SystemCustomerAttributeNames.Gender);
                     model.DateOfBirth = customer.GetAttribute<DateTime?>(SystemCustomerAttributeNames.DateOfBirth);
@@ -782,6 +790,7 @@ namespace Ks.Admin.Controllers
                 _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.AdmCode, model.AdmCode);
                 _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Dni, model.Dni);
                 _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.MilitarySituationId, model.MilitarySituationId);
+                _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.DeclaratoryLetter,_sequenceIdsSettings.DeclaratoryLetter);
                 _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.DateOfAdmission, model.DateOfAdmission);
                 if (_customerSettings.DateOfBirthEnabled)
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.DateOfBirth, model.DateOfBirth);
@@ -799,6 +808,14 @@ namespace Ks.Admin.Controllers
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Phone, model.Phone);
                 if (_customerSettings.FaxEnabled)
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Fax, model.Fax);
+
+                var storeScope = GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
+                var sequenceIdsSettings = _settingService.LoadSetting<SequenceIdsSettings>(storeScope);
+
+                sequenceIdsSettings.DeclaratoryLetter += 1;
+                _settingService.SaveSetting(sequenceIdsSettings);
+                //now clear settings cache
+                _settingService.ClearCache();
 
                 //custom customer attributes
                 var customerAttributes = ParseCustomCustomerAttributes(customer, form);
@@ -922,6 +939,7 @@ namespace Ks.Admin.Controllers
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.AdmCode, model.AdmCode);
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Dni, model.Dni);
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.MilitarySituationId, model.MilitarySituationId);
+                    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.DeclaratoryLetter,model.DeclaratoryLetter);
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.DateOfAdmission, model.DateOfAdmission);
                     if (_customerSettings.DateOfBirthEnabled)
                         _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.DateOfBirth, model.DateOfBirth);
@@ -1581,6 +1599,27 @@ namespace Ks.Admin.Controllers
                 //now clear settings cache
                 _settingService.ClearCache();
                 SaveSelectedTabIndex(5);
+
+                #region Flow - Approval required
+
+                _workFlowService.InsertWorkFlow(new WorkFlow
+                {
+                    CustomerCreatedId = _workContext.CurrentCustomer.Id,
+                    EntityId = loan.LoanNumber,
+                    EntityName = CommonHelper.GetKsCustomTypeConverter(typeof(Loan)).ConvertToInvariantString(loan),
+                    RequireCustomer = false,
+                    RequireSystemRole = true,
+                    SystemRoleApproval = SystemCustomerRoleNames.Manager,
+                    CreatedOnUtc = DateTime.UtcNow,
+                    UpdatedOnUtc = DateTime.UtcNow,
+                    Active = true,
+                    Title = "Aprobar Apoyo Social Económico",
+                    Description = "Se ha realizado la aprobacion del Apoyo Social Economico"+
+                    " para el asociado " + _customerService.GetCustomerById(loan.CustomerId).GetFullName(),
+                    GoTo = "Admin/Customer/Edit/" + loan.CustomerId
+                });
+                #endregion
+
                 _customerActivityService.InsertActivity("AddNewLoan", _localizationService.GetResource("ActivityLog.AddNewLoan"), loan.LoanNumber, loan.Id);
             }
 
@@ -1899,7 +1938,8 @@ namespace Ks.Admin.Controllers
                 TotalSafe = (totalSafe),
                 MonthlyQuota = ((model.LoanAmount + totalfeed) / model.Period),
                 TotalAmount = (totalfeed + model.LoanAmount),
-                TotalToPay = (model.LoanAmount - totalSafe)
+                TotalToPay = (model.LoanAmount - totalSafe),
+                StateName = model.IsAuthorized ? "Aprovado" : "No Aprobado"
             };
 
             return model;

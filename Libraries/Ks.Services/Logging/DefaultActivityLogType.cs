@@ -13,6 +13,9 @@ namespace Ks.Services.Logging
         public static readonly ActivityLogType ActivityLogNewCustomer = new ActivityLogType { SystemKeyword = "NewCustomer", Name = "Nuevo asociado", Enabled = true };
         public static readonly ActivityLogType ActivityLogEditCustomer = new ActivityLogType { SystemKeyword = "EditCustomer", Name = "Modificar a los asociados", Enabled = true };
 
+        public static readonly ActivityLogType ActivityLogApprobalLoan = new ActivityLogType { SystemKeyword = "ApprobalLoan", Name = "Se ha aprobado el apoyo social esconómico", Enabled = true };
+        public static readonly ActivityLogType ActivityLogNoApprobalLoan = new ActivityLogType { SystemKeyword = "NoApprobalLoan", Name = "No se ha aprobado el apoyo social esconómico", Enabled = true };
+
         public static IEnumerable<ActivityLogType> GetMenuSystem()
         {
             return new[]

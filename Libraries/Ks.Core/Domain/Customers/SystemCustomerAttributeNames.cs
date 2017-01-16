@@ -10,6 +10,7 @@
         public static string AdmCode { get { return "AdmCode"; } }
         public static string Dni { get { return "Dni"; } }
         public static string MilitarySituationId { get { return "MilitarySituationId"; } }
+        public static string DeclaratoryLetter { get { return "DeclaratoryLetter"; } }
         public static string DateOfAdmission { get { return "DateOfAdmission"; } }
 
         public static string DateOfBirth { get { return "DateOfBirth"; } }

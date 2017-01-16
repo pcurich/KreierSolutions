@@ -72,92 +72,98 @@
                 <div id="contributions-grid"></div>
 
                 <script>
-                    $(document).ready(function() {
-                        $("#contributions-grid").kendoGrid({
-                            dataSource: {
-                                type: "json",
-                                transport: {
-                                    read: {
-                                        url: "@Html.Raw(Url.Action("List", "Contributions"))",
-                                        type: "POST",
-                                        dataType: "json",
-                                        data: additionalData
-                                    }
-                                },
-                                schema: {
-                                    data: "Data",
-                                    total: "Total",
-                                    errors: "Errors"
-                                },
-                                error: function(e) {
-                                    display_kendoui_grid_error(e);
-                                    // Cancel the changes
-                                    this.cancelChanges();
-                                },
-                                pageSize: @(defaultGridPageSize),
-                                serverPaging: true,
-                                serverFiltering: true,
-                                serverSorting: true
-                            },
-                            pageable: {
-                                refresh: true,
-                                pageSizes: [@(gridPageSizes)]
-                            },
-                            scrollable: false,
-                            dataBound: onDataBound,
-                            columns: [
-                              {
-                                  field: "AuthorizeDiscount",
-                                  title: "@T("Admin.Contract.Contribution.Fields.AuthorizeDiscount")",
-                                  width: 10
-                              }, {
-                                  field: "CustomerCompleteName",
-                                  title: "@T("Admin.Contract.Contribution.Fields.CustomerCompleteName")",
-                                  width: 80
-                              }, {
-                                  field: "CustomerDni",
-                                  title: "@T("Admin.Contract.Contribution.Fields.CustomerDni")",
-                                  width: 40
-                              }, {
-                                  field: "CustomerAdmCode",
-                                  title: "@T("Admin.Contract.Contribution.Fields.CustomerAdmCode")",
-                                  width: 50
-                              }, {
-                                  field: "AmountTotal",
-                                  title: "@T("Admin.Contract.Contribution.Fields.AmountMeta")",
-                                  width: 50,
-                                  template:'#= kendo.toString(AmountMeta,"c","es-PE") #',
-                                  format:"{0:c2}"
-                              }, {
-                                  field: "Active",
-                                  title: "@T("Admin.Contract.Contribution.Fields.Active")",
-                                  width: 100,
-                                  headerAttributes: { style: "text-align:center" },
-                                  attributes: { style: "text-align:center" },
-                                  template: '<img src="@Url.Content("~/Administration/Content/images/")active-#=Active#.gif" />'
-                              }, {
-                                  field: "CreatedOn",
-                                  title: "@T("Admin.Contract.Contribution.Fields.CreatedOn")",
-                                  width: 100,
-                                  template:'#= CreatedOn!=null ? kendo.toString(CreatedOn,"dd/MM/yyyy HH:mm:ss","es-PE"): " "#',
-                                  type: "date",
-                                  format: "{0:G}"
-                              }, {
-                                  field: "UpdatedOn",
-                                  title: "@T("Admin.Contract.Contribution.Fields.UpdatedOn")",
-                                  width: 100,
-                                  template:'#= UpdatedOn!=null ? kendo.toString(UpdatedOn,"dd/MM/yyyy HH:mm:ss","es-PE"): " "#',
-                                  type: "date",
-                                  format: "{0:G}"
-                              }, {
-                                  field: "Id",
-                                  title: "@T("Admin.Common.Edit")",
-                                  width: 50,
-                                  template: '<a href="Edit/#=Id#">@T("Admin.Common.Edit")</a>'
-                              }
-                            ]
-                        });
-                    });
+    $(document).ready(function() {
+        $("#contributions-grid").kendoGrid({
+            dataSource: {
+                type: "json",
+                transport: {
+                    read: {
+                        url: "@Html.Raw(Url.Action("List", "Contributions"))",
+                        type: "POST",
+                        dataType: "json",
+                        data: additionalData
+                    }
+                },
+                schema: {
+                    data: "Data",
+                    total: "Total",
+                    errors: "Errors"
+                },
+                error: function(e) {
+                    display_kendoui_grid_error(e);
+                    // Cancel the changes
+                    this.cancelChanges();
+                },
+                pageSize: @(defaultGridPageSize),
+                serverPaging: true,
+                serverFiltering: true,
+                serverSorting: true
+            },
+            pageable: {
+                refresh: true,
+                pageSizes: [@(gridPageSizes)]
+            },
+            scrollable: false,
+            dataBound: onDataBound,
+            columns: [
+              {
+                  field: "AuthorizeDiscount",
+                  title: "@T("Admin.Contract.Contribution.Fields.AuthorizeDiscount")",
+                  width: 10
+              }, {
+                  field: "CustomerCompleteName",
+                  title: "@T("Admin.Contract.Contribution.Fields.CustomerCompleteName")",
+                  width: 80
+              }, {
+                  field: "CustomerDni",
+                  title: "@T("Admin.Contract.Contribution.Fields.CustomerDni")",
+                  width: 40
+              }, {
+                  field: "CustomerAdmCode",
+                  title: "@T("Admin.Contract.Contribution.Fields.CustomerAdmCode")",
+                  width: 50
+              }, {
+                  field: "AmountMeta",
+                  title: "@T("Admin.Contract.Contribution.Fields.AmountMeta")",
+                  width: 50,
+                  template:'#= kendo.toString(AmountMeta,"c","es-PE") #',
+                  format:"{0:c2}"
+              },{
+                    field: "AmountPayed",
+                    title: "@T("Admin.Contract.Contribution.Fields.AmountPayed")",
+                    width: 50,
+                    template:'#= kendo.toString(AmountPayed,"c","es-PE") #',
+                    format:"{0:c2}"
+                },{
+                  field: "Active",
+                  title: "@T("Admin.Contract.Contribution.Fields.Active")",
+                  width: 100,
+                  headerAttributes: { style: "text-align:center" },
+                  attributes: { style: "text-align:center" },
+                  template: '<img src="@Url.Content("~/Administration/Content/images/")active-#=Active#.gif" />'
+              }, {
+                  field: "CreatedOn",
+                  title: "@T("Admin.Contract.Contribution.Fields.CreatedOn")",
+                  width: 100,
+                  template:'#= CreatedOn!=null ? kendo.toString(CreatedOn,"dd/MM/yyyy HH:mm:ss","es-PE"): " "#',
+                  type: "date",
+                  format: "{0:G}"
+              }, {
+                  field: "UpdatedOn",
+                  title: "@T("Admin.Contract.Contribution.Fields.UpdatedOn")",
+                  width: 100,
+                  template:'#= UpdatedOn!=null ? kendo.toString(UpdatedOn,"dd/MM/yyyy HH:mm:ss","es-PE"): " "#',
+                  type: "date",
+                  format: "{0:G}"
+              }, {
+                  field: "Id",
+                  title: "@T("Admin.Common.Edit")",
+                  width: 50,
+                  template: '<a href="Edit/#=Id#">@T("Admin.Common.Edit")</a>'
+              }
+            ]
+        });
+    });
                 </script>
 
                 <script type="text/javascript">

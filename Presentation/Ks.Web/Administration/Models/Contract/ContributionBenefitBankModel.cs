@@ -24,6 +24,8 @@ namespace Ks.Admin.Models.Contract
         public string BankId { get; set; }
         [KsResourceDisplayName("Admin.Configuration.ContributionBenefitBank.CheckNumber")]
         public string CheckNumber { get; set; }
+        [KsResourceDisplayName("Admin.Configuration.ContributionBenefitBank.Approved")]
+        public bool Approved { get; set; }
         [KsResourceDisplayName("Admin.Configuration.ContributionBenefitBank.Ratio")]
         public double Ratio { get; set; }
         [KsResourceDisplayName("Admin.Configuration.ContributionBenefitBank.AmountToPay")]
@@ -32,5 +34,7 @@ namespace Ks.Admin.Models.Contract
         public decimal AmountToPay { get; set; }
         [KsResourceDisplayName("Admin.Configuration.ContributionBenefitBank.CreatedOn")]
         public DateTime CreatedOn { get; set; }
+        [KsResourceDisplayName("Admin.Configuration.ContributionBenefitBank.ApprovedOn")]
+        public DateTime? ApprovedOn { get; set; }
     }
 }

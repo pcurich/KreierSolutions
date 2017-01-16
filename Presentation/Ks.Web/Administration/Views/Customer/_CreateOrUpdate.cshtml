@@ -3,6 +3,7 @@
 @Html.ValidationSummary(false)
 @Html.HiddenFor(model => model.Id)
 @Html.HiddenFor(model => model.Active)
+@Html.HiddenFor(model => model.DeclaratoryLetter)
 
 <script>
     $(document).ready(function() {
@@ -720,6 +721,12 @@
                             </td>
                             <td class="adminData">
                                 @loan1.TotalToPay.ToString("c", new CultureInfo("es-PE"))
+                            </td>
+                            <td class="adminTitle">
+                                @Html.KsLabelFor(model => loan1.IsAuthorized):
+                            </td>
+                            <td class="adminData">
+                                @loan1.StateName
                             </td>
                         </tr>
                     </table>

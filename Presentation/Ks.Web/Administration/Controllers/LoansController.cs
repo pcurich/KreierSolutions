@@ -10,6 +10,7 @@ using Ks.Core;
 using Ks.Core.Domain.Common;
 using Ks.Core.Domain.Contract;
 using Ks.Core.Domain.Customers;
+using Ks.Core.Domain.Messages;
 using Ks.Services.Common;
 using Ks.Services.Contract;
 using Ks.Services.Customers;
@@ -17,6 +18,7 @@ using Ks.Services.ExportImport;
 using Ks.Services.Helpers;
 using Ks.Services.Localization;
 using Ks.Services.Logging;
+using Ks.Services.Messages;
 using Ks.Services.Security;
 using Ks.Web.Framework;
 using Ks.Web.Framework.Controllers;
@@ -38,7 +40,7 @@ namespace Ks.Admin.Controllers
         private readonly IExportManager _exportManager;
         private readonly IReturnPaymentService _returnPaymentService;
         private readonly IWorkContext _workContext;
-
+        private readonly IWorkFlowService _workFlowService;
         private readonly BankSettings _bankSettings;
 
         #endregion
@@ -51,6 +53,7 @@ namespace Ks.Admin.Controllers
             IDateTimeHelper dateTimeHelper, ICustomerActivityService customerActivityService,
             ILocalizationService localizationService, IExportManager exportManager,
             BankSettings bankSettings, IWorkContext workContext,
+            IWorkFlowService workFlowService,
             IReturnPaymentService returnPaymentService)
         {
             _permissionService = permissionService;
@@ -64,6 +67,7 @@ namespace Ks.Admin.Controllers
             _bankSettings = bankSettings;
             _workContext = workContext;
             _returnPaymentService = returnPaymentService;
+            _workFlowService = workFlowService;
         }
 
         #endregion
@@ -132,8 +136,8 @@ namespace Ks.Admin.Controllers
                     toModel.UpdatedOn = _dateTimeHelper.ConvertToUserTime(x.UpdatedOnUtc.Value, DateTimeKind.Utc);
 
                 if (x.ApprovalOnUtc.HasValue)
-                    toModel.ApprovalOn = _dateTimeHelper.ConvertToUserTime(x.ApprovalOnUtc.Value, DateTimeKind.Utc); 
-                
+                    toModel.ApprovalOn = _dateTimeHelper.ConvertToUserTime(x.ApprovalOnUtc.Value, DateTimeKind.Utc);
+
                 return toModel;
             });
 
@@ -162,7 +166,7 @@ namespace Ks.Admin.Controllers
                 CustomerName = customer.GetFullName(),
                 CustomerAdminCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode),
                 CustomerDni = customer.GetAttribute<string>(SystemCustomerAttributeNames.Dni),
-                CustomerFrom = _dateTimeHelper.ConvertToUserTime(loan.CreatedOnUtc,DateTimeKind.Utc),
+                CustomerFrom = _dateTimeHelper.ConvertToUserTime(loan.CreatedOnUtc, DateTimeKind.Utc),
                 Types = new List<SelectListItem>
                 {
                     new SelectListItem { Value = "0", Text = "--------------", Selected = true},
@@ -236,6 +240,101 @@ namespace Ks.Admin.Controllers
             _loanService.UpdateLoan(loan);
             SuccessNotification("El apoyo social ha sido cancelado correctamente");
             return RedirectToAction("List");
+        }
+
+        #endregion
+
+        #region Approval
+
+        public ActionResult Approval(int loanId)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ApprovalLoan))
+                return AccessDeniedView();
+
+            var loan = _loanService.GetLoanById(loanId);
+            var model = loan.ToModel();
+            model.States = new List<SelectListItem>
+            {
+                new SelectListItem{ Text = "-------------------", Value = "0"},
+                new SelectListItem{ Text = "Aprobar", Value = "1"},
+                new SelectListItem{ Text = "Desaprobar", Value = "2"},
+            };
+            return View();
+        }
+
+        public ActionResult Approval(LoanModel model)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ApprovalLoan))
+                return AccessDeniedView();
+
+            var loan = _loanService.GetLoanById(model.Id);
+            if (model.StateId == 1)
+            {
+                loan.IsAuthorized = true;
+                loan.ApprovalOnUtc = DateTime.UtcNow;
+                _loanService.UpdateLoan(loan);
+                _customerActivityService.InsertActivity(DefaultActivityLogType.ActivityLogApprobalLoan.SystemKeyword, "Se ha relizado la aprobacion del Apoyo Socia Económico");
+
+                #region Flow - Approval required
+
+                _workFlowService.InsertWorkFlow(new WorkFlow
+                {
+                    CustomerCreatedId = _workContext.CurrentCustomer.Id,
+                    EntityId = loan.LoanNumber,
+                    EntityName = CommonHelper.GetKsCustomTypeConverter(typeof(Loan)).ConvertToInvariantString(loan),
+                    RequireCustomer = false,
+                    RequireSystemRole = true,
+                    SystemRoleApproval = SystemCustomerRoleNames.Employee,
+                    CreatedOnUtc = DateTime.UtcNow,
+                    UpdatedOnUtc = DateTime.UtcNow,
+                    Active = true,
+                    Title = "Aprobado el Apoyo Social Económico",
+                    Description = "Se ha realizado la aprobacion para la emision del Apoyo Social Económico N° " + loan.LoanNumber +
+                    " para el asociado " + _customerService.GetCustomerById(loan.CustomerId).GetFullName(),
+                    GoTo = "Admin/Loans/Approval/" + loan.Id
+                });
+                #endregion
+            }
+
+            if (model.StateId == 2)
+            {
+                loan.IsAuthorized = false;
+                loan.ApprovalOnUtc = null;
+                loan.UpdatedOnUtc = DateTime.UtcNow;
+                loan.Active = false;
+                var details = _loanService.GetAllPayments(loan.Id);
+                foreach (var detail in details)
+                {
+                    detail.StateId = (int)LoanState.Cancelado;
+                    detail.ProcessedDateOnUtc = DateTime.UtcNow;
+                    _loanService.UpdateLoanPayment(detail);
+                }
+                _loanService.UpdateLoan(loan);
+                _customerActivityService.InsertActivity(DefaultActivityLogType.ActivityLogNoApprobalLoan.SystemKeyword, "No se ha relizado la aprobacion del Apoyo Socia Económico");
+
+                #region Flow - Approval required
+
+                _workFlowService.InsertWorkFlow(new WorkFlow
+                {
+                    CustomerCreatedId = _workContext.CurrentCustomer.Id,
+                    EntityId = loan.LoanNumber,
+                    EntityName = CommonHelper.GetKsCustomTypeConverter(typeof(Loan)).ConvertToInvariantString(loan),
+                    RequireCustomer = false,
+                    RequireSystemRole = true,
+                    SystemRoleApproval = SystemCustomerRoleNames.Employee,
+                    CreatedOnUtc = DateTime.UtcNow,
+                    UpdatedOnUtc = DateTime.UtcNow,
+                    Active = true,
+                    Title = "No aprobado el Apoyo Social Económico",
+                    Description = "Se ha realizado la no aprobacion para la emision del Apoyo Social Económico N° " + loan.LoanNumber +
+                    " para el asociado " + _customerService.GetCustomerById(loan.CustomerId).GetFullName(),
+                    GoTo = "Admin/Loans/Approval/" + loan.Id
+                });
+                #endregion
+            }
+
+            return View(model);
+            
         }
 
         #endregion

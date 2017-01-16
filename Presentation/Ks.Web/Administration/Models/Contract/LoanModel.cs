@@ -16,6 +16,7 @@ namespace Ks.Admin.Models.Contract
         public LoanModel()
         {
             Periods = new List<SelectListItem>();
+            States=new List<SelectListItem>();
         }
 
         #region Customer
@@ -69,6 +70,7 @@ namespace Ks.Admin.Models.Contract
         [KsResourceDisplayName("Admin.Contract.Loan.Fields.TotalPayed")]
         [UIHint("Decimal")]
         public decimal TotalPayed { get; set; }
+        [KsResourceDisplayName("Admin.Contract.Loan.Fields.IsAuthorized")]
         public bool IsAuthorized { get; set; }
         [KsResourceDisplayName("Admin.Contract.Loan.Fields.AccountNumber")]
         public string AccountNumber { get; set; }
@@ -85,9 +87,13 @@ namespace Ks.Admin.Models.Contract
         public DateTime CreatedOn { get; set; }
         [KsResourceDisplayName("Admin.Contract.Loan.Fields.ApprovalOn")]
         public DateTime? ApprovalOn  { get; set; }
+        public string StateName { get; set; }
 
         [KsResourceDisplayName("Admin.Contract.Loan.Fields.UpdatedOn")]
         public DateTime? UpdatedOn { get; set; }
+
+        public int StateId { get; set; }
+        public List<SelectListItem> States { get; set; }
 
     }
 
@@ -160,5 +166,8 @@ namespace Ks.Admin.Models.Contract
         [KsResourceDisplayName("Admin.Contract.Loan.Fields.TotalToPay")]
         [UIHint("Decimal")]
         public decimal TotalToPay { get; set; } // Amount-TotalSafe
+        [KsResourceDisplayName("Admin.Contract.Loan.Fields.IsAuthorized")]
+        public bool IsAuthorized { get; set; }
+        public string StateName { get; set; }
     }
 }

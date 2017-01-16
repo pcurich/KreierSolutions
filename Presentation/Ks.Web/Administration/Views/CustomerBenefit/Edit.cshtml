@@ -14,7 +14,13 @@
         <div class="options">
             <input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")" />
             <input type="submit" name="save-continue" class="k-button" value="@T("Admin.Common.SaveContinue")"/>
-            <input type="submit" name="exportexcel" id="exportexcel" class="k-button" value="@T("Admin.Common.ExportToExcel")" />
+            <input type="submit" name="exportexcel" id="exportexcel" class="k-button" value="@T("Admin.Common.ExportToExcel")"/>
+            @{
+                if (Model.IsManager)
+                {
+                    <input type="submit" name="approved" id="approved" class="k-button" value="Aprobar Pagos"/>
+                }
+            }
             <span id="contribution-benefit-delete" class="k-button">@T("Admin.Common.Delete")</span>
         </div>
     </div>

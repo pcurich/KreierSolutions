@@ -66,6 +66,7 @@ namespace Ks.Admin.Controllers
         private readonly IAddressAttributeParser _addressAttributeParser;
         private readonly IAddressAttributeService _addressAttributeService;
         private readonly IAddressAttributeFormatter _addressAttributeFormatter;
+        private readonly IWorkFlowService _workFlowService;
         private readonly ContributionSettings _contributionSettings;
         private readonly SequenceIdsSettings _sequenceIdsSettings;
         private readonly LoanSettings _loanSettings;
@@ -76,7 +77,21 @@ namespace Ks.Admin.Controllers
 
         #region Constructor
 
-        public CustomerBenefitController(ISettingService settingService, ICustomerService customerService, IEncryptionService encryptionService, IGenericAttributeService genericAttributeService, ICustomerRegistrationService customerRegistrationService, IDateTimeHelper dateTimeHelper, ILocalizationService localizationService, DateTimeSettings dateTimeSettings, ICountryService countryService, IStateProvinceService stateProvinceService, ICityService cityService, IAddressService addressService, CustomerSettings customerSettings, IWorkContext workContext, IKsSystemContext ksSystemContext, IExportManager exportManager, ICustomerActivityService customerActivityService, IContributionService contributionService, ILoanService loanService, IBenefitService benefitService, ITabService tabService, IPermissionService permissionService, IQueuedEmailService queuedEmailService, EmailAccountSettings emailAccountSettings, IEmailAccountService emailAccountService, AddressSettings addressSettings, IKsSystemService ksSystemService, ICustomerAttributeParser customerAttributeParser, ICustomerAttributeService customerAttributeService, IAddressAttributeParser addressAttributeParser, IAddressAttributeService addressAttributeService, IAddressAttributeFormatter addressAttributeFormatter, ContributionSettings contributionSettings, SequenceIdsSettings sequenceIdsSettings, LoanSettings loanSettings, BenefitValueSetting benefitValueSetting, BankSettings bankSettings)
+        public CustomerBenefitController(ISettingService settingService,
+            ICustomerService customerService, IEncryptionService encryptionService,
+            IGenericAttributeService genericAttributeService, ICustomerRegistrationService customerRegistrationService,
+            IDateTimeHelper dateTimeHelper, ILocalizationService localizationService, DateTimeSettings dateTimeSettings,
+            ICountryService countryService, IStateProvinceService stateProvinceService, ICityService cityService,
+            IAddressService addressService, CustomerSettings customerSettings, IWorkContext workContext,
+            IKsSystemContext ksSystemContext, IExportManager exportManager, ICustomerActivityService customerActivityService,
+            IContributionService contributionService, ILoanService loanService, IBenefitService benefitService,
+            ITabService tabService, IPermissionService permissionService, IQueuedEmailService queuedEmailService,
+            EmailAccountSettings emailAccountSettings, IEmailAccountService emailAccountService, AddressSettings addressSettings,
+            IKsSystemService ksSystemService, ICustomerAttributeParser customerAttributeParser, ICustomerAttributeService customerAttributeService,
+            IAddressAttributeParser addressAttributeParser, IAddressAttributeService addressAttributeService, IWorkFlowService workFlowService,
+            IAddressAttributeFormatter addressAttributeFormatter, ContributionSettings contributionSettings,
+            SequenceIdsSettings sequenceIdsSettings, LoanSettings loanSettings, BenefitValueSetting benefitValueSetting,
+            BankSettings bankSettings)
         {
             _settingService = settingService;
             _customerService = customerService;
@@ -95,6 +110,7 @@ namespace Ks.Admin.Controllers
             _exportManager = exportManager;
             _customerActivityService = customerActivityService;
             _contributionService = contributionService;
+            _workFlowService = workFlowService;
             _loanService = loanService;
             _benefitService = benefitService;
             _tabService = tabService;
@@ -219,7 +235,7 @@ namespace Ks.Admin.Controllers
                 model.YearInActivity = year;
                 model.TotalReationShip = 0;
 
-                model.SubTotalToPay = ((decimal)model.Discount*model.AmountBaseOfBenefit*(decimal)model.TabValue)- model.TotalLoanToPay;
+                model.SubTotalToPay = ((decimal)model.Discount * model.AmountBaseOfBenefit * (decimal)model.TabValue) - model.TotalLoanToPay;
                 model.ReserveFund = model.SubTotalToPay - model.TotalContributionCaja - model.TotalContributionCopere -
                                     model.TotalContributionPersonalPayment;
 
@@ -250,6 +266,7 @@ namespace Ks.Admin.Controllers
                     ? RedirectToAction("Edit", new { id = entity.Id })
                     : RedirectToAction("Edit", new { Controller = "Customer", id = model.CustomerId });
             }
+
             ErrorNotification(_localizationService.GetResource("Admin.Configuration.ContributionBenefit.Error"));
 
             return View(model);
@@ -281,6 +298,8 @@ namespace Ks.Admin.Controllers
             model.RelaTionShips = PrepareRelationShip();
             model.CustomField1 = benefit.CustomField1;
             model.CustomField2 = benefit.CustomField2;
+            var ismanager=_workContext.CurrentCustomer.CustomerRoles.Where(x => x.SystemName == SystemCustomerRoleNames.Manager);
+            model.IsManager = ismanager.Any();
             return View(model);
         }
 
@@ -377,6 +396,28 @@ namespace Ks.Admin.Controllers
 
             contributionBenefit.TotalReationShip++;
             _benefitService.UpdateContributionBenefit(contributionBenefit);
+
+            #region Flow - Approval required
+
+            var benefit = _benefitService.GetBenefitById(contributionBenefit.BenefitId);
+
+            _workFlowService.InsertWorkFlow(new WorkFlow
+            {
+                CustomerCreatedId = _workContext.CurrentCustomer.Id,
+                EntityId = model.ContributionBenefitId,
+                EntityName = CommonHelper.GetKsCustomTypeConverter(typeof(ContributionBenefit)).ConvertToInvariantString(entity),
+                RequireCustomer = false,
+                RequireSystemRole = true,
+                SystemRoleApproval = SystemCustomerRoleNames.Manager,
+                CreatedOnUtc = DateTime.UtcNow,
+                UpdatedOnUtc = DateTime.UtcNow,
+                Active = true,
+                Title = "Aprobar Beneficio",
+                Description = "Se requiere aprobacion para la emision del cheque N° " + model.CheckNumber +
+                " del banco " + entity.BankName + " bajo el concepto: " + benefit .Name,
+                GoTo = "../CustomerBenefit/Edit/" + model.ContributionBenefitId
+            });
+            #endregion
 
             _customerActivityService.InsertActivity("AddNewContributionBenefitBank", _localizationService.GetResource("ActivityLog.AddNewContributionBenefitBank"), model.CompleteName, _workContext.CurrentCustomer.GetFullName());
 

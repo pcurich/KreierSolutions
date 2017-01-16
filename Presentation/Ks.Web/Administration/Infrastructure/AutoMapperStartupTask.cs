@@ -28,6 +28,17 @@ namespace Ks.Admin.Infrastructure
         {
             //TODO remove 'CreatedOnUtc' ignore mappings because now presentation layer models have 'CreatedOn' property and core entities have 'CreatedOnUtc' property (distinct names)
 
+            #region Admin
+
+            Mapper.CreateMap<WorkFlow, WorkFlowModel>()
+                .ForMember(dest => dest.CreatedOn, mo => mo.Ignore())
+                .ForMember(dest => dest.UpdatedOn, mo => mo.Ignore())
+                .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
+            Mapper.CreateMap<WorkFlowModel, WorkFlow>()
+                .ForMember(dest => dest.CreatedOnUtc, mo => mo.Ignore());
+
+            #endregion
+
             #region Address
 
             Mapper.CreateMap<Address, AddressModel>()
@@ -381,8 +392,10 @@ namespace Ks.Admin.Infrastructure
             #region contributionbenefitbank
             Mapper.CreateMap<ContributionBenefitBank, ContributionBenefitBankModel>()
                 .ForMember(dest => dest.CreatedOn, mo => mo.Ignore())
+                .ForMember(dest => dest.ApprovedOn, mo => mo.Ignore())
                 .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
             Mapper.CreateMap<ContributionBenefitBankModel, ContributionBenefitBank>()
+                .ForMember(dest => dest.ApprovedOnUtc, mo => mo.Ignore())
                 .ForMember(dest => dest.CreatedOnUtc, mo => mo.Ignore());
             #endregion
 
