@@ -1340,6 +1340,7 @@
     <Content Include="Views\ReturnPayment\_CreateOrUpdate.cshtml" />
     <Content Include="Views\Shared\DeleteCustomer.cshtml" />
     <Content Include="Views\Report\List.cshtml" />
+    <Content Include="Views\Loans\Approval.cshtml" />
     <None Include="Views\Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

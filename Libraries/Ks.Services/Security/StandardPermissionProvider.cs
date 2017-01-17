@@ -194,7 +194,9 @@ namespace Ks.Services.Security
                 EnableShoppingCart,
                 EnableWishlist,
                 PublicStoreAllowNavigation,
-                AccessClosedStore
+                AccessClosedStore,
+                ApprovalLoan,
+                ApprovalBenefit,
             };
         }
 

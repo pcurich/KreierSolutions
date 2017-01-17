@@ -5969,6 +5969,9 @@
 	<LocaleResource Name="Admin.Contract.Loan.AddNew">
 		<Value>Nuevo Apoyo Económico.</Value>
 	</LocaleResource>
+	<LocaleResource Name="Admin.Contract.Loan.Approval">
+		<Value>Aprobación de Apoyo Social Económico</Value>
+	</LocaleResource>
 	<LocaleResource Name="Admin.Contract.Loan.BackToList">
 		<Value>Volver a la lista de apoyo económico.</Value>
 	</LocaleResource>  

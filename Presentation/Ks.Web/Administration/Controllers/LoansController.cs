@@ -246,22 +246,24 @@ namespace Ks.Admin.Controllers
 
         #region Approval
 
-        public ActionResult Approval(int loanId)
+        public ActionResult Approval(int id)
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ApprovalLoan))
                 return AccessDeniedView();
 
-            var loan = _loanService.GetLoanById(loanId);
+            var loan = _loanService.GetLoanById(id);
             var model = loan.ToModel();
+            model.StateName = loan.IsAuthorized ? "Aprovado" : "No Aprobado";
             model.States = new List<SelectListItem>
             {
                 new SelectListItem{ Text = "-------------------", Value = "0"},
                 new SelectListItem{ Text = "Aprobar", Value = "1"},
                 new SelectListItem{ Text = "Desaprobar", Value = "2"},
             };
-            return View();
+            return View(model);
         }
 
+        [HttpPost]
         public ActionResult Approval(LoanModel model)
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ApprovalLoan))
@@ -302,7 +304,7 @@ namespace Ks.Admin.Controllers
                 loan.ApprovalOnUtc = null;
                 loan.UpdatedOnUtc = DateTime.UtcNow;
                 loan.Active = false;
-                var details = _loanService.GetAllPayments(loan.Id);
+                var details = _loanService.GetAllPayments(model.Id,stateId:1);
                 foreach (var detail in details)
                 {
                     detail.StateId = (int)LoanState.Cancelado;
@@ -333,7 +335,7 @@ namespace Ks.Admin.Controllers
                 #endregion
             }
 
-            return View(model);
+            return RedirectToAction("Index", "Home");
             
         }
 

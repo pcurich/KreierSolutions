@@ -1,0 +1,142 @@
+﻿@using System.Globalization
+@Html.HiddenFor(model=>model.Id)
+
+@model LoanModel
+@{
+    //page title
+    ViewBag.Title = T("Admin.Contract.Loan.AddNew").Text;
+}
+<script>
+    $(document).ready(function () {
+        $("#approval-edit").kendoTabStrip({
+            animation: {
+                open: {
+                    effects: "fadeIn"
+                }
+            },
+            select: tabstrip_on_tab_select
+        });
+    });
+</script>
+
+<div id="approval-edit">
+    <ul>
+        <li @Html.RenderSelectedTabIndex(0, GetSelectedTabIndex())>
+            @T("Admin.Common.Info")
+        </li>
+    </ul>
+    <div>
+        @TabInfo()
+    </div>
+</div>
+
+@{
+    //custom tabs
+    var eventMessage = new AdminTabStripCreated(this.Html, "customer-edit");
+    EngineContext.Current.Resolve<IEventPublisher>().Publish(eventMessage);
+    foreach (var eventBlock in eventMessage.BlocksToRender)
+    {
+        @eventBlock
+    }
+}
+
+@*save selected tab index*@
+<input type="hidden" id="selected-tab-index" name="selected-tab-index" value="@(GetSelectedTabIndex())">
+
+@helper TabInfo()
+{
+    using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="section-header">
+            <div class="title">
+                <img src="@Url.Content("~/Administration/Content/images/ico-catalog.png")" alt="" />
+                @T("Admin.Contract.Loan.Approval")  
+            </div>
+            <div class="options">
+                <input type="submit"   class="k-button" value="@T("Admin.common.Save")" />
+            </div>
+        </div>
+        <table class="adminContent">
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.Period):
+                </td>
+                <td class="adminData">
+                    @Model.Period - (@T("Common.Month"))
+                </td>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.LoanAmount):
+                </td>
+                <td class="adminData">
+                    @Model.LoanAmount.ToString("c", new CultureInfo("es-PE"))
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.Tea):
+                </td>
+                <td class="adminData">
+                    @Model.Tea %
+                </td>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.Safe):
+                </td>
+                <td class="adminData">
+                    @Model.Safe %
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.TotalFeed):
+                </td>
+                <td class="adminData">
+                    @Model.TotalFeed.ToString("c", new CultureInfo("es-PE"))
+                </td>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.TotalSafe):
+                </td>
+                <td class="adminData">
+                    @Model.TotalSafe.ToString("c", new CultureInfo("es-PE"))
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.MonthlyQuota):
+                </td>
+                <td class="adminData">
+                    @Model.MonthlyQuota.ToString("c", new CultureInfo("es-PE"))
+                </td>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.TotalAmount):
+                </td>
+                <td class="adminData">
+                    @Model.TotalAmount.ToString("c", new CultureInfo("es-PE"))
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.TotalToPay):
+                </td>
+                <td class="adminData">
+                    @Model.TotalToPay.ToString("c", new CultureInfo("es-PE"))
+                </td>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.IsAuthorized):
+                </td>
+                <td class="adminData">
+                    @Html.DropDownListFor(model => model.StateId, Model.States)
+                </td>
+                <script>
+                    $(document).ready(function () {
+                        $('#@Html.FieldIdFor(x => x.StateId)').width(250).kendoDropDownList();
+                    });
+                </script>
+            </tr>
+        </table>
+    }
+
+}
+
+
+

@@ -1616,7 +1616,7 @@ namespace Ks.Admin.Controllers
                     Title = "Aprobar Apoyo Social Económico",
                     Description = "Se ha realizado la aprobacion del Apoyo Social Economico"+
                     " para el asociado " + _customerService.GetCustomerById(loan.CustomerId).GetFullName(),
-                    GoTo = "Admin/Customer/Edit/" + loan.CustomerId
+                    GoTo = "Admin/Loans/Approval/" + loan.Id
                 });
                 #endregion
 
