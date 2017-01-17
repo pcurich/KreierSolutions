@@ -1,4 +1,5 @@
 ﻿@model  LoanPaymentListModel
+@Html.HiddenFor(model => model.Id)
 @Html.HiddenFor(model => model.LoanId)
 @Html.HiddenFor(model => model.CustomerId)
 @{
@@ -67,7 +68,7 @@
         <td class="adminData">
             @Html.DropDownListFor(model => model.Type, Model.Types)
             <script>
-                $(document).ready(function () {
+                $(document).ready(function() {
                     $('#@Html.FieldIdFor(model => model.Type)').width(250).kendoDropDownList();
                 });
             </script>
@@ -81,6 +82,47 @@
         </td>
     </tr>
     <tr>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model=>model.IsAuthorized)
+        </td>
+        <td class="adminData">
+            @{
+                if (Model.IsAuthorized)
+                {
+                    <img src="@Url.Content("~/Administration/Content/images/active-true.gif")" alt="" />
+                }
+                else
+                {
+                    <img src="@Url.Content("~/Administration/Content/images/active-false.gif")" alt="" />
+                }
+            }
+        </td>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.Active):
+        </td>
+        <td class="adminData">
+            @{
+                if (Model.Active)
+                {
+                    <img src="@Url.Content("~/Administration/Content/images/active-true.gif")" alt=""/>
+                }
+                else
+                {
+                    <img src="@Url.Content("~/Administration/Content/images/active-false.gif")" alt=""/>
+                }
+            }
+        </td>
+
+    </tr>
+    <tr>
+        <td></td><td></td>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.CheckNumber)
+        </td>
+        <td class="adminData">
+            @Model.CheckNumber
+        </td>
+<tr>
         <td colspan="2">
             <input type="button" id="search-payment" class="k-button" value="@T("Admin.Common.Search")" />
         </td>
@@ -117,7 +159,7 @@
                             },
                             pageSize: @(defaultGridPageSize),
                             serverPaging: true,
-                            serverFiltering: true,
+                            serverFiltering: false,
                             serverSorting: true
                         },
                         pageable: {
@@ -129,7 +171,7 @@
                             mode: "inline"
                         },
                         scrollable: false,
-                        filterable: true,
+                        filterable: false,
                         sortable: true,
                         columns: [
                             {

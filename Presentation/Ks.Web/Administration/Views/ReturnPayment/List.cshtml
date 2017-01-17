@@ -54,19 +54,6 @@
                 @Html.KsLabelFor(model => model.SearchStateId):
             </td>
             <td class="adminData">
-                @Html.DropDownListFor(model => model.SearchStateId, Model.States)
-                <script>
-                    $(document).ready(function() {
-                        $('#@Html.FieldIdFor(x => x.SearchStateId)').kendoDropDownList();
-                    });
-                </script>
-            </td>
-        </tr>
-        <tr>
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.SearchStateId):
-            </td>
-            <td class="adminData">
                 @Html.DropDownListFor(model => model.SearchTypeId, Model.Types)
                 <script>
                     $(document).ready(function() {
@@ -206,6 +193,12 @@
                                 return false;
                             }
                         });
+                        $("#@Html.FieldIdFor(model => model.PaymentNumber)").keydown(function (event) {
+                            if (event.keyCode == 13) {
+                                $("#return-payments").click();
+                                return false;
+                            }
+                        });
                         
 
                         $('#mastercheckbox').click(function () {
@@ -257,8 +250,8 @@
                         var data = {
                             SearchDni: $('#@Html.FieldIdFor(model => model.SearchDni)').val(),
                             SearchAdmCode: $('#@Html.FieldIdFor(model => model.SearchAdmCode)').val(),
-                            SearchTypeId: $('#@Html.FieldIdFor(model => model.SearchTypeId)').val(),
-                            SearchStateId: $('#@Html.FieldIdFor(model => model.SearchStateId)').val()
+                            PaymentNumber: $('#@Html.FieldIdFor(model => model.PaymentNumber)').val(),
+                            SearchTypeId: $('#@Html.FieldIdFor(model => model.SearchTypeId)').val() 
                         };
                         addAntiForgeryToken(data);
                         return data;

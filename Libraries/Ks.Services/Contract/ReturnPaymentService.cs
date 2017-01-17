@@ -92,19 +92,22 @@ namespace Ks.Services.Contract
         public virtual IPagedList<ReturnPayment> SearchReturnPayment(int customerId,
             int searchTypeId, int paymentNumber, int pageIndex = 0, int pageSize = Int32.MaxValue)
         {
-            if(customerId==0)
+            if (customerId == 0 && (searchTypeId == 0 || paymentNumber == 0))
                 return new PagedList<ReturnPayment>(new List<ReturnPayment>(), pageIndex, pageSize);
 
             var query = from rp in _returnPaymentRepository.Table
-                        where rp.CustomerId == customerId
                         select rp;
 
-            if (searchTypeId != 0)
-                query = query.Where(x => x.StateId == searchTypeId);
-
-            if (paymentNumber != 0)
-                query = query.Where(x => x.PaymentNumber == paymentNumber);
-
+            if (customerId > 0)
+                query = query.Where(x => x.CustomerId == customerId);
+            else
+            {
+                if (searchTypeId != 0 && paymentNumber != 0)
+                {
+                    query = query.Where(x => x.StateId == searchTypeId);
+                    query = query.Where(x => x.PaymentNumber == paymentNumber);
+                }
+            }
             return new PagedList<ReturnPayment>(query.ToList(), pageIndex, pageSize);
 
         }

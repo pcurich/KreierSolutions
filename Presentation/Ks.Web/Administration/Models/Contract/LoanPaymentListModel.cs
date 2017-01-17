@@ -37,5 +37,14 @@ namespace Ks.Admin.Models.Contract
 
         public int LoanId { get; set; }
         public int CustomerId { get; set; }
+
+        [KsResourceDisplayName("Admin.Contract.Loan.Fields.Active")]
+        public bool Active { get; set; }
+
+        [KsResourceDisplayName("Admin.Contract.Loan.Fields.IsAuthorized")]
+        public bool IsAuthorized { get; set; }
+        public decimal TotalPayed { get; set; }
+        [KsResourceDisplayName("Admin.Contract.ReturnPayment.CheckNumber")]
+        public string CheckNumber { get; set; }
     }
 }

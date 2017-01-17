@@ -45,5 +45,6 @@ namespace Ks.Admin.Models.Contract
         public bool IsActiveAmount2 { set; get; }
         public string NameAmount3 { get; set; }
         public bool IsActiveAmount3 { set; get; }
+
     }
 }

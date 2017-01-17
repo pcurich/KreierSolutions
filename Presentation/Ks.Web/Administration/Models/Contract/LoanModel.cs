@@ -17,6 +17,7 @@ namespace Ks.Admin.Models.Contract
         {
             Periods = new List<SelectListItem>();
             States=new List<SelectListItem>();
+            Banks= new List<SelectListItem>();
         }
 
         #region Customer
@@ -76,6 +77,9 @@ namespace Ks.Admin.Models.Contract
         public string AccountNumber { get; set; }
         [KsResourceDisplayName("Admin.Contract.Loan.Fields.BankName")]
         public string BankName { get; set; }
+
+        public List<SelectListItem> Banks { get; set; }
+
         [KsResourceDisplayName("Admin.Contract.Loan.Fields.CheckNumber")]
         public string CheckNumber { get; set; }
         public StateActivityModel StateActivityModels { get; set; } //SyngleSignature Warranty

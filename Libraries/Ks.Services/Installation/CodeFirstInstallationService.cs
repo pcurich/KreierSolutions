@@ -378,7 +378,7 @@ namespace Ks.Services.Installation
                 LastActivityDateUtc = DateTime.UtcNow,
             };
 
-            var managerUser = new Customer
+            var employerUser = new Customer
             {
                 CustomerGuid = Guid.NewGuid(),
                 Email = "abc@xyz.com",
@@ -420,9 +420,8 @@ namespace Ks.Services.Installation
             _genericAttributeService.SaveAttribute(adminUser, SystemCustomerAttributeNames.Dni, "43617372");
 
             //test manager rol
-            managerUser.CustomerRoles.Add(crManager);
-            managerUser.CustomerRoles.Add(crEmployer);
-            _customerRepository.Insert(managerUser);
+            employerUser.CustomerRoles.Add(crEmployer);
+            _customerRepository.Insert(employerUser);
 
             //search engine (crawler) built-in user
             var searchEngineUser = new Customer

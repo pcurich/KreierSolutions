@@ -6036,13 +6036,13 @@
 		<Value>Fecha en que incio el contrato</Value>
 	</LocaleResource>
 	<LocaleResource Name="Admin.Contract.Loan.Fields.ApprovalOn">
-		<Value>Fecha Aprobación</Value>
+		<Value>Aprobación</Value>
 	</LocaleResource>
 	<LocaleResource Name="Admin.Contract.Loan.Fields.ApprovalOn.Hint">
 		<Value>Fecha en que se aprobo el apoyo economico</Value>
 	</LocaleResource>
 	<LocaleResource Name="Admin.Contract.Loan.Fields.UpdatedOn">
-		<Value>Fecha de la ultima actualización</Value>
+		<Value>Modificación</Value>
 	</LocaleResource>
 	<LocaleResource Name="Admin.Contract.Loan.Fields.UpdatedOn.Hint">
 		<Value>Indica si esta activo el apoyo ecónomico</Value>
@@ -6144,7 +6144,7 @@
 		<Value>N° Cuenta</Value>
 	</LocaleResource>
 	<LocaleResource Name="Admin.Contract.Loan.Fields.IsAuthorized">
-		<Value>Autorizado?</Value>
+		<Value>Autorizado</Value>
 	</LocaleResource>
 	<LocaleResource Name="Admin.Contract.Loan.Fields.IsAuthorized.Hint">
 		<Value>Autorizado?</Value>

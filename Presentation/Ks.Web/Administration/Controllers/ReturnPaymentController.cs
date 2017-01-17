@@ -104,26 +104,40 @@ namespace Ks.Admin.Controllers
             var returnPayment = _returnPaymentService.SearchReturnPayment(customer != null ? customer.Id : 0,
                 model.SearchTypeId, model.PaymentNumber, command.Page - 1, command.PageSize);
 
-            var gridModel = new DataSourceResult
+            if (returnPayment.Count == 0)
             {
-                Data = returnPayment.Select(x =>
+                var gridModel = new DataSourceResult
                 {
-                    var toModel = x.ToModel();
-                    toModel.CreatedOn = _dateTimeHelper.ConvertToUserTime(x.CreatedOnUtc, TimeZoneInfo.Utc);
-                    toModel.UpdatedOn = _dateTimeHelper.ConvertToUserTime(x.UpdatedOnUtc, TimeZoneInfo.Utc);
-                    toModel.StateName = Enum.GetName(typeof(ReturnPaymentState), x.StateId);
-                    toModel.CustomerName = customer.GetFullName();
-                    toModel.CustomerDni = customer.GetAttribute<string>(SystemCustomerAttributeNames.Dni);
-                    toModel.CustomerAdmCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode);
-                    toModel.ReturnPaymentTypeName = Enum.GetName(typeof(ReturnPaymentType), x.ReturnPaymentTypeId);
-                    return toModel;
-                }),
-                Total = returnPayment.Count()
-            };
-            return new JsonResult
+                    Data = returnPayment.Select(x => x.ToModel()),
+                    Total = 1
+                };
+                return Json(gridModel);
+            }
+            else
             {
-                Data = gridModel
-            };
+                var gridModel = new DataSourceResult
+                {
+                    Data = returnPayment.Select(x =>
+                    {
+                        var toModel = x.ToModel();
+                        customer = _customerService.GetCustomerById(x.CustomerId);
+                        toModel.CreatedOn = _dateTimeHelper.ConvertToUserTime(x.CreatedOnUtc, TimeZoneInfo.Utc);
+                        toModel.UpdatedOn = _dateTimeHelper.ConvertToUserTime(x.UpdatedOnUtc, TimeZoneInfo.Utc);
+                        toModel.StateName = Enum.GetName(typeof(ReturnPaymentState), x.StateId);
+                        toModel.CustomerName = customer.GetFullName();
+                        toModel.CustomerDni = customer.GetAttribute<string>(SystemCustomerAttributeNames.Dni);
+                        toModel.CustomerAdmCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode);
+                        toModel.ReturnPaymentTypeName = Enum.GetName(typeof(ReturnPaymentType), x.ReturnPaymentTypeId);
+                        return toModel;
+                    }),
+                    Total = returnPayment.Count()
+                };
+                return Json(gridModel);
+            }
+
+            
+
+            
         }
 
         public ActionResult Edit(int id)

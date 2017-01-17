@@ -328,7 +328,7 @@ namespace Ks.Admin.Controllers
                     model.LoanModels = loans.Select(x =>
                     {
                         var toModel = x.ToModel();
-                        toModel.StateName = x.IsAuthorized ? "Aprovado" : "No Aprobado";
+                        toModel.StateName = x.IsAuthorized ? "Aprobado" : "No Aprobado";
                         return toModel;
                     }).ToList();
                 }
@@ -1939,7 +1939,7 @@ namespace Ks.Admin.Controllers
                 MonthlyQuota = ((model.LoanAmount + totalfeed) / model.Period),
                 TotalAmount = (totalfeed + model.LoanAmount),
                 TotalToPay = (model.LoanAmount - totalSafe),
-                StateName = model.IsAuthorized ? "Aprovado" : "No Aprobado"
+                StateName = model.IsAuthorized ? "Aprobado" : "No Aprobado"
             };
 
             return model;

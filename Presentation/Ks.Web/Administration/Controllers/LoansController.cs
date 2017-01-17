@@ -159,8 +159,12 @@ namespace Ks.Admin.Controllers
             var customer = _customerService.GetCustomerById(loan.CustomerId);
             var model = new LoanPaymentListModel
             {
+                Id=id,
                 LoanId = id,
+                IsAuthorized = loan.IsAuthorized,
                 CustomerId = loan.CustomerId,
+                CheckNumber = loan.CheckNumber,
+                Active = loan.Active,
                 States = LoanState.EnProceso.ToSelectList(false).ToList(),
                 Banks = _bankSettings.PrepareBanks(),
                 CustomerName = customer.GetFullName(),
@@ -244,7 +248,7 @@ namespace Ks.Admin.Controllers
 
         #endregion
 
-        #region Approval
+        #region Approval / AddCheck
 
         public ActionResult Approval(int id)
         {
@@ -253,7 +257,7 @@ namespace Ks.Admin.Controllers
 
             var loan = _loanService.GetLoanById(id);
             var model = loan.ToModel();
-            model.StateName = loan.IsAuthorized ? "Aprovado" : "No Aprobado";
+            model.StateName = loan.IsAuthorized ? "Aprobado" : "No Aprobado";
             model.States = new List<SelectListItem>
             {
                 new SelectListItem{ Text = "-------------------", Value = "0"},
@@ -293,7 +297,7 @@ namespace Ks.Admin.Controllers
                     Title = "Aprobado el Apoyo Social Económico",
                     Description = "Se ha realizado la aprobacion para la emision del Apoyo Social Económico N° " + loan.LoanNumber +
                     " para el asociado " + _customerService.GetCustomerById(loan.CustomerId).GetFullName(),
-                    GoTo = "Admin/Loans/Approval/" + loan.Id
+                    GoTo = "Admin/Loans/AddCheck/" + loan.Id
                 });
                 #endregion
             }
@@ -330,7 +334,7 @@ namespace Ks.Admin.Controllers
                     Title = "No aprobado el Apoyo Social Económico",
                     Description = "Se ha realizado la no aprobacion para la emision del Apoyo Social Económico N° " + loan.LoanNumber +
                     " para el asociado " + _customerService.GetCustomerById(loan.CustomerId).GetFullName(),
-                    GoTo = "Admin/Loans/Approval/" + loan.Id
+                    GoTo = "Admin/Loans/Edit/" + loan.Id
                 });
                 #endregion
             }
@@ -339,6 +343,35 @@ namespace Ks.Admin.Controllers
             
         }
 
+        public ActionResult AddCheck(int id)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageLoans))
+                return AccessDeniedView();
+
+            var loan = _loanService.GetLoanById(id);
+            var model = loan.ToModel();
+            model.Banks = _bankSettings.PrepareBanks();
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult AddCheck(LoanModel model)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageLoans))
+                return AccessDeniedView();
+
+            var loan = _loanService.GetLoanById(model.Id);
+            loan.BankName = GetBank(model.BankName); 
+            loan.AccountNumber = model.AccountNumber;
+            loan.CheckNumber = model.CheckNumber;
+
+            _loanService.UpdateLoan(loan);
+
+            _customerActivityService.InsertActivity("AddChekToLoan",
+                "Se ha asignado el cheque al apoyo social economico  N° " + loan.LoanNumber);
+
+            return RedirectToAction("Edit", new {id=loan.Id});
+        }
         #endregion
 
         #region CreatePayment
@@ -348,14 +381,22 @@ namespace Ks.Admin.Controllers
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributions))
                 return AccessDeniedView();
 
-            var contributionPayment = _loanService.GetPaymentById(id);
-            if (!contributionPayment.Loan.Active)
+
+            var loanPayment = _loanService.GetPaymentById(id);
+            var loan = _loanService.GetLoanById(loanPayment.LoanId);
+            if (!loan.IsAuthorized)
             {
-                ErrorNotification(_localizationService.GetResource("Admin.Customers.Loans.ValidActive"));
-                return RedirectToAction("Edit", new { id = contributionPayment.Loan.Id });
+                ErrorNotification("No se puede realizar pagos debido a que el Apoyo Social Económico no se encuentra aprobado");
+                return RedirectToAction("Edit", new { id = loan.Id });
             }
 
-            var model = PrepareLoanPayment(contributionPayment);
+            if (!loan.Active)
+            {
+                ErrorNotification(_localizationService.GetResource("Admin.Customers.Loans.ValidActive"));
+                return RedirectToAction("Edit", new { id = loan.Id });
+            }
+
+            var model = PrepareLoanPayment(loanPayment);
             model.MonthlyPayed = model.MonthlyQuota;
 
             return View(model);
@@ -478,12 +519,21 @@ namespace Ks.Admin.Controllers
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageLoans))
                 return AccessDeniedView();
 
+            var loan = _loanService.GetLoanById(id);
+
+            if (!loan.IsAuthorized)
+            {
+                ErrorNotification("No se puede realizar pagos debido a que el Apoyo Social Económico no se encuentra aprobado");
+                return RedirectToAction("Edit", new {id = id});
+            }
+
             var allPayment = _loanService.GetAllPayments(loanId: id, stateId: (int)LoanState.Pendiente);
             var amountToCancel = allPayment.Sum(x => x.MonthlyQuota);
             var loanPaymentModel = new LoanPaymentsModel
             {
                 Banks = _bankSettings.PrepareBanks(),
                 LoanId = id,
+                CustomerId=loan.CustomerId,
                 AmountToCancel = amountToCancel
             };
 
@@ -632,12 +682,32 @@ namespace Ks.Admin.Controllers
                     AmountToPay = model.MonthlyPayed,
                     CreatedOnUtc = DateTime.UtcNow,
                     UpdatedOnUtc = DateTime.UtcNow,
-                    PaymentNumber = maxQuota + 1,
+                    PaymentNumber = loan.LoanNumber,
+                    StateId = (int)ReturnPaymentState.Creado,
                     ReturnPaymentTypeId = (int)ReturnPaymentType.ApoyoEconomico,
-                    CustomerId = model.CustomerId
+                    CustomerId = loan.CustomerId
                 };
 
                 _returnPaymentService.InsertReturnPayment(returnPayment);
+
+                #region Flow - Approval required
+
+                _workFlowService.InsertWorkFlow(new WorkFlow
+                {
+                    CustomerCreatedId = _workContext.CurrentCustomer.Id,
+                    EntityId = loan.LoanNumber,
+                    EntityName = "ReturnPayment",
+                    RequireCustomer = false,
+                    RequireSystemRole = true,
+                    SystemRoleApproval = SystemCustomerRoleNames.Employee,
+                    CreatedOnUtc = DateTime.UtcNow,
+                    UpdatedOnUtc = DateTime.UtcNow,
+                    Active = true,
+                    Title = "Nueva Devolución",
+                    Description = "Se requiere revision para una devolucion realizada por el pago del apoyo social economico N° " + loan.LoanNumber,
+                    GoTo = "ReturnPayment/List/"
+                });
+                #endregion
             }
 
             #endregion

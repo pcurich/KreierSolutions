@@ -68,7 +68,7 @@
         <td class="adminData">
             @Html.DropDownListFor(model => model.Type, Model.Types)
             <script>
-                $(document).ready(function () {
+                $(document).ready(function() {
                     $('#@Html.FieldIdFor(model => model.Type)').width(250).kendoDropDownList();
                 });
             </script>
