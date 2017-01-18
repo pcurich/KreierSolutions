@@ -9925,7 +9925,7 @@
 	<LocaleResource Name="Admin.Catalog.Report.Benefit">
 		<Value>Beneficio</Value>
 	</LocaleResource>
-		<LocaleResource Name="Admin.Catalog.Report.Loans">
+	<LocaleResource Name="Admin.Catalog.Report.Loans">
 		<Value>Apoyo Económico</Value>
 	</LocaleResource>
 	<LocaleResource Name="Admin.Catalog.Report.Return">
@@ -10025,7 +10025,7 @@
 	<LocaleResource Name="Admin.Catalog.ReportContribution.Fields.Type.Hint">
 		<Value>Tipo, copere o la caja </Value>
 	</LocaleResource>
-	
+
 	<LocaleResource Name="Admin.Catalog.ReportBenefit.Fields.From">
 		<Value>Desde</Value>
 	</LocaleResource>
@@ -10053,7 +10053,7 @@
 	<LocaleResource Name="Admin.Catalog.ReportBenefit.Fields.Type.Required">
 		<Value>Seleccione un tipo de beneficio</Value>
 	</LocaleResource>
-		<LocaleResource Name="Admin.Catalog.ReportBenefit.Fields.Source">
+	<LocaleResource Name="Admin.Catalog.ReportBenefit.Fields.Source">
 		<Value>Origen</Value>
 	</LocaleResource>
 	<LocaleResource Name="Admin.Catalog.ReportBenefit.Fields.Source.Hint">
@@ -10062,7 +10062,7 @@
 	<LocaleResource Name="Admin.Catalog.ReportBenefit.Fields.Source.Required">
 		<Value>Seleccione un origen de beneficio</Value>
 	</LocaleResource>
- 	
+
 	<LocaleResource Name="Admin.Home.WorkFlow.Field.Title">
 		<Value>Título</Value>
 	</LocaleResource> 
@@ -10102,5 +10102,36 @@
 	<LocaleResource Name="Admin.Home.WorkFlow.Field.UpdatedOn">
 		<Value>Modificación</Value>
 	</LocaleResource>
-	
+
+	<LocaleResource Name="Admin.Home.WorkFlowList.List.StartDate">
+		<Value>Desde</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Home.WorkFlowList.List.StartDate.Hint">
+		<Value>Desde</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Home.WorkFlowList.List.EndDate">
+		<Value>Hasta</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Home.WorkFlowList.List.EndDate.Hint">
+		<Value>Hasta</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Home.WorkFlowList.List.Type">
+		<Value>Tipo</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Home.WorkFlowList.List.Type.Hint">
+		<Value>Tipo</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Home.WorkFlowList.List.Entity">
+		<Value>Numero</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Home.WorkFlowList.List.Entity.Hint">
+		<Value>Numero</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Home.WorkFlowList.List.State">
+		<Value>Estado</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Home.WorkFlowList.List.State.Hint">
+		<Value>Estado</Value>
+	</LocaleResource>
+
 </Language>

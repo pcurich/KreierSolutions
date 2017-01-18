@@ -1,97 +1,205 @@
-﻿@{
+﻿@model WorkFlowListModel
+
+@{
     //page title
     ViewBag.Title = T("Alertas").Text;
 }
-@Html.AntiForgeryToken()
-<div class="section-header">
-    <div class="title">
-        <img src="@Url.Content("~/Administration/Content/images/ico-configuration.png")" alt="" />
-        @T("Alertas")
+@{
+    var defaultGridPageSize = EngineContext.Current.Resolve<Ks.Core.Domain.Common.AdminAreaSettings>().DefaultGridPageSize;
+    var gridPageSizes = EngineContext.Current.Resolve<Ks.Core.Domain.Common.AdminAreaSettings>().GridPageSizes;
+}
+@using (Html.BeginForm(null, null, FormMethod.Post, new {id = "workflow-form"}))
+{
+    @Html.AntiForgeryToken()
+    <div class="section-header">
+        <div class="title">
+            <img src="@Url.Content("~/Administration/Content/images/ico-configuration.png")" alt=""/>
+            @T("Alertas")
+        </div>
+        <div class="options">
+        </div>
     </div>
-    <div class="options">
-    </div>
-</div>
-<table class="adminContent">
-    <tr>
-        <td>
-            <div id="workflow-grid1"></div>
 
-            <script>
-    $(document).ready(function () {
-        $("#workflow-grid1").kendoGrid({
-            dataSource: {
-                type: "json",
-                transport: {
-                    read: {
-                        url: "@Html.Raw(Url.Action("List", "Home"))",
-                        type: "POST",
-                        dataType: "json",
-                        data: addAntiForgeryToken
-                    }
-                },
-                schema: {
-                    data: "Data",
-                    total: "Total",
-                    errors: "Errors" 
-                     
-                },
-                error: function (e) {
-                    display_kendoui_grid_error(e);
-                    // Cancel the changes
-                    this.cancelChanges();
-                },
-                serverPaging: true,
-                serverFiltering: true,
-                serverSorting: true
-            },
-            pageable: {
-                refresh: true,
-                numeric: false,
-                previousNext: false,
-                info: false
-            },
-            editable: {
-                confirmation: false,
-                mode: "inline"
-            },
-            scrollable: false,
-            columns: [{
-                field: "Title",
-                title: "@T("Admin.Home.WorkFlow.Field.Title")",
-                width: 100
-            }, {
-                field: "CustomerCreatedName",
-                title: "@T("Admin.Home.WorkFlow.Field.CustomerCreatedName")",
-                width: 100
-            }, {
-                field: "Description",
-                title: "@T("Admin.Home.WorkFlow.Field.Description")" 
-            }, {
-                field: "EntityId",
-                title: "@T("Admin.Home.WorkFlow.Field.EntityId")",
-                width: 100
-            },
-            @*{
+    <table width="100%">
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.SearchStartDate):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.SearchStartDate)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.SearchEndDate):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.SearchEndDate)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.EntityId):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.EntityId)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.TypeId):
+            </td>
+            <td class="adminData">
+                @Html.DropDownListFor(model => model.TypeId, Model.Types)
+                <script>
+                    $(document).ready(function() {
+                        $('#@Html.FieldIdFor(model => model.TypeId)').width(250).kendoDropDownList();
+                    });
+                </script>
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.StateId):
+            </td>
+            <td class="adminData">
+                @Html.DropDownListFor(model => model.StateId, Model.States)
+                <script>
+                    $(document).ready(function() {
+                        $('#@Html.FieldIdFor(model => model.StateId)').width(250).kendoDropDownList();
+                    });
+                </script>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="button" id="search-workflow" class="k-button" value="@T("Admin.Common.Search")"/>
+            </td>
+        </tr>
+    </table>
+
+    <table class="adminContent">
+        <tr>
+            <td>
+                <div id="workflow-grid1"></div>
+
+                <script>
+                    $(document).ready(function() {
+                        $("#workflow-grid1").kendoGrid({
+                            dataSource: {
+                                type: "json",
+                                transport: {
+                                    read: {
+                                        url: "@Html.Raw(Url.Action("Index", "Home"))",
+                                        type: "POST",
+                                        dataType: "json",
+                                        data: additionalData
+                                    }
+                                },
+                                schema: {
+                                    data: "Data",
+                                    total: "Total",
+                                    errors: "Errors"
+
+                                },
+                                error: function(e) {
+                                    display_kendoui_grid_error(e);
+                                    // Cancel the changes
+                                    this.cancelChanges();
+                                },
+                                serverPaging: true,
+                                serverFiltering: true,
+                                serverSorting: true,
+                                pageSize: @(defaultGridPageSize),
+                            },
+                            pageable: {
+                                refresh: true,
+                                numeric: false,
+                                previousNext: false,
+                                info: false,
+                                pageSizes: [@(gridPageSizes)]
+                            },
+                            editable: {
+                                confirmation: false,
+                                mode: "inline"
+                            },
+                            scrollable: false,
+                            columns: [
+                                {
+                                    field: "Title",
+                                    title: "@T("Admin.Home.WorkFlow.Field.Title")",
+                                    width: 250
+                                }, {
+                                    field: "CustomerCreatedName",
+                                    title: "@T("Admin.Home.WorkFlow.Field.CustomerCreatedName")",
+                                    width: 150
+                                }, {
+                                    field: "Description",
+                                    title: "@T("Admin.Home.WorkFlow.Field.Description")"
+                                }, {
+                                    field: "EntityId",
+                                    title: "@T("Admin.Home.WorkFlow.Field.EntityId")",
+                                    width: 100
+                                },
+                                @*{
                 field: "EntityName",
                 title: "@T("Admin.Home.WorkFlow.Field.EntityName")",
                 width: 100
             },*@
-            {
-                field: "GoTo",
-                title: "@T("Admin.Home.WorkFlow.Field.GoTo")",
-                template: '<a href="#=GoTo#">@T("Admin.Home.WorkFlow.Field.GoTo") </a>',
-                width: 100
-            }, {
-                field: "Active",
-                title: "@T("Admin.Home.WorkFlow.Field.Active")",
-                width: 100,
-                headerAttributes: { style: "text-align:center" },
-                attributes: { style: "text-align:center" },
-                template: '<img src="@Url.Content("~/Administration/Content/images/")active-#=Active#.gif" />'
-            }]
+                            {
+                                field: "GoTo",
+                                title: "@T("Admin.Home.WorkFlow.Field.GoTo")",
+                                template: '<a href="#=GoTo#">@T("Admin.Home.WorkFlow.Field.GoTo") </a>',
+                                width: 100
+                            }, {
+                                field: "Active",
+                                title: "@T("Admin.Home.WorkFlow.Field.Active")",
+                                width: 100,
+                                headerAttributes: { style: "text-align:center" },
+                                attributes: { style: "text-align:center" },
+                                template: '<img src="@Url.Content("~/Administration/Content/images/")active-#=Active#.gif" />'
+                                }
+                            ]
+                        });
+                    });
+
+                    function additionalData() {
+                        var data = {
+                            SearchStartDate: $('#@Html.FieldIdFor(model => model.SearchStartDate)').val(),
+                            SearchEndDate: $('#@Html.FieldIdFor(model => model.SearchEndDate)').val(),
+                            EntityId: $('#@Html.FieldIdFor(model => model.EntityId)').val(),
+                            TypeId: $('#@Html.FieldIdFor(model => model.TypeId)').val(),
+                            StateId: $('#@Html.FieldIdFor(model => model.StateId)').val()
+                        };
+                        addAntiForgeryToken(data);
+                        return data;
+                    }
+
+                </script>
+            </td>
+        </tr>
+    </table>
+
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+
+            //search button
+            $('#search-workflow').click(function() {
+                //search
+                var grid = $('#workflow-grid1').data('kendoGrid');
+                grid.dataSource.page(1); //new search. Set page size to 1
+                //grid.dataSource.read(); we already loaded the grid above using "page" function
+                return false;
+            });
+
+            $("#@Html.FieldIdFor(model => model.EntityId)").keydown(function(event) {
+                if (event.keyCode == 13) {
+                    $("#search-workflow").click();
+                    return false;
+                }
+            });
         });
-    });
-            </script>
-        </td>
-    </tr>
-</table>
+    </script>
+
+}

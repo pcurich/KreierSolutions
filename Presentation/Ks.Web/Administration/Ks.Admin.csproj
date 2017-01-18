@@ -1446,7 +1446,9 @@
     <Compile Include="Models\Messages\QueuedEmailListModel.cs" />
     <Compile Include="Models\Messages\QueuedEmailModel.cs" />
     <Compile Include="Models\Messages\TestMessageTemplateModel.cs" />
+    <Compile Include="Models\Messages\WorkFlowListModel.cs" />
     <Compile Include="Models\Messages\WorkFlowModel.cs" />
+    <Compile Include="Models\Messages\WorkFlowType.cs" />
     <Compile Include="Models\Report\ReportListModel.cs" />
     <Compile Include="Models\Security\PermissionMappingModel.cs" />
     <Compile Include="Models\Security\PermissionRecordModel.cs" />
