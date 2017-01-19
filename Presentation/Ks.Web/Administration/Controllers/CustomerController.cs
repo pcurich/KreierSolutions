@@ -97,7 +97,7 @@ namespace Ks.Admin.Controllers
             IEncryptionService encryptionService,
             IDateTimeHelper dateTimeHelper,
             ILocalizationService localizationService,
-            IWorkFlowService  workFlowService,
+            IWorkFlowService workFlowService,
             ICountryService countryService,
             IStateProvinceService stateProvinceService,
             ICityService cityService,
@@ -347,7 +347,7 @@ namespace Ks.Admin.Controllers
                     if (contribution.UpdatedOnUtc.HasValue)
                     {
                         model.Contribution.TotalOfCycles = ((contribution.UpdatedOnUtc.Value.Year - contribution.CreatedOnUtc.Year) * 12) + contribution.UpdatedOnUtc.Value.Month - contribution.CreatedOnUtc.Month;
-                        model.Contribution.TotalOfCycles = Convert.ToInt32(Math.Round(contribution.UpdatedOnUtc.Value.Subtract(contribution.CreatedOnUtc).Days / (365.25 / 12),2));
+                        model.Contribution.TotalOfCycles = Convert.ToInt32(Math.Round(contribution.UpdatedOnUtc.Value.Subtract(contribution.CreatedOnUtc).Days / (365.25 / 12), 2));
                         model.Contribution.UpdatedOn = _dateTimeHelper.ConvertToUserTime(contribution.UpdatedOnUtc.Value, DateTimeKind.Utc);
                     }
                     model.Contribution.Description = contribution.Description;
@@ -790,7 +790,7 @@ namespace Ks.Admin.Controllers
                 _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.AdmCode, model.AdmCode);
                 _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Dni, model.Dni);
                 _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.MilitarySituationId, model.MilitarySituationId);
-                _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.DeclaratoryLetter,_sequenceIdsSettings.DeclaratoryLetter);
+                _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.DeclaratoryLetter, _sequenceIdsSettings.DeclaratoryLetter);
                 _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.DateOfAdmission, model.DateOfAdmission);
                 if (_customerSettings.DateOfBirthEnabled)
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.DateOfBirth, model.DateOfBirth);
@@ -939,7 +939,7 @@ namespace Ks.Admin.Controllers
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.AdmCode, model.AdmCode);
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Dni, model.Dni);
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.MilitarySituationId, model.MilitarySituationId);
-                    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.DeclaratoryLetter,model.DeclaratoryLetter);
+                    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.DeclaratoryLetter, model.DeclaratoryLetter);
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.DateOfAdmission, model.DateOfAdmission);
                     if (_customerSettings.DateOfBirthEnabled)
                         _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.DateOfBirth, model.DateOfBirth);
@@ -1073,6 +1073,17 @@ namespace Ks.Admin.Controllers
 
                     customer.Active = !customer.Active;
                     _customerService.UpdateCustomer(customer);
+                    if (customer.Active)
+                    {
+                        _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.MilitarySituationId, _sequenceIdsSettings.DeclaratoryLetter);
+                        var storeScope = GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
+                        var sequenceIdsSettings = _settingService.LoadSetting<SequenceIdsSettings>(storeScope);
+
+                        sequenceIdsSettings.DeclaratoryLetter += 1;
+                        _settingService.SaveSetting(sequenceIdsSettings);
+                        //now clear settings cache
+                        _settingService.ClearCache();
+                    }
                     //_customerService.DeleteCustomer(customer);
 
                     //activity log
@@ -1614,7 +1625,7 @@ namespace Ks.Admin.Controllers
                     UpdatedOnUtc = DateTime.UtcNow,
                     Active = true,
                     Title = "Aprobar Apoyo Social Económico",
-                    Description = "Se ha realizado la aprobacion del Apoyo Social Economico"+
+                    Description = "Se ha realizado la aprobacion del Apoyo Social Economico" +
                     " para el asociado " + _customerService.GetCustomerById(loan.CustomerId).GetFullName(),
                     GoTo = "Admin/Loans/Approval/" + loan.Id
                 });

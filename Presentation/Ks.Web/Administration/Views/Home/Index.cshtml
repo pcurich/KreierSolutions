@@ -8,17 +8,25 @@
     var defaultGridPageSize = EngineContext.Current.Resolve<Ks.Core.Domain.Common.AdminAreaSettings>().DefaultGridPageSize;
     var gridPageSizes = EngineContext.Current.Resolve<Ks.Core.Domain.Common.AdminAreaSettings>().GridPageSizes;
 }
-@using (Html.BeginForm(null, null, FormMethod.Post, new {id = "workflow-form"}))
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "workflow-form" }))
 {
     @Html.AntiForgeryToken()
     <div class="section-header">
         <div class="title">
-            <img src="@Url.Content("~/Administration/Content/images/ico-configuration.png")" alt=""/>
+            <img src="@Url.Content("~/Administration/Content/images/ico-configuration.png")" alt="" />
             @T("Alertas")
         </div>
         <div class="options">
         </div>
     </div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#workflow-grid1").on("click", ".run-now", function (e) {
+                showThrobber('@Html.Raw(HttpUtility.JavaScriptStringEncode(T("Admin.System.ScheduleTasks.RunNow.Progress").Text))');
+            });
+        });
+    </script>
 
     <table width="100%">
         <tr>
@@ -73,7 +81,7 @@
         </tr>
         <tr>
             <td colspan="2">
-                <input type="button" id="search-workflow" class="k-button" value="@T("Admin.Common.Search")"/>
+                <input type="button" id="search-workflow" class="k-button" value="@T("Admin.Common.Search")" />
             </td>
         </tr>
     </table>
@@ -150,14 +158,25 @@
                                 field: "GoTo",
                                 title: "@T("Admin.Home.WorkFlow.Field.GoTo")",
                                 template: '<a href="#=GoTo#">@T("Admin.Home.WorkFlow.Field.GoTo") </a>',
-                                width: 100
+                                width: 50
                             }, {
                                 field: "Active",
                                 title: "@T("Admin.Home.WorkFlow.Field.Active")",
-                                width: 100,
+                                width: 50,
                                 headerAttributes: { style: "text-align:center" },
                                 attributes: { style: "text-align:center" },
                                 template: '<img src="@Url.Content("~/Administration/Content/images/")active-#=Active#.gif" />'
+                            }, {
+                                field: "CreatedOn",
+                                title: "@T("Admin.Home.WorkFlow.Field.CreatedOn")",
+                                template:'#= CreatedOn!=null ? kendo.toString(CreatedOn,"dd/MM/yyyy","es-PE"): " "#',
+                                type: "date",
+                                format: "{0:G}"
+                            },
+                                {
+                                    field: "Id",
+                                    title: "Atender",
+                                    template: '<a href="@Url.Content("~/Admin/Home/Attend/")#=Id#" class="k-button run-now">Atendido</a>'
                                 }
                             ]
                         });

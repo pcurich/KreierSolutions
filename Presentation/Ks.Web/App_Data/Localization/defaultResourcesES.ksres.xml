@@ -6987,7 +6987,7 @@
 		<Value>Buscar por primer nombre</Value>
 	</LocaleResource>
 	<LocaleResource Name="Admin.Customers.Customers.List.SearchLastName">
-		<Value>Apellido</Value>
+		<Value>Apellidos</Value>
 	</LocaleResource>
 	<LocaleResource Name="Admin.Customers.Customers.List.SearchLastName.Hint">
 		<Value>Búsqueda por apellido.</Value>

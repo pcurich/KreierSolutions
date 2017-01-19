@@ -29,7 +29,7 @@
                 @foreach (var customerRole in Model.AvailableCustomerRoles)
                 {
                     <input type="checkbox" name="SearchCustomerRoleIds" value="@customerRole.Id"
-                           @if (Model.SearchCustomerRoleIds != null && Model.SearchCustomerRoleIds.Contains(customerRole.Id)) { <text> checked="checked" </text>   } />@customerRole.Name
+                           @if (Model.SearchCustomerRoleIds != null && Model.SearchCustomerRoleIds.Contains(customerRole.Id)) { <text> checked="checked" </text>    } />@customerRole.Name
                         <br />
                 }
             </td>
@@ -92,7 +92,7 @@
                     @Html.KsLabelFor(model => model.SearchDayOfBirth):
                 </td>
                 <td class="adminData">
-                     
+
                     @Html.DropDownListFor(model => model.SearchMonthOfBirth, Model.MonthOfBirthValues)
                     @Html.DropDownListFor(model => model.SearchDayOfBirth, Model.DayOfBirthValues)
                     <script>
@@ -101,10 +101,10 @@
                         });
                     </script>
                     <script>
-                    $(document).ready(function () {
-                        $('#@Html.FieldIdFor(model => model.SearchDayOfBirth)').width(125).kendoDropDownList();
-                    });
-                </script>
+                        $(document).ready(function () {
+                            $('#@Html.FieldIdFor(model => model.SearchDayOfBirth)').width(125).kendoDropDownList();
+                        });
+                    </script>
                 </td>
             </tr>
         }
@@ -165,22 +165,12 @@
                             },
                             scrollable: false,
                             dataBound: onDataBound,
-                            columns: [{
-                                field: "Id",
-                                headerTemplate: "<input id='mastercheckbox' type='checkbox'/>",
-                                headerAttributes: { style: "text-align:center" },
-                                attributes: { style: "text-align:center" },
-                                template: "<input type='checkbox' value='#=Id#' class='checkboxGroups'/>",
-                                width: 50
-                            }, {
-                                field: "Id",
-                                title: "ID",
-                                width: 50
-                            }, {
-                                field: "Email",
-                                title: "@T("Admin.Customers.Customers.Fields.Email")",
-                                width: 200
-                            },
+                            columns: [
+                                {
+                                    field: "Email",
+                                    title: "@T("Admin.Customers.Customers.Fields.Email")",
+                                    width: 200
+                                },
                                 @if (Model.UsernamesEnabled)
                                 {
                                     <text>{
@@ -298,7 +288,7 @@
                                 return false;
                             }
                         });
-   
+
                         $('#mastercheckbox').click(function () {
                             $('.checkboxGroups').attr('checked', $(this).is(':checked')).change();
                         });
@@ -359,7 +349,7 @@
                             SearchDayOfBirth: $('#@Html.FieldIdFor(model => model.SearchDayOfBirth)').val(),
                             SearchMonthOfBirth: $('#@Html.FieldIdFor(model => model.SearchMonthOfBirth)').val(),
                             SearchAdmCode: $('#@Html.FieldIdFor(model => model.SearchAdmCode)').val(),
-                            SearchDni: $('#@Html.FieldIdFor(model => model.SearchDni)').val(),                  
+                            SearchDni: $('#@Html.FieldIdFor(model => model.SearchDni)').val(),
                             SearchPhone: $('#@Html.FieldIdFor(model => model.SearchPhone)').val()
                         };
                         addAntiForgeryToken(data);

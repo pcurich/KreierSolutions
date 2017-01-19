@@ -9,6 +9,8 @@ namespace Ks.Core.Domain.Customers
         [Description("Retiro - CPMP (6008)")]
         Retiro = 2, //Go To Cash
         [Description("Personal")]
-        Personal = 3
+        Personal = 3,
+        [Description("InfoCorp")]
+        InfoCorp = 4
     }
 }

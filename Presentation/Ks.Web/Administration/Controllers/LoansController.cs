@@ -287,7 +287,7 @@ namespace Ks.Admin.Controllers
                 {
                     CustomerCreatedId = _workContext.CurrentCustomer.Id,
                     EntityId = loan.LoanNumber,
-                    EntityName = CommonHelper.GetKsCustomTypeConverter(typeof(Loan)).ConvertToInvariantString(loan),
+                    EntityName = WorkFlowType.Loan.ToString(),
                     RequireCustomer = false,
                     RequireSystemRole = true,
                     SystemRoleApproval = SystemCustomerRoleNames.Employee,
@@ -324,7 +324,7 @@ namespace Ks.Admin.Controllers
                 {
                     CustomerCreatedId = _workContext.CurrentCustomer.Id,
                     EntityId = loan.LoanNumber,
-                    EntityName = CommonHelper.GetKsCustomTypeConverter(typeof(Loan)).ConvertToInvariantString(loan),
+                    EntityName = WorkFlowType.Loan.ToString(),
                     RequireCustomer = false,
                     RequireSystemRole = true,
                     SystemRoleApproval = SystemCustomerRoleNames.Employee,

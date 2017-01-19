@@ -17,9 +17,12 @@ namespace Ks.Services.Messages
             _workFlowRepository = workFlowRepository;
         }
 
-        public virtual IPagedList<WorkFlow> GetWorkFlowByRoles(ICollection<CustomerRole> systemRole, int pageIndex = 0, int pageSize = Int32.MaxValue)
+        public virtual IPagedList<WorkFlow> GetWorkFlowByRoles(ICollection<CustomerRole> systemRole,
+            DateTime? searchStartDate = null, DateTime? searchEndDate = null, int typeId = 0, int stateId = 0,
+            int entityId = 0, int pageIndex = 0, int pageSize = Int32.MaxValue)
         {
-            if (systemRole == null || systemRole.Count==0)
+
+            if (systemRole == null || systemRole.Count == 0)
                 return new PagedList<WorkFlow>(new List<WorkFlow>(), pageIndex, pageIndex);
 
             var roles = systemRole.Select(x => x.SystemName);
@@ -28,6 +31,34 @@ namespace Ks.Services.Messages
                         where roles.Contains(wf.SystemRoleApproval)
                         select wf;
 
+            if (searchStartDate.HasValue && searchEndDate.HasValue)
+            {
+                query = query.Where(x => searchStartDate <= x.CreatedOnUtc);
+                query = query.Where(x => x.CreatedOnUtc <= searchEndDate);
+            }
+            if (typeId != 0)
+            {
+                if (typeId == 1)
+                    query = query.Where(x => x.EntityName == WorkFlowType.Contribution.ToString());
+
+                if (typeId == 2)
+                    query = query.Where(x => x.EntityName == WorkFlowType.Loan.ToString());
+
+                if (typeId == 3)
+                    query = query.Where(x => x.EntityName == WorkFlowType.Benefit.ToString());
+
+            }//WorkFlowType.Contribution.ToString()
+
+
+            if (stateId == 1)
+                query = query.Where(x => x.Active == false);
+            if (stateId == 2 || stateId == 0)
+                query = query.Where(x => x.Active);
+
+            if (entityId != 0 )
+                query = query.Where(x => x.EntityId == entityId);
+
+            query = query.OrderByDescending(x => x.Id);
             return new PagedList<WorkFlow>(query.ToList(), pageIndex, pageSize);
         }
 
@@ -53,6 +84,14 @@ namespace Ks.Services.Messages
                         select wf;
 
             return query.FirstOrDefault();
+        }
+
+        public virtual void UpdateWorkFlow(WorkFlow workFlow)
+        {
+            if (workFlow == null)
+                return;
+
+            _workFlowRepository.Update(workFlow);
         }
 
         public virtual void InsertWorkFlow(WorkFlow workFlow)

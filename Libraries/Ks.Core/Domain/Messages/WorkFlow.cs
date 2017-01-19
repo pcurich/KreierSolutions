@@ -1,5 +1,5 @@
 ﻿using System;
-using Ks.Core.Domain.Customers;
+ 
 
 namespace Ks.Core.Domain.Messages
 {

@@ -11,6 +11,7 @@ using Ks.Services.Helpers;
 using Ks.Services.Messages;
 using Ks.Services.Security;
 using Ks.Web.Framework.Kendoui;
+using Ks.Core.Domain.Messages;
 
 namespace Ks.Admin.Controllers
 {
@@ -59,7 +60,11 @@ namespace Ks.Admin.Controllers
         [HttpPost]
         public ActionResult Index(DataSourceRequest command, WorkFlowListModel model)
         {
-            var workFlows = _workFlowService.GetWorkFlowByRoles(_workContext.CurrentCustomer.CustomerRoles, command.Page - 1, command.PageSize);
+            var workFlows = _workFlowService.GetWorkFlowByRoles(_workContext.CurrentCustomer.CustomerRoles, 
+                model.SearchStartDate,model.SearchEndDate,model.TypeId,model.StateId,model.EntityId,
+                  command.Page - 1, command.PageSize);
+
+
             var workFlowModel = workFlows.Select(x =>
             {
                 var toModel = x.ToModel();
@@ -76,6 +81,14 @@ namespace Ks.Admin.Controllers
             };
 
             return Json(gridModel);
+        }
+
+        public ActionResult Attend(int id)
+        {
+            var workFlow=_workFlowService.GetWorkFlowById(id);
+            workFlow.Active = false;
+            _workFlowService.UpdateWorkFlow(workFlow);
+            return RedirectToAction("Index");
         }
 
         #endregion

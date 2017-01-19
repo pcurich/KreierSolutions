@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
-namespace Ks.Admin.Models.Messages
+
+namespace Ks.Core.Domain.Messages
 {
     public enum WorkFlowType
     {
