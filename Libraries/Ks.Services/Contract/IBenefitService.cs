@@ -24,7 +24,7 @@ namespace Ks.Services.Contract
         void UpdateContributionBenefit(ContributionBenefit contributionBenefit);
 
         ContributionBenefit GetContributionBenefitbyId(int contributionBenefitId);
-        IPagedList<ContributionBenefit> GetAllContributionBenefitByCustomer(int customerId = 0, int pageIndex = 0, int pageSize = Int32.MaxValue);
+        IPagedList<ContributionBenefit> GetAllContributionBenefitByCustomer(int customerId = 0,  int pageIndex = 0, int pageSize = Int32.MaxValue);
 
 
         #endregion

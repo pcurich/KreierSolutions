@@ -232,6 +232,7 @@ namespace Ks.Services.Contract
             if (type != null)
                 query = query.Where(x => x.IsAutomatic == type.Value);
 
+            query = query.OrderBy(x => x.Number);
             return new PagedList<ContributionPayment>(query.ToList(), pageIndex, pageSize);
         }
 

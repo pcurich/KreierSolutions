@@ -337,6 +337,14 @@ namespace Ks.Admin.Controllers
                 if (benefits != null && benefits.Count > 0)
                     model.HasContributionBenefits = true;
 
+                if (benefits != null)
+                    foreach (var b in benefits)
+                    {
+                        var benefit = _benefitService.GetBenefitById(b.BenefitId);
+                        if (benefit.BenefitTypeId == (int)BenefitType.Beneficio && b.Active)
+                            model.HasBenefit = true;
+                    }
+
                 if (model.HasContributions && contribution != null)
                 {
                     model.Contribution.AuthorizeDiscount = contribution.AuthorizeDiscount;
@@ -1075,7 +1083,8 @@ namespace Ks.Admin.Controllers
                     _customerService.UpdateCustomer(customer);
                     if (customer.Active)
                     {
-                        _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.MilitarySituationId, _sequenceIdsSettings.DeclaratoryLetter);
+                        _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.DeclaratoryLetter,
+                            _sequenceIdsSettings.DeclaratoryLetter);
                         var storeScope = GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
                         var sequenceIdsSettings = _settingService.LoadSetting<SequenceIdsSettings>(storeScope);
 
@@ -1084,6 +1093,7 @@ namespace Ks.Admin.Controllers
                         //now clear settings cache
                         _settingService.ClearCache();
                     }
+                    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.MilitarySituationId, 0);
                     //_customerService.DeleteCustomer(customer);
 
                     //activity log

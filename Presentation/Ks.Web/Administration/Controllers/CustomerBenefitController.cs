@@ -222,12 +222,15 @@ namespace Ks.Admin.Controllers
                     year = 35;
 
                 var activeTab = _tabService.GetValueFromActive(year);
-                var loans = _loanService.GetLoansByCustomer(model.CustomerId).Where(x => x.Active).ToList();
-
-                model.TotalLoan = loans.Count;
-                foreach (var loan in loans)
+                if (benefit.CancelLoans)
                 {
-                    model.TotalLoanToPay += loan.TotalAmount - loan.TotalPayed;
+                    var loans = _loanService.GetLoansByCustomer(model.CustomerId).Where(x => x.Active).ToList();
+
+                    model.TotalLoan = loans.Count;
+                    foreach (var loan in loans)
+                    {
+                        model.TotalLoanToPay += loan.TotalAmount - loan.TotalPayed;
+                    }
                 }
 
                 model.Discount = benefit.Discount;
@@ -254,6 +257,12 @@ namespace Ks.Admin.Controllers
 
                 //now clear settings cache
                 _settingService.ClearCache();
+
+                if (model.BenefitId == (int)BenefitType.Beneficio)
+                {
+                    var customer = _customerService.GetCustomerById(model.CustomerId);
+                    _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.MilitarySituationId, (int)CustomerMilitarySituation.Gozado);
+                }
 
                 //activity log
                 _customerActivityService.InsertActivity("AddNewContributionBenefit",
@@ -286,7 +295,7 @@ namespace Ks.Admin.Controllers
 
             var model = contributionBenefit.ToModel();
             var contribution = _contributionService.GetContributionById(contributionBenefit.ContributionId);
-            var customer = _customerService.GetCustomerById(contribution.Id);
+            var customer = _customerService.GetCustomerById(contribution.CustomerId);
             model.ContributionStart = _dateTimeHelper.ConvertToUserTime(contribution.CreatedOnUtc, DateTimeKind.Utc);
             model.BenefitModels = PrepareBenefitList(contribution.CustomerId, model.BenefitId, true);
             model.CreatedOn = _dateTimeHelper.ConvertToUserTime(contributionBenefit.CreatedOnUtc, DateTimeKind.Utc);
@@ -303,7 +312,8 @@ namespace Ks.Admin.Controllers
             return View(model);
         }
 
-        [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
+        [HttpPost,ActionName("Edit")]
+        [ParameterBasedOnFormName("save-continue", "continueEditing")]
         public ActionResult Edit(ContributionBenefitModel model, bool continueEditing)
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributionBenefit))
@@ -328,6 +338,53 @@ namespace Ks.Admin.Controllers
                     : RedirectToAction("Edit", new { Controller = "Customer", id = model.CustomerId });
 
         }
+
+        [HttpPost]
+        public ActionResult Approved(int id)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributionBenefit))
+                return AccessDeniedView();
+             
+            //var contributionBenefitId = model.Id;//Convert.ToInt32(form.GetValues("contributionBenefitId")[0]);
+            var allContributionBenefitBank=_benefitService.GetAllContributionBenefitBank(id);
+            var contributionBenefit = _benefitService.GetContributionBenefitbyId(id);
+
+            var benefit = _benefitService.GetBenefitById(contributionBenefit.BenefitId);
+            var data = string.Empty;
+            
+            foreach (var cb in allContributionBenefitBank)
+            {
+                cb.Approved = true;
+                cb.ApprovedOnUtc = DateTime.UtcNow;
+                data = data + cb.CheckNumber + ",";
+                _benefitService.UpdateContributionBenefitBank(cb);
+            }
+
+            contributionBenefit.Active = true;
+            _benefitService.UpdateContributionBenefit(contributionBenefit);
+
+            #region Flow - Approval required
+
+            _workFlowService.InsertWorkFlow(new WorkFlow
+            {
+                CustomerCreatedId = _workContext.CurrentCustomer.Id,
+                EntityId = id,
+                EntityName =WorkFlowType.Benefit.ToString(),
+                RequireCustomer = false,
+                RequireSystemRole = true,
+                SystemRoleApproval = SystemCustomerRoleNames.Employee,
+                CreatedOnUtc = DateTime.UtcNow,
+                UpdatedOnUtc = DateTime.UtcNow,
+                Active = true,
+                Title = "Beneficios Aprobados",
+                Description = "Se ha procedido con la aprobacion del o de los cheques "+ data +" para el beneficio " +benefit.Name,
+                 
+                GoTo = "../CustomerBenefit/Edit/" + id
+            });
+            #endregion
+            return Redirect("/Admin/CustomerBenefit/Edit/" + id);
+        }
+
         #endregion
 
         #region BenefitBank
@@ -405,16 +462,16 @@ namespace Ks.Admin.Controllers
             {
                 CustomerCreatedId = _workContext.CurrentCustomer.Id,
                 EntityId = model.ContributionBenefitId,
-                EntityName = CommonHelper.GetKsCustomTypeConverter(typeof(ContributionBenefit)).ConvertToInvariantString(entity),
+                EntityName = WorkFlowType.Benefit.ToString(),
                 RequireCustomer = false,
                 RequireSystemRole = true,
                 SystemRoleApproval = SystemCustomerRoleNames.Manager,
                 CreatedOnUtc = DateTime.UtcNow,
                 UpdatedOnUtc = DateTime.UtcNow,
                 Active = true,
-                Title = "Aprobar Beneficio",
+                Title = "Aprobar Cheque Beneficio",
                 Description = "Se requiere aprobacion para la emision del cheque N° " + model.CheckNumber +
-                " del banco " + entity.BankName + " bajo el concepto: " + benefit .Name,
+                " del banco " + entity.BankName + " bajo el concepto: " + benefit.Name,
                 GoTo = "../CustomerBenefit/Edit/" + model.ContributionBenefitId
             });
             #endregion
@@ -434,14 +491,16 @@ namespace Ks.Admin.Controllers
             if (contributionBenefitBank == null)
                 throw new ArgumentException("No setting found with the specified id");
 
-            var contributionBenefit =
-                _benefitService.GetContributionBenefitbyId(contributionBenefitBank.ContributionBenefitId);
+            var contributionBenefit=_benefitService.GetContributionBenefitbyId(contributionBenefitBank.ContributionBenefitId);
 
-            contributionBenefit.TotalReationShip--;
-            _benefitService.DeleteContributionBenefitBank(contributionBenefitBank);
-            _benefitService.UpdateContributionBenefit(contributionBenefit);
-            //activity log
-            _customerActivityService.InsertActivity("DeleteContributionBenefitBank", _localizationService.GetResource("ActivityLog.DeleteContributionBenefitBank"), contributionBenefitBank.CompleteName, _workContext.CurrentCustomer.GetFullName());
+            if (!contributionBenefit.Active)
+            {
+                contributionBenefit.TotalReationShip--;
+                _benefitService.DeleteContributionBenefitBank(contributionBenefitBank);
+                _benefitService.UpdateContributionBenefit(contributionBenefit);
+                //activity log
+                _customerActivityService.InsertActivity("DeleteContributionBenefitBank", _localizationService.GetResource("ActivityLog.DeleteContributionBenefitBank"), contributionBenefitBank.CompleteName, _workContext.CurrentCustomer.GetFullName());
+            }
 
             return new NullJsonResult();
         }

@@ -10,7 +10,12 @@
         @T("Admin.Configuration.Benefits") - @Html.LabelFor(model => model.DeclaratoryLetter):  @Model.DeclaratoryLetter
     </div>
     <div class="options">
-        <input type="button" class="k-button" onclick="location.href='@Url.Action("Create","CustomerBenefit", new { customerId = Model.Id, contributionId = Model.Contribution.Id })' " value='@T("Admin.Common.AddNew")' />
+        @{
+            if (!Model.HasBenefit)
+            {
+                <input type="button" class="k-button" onclick="location.href='@Url.Action("Create","CustomerBenefit", new { customerId = Model.Id, contributionId = Model.Contribution.Id })' " value='@T("Admin.Common.AddNew")' />
+            }
+        }
     </div>
 </div>
 @{
@@ -84,6 +89,13 @@
                                     title: "@T("Admin.Customers.Customers.Benefit.TotalContributionPersonalPayment")",
                                     template: '#= kendo.toString(TotalContributionPersonalPayment,"c","es-PE") #',
                                     format: "{0:c2}"
+                                }, {
+                                    field: "Active",
+                                    title: "@T("Admin.Customers.Customers.Benefit.Active")",
+                                    width: 100,
+                                    headerAttributes: { style: "text-align:center" },
+                                    attributes: { style: "text-align:center" },
+                                    template: '<img src="@Url.Content("~/Administration/Content/images/")active-#=Active#.gif" />'
                                 }, {
                                     field: "CreatedOn",
                                     title: "@T("Admin.Customers.Customers.Benefit.CreatedOn")",

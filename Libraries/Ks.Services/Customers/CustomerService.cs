@@ -155,6 +155,15 @@ namespace Ks.Services.Customers
                         z.Attribute.Value.Contains(admCode)))
                     .Select(z => z.Customer);
             }
+            if (!String.IsNullOrWhiteSpace(dni))
+            {
+                query = query
+                    .Join(_gaRepository.Table, x => x.Id, y => y.EntityId, (x, y) => new { Customer = x, Attribute = y })
+                    .Where((z => z.Attribute.KeyGroup == "Customer" &&
+                        z.Attribute.Key == SystemCustomerAttributeNames.Dni &&
+                        z.Attribute.Value.Contains(dni)))
+                    .Select(z => z.Customer);
+            }
             if (!String.IsNullOrWhiteSpace(lastName))
             {
                 query = query

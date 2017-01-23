@@ -226,12 +226,12 @@ namespace Ks.Services.Contract
             return query.FirstOrDefault();
         }
 
-        public virtual IPagedList<ContributionBenefit> GetAllContributionBenefitByCustomer(int customerId = 0, int pageIndex = 0, int pageSize = Int32.MaxValue)
+        public virtual IPagedList<ContributionBenefit> GetAllContributionBenefitByCustomer(int customerId = 0,  int pageIndex = 0, int pageSize = Int32.MaxValue)
         {
 
             var query = from b in _contributionBenefitRepository.Table
                         join c in _contributionRepository.Table on b.ContributionId equals c.Id
-                        where c.CustomerId == customerId && c.Active
+                        where c.CustomerId == customerId && c.Active 
                         select b;
 
             return new PagedList<ContributionBenefit>(query.ToList(), pageIndex, pageSize);

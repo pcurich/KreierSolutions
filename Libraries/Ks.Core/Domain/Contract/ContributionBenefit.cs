@@ -3,8 +3,7 @@ using System.Collections.Generic;
 
 namespace Ks.Core.Domain.Contract
 {
-    public class 
-        ContributionBenefit : BaseEntity
+    public class ContributionBenefit : BaseEntity
     {
         private ICollection<ContributionBenefitBank> _contributionBenefitBanks;
         public int BenefitId { get; set; }
@@ -36,6 +35,7 @@ namespace Ks.Core.Domain.Contract
         public string CustomValue2 { get; set; }
         public decimal TotalToPay { get; set; }
         public int TotalReationShip { get; set; }
+        public bool Active { get; set; }
         public DateTime CreatedOnUtc { get; set; }
         public virtual Benefit Benefit { get; set; }
         public virtual Contribution Contribution { get; set; }

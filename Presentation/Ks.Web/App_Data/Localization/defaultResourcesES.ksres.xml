@@ -7130,6 +7130,12 @@
 	<LocaleResource Name="Admin.Customers.Customers.Benefit.CreatedOn.Hint">
 		<Value>Fecha de Creación</Value>
 	</LocaleResource>
+	<LocaleResource Name="Admin.Customers.Customers.Benefit.Active">
+		<Value>Es Activo</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Customers.Customers.Benefit.Active.Hint">
+		<Value>Es Activo</Value>
+	</LocaleResource>
 	<LocaleResource Name="Admin.Customers.Customers.Benefit.CustomerCompleteName">
 		<Value>Nombre Completo</Value>
 	</LocaleResource>
@@ -7932,6 +7938,28 @@
 	<LocaleResource Name="Permission.ManageCategories">
 		<Value>Módulo Administrativo. Manejador de Categorías</Value>
 	</LocaleResource>
+	<LocaleResource Name="Permission.ManageBenefits">
+		<Value>Módulo Administrativo. Manejador de Beneficios</Value>
+	</LocaleResource>
+	<LocaleResource Name="Permission.ManageReturns">
+		<Value>Módulo Administrativo. Manejador de Devoluciones</Value>
+	</LocaleResource>
+	<LocaleResource Name="Permission.ManageReports">
+		<Value>Módulo Administrativo. Manejador de Reportes</Value>
+	</LocaleResource>
+	<LocaleResource Name="Permission.ApprovalLoan">
+		<Value>Módulo Administrativo. Aprobar Prestamos</Value>
+	</LocaleResource>
+	<LocaleResource Name="Permission.ApprovalBenefit">
+		<Value>Módulo Administrativo. Aprobar Beneficios</Value>
+	</LocaleResource>
+	
+	<LocaleResource Name="Permission.ManageContributionBenefit">
+		<Value>Módulo Administrativo. Manejador de Beneficios en Aportaciones</Value>
+	</LocaleResource>	
+	<LocaleResource Name="Permission.ManageContributions">
+		<Value>Módulo Administrativo. Manejador de Apotaciones</Value>
+	</LocaleResource>		
 	<LocaleResource Name="Permission.ManageCountries">
 		<Value>Módulo Administrativo. Manejador de Países</Value>
 	</LocaleResource>
@@ -7962,6 +7990,13 @@
 	<LocaleResource Name="Permission.ManageLanguages">
 		<Value>Módulo Administrativo. Manejador de Lenguajes</Value>
 	</LocaleResource>
+	<LocaleResource Name="Permission.ManageLoans">
+		<Value>Módulo Administrativo. Manejador de Préstamos</Value>
+	</LocaleResource>	
+	<LocaleResource Name="Permission.ManageTabs">
+		<Value>Módulo Administrativo. Manejador de Tabuladores</Value>
+	</LocaleResource>	
+	
 	<LocaleResource Name="Permission.ManageMaintenance">
 		<Value>Módulo Administrativo. Manejador de Mantenimiento</Value>
 	</LocaleResource>
@@ -8013,6 +8048,9 @@
 	<LocaleResource Name="Permission.ManageScheduleTasks">
 		<Value>Módulo Administrativo. Manejador de Calendario de Tareas</Value>
 	</LocaleResource>
+	<LocaleResource Name="Permission.ManageScheduleBatchs">
+		<Value>Módulo Administrativo. Manejador de Servicios</Value>
+	</LocaleResource>
 	<LocaleResource Name="Permission.ManageSettings">
 		<Value>Módulo Administrativo. Manejador de Configuración</Value>
 	</LocaleResource>
@@ -8021,6 +8059,9 @@
 	</LocaleResource>
 	<LocaleResource Name="Permission.ManageStores">
 		<Value>Módulo Administrativo. Manejador de Tiendas</Value>
+	</LocaleResource>
+	<LocaleResource Name="Permission.ManageSystem">
+		<Value>Módulo Administrativo. Manejador del Sistema</Value>
 	</LocaleResource>
 	<LocaleResource Name="Permission.ManageSystemLog">
 		<Value>Módulo Administrativo. Manejador de log del Sistema</Value>
@@ -8041,11 +8082,10 @@
 		<Value>Módulo Administrativo. Acceso informes de orden por país </Value>
 	</LocaleResource>
 	<LocaleResource Name="Permission.PublicStoreAllowNavigation">
-		<Value>Tienda pública, permite navegación</Value>
+		<Value>Logeo, permite navegación</Value>
 	</LocaleResource>
-
 	<LocaleResource Name="Profile.Country">
-		<Value>País</Value>
+		<Value>País</Value>	
 	</LocaleResource>
 	<LocaleResource Name="Profile.DateOfBirth">
 		<Value>Fecha de cumpleaños</Value>

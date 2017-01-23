@@ -3,7 +3,7 @@
     //page title
     ViewBag.Title = T("Admin.Customers.Customers.Benefit.AddNew").Text;
 }
-@using (Html.BeginForm())
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "approved-form" }))
 {
     @Html.AntiForgeryToken()
     <div class="section-header">
@@ -13,13 +13,13 @@
         </div>
         <div class="options">
             <input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")" />
-            <input type="submit" name="save-continue" class="k-button" value="@T("Admin.Common.SaveContinue")"/>
-            <input type="submit" name="exportexcel" id="exportexcel" class="k-button" value="@T("Admin.Common.ExportToExcel")"/>
+            <input type="submit" name="save-continue" class="k-button" value="@T("Admin.Common.SaveContinue")" />
+            <input type="submit" name="exportexcel" id="exportexcel" class="k-button" value="@T("Admin.Common.ExportToExcel")" />
             @{
-                if (Model.IsManager)
-                {
-                    <input type="submit" name="approved" id="approved" class="k-button" value="Aprobar Pagos"/>
-                }
+    if (Model.IsManager)
+    {
+        <input type="submit" name="approved" id="approved" class="k-button" value="Aprobar Pagos" />
+    }
             }
             <span id="contribution-benefit-delete" class="k-button">@T("Admin.Common.Delete")</span>
         </div>
@@ -28,17 +28,17 @@
 }
 @Html.DeleteConfirmation("contribution-benefit-delete")
 
-@using (Html.BeginForm("ExportExcel", "CustomerBenefit", FormMethod.Post, new { id = "export-excel-form"  }))
+@using (Html.BeginForm("ExportExcel", "CustomerBenefit", FormMethod.Post, new { id = "export-excel-form" }))
 {
     @Html.AntiForgeryToken()
     <input type="hidden" id="customerId" name="customerId" value="" />
-    <input type="hidden" id="customerBenefitId" name="customerBenefitId" value=""/>
+    <input type="hidden" id="customerBenefitId" name="customerBenefitId" value="" />
     <input type="hidden" id="export-excel" name="export-excel" value="export-excel" />
 }
 <script type="text/javascript">
 
-    $(document).ready(function () {
-        $('#exportexcel').click(function (e) {
+    $(document).ready(function() {
+        $('#exportexcel').click(function(e) {
             e.preventDefault();
             $('#export-excel-form #customerId').val(@Model.CustomerId);
             $('#export-excel-form #customerBenefitId').val(@Model.Id);
@@ -47,4 +47,31 @@
         });
     });
 
+</script>
+
+@using (Html.BeginForm("Approved", "CustomerBenefit", FormMethod.Post, new { id = "approved-form" }))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="contributionBenefitId" name="contributionBenefitId" value="" />
+}
+<script type="text/javascript">
+
+    $(document).ready(function() {
+        $('#approved').click(function(e) {
+            e.preventDefault();
+            $('#approved-form #contributionBenefitId').val(@Model.Id);
+            $.ajax({
+                url: '@Url.Action("Approved", "CustomerBenefit", new { id = @Model.Id })' ,
+                type: 'post',
+                data: { "id": @Model.Id},
+                success: function (response, textStatus  ) {
+                    var grid = $('#tabdetails-grid').data('kendoGrid');
+                    grid.dataSource.read();
+                },
+                error: function ( textStatus, errorThrown) {
+                    console.log('error(s):' + textStatus, errorThrown);
+                }
+            });
+        });
+    } )
 </script>

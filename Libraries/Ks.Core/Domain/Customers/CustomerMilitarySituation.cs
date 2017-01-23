@@ -11,6 +11,8 @@ namespace Ks.Core.Domain.Customers
         [Description("Personal")]
         Personal = 3,
         [Description("InfoCorp")]
-        InfoCorp = 4
+        InfoCorp = 4,
+        [Description("Gonze de Beneficio")]
+        Gozado=5
     }
 }

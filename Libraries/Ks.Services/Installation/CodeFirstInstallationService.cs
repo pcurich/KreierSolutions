@@ -378,6 +378,20 @@ namespace Ks.Services.Installation
                 LastActivityDateUtc = DateTime.UtcNow,
             };
 
+            var managerUser = new Customer
+            {
+                CustomerGuid = Guid.NewGuid(),
+                Email = "veliz@acmr.com",
+                Username = "123456789",
+                Password = defaultUserPassword,
+                PasswordFormat = PasswordFormat.Clear,
+                PasswordSalt = "",
+                Active = true,
+                IsSystemAccount = false,
+                CreatedOnUtc = DateTime.UtcNow,
+                LastActivityDateUtc = DateTime.UtcNow,
+            };
+
             var employerUser = new Customer
             {
                 CustomerGuid = Guid.NewGuid(),
@@ -421,7 +435,9 @@ namespace Ks.Services.Installation
 
             //test manager rol
             employerUser.CustomerRoles.Add(crEmployer);
+            managerUser.CustomerRoles.Add(crManager);
             _customerRepository.Insert(employerUser);
+            _customerRepository.Insert(managerUser);
 
             //search engine (crawler) built-in user
             var searchEngineUser = new Customer

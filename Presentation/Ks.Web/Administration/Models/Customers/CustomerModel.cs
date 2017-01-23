@@ -134,6 +134,7 @@ namespace Ks.Admin.Models.Customers
         [KsResourceDisplayName("Admin.Customers.Customers.Fields.Active")]
         public bool Active { get; set; }
 
+        public bool HasBenefit { get; set; }
 
 
         //registration date

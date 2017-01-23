@@ -159,7 +159,7 @@ namespace Ks.Admin.Controllers
             var customer = _customerService.GetCustomerById(loan.CustomerId);
             var model = new LoanPaymentListModel
             {
-                Id=id,
+                Id = id,
                 LoanId = id,
                 IsAuthorized = loan.IsAuthorized,
                 CustomerId = loan.CustomerId,
@@ -227,17 +227,15 @@ namespace Ks.Admin.Controllers
         public ActionResult Delete(int id)
         {
             var loan = _loanService.GetLoanById(id);
-            var loanPayments = _loanService.GetAllPayments(loan.Id);
+            var loanPayments = _loanService.GetAllPayments(loan.Id, stateId: (int)LoanState.Pendiente);
             foreach (var payment in loanPayments)
             {
-                if (payment.StateId == (int)LoanState.Pendiente)
-                {
-                    payment.StateId = (int)LoanState.Cancelado;
-                    payment.Description = "Apoyo economico cancelado por el usuario " +
-                                          _workContext.CurrentCustomer.GetFullName();
-                    payment.ProcessedDateOnUtc = DateTime.UtcNow;
-                    _loanService.UpdateLoanPayment(payment);
-                }
+                payment.StateId = (int)LoanState.Cancelado;
+                payment.Description = "Apoyo economico cancelado por el usuario " +
+                                      _workContext.CurrentCustomer.GetFullName();
+                payment.ProcessedDateOnUtc = DateTime.UtcNow;
+                _loanService.UpdateLoanPayment(payment);
+
             }
             loan.Active = false;
             loan.UpdatedOnUtc = DateTime.UtcNow;
@@ -308,7 +306,7 @@ namespace Ks.Admin.Controllers
                 loan.ApprovalOnUtc = null;
                 loan.UpdatedOnUtc = DateTime.UtcNow;
                 loan.Active = false;
-                var details = _loanService.GetAllPayments(model.Id,stateId:1);
+                var details = _loanService.GetAllPayments(model.Id, stateId: 1);
                 foreach (var detail in details)
                 {
                     detail.StateId = (int)LoanState.Cancelado;
@@ -340,7 +338,7 @@ namespace Ks.Admin.Controllers
             }
 
             return RedirectToAction("Index", "Home");
-            
+
         }
 
         public ActionResult AddCheck(int id)
@@ -361,7 +359,7 @@ namespace Ks.Admin.Controllers
                 return AccessDeniedView();
 
             var loan = _loanService.GetLoanById(model.Id);
-            loan.BankName = GetBank(model.BankName); 
+            loan.BankName = GetBank(model.BankName);
             loan.AccountNumber = model.AccountNumber;
             loan.CheckNumber = model.CheckNumber;
 
@@ -370,7 +368,7 @@ namespace Ks.Admin.Controllers
             _customerActivityService.InsertActivity("AddChekToLoan",
                 "Se ha asignado el cheque al apoyo social economico  N° " + loan.LoanNumber);
 
-            return RedirectToAction("Edit", new {id=loan.Id});
+            return RedirectToAction("Edit", new { id = loan.Id });
         }
         #endregion
 
@@ -524,7 +522,7 @@ namespace Ks.Admin.Controllers
             if (!loan.IsAuthorized)
             {
                 ErrorNotification("No se puede realizar pagos debido a que el Apoyo Social Económico no se encuentra aprobado");
-                return RedirectToAction("Edit", new {id = id});
+                return RedirectToAction("Edit", new { id = id });
             }
 
             var allPayment = _loanService.GetAllPayments(loanId: id, stateId: (int)LoanState.Pendiente);
@@ -533,7 +531,7 @@ namespace Ks.Admin.Controllers
             {
                 Banks = _bankSettings.PrepareBanks(),
                 LoanId = id,
-                CustomerId=loan.CustomerId,
+                CustomerId = loan.CustomerId,
                 AmountToCancel = amountToCancel
             };
 
