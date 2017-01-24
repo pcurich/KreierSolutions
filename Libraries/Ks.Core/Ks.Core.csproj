@@ -197,6 +197,7 @@
     <Compile Include="Domain\Reports\ReportLoanDetail.cs" />
     <Compile Include="Domain\Reports\ReportLoanPayment.cs" />
     <Compile Include="Domain\Reports\ReportLoanPaymentKardex.cs" />
+    <Compile Include="Domain\Reports\ReportMilitarSituation.cs" />
     <Compile Include="Domain\Reports\ReportState.cs" />
     <Compile Include="Domain\Reports\ReportGlobal.cs" />
     <Compile Include="Domain\Reports\ReportSummaryContribution.cs" />

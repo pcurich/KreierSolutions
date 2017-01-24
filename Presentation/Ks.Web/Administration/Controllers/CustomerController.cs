@@ -785,6 +785,7 @@ namespace Ks.Admin.Controllers
                     Active = model.Active,
                     CreatedOnUtc = DateTime.UtcNow,
                     LastActivityDateUtc = DateTime.UtcNow,
+                    PasswordFormatId = (int)PasswordFormat.Hashed,
                     Password = _encryptionService.CreatePasswordHash(model.Dni, saltKey, _customerSettings.HashedPasswordFormat),
                     PasswordSalt = saltKey,
                 };
@@ -1506,11 +1507,18 @@ namespace Ks.Admin.Controllers
                 {
                     CustomerId = customer.Id,
                     Periods = periods,
-                    TotalOfCycle = totalOfCyclesPayments
+                    TotalOfCycle = totalOfCyclesPayments,
+                    Years = DateTime.Now.GetYearsList(_localizationService,0, 2),
+                    Months = DateTime.Now.GetMonthsList(_localizationService),
+                    MonthId = DateTime.Now.Month == 12 ? 1 : DateTime.Now.Month,
+                    YearId = DateTime.Now.Month == 12 ? DateTime.Now.Year + 1 : DateTime.Now.Year,
                 };
 
                 return View(result);
             }
+            model.Years = DateTime.Now.GetYearsList(_localizationService, 0, 2);
+            model.Months = DateTime.Now.GetMonthsList(_localizationService);
+
             model.Periods = periods;
             model.TotalOfCycle = totalOfCyclesPayments;
             Session["loanModel"] = null;
@@ -1530,6 +1538,8 @@ namespace Ks.Admin.Controllers
                 var periods = CommonHelper.ConvertToSelectListItem(_loanSettings.Periods, ',');
                 periods.Insert(0, new SelectListItem { Value = "0", Text = "----" });
                 model.Periods = periods;
+                model.Years = DateTime.Now.GetYearsList(_localizationService, 0, 2);
+                model.Months = DateTime.Now.GetMonthsList(_localizationService);
                 return View(model);
             }
 
@@ -1556,6 +1566,12 @@ namespace Ks.Admin.Controllers
                 ErrorNotification(_localizationService.GetResource("Admin.Contract.Loan.StateActivity.Warranty.Error"));
                 model.IsPostBack = false;
             }
+            var estimated = new DateTime(model.YearId, model.MonthId, _loanSettings.DayOfPaymentLoan);
+            if (estimated.Ticks < DateTime.Now.Ticks)
+            {
+                ErrorNotification("No puede ingresar una fecha anterior al cronograma de pagos establecido ( Primera Cuota: " + estimated.ToShortDateString() + ")");
+                model.IsPostBack = false;
+            }
             Session["loanModel"] = model;
             return RedirectToAction("LoanCreate", new { customerId = model.CustomerId });
         }
@@ -1567,6 +1583,17 @@ namespace Ks.Admin.Controllers
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
                 return AccessDeniedView();
+
+            var estimated = new DateTime(model.YearId, model.MonthId, _loanSettings.DayOfPaymentLoan);
+            if (estimated.Ticks < DateTime.Now.Ticks)
+            {
+                ErrorNotification("No puede ingresar una fecha anterior al cronograma de pagos establecido");
+                model.IsPostBack = false;
+                return RedirectToAction("LoanCreate", new { customerId = model.CustomerId });
+            }
+
+            model.Years = DateTime.Now.GetYearsList(_localizationService, 0, 2);
+            model.Months = DateTime.Now.GetMonthsList(_localizationService);
 
             if (model.IsPostBack)
             {
@@ -1593,7 +1620,6 @@ namespace Ks.Admin.Controllers
                     UpdatedOnUtc = null
                 };
 
-                var estimated = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, _loanSettings.DayOfPaymentLoan);
 
                 for (var cycle = 1; cycle <= model.Period; cycle++)
                 {
@@ -1936,6 +1962,7 @@ namespace Ks.Admin.Controllers
             if (!string.IsNullOrWhiteSpace(model.CustomerAdmCode))
             {
                 var entity = _genericAttributeService.GetAttributeForKeyValue("AdmCode", model.CustomerAdmCode);
+                if (entity!=null)
                 customer = _customerService.GetCustomerById(entity.EntityId);
             }
 
@@ -1949,6 +1976,8 @@ namespace Ks.Admin.Controllers
             //3) Calcule PreCashFlow
             var totalfeed = model.LoanAmount * Convert.ToDecimal(model.Period * _loanSettings.Tea / 12);
             var totalSafe = model.LoanAmount * Convert.ToDecimal(_loanSettings.Safe);
+
+            model.CustomerCompleteName = customer.GetFullName();
             model.PreCashFlow = new PreCashFlowModel
             {
                 Period = model.Period,

@@ -48,10 +48,44 @@
     </tr>
     <tr>
         <td class="adminTitle">
+            @Html.KsLabelFor(model => model.MonthId):
+        </td>
+        <td class="adminData">
+            @Html.DropDownListFor(model => model.MonthId, Model.Months)
+            @Html.ValidationMessageFor(model => model.MonthId)
+            <script>
+                $(document).ready(function() {
+                    $("#@Html.FieldIdFor(model => model.MonthId)").kendoDropDownList();
+                });
+            </script>
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.YearId):
+        </td>
+        <td class="adminData">
+            @Html.DropDownListFor(model => model.YearId, Model.Years)
+            @Html.ValidationMessageFor(model => model.YearId)
+            <script>
+                $(document).ready(function () {
+                    $("#@Html.FieldIdFor(model => model.YearId)").kendoDropDownList();
+                });
+            </script>
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
             @Html.KsLabelFor(model => model.CustomerAdmCode) (Garante):
         </td>
         <td class="adminData">
             @Html.EditorFor(model => model.CustomerAdmCode)
+            @{
+                if (!string.IsNullOrEmpty(Model.CustomerCompleteName))
+                {
+                    <span>(@Model.CustomerCompleteName)</span>
+                }
+            }
         </td>
     </tr>
     <tr>

@@ -43,6 +43,9 @@
         <li @Html.RenderSelectedTabIndex(4, GetSelectedTabIndex())>
             @T("Admin.Catalog.Report.Return")
         </li>
+        <li @Html.RenderSelectedTabIndex(5, GetSelectedTabIndex())>
+            @T("Admin.Catalog.Report.MilitarSituation")
+        </li>
     </ul>
     <div>
         @TabGlobal()
@@ -58,6 +61,9 @@
     </div>
     <div>
         @TabReturn()
+    </div>
+    <div>
+        @TabMilitarSituation()
     </div>
 </div>
 
@@ -314,6 +320,40 @@
                         });
                     </script>
                 </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td colspan="2">
+                    <input type="submit" class="k-button" value="@T("Admin.Common.ExportToExcel")" />
+                </td>
+            </tr>
+        </table>
+    }
+}
+
+@helper TabMilitarSituation()
+{
+    using (Html.BeginForm("MilitarSituation", "Report", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <table width="100%">
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ReportMilitarySituation.MilitarySituationId):
+                </td>
+                <td class="adminData">
+                    @Html.DropDownListFor(model => model.ReportMilitarySituation.MilitarySituationId, Model.ReportMilitarySituation.MilitarySituations)
+                    @Html.ValidationMessageFor(model => model.ReportMilitarySituation.MilitarySituationId)
+                    <script>
+                        $(document).ready(function() {
+                            $('#@Html.FieldIdFor(model => model.ReportMilitarySituation.MilitarySituationId)').width(250).kendoDropDownList();
+                        });
+                    </script>
+                </td>
+                <td class="adminTitle"></td><td class="adminTitle"></td>
             </tr>
             <tr>
                 <td></td>

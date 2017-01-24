@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Web.Mvc;
 using Ks.Admin.Extensions;
 using Ks.Admin.Models.Report;
 using Ks.Core.Domain.Contract;
+using Ks.Core.Domain.Customers;
 using Ks.Services.Common;
 using Ks.Services.Contract;
 using Ks.Services.Customers;
@@ -145,9 +147,14 @@ namespace Ks.Admin.Controllers
                         new SelectListItem {Value = "3", Text = "Caja Pensión Militar Policial"}
                     },
                 },
+                ReportMilitarySituation = new ReportMilitarySituation
+                {
+                    MilitarySituations =  Ks.Web.Framework.Extensions.GetDescriptions(typeof(CustomerMilitarySituation)),
+                },
                 ReportBenefit = new ReportBenefit()
             };
 
+            model.ReportMilitarySituation.MilitarySituations.Insert(0, new SelectListItem { Value = "0", Text = "-------------" });
             return View(model);
         }
 
@@ -309,6 +316,52 @@ namespace Ks.Admin.Controllers
 
         }
 
+        [HttpPost]
+        public ActionResult MilitarSituation(ReportListModel model)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageReports))
+                return AccessDeniedView();
+
+            var hasError = false;
+            var errorMessage = string.Empty;
+
+            if (model.ReportMilitarySituation.MilitarySituationId == 0)
+            {
+                errorMessage +=
+                    _localizationService.GetResource(
+                        "Admin.Catalog.ReportMilitarySituation.Fields.MilitarySituation.Required"); 
+                hasError = true;
+            }
+            
+            if (!hasError)
+            {
+                var militarSituations = _reportService.GetMilitarSituation(model.ReportMilitarySituation.MilitarySituationId);
+                try
+                {
+                    byte[] bytes;
+                    using (var stream = new MemoryStream())
+                    {
+                        var name =
+                            Ks.Web.Framework.Extensions.GetDescriptions(typeof (CustomerMilitarySituation))
+                                .FirstOrDefault(
+                                    x => x.Value == model.ReportMilitarySituation.MilitarySituationId.ToString())
+                                .Text;
+                        _exportManager.ExportMilitarSituationToXlsx(stream, name,militarSituations);
+                        bytes = stream.ToArray();
+                    }
+                    //Response.ContentType = "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                    //Response.AddHeader("content-disposition", "attachment; filename=Aportaciones.xlsx");
+                    return File(bytes, "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Reporte Situacion Militar.xlsx");
+                }
+                catch (Exception exc)
+                {
+                    ErrorNotification(exc);
+                    return RedirectToAction("List");
+                }
+            }
+            ErrorNotification(errorMessage);
+            return RedirectToAction("List");
+        }
 
         [HttpPost]
         public ActionResult BenefitReport(ReportListModel model)

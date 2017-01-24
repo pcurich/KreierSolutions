@@ -12,7 +12,7 @@ namespace Ks.Core.Domain.Customers
         Personal = 3,
         [Description("InfoCorp")]
         InfoCorp = 4,
-        [Description("Gonze de Beneficio")]
+        [Description("Goce de Beneficio")]
         Gozado=5
     }
 }

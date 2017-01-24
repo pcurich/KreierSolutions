@@ -1252,7 +1252,7 @@ namespace Ks.Services.ExportImport
                     totalDic += p.Dic;
                     col++;
                     worksheet.Cells[row, col].Value = p.Ene + p.Feb + p.Mar + p.Abr + p.May + p.Jul + p.Jun + p.Ago + p.Sep + p.Oct + p.Nov + p.Dic;
-                    totalLine+=p.Ene + p.Feb + p.Mar + p.Abr + p.May + p.Jul + p.Jun + p.Ago + p.Sep + p.Oct + p.Nov + p.Dic;
+                    totalLine += p.Ene + p.Feb + p.Mar + p.Abr + p.May + p.Jul + p.Jun + p.Ago + p.Sep + p.Oct + p.Nov + p.Dic;
                     col++;
                     row++;
                 }
@@ -1271,6 +1271,95 @@ namespace Ks.Services.ExportImport
                 worksheet.Cells[row, 15].Value = totalDic;
                 worksheet.Cells[row, 16].Value = totalLine;
 
+
+                for (var i = 1; i <= worksheet.Dimension.Columns; i++)
+                {
+                    worksheet.Column(i).AutoFit();
+                }
+                xlPackage.Save();
+            }
+        }
+
+        public virtual void ExportMilitarSituationToXlsx(MemoryStream stream, string militarySituation, IList<ReportMilitarSituation> militarSituations)
+        {
+            if (stream == null)
+                throw new ArgumentNullException("stream");
+
+            using (var xlPackage = new ExcelPackage(stream))
+            {
+                // get handle to the existing worksheet
+                var worksheet = xlPackage.Workbook.Worksheets.Add("Situacion Militar");
+                // var imagePath = _webHelper.MapPath(@"C:\inetpub\wwwroot\Acmr\Administration\Content\images\logo.png");
+                try
+                {
+
+                    var image = new Bitmap(new MemoryStream(Convert.FromBase64String(IMAGE)));
+                    var excelImage = worksheet.Drawings.AddPicture("ACMR", image);
+                    excelImage.From.Column = 0;
+                    excelImage.From.Row = 0;
+                }
+                catch (Exception e)
+                {
+                }
+
+                #region Summary
+                worksheet.Cells["A5:M5"].Merge = true;
+                worksheet.Cells["A6:M6"].Merge = true;
+                worksheet.Cells["A5:M6"].Style.Font.Bold = true;
+                worksheet.Cells["A5:M6"].Style.Font.Size = 20;
+                worksheet.Cells["A5:M6"].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
+                worksheet.Cells["A5"].Value = "SITUACION MILITAR DE LOS APORTANTES";
+                worksheet.Cells["A6"].Value = militarySituation.ToUpper();
+
+                #endregion
+
+                var properties = new[]
+                    {
+                        "N° Administrativo","Asociado","Situacion Militar",
+                        "Autorizacion Descuento","Monto por Aportar","Monto Abonado (a la fecha)","Monto Aportacion Pendiente",
+                        "N° Orden de Prestamo","Monto Solicitado", "Monto del Apoyo", "Monto Apoyo Pendiente",
+                        "Monto Pagado (a la fecha)"
+                        
+                    };
+                for (var i = 0; i < properties.Length; i++)
+                {
+                    worksheet.Cells[9, i + 1].Value = properties[i];
+                    worksheet.Cells[9, i + 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    worksheet.Cells[9, i + 1].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(128, 235, 142));
+                    worksheet.Cells[9, i + 1].Style.Fill.BackgroundColor.Tint = 0.599993896298105M;
+                    worksheet.Cells[9, i + 1].Style.Font.Bold = true;
+                }
+
+                var row = 10;
+
+                foreach (var p in militarSituations)
+                {
+                    var col = 1;
+                    worksheet.Cells[row, col].Value = p.AdmCode;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.LastName + " ," + p.FirstName;
+                    col++;
+                    worksheet.Cells[row, col].Value = militarySituation;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.ContributionAuthorizeDiscont;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.ContributionAmountMeta;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.ContributionAmountPayed;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.LoanNumber;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.LoanAmount;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.LoanTotalAmount;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.LoanTotalPayed;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.LoanPeriod;
+                    col++;
+                    row++;
+
+                }
 
                 for (var i = 1; i <= worksheet.Dimension.Columns; i++)
                 {

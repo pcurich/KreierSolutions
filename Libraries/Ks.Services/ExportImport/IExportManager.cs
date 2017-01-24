@@ -29,5 +29,6 @@ namespace Ks.Services.ExportImport
         void ExportDetailLoanToXlsx(MemoryStream stream, DateTime from, DateTime to, string source, IList<ReportLoanDetail> reportLoan);
         void ExportSummaryContributionToXlsx(MemoryStream stream, int fromId, int toId, int typeId, IList<ReportSummaryContribution> summaryContribution);
         void ExportBenefitToXlsx(MemoryStream stream, Benefit getBenefitById, IList<ReportBenefit> benefit);
+        void ExportMilitarSituationToXlsx(MemoryStream stream, string militarySituation, IList<ReportMilitarSituation> militarSituations);
     }
 }

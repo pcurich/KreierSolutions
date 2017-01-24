@@ -16,6 +16,8 @@ namespace Ks.Admin.Models.Contract
         public LoanModel()
         {
             Periods = new List<SelectListItem>();
+            Months = new List<SelectListItem>();
+            Years = new List<SelectListItem>();
             States=new List<SelectListItem>();
             Banks= new List<SelectListItem>();
         }
@@ -99,6 +101,13 @@ namespace Ks.Admin.Models.Contract
         public int StateId { get; set; }
         public List<SelectListItem> States { get; set; }
 
+        [KsResourceDisplayName("Admin.Contract.Loan.Fields.Month")]
+        public int MonthId { get; set; }
+        public List<SelectListItem> Months { get; set; }
+        [KsResourceDisplayName("Admin.Contract.Loan.Fields.Year")]
+        public int YearId { get; set; }
+        public List<SelectListItem> Years { get; set; }
+
     }
 
     public class CustomerWarranty
@@ -173,5 +182,5 @@ namespace Ks.Admin.Models.Contract
         [KsResourceDisplayName("Admin.Contract.Loan.Fields.IsAuthorized")]
         public bool IsAuthorized { get; set; }
         public string StateName { get; set; }
-    }
+        }
 }

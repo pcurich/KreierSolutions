@@ -6161,6 +6161,18 @@
 	<LocaleResource Name="Admin.Contract.Loan.Fields.CheckNumber.Hint">
 		<Value>N° Cheque</Value>
 	</LocaleResource>
+	<LocaleResource Name="Admin.Contract.Loan.Fields.Month">
+		<Value>Mes</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Contract.Loan.Fields.Month.Hint">
+		<Value>Mes</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Contract.Loan.Fields.Year">
+		<Value>Año</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Contract.Loan.Fields.Year.Hint">
+		<Value>Año</Value>
+	</LocaleResource>
 	<LocaleResource Name="Admin.Contract.Loan.StateActivity">
 		<Value>Categorización</Value>
 	</LocaleResource>
@@ -9971,6 +9983,9 @@
 	<LocaleResource Name="Admin.Catalog.Report.Return">
 		<Value>Devoluciones</Value>
 	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.Report.MilitarSituation">
+		<Value>Situacion Militar</Value>
+	</LocaleResource>
 	<LocaleResource Name="Admin.Catalog.ReportGlobal.Fields.Source">
 		<Value>Origen</Value>
 	</LocaleResource>
@@ -10065,7 +10080,16 @@
 	<LocaleResource Name="Admin.Catalog.ReportContribution.Fields.Type.Hint">
 		<Value>Tipo, copere o la caja </Value>
 	</LocaleResource>
-
+	<LocaleResource Name="Admin.Catalog.ReportMilitarySituation.Fields.MilitarySituation">
+		<Value>Situacion militar</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportMilitarySituation.Fields.MilitarySituation.Hint">
+		<Value>Situacion militar</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportMilitarySituation.Fields.MilitarySituation.Required">
+		<Value>Se requiere una Situacion militar</Value>
+	</LocaleResource>
+	
 	<LocaleResource Name="Admin.Catalog.ReportBenefit.Fields.From">
 		<Value>Desde</Value>
 	</LocaleResource>
@@ -10098,6 +10122,9 @@
 	</LocaleResource>
 	<LocaleResource Name="Admin.Catalog.ReportBenefit.Fields.Source.Hint">
 		<Value>Origen, Copere o caja</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportBenefit.Fields.Source.Required">
+		<Value>Seleccione un origen de beneficio</Value>
 	</LocaleResource>
 	<LocaleResource Name="Admin.Catalog.ReportBenefit.Fields.Source.Required">
 		<Value>Seleccione un origen de beneficio</Value>
