@@ -1683,9 +1683,11 @@ SELECT * FROM Report WHERE [key]=@newId
 END
 GO
 
-CREATE PROCEDURE [dbo].[ReportMilitarSituation]
+CREATE  PROCEDURE [dbo].[ReportMilitarSituation]
 (
 	@MilitarSituation int,
+	@LoanState int,
+	@ContributionState int,
 	@NameReport nvarchar(255),
 	@ReportState int,
 	@Source nvarchar(250),
@@ -1702,51 +1704,112 @@ LastName='                                    ',
 CustomerId=Id,
 MilitarSituationId=@MilitarSituation,
 MilitarSituation='                                   '
-INTO #TEMP_MIL_SIT
+INTO TEMP_MIL_SIT
 FROM CUSTOMER 
 WHERE ID IN ( 
 SELECT DISTINCT EntityId FROM GenericAttribute where keygroup='Customer' and [Key]='MilitarySituationId' and Value=@MilitarSituation
 )
 
 
-Update #TEMP_MIL_SIT set AdmCode=Value
-FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#TEMP_MIL_SIT.CustomerId AND [Key]='AdmCode'
+Update TEMP_MIL_SIT set AdmCode=Value
+FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=TEMP_MIL_SIT.CustomerId AND [Key]='AdmCode'
 
-Update #TEMP_MIL_SIT set FirstName=Value
-FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#TEMP_MIL_SIT.CustomerId AND [Key]='FirstName'
+Update TEMP_MIL_SIT set FirstName=Value
+FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=TEMP_MIL_SIT.CustomerId AND [Key]='FirstName'
 
-Update #TEMP_MIL_SIT set LastName=Value
-FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#TEMP_MIL_SIT.CustomerId AND [Key]='LastName'
+Update TEMP_MIL_SIT set LastName=Value
+FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=TEMP_MIL_SIT.CustomerId AND [Key]='LastName'
+
+DECLARE @SQL NVARCHAR(MAX)
  
+IF(@ContributionState =-1)
+BEGIN
+	SET @SQL ='
 
-SELECT T_C.*, 
-ContributionAuthorizeDiscont =Contribution.AuthorizeDiscount, 
-ContributionAmountMeta=Contribution.AmountMeta,
-ContributionAmountPayed=Contribution.AmountPayed, 
-ContributionState=Contribution.Active
-INTO #TEMP_MIL_SIT2
-FROM Contribution 
-INNER JOIN #TEMP_MIL_SIT T_C on Contribution.CustomerId=T_C.CustomerId 
- 
+		SELECT T_C.*, 
+		ContributionAuthorizeDiscont =Contribution.AuthorizeDiscount, 
+		ContributionAmountMeta=Contribution.AmountMeta,
+		ContributionAmountPayed=Contribution.AmountPayed, 
+		ContributionState=Contribution.Active
+		INTO TEMP_MIL_SIT2
+		FROM Contribution 
+		INNER JOIN TEMP_MIL_SIT T_C on Contribution.CustomerId=T_C.CustomerId 	
 
-SELECT T_L.* ,
-LoanNumber =Loan.LoanNumber, 
-LoanAmount=Loan.LoanAmount,
-LoanTotalAmount=Loan.TotalAmount,
-LoanTotalPayed=Loan.TotalPayed,
-LoanPeriod=Loan.Period,
-LoanState=Loan.Active
-INTO #TEMP_MIL_SIT3
-FROM Loan 
-INNER JOIN #TEMP_MIL_SIT2 T_L ON Loan.CustomerId=T_L.CustomerId 
+	'
+END
+ELSE
+BEGIN
+
+	SET @SQL ='
+
+	SELECT T_C.*, 
+	ContributionAuthorizeDiscont =Contribution.AuthorizeDiscount, 
+	ContributionAmountMeta=Contribution.AmountMeta,
+	ContributionAmountPayed=Contribution.AmountPayed, 
+	ContributionState=Contribution.Active
+	INTO TEMP_MIL_SIT2
+	FROM Contribution 
+	INNER JOIN TEMP_MIL_SIT T_C on Contribution.CustomerId=T_C.CustomerId 	AND Contribution.Active='+CAST(@ContributionState AS nvarchar(2))
+
+END
+
+IF(@LoanState=-1)
+BEGIN
+	SET @SQL =@SQL +'
+
+		SELECT T_L.* ,
+		LoanNumber =Loan.LoanNumber, 
+		LoanAmount=Loan.LoanAmount,
+		LoanTotalAmount=Loan.TotalAmount,
+		LoanTotalPayed=Loan.TotalPayed,
+		LoanPeriod=Loan.Period,
+		LoanState=Loan.Active
+		INTO TEMP_MIL_SIT3
+		FROM Loan 
+		INNER JOIN TEMP_MIL_SIT2 T_L ON Loan.CustomerId=T_L.CustomerId 
+
+	'
+END
+ELSE
+BEGIN
+
+	SET @SQL =@SQL+ '
+
+	SELECT T_L.* ,
+	LoanNumber =Loan.LoanNumber, 
+	LoanAmount=Loan.LoanAmount,
+	LoanTotalAmount=Loan.TotalAmount,
+	LoanTotalPayed=Loan.TotalPayed,
+	LoanPeriod=Loan.Period,
+	LoanState=Loan.Active
+	INTO TEMP_MIL_SIT3
+	FROM Loan 
+	INNER JOIN TEMP_MIL_SIT2 T_L ON Loan.CustomerId=T_L.CustomerId  	AND Loan.Active='+CAST(@LoanState AS nvarchar(2))
+
+END
+
  
+PRINT @SQL
+EXECUTE sp_executesql @SQL
+
 
 DECLARE @newId uniqueidentifier =NEWID();
-DECLARE @value XML=(SELECT * FROM  #TEMP_MIL_SIT3 order by 1 desc FOR XML PATH ('ReportMilitarSituation'), root ('ArrayOfReportMilitarSituation'))
+DECLARE @value XML=(SELECT * FROM  TEMP_MIL_SIT3 order by 1 desc FOR XML PATH ('ReportMilitarSituation'), root ('ArrayOfReportMilitarSituation'))
 
 DELETE FROM Report WHERE source=@Source
 INSERT INTO Report VALUES (@newId,@NameReport,@value,'',@ReportState,'',@Source,@newId,GETUTCDATE())
-SELECT @TotalRecords = COUNT(1) FROM #TEMP_MIL_SIT3
+SELECT @TotalRecords = COUNT(1) FROM TEMP_MIL_SIT3
 SELECT * FROM Report WHERE [key]=@newId
 
+  IF OBJECT_ID('dbo.TEMP_MIL_SIT', 'U') IS NOT NULL 
+  DROP TABLE dbo.TEMP_MIL_SIT; 
+  
+  IF OBJECT_ID('dbo.TEMP_MIL_SIT2', 'U') IS NOT NULL 
+  DROP TABLE dbo.TEMP_MIL_SIT2; 
+  
+  IF OBJECT_ID('dbo.TEMP_MIL_SIT3', 'U') IS NOT NULL 
+  DROP TABLE dbo.TEMP_MIL_SIT3; 
+ 
+
 END
+GO
