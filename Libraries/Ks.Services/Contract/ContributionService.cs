@@ -225,7 +225,7 @@ namespace Ks.Services.Contract
                 query = query.Where(x => x.ContributionId == contributionId);
             if (number != 0)
                 query = query.Where(x => x.Number == number);
-            if (stateId != 0)
+            if (stateId > 0)
                 query = query.Where(x => x.StateId == stateId);
             if (!"0".Equals(accountNumber))
                 query = query.Where(x => x.AccountNumber == accountNumber);

@@ -10,9 +10,8 @@ namespace Ks.Services.Reports
         IList<ReportLoanDetail> GetDetailLoan(int fromYear, int fromMonth, int fromDay, int toYear, int toMonth, int toDay, int type, int state);
         IList<ReportSummaryContribution> GetSummaryContribution(int  minYear, int maxYear, int typeId);
 
-        IList<ReportBenefit> GetContributionBenefit(int fromMonth, int fromYear, int toMonth, int toYear, int typeId,
-            int sourceId);
+        IList<ReportBenefit> GetContributionBenefit(int fromMonth, int fromYear, int toMonth, int toYear, int typeId,int sourceId);
 
-        IList<ReportMilitarSituation> GetMilitarSituation(int militarySituationId);
+        IList<ReportMilitarSituation> GetMilitarSituation(int militarySituationId, int loanState = -1, int contributionState = -1);
     }
 }

@@ -10,7 +10,7 @@ namespace Ks.Admin.Models.Report
     public class ReportListModel
     {
         public ReportGlobal ReportGlobal { get; set; }
-        public ReportBenefit ReportBenefit  { get; set; }
+        public ReportBenefit ReportBenefit { get; set; }
         public ReportLoan ReportLoan { get; set; }
         public ReportContribution ReportContribution { get; set; }
         public ReportMilitarySituation ReportMilitarySituation { get; set; }
@@ -98,7 +98,7 @@ namespace Ks.Admin.Models.Report
         public ReportBenefit()
         {
             Types = new List<SelectListItem>();
-            Sources= new List<SelectListItem>();
+            Sources = new List<SelectListItem>();
         }
 
         [KsResourceDisplayName("Admin.Catalog.ReportBenefit.Fields.From")]
@@ -119,12 +119,20 @@ namespace Ks.Admin.Models.Report
     {
         public ReportMilitarySituation()
         {
-            MilitarySituations= new List<SelectListItem>();
+            MilitarySituations = new List<SelectListItem>();
         }
 
         [KsResourceDisplayName("Admin.Catalog.ReportMilitarySituation.Fields.MilitarySituation")]
         public int MilitarySituationId { get; set; }
         public List<SelectListItem> MilitarySituations { get; set; }
+
+        [KsResourceDisplayName("Admin.Catalog.ReportMilitarySituation.Fields.ContributionState")]
+        public int ContributionStateId { get; set; }
+        public List<SelectListItem> ContributionStates { get; set; }
+
+        [KsResourceDisplayName("Admin.Catalog.ReportMilitarySituation.Fields.LoanState")]
+        public int LoanStateId { get; set; }
+        public List<SelectListItem> LoanStates { get; set; }
     }
 
     #endregion

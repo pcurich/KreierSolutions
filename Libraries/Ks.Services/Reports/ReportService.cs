@@ -288,12 +288,22 @@ namespace Ks.Services.Reports
             return new List<ReportBenefit>();
         }
 
-        public virtual IList<ReportMilitarSituation> GetMilitarSituation(int militarySituationId)
+        public virtual IList<ReportMilitarSituation> GetMilitarSituation(int militarySituationId, int loanState = -1, int contributionState = -1)
         {
             var pMilitarSituation = _dataProvider.GetParameter();
             pMilitarSituation.ParameterName = "MilitarSituation";
             pMilitarSituation.Value = militarySituationId;
             pMilitarSituation.DbType = DbType.Int32;
+
+            var pLoanState = _dataProvider.GetParameter();
+            pLoanState.ParameterName = "LoanState";
+            pLoanState.Value = loanState;
+            pLoanState.DbType = DbType.Int32;
+            
+            var pContributionState = _dataProvider.GetParameter();
+            pContributionState.ParameterName = "ContributionState";
+            pContributionState.Value = contributionState;
+            pContributionState.DbType = DbType.Int32;
 
             var pNameReport = _dataProvider.GetParameter();
             pNameReport.ParameterName = "NameReport";
@@ -316,7 +326,7 @@ namespace Ks.Services.Reports
             pTotalRecords.DbType = DbType.Int32;
 
             //invoke stored procedure
-            var data = _dbContext.ExecuteStoredProcedureList<Report>("ReportMilitarSituation", pMilitarSituation, pNameReport, pReportState, pSource, pTotalRecords);
+            var data = _dbContext.ExecuteStoredProcedureList<Report>("ReportMilitarSituation", pMilitarSituation, pLoanState, pContributionState, pNameReport, pReportState, pSource, pTotalRecords);
 
             //return products
             var totalRecords = (pTotalRecords.Value != DBNull.Value) ? Convert.ToInt32(pTotalRecords.Value) : 0;

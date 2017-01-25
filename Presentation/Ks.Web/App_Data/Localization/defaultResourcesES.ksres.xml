@@ -10089,6 +10089,24 @@
 	<LocaleResource Name="Admin.Catalog.ReportMilitarySituation.Fields.MilitarySituation.Required">
 		<Value>Se requiere una Situacion militar</Value>
 	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportMilitarySituation.Fields.ContributionState">
+		<Value>Estado Aportacion</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportMilitarySituation.Fields.ContributionState.Hint">
+		<Value>Estado Aportacion</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportMilitarySituation.Fields.ContributionState.Required">
+		<Value>Se requiere un estado de Aportación</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportMilitarySituation.Fields.LoanState">
+		<Value>Estado Apoyo</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportMilitarySituation.Fields.LoanState.Hint">
+		<Value>Estado Apoyo</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.ReportMilitarySituation.Fields.LoanState.Required">
+		<Value>Se requiere un estado de apoyo</Value>
+	</LocaleResource>
 	
 	<LocaleResource Name="Admin.Catalog.ReportBenefit.Fields.From">
 		<Value>Desde</Value>

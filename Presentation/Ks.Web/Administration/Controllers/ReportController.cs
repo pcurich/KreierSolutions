@@ -149,7 +149,21 @@ namespace Ks.Admin.Controllers
                 },
                 ReportMilitarySituation = new ReportMilitarySituation
                 {
-                    MilitarySituations =  Ks.Web.Framework.Extensions.GetDescriptions(typeof(CustomerMilitarySituation)),
+                    MilitarySituations = Ks.Web.Framework.Extensions.GetDescriptions(typeof(CustomerMilitarySituation)),
+                    ContributionStates = new List<SelectListItem>
+                    {
+                        new SelectListItem { Value = "0", Text = "-----------------" },
+                        new SelectListItem { Value = "1", Text = "Todos" },
+                        new SelectListItem { Value = "2", Text = "Activo" },
+                        new SelectListItem { Value = "3", Text = "Inactivo" },
+                    },
+                    LoanStates = new List<SelectListItem>
+                    {
+                        new SelectListItem { Value = "0", Text = "-----------------" },
+                        new SelectListItem { Value = "1", Text = "Todos" },
+                        new SelectListItem { Value = "2", Text = "Activo" },
+                        new SelectListItem { Value = "3", Text = "Inactivo" },
+                    }
                 },
                 ReportBenefit = new ReportBenefit()
             };
@@ -327,26 +341,45 @@ namespace Ks.Admin.Controllers
 
             if (model.ReportMilitarySituation.MilitarySituationId == 0)
             {
-                errorMessage +=
-                    _localizationService.GetResource(
-                        "Admin.Catalog.ReportMilitarySituation.Fields.MilitarySituation.Required"); 
+                errorMessage += _localizationService.GetResource("Admin.Catalog.ReportMilitarySituation.Fields.MilitarySituation.Required") + " - ";
                 hasError = true;
             }
-            
+            if (model.ReportMilitarySituation.ContributionStateId == 0)
+            {
+                errorMessage += _localizationService.GetResource("Admin.Catalog.ReportMilitarySituation.Fields.ContributionState.Required") + " - ";
+                hasError = true;
+            }
+            if (model.ReportMilitarySituation.LoanStateId == 0)
+            {
+                errorMessage += _localizationService.GetResource("Admin.Catalog.ReportMilitarySituation.Fields.LoanState.Required");
+                hasError = true;
+            }
+
             if (!hasError)
             {
-                var militarSituations = _reportService.GetMilitarSituation(model.ReportMilitarySituation.MilitarySituationId);
+                int loanState = -1;
+                if (model.ReportMilitarySituation.LoanStateId == 2)
+                    loanState = 1;
+                if (model.ReportMilitarySituation.LoanStateId == 3)
+                    loanState = 0;
+
+                int contributionState = -1;
+                if (model.ReportMilitarySituation.ContributionStateId == 2)
+                    contributionState = 1;
+                if (model.ReportMilitarySituation.ContributionStateId == 3)
+                    contributionState = 0;
+
+
+                var militarSituations = _reportService.GetMilitarSituation(model.ReportMilitarySituation.MilitarySituationId, loanState,contributionState);
                 try
                 {
                     byte[] bytes;
                     using (var stream = new MemoryStream())
                     {
                         var name =
-                            Ks.Web.Framework.Extensions.GetDescriptions(typeof (CustomerMilitarySituation))
-                                .FirstOrDefault(
-                                    x => x.Value == model.ReportMilitarySituation.MilitarySituationId.ToString())
-                                .Text;
-                        _exportManager.ExportMilitarSituationToXlsx(stream, name,militarSituations);
+                            Ks.Web.Framework.Extensions.GetDescriptions(typeof(CustomerMilitarySituation))
+                                .FirstOrDefault(x => x.Value == model.ReportMilitarySituation.MilitarySituationId.ToString()).Text;
+                        _exportManager.ExportMilitarSituationToXlsx(stream, name, militarSituations);
                         bytes = stream.ToArray();
                     }
                     //Response.ContentType = "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet";

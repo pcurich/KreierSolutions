@@ -356,6 +356,38 @@
                 <td class="adminTitle"></td><td class="adminTitle"></td>
             </tr>
             <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ReportMilitarySituation.ContributionStateId):
+                </td>
+                <td class="adminData">
+                    @Html.DropDownListFor(model => model.ReportMilitarySituation.ContributionStateId, Model.ReportMilitarySituation.ContributionStates)
+                    @Html.ValidationMessageFor(model => model.ReportMilitarySituation.ContributionStateId)
+                    <script>
+                        $(document).ready(function() {
+                            $('#@Html.FieldIdFor(model => model.ReportMilitarySituation.ContributionStateId)').width(250).kendoDropDownList();
+                        });
+                    </script>
+                </td>
+                <td class="adminTitle"></td>
+                <td class="adminTitle"></td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ReportMilitarySituation.LoanStateId ):
+                </td>
+                <td class="adminData">
+                    @Html.DropDownListFor(model => model.ReportMilitarySituation.LoanStateId, Model.ReportMilitarySituation.LoanStates)
+                    @Html.ValidationMessageFor(model => model.ReportMilitarySituation.LoanStateId)
+                    <script>
+                        $(document).ready(function () {
+                            $('#@Html.FieldIdFor(model => model.ReportMilitarySituation.LoanStateId)').width(250).kendoDropDownList();
+                        });
+                    </script>
+                </td>
+                <td class="adminTitle"></td>
+                <td class="adminTitle"></td>
+            </tr>
+            <tr>
                 <td></td>
                 <td></td>
                 <td></td>

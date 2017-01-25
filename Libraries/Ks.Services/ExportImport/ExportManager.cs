@@ -1316,8 +1316,8 @@ namespace Ks.Services.ExportImport
                 var properties = new[]
                     {
                         "N° Administrativo","Asociado","Situacion Militar",
-                        "Autorizacion Descuento","Monto por Aportar","Monto Abonado (a la fecha)","Monto Aportacion Pendiente",
-                        "N° Orden de Prestamo","Monto Solicitado", "Monto del Apoyo", "Monto Apoyo Pendiente",
+                        "Estado Aportacion","Autorizacion Descuento","Monto por Aportar","Monto Abonado (a la fecha)","Monto Aportacion Pendiente",
+                        "Estado Apoyo","N° Orden de Prestamo","Monto Solicitado", "Monto del Apoyo", "Monto Apoyo Pendiente",
                         "Monto Pagado (a la fecha)","Perido"
                         
                     };
@@ -1341,6 +1341,8 @@ namespace Ks.Services.ExportImport
                     col++;
                     worksheet.Cells[row, col].Value = militarySituation;
                     col++;
+                    worksheet.Cells[row, col].Value = p.ContributionState?"Activo":"Inactivo";
+                    col++;
                     worksheet.Cells[row, col].Value = p.ContributionAuthorizeDiscont;
                     col++;
                     worksheet.Cells[row, col].Value = p.ContributionAmountMeta;
@@ -1348,6 +1350,8 @@ namespace Ks.Services.ExportImport
                     worksheet.Cells[row, col].Value = p.ContributionAmountPayed;
                     col++;
                     worksheet.Cells[row, col].Value = p.ContributionAmountMeta-p.ContributionAmountPayed;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.LoanState ? "Activo" : "Inactivo";
                     col++;
                     worksheet.Cells[row, col].Value = p.LoanNumber;
                     col++;

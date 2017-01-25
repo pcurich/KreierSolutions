@@ -1967,8 +1967,9 @@ namespace Ks.Admin.Controllers
                 customer = _customerService.GetCustomerById(entity.EntityId);
             }
 
-            //var totalOfContribution = _contributionService.GetAllPayments(customerId: model.CustomerId);
-            var totalOfContribution = _contributionService.GetAllPayments();
+            var contribution = _contributionService.GetContributionsByCustomer(model.CustomerId, 1).FirstOrDefault();
+            var totalOfContribution = _contributionService.GetAllPayments(contribution.Id);
+            //var totalOfContribution = _contributionService.GetAllPayments();
             var totalOfCyclesPayments = totalOfContribution.Count(x => x.StateId == (int)ContributionState.Pagado);
             //1 ) Get ABCDE 
             model.StateActivityModels = PrepareClassState(model.LoanAmount, totalOfCyclesPayments, customer, model.CustomerAdmCode);
