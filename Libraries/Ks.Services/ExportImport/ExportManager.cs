@@ -1318,7 +1318,7 @@ namespace Ks.Services.ExportImport
                         "N° Administrativo","Asociado","Situacion Militar",
                         "Autorizacion Descuento","Monto por Aportar","Monto Abonado (a la fecha)","Monto Aportacion Pendiente",
                         "N° Orden de Prestamo","Monto Solicitado", "Monto del Apoyo", "Monto Apoyo Pendiente",
-                        "Monto Pagado (a la fecha)"
+                        "Monto Pagado (a la fecha)","Perido"
                         
                     };
                 for (var i = 0; i < properties.Length; i++)
@@ -1347,11 +1347,15 @@ namespace Ks.Services.ExportImport
                     col++;
                     worksheet.Cells[row, col].Value = p.ContributionAmountPayed;
                     col++;
+                    worksheet.Cells[row, col].Value = p.ContributionAmountMeta-p.ContributionAmountPayed;
+                    col++;
                     worksheet.Cells[row, col].Value = p.LoanNumber;
                     col++;
                     worksheet.Cells[row, col].Value = p.LoanAmount;
                     col++;
                     worksheet.Cells[row, col].Value = p.LoanTotalAmount;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.LoanTotalAmount - p.LoanTotalPayed;
                     col++;
                     worksheet.Cells[row, col].Value = p.LoanTotalPayed;
                     col++;

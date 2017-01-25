@@ -11,10 +11,12 @@
         public int ContributionAuthorizeDiscont { get; set; }
         public decimal ContributionAmountMeta { get; set; }
         public decimal ContributionAmountPayed { get; set; }
+        public bool ContributionState { get; set; }
         public int LoanNumber { get; set; }
         public decimal LoanAmount { get; set; }
         public decimal LoanTotalAmount { get; set; }
         public decimal LoanTotalPayed { get; set; }
         public decimal LoanPeriod { get; set; }
+        public bool LoanState { get; set; }
     }
 }

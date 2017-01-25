@@ -1682,3 +1682,71 @@ SELECT * FROM Report WHERE [key]=@newId
 
 END
 GO
+
+CREATE PROCEDURE [dbo].[ReportMilitarSituation]
+(
+	@MilitarSituation int,
+	@NameReport nvarchar(255),
+	@ReportState int,
+	@Source nvarchar(250),
+	@TotalRecords int = null OUTPUT
+)
+
+AS
+BEGIN
+
+SELECT 
+AdmCode='                                      ',
+FirstName='                                    ',
+LastName='                                    ',
+CustomerId=Id,
+MilitarSituationId=@MilitarSituation,
+MilitarSituation='                                   '
+INTO #TEMP_MIL_SIT
+FROM CUSTOMER 
+WHERE ID IN ( 
+SELECT DISTINCT EntityId FROM GenericAttribute where keygroup='Customer' and [Key]='MilitarySituationId' and Value=@MilitarSituation
+)
+
+
+Update #TEMP_MIL_SIT set AdmCode=Value
+FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#TEMP_MIL_SIT.CustomerId AND [Key]='AdmCode'
+
+Update #TEMP_MIL_SIT set FirstName=Value
+FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#TEMP_MIL_SIT.CustomerId AND [Key]='FirstName'
+
+Update #TEMP_MIL_SIT set LastName=Value
+FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#TEMP_MIL_SIT.CustomerId AND [Key]='LastName'
+ 
+
+SELECT T_C.*, 
+ContributionAuthorizeDiscont =Contribution.AuthorizeDiscount, 
+ContributionAmountMeta=Contribution.AmountMeta,
+ContributionAmountPayed=Contribution.AmountPayed, 
+ContributionState=Contribution.Active
+INTO #TEMP_MIL_SIT2
+FROM Contribution 
+INNER JOIN #TEMP_MIL_SIT T_C on Contribution.CustomerId=T_C.CustomerId 
+ 
+
+SELECT T_L.* ,
+LoanNumber =Loan.LoanNumber, 
+LoanAmount=Loan.LoanAmount,
+LoanTotalAmount=Loan.TotalAmount,
+LoanTotalPayed=Loan.TotalPayed,
+LoanPeriod=Loan.Period,
+LoanState=Loan.Active
+INTO #TEMP_MIL_SIT3
+FROM Loan 
+INNER JOIN #TEMP_MIL_SIT2 T_L ON Loan.CustomerId=T_L.CustomerId 
+ 
+
+DECLARE @newId uniqueidentifier =NEWID();
+DECLARE @value XML=(SELECT * FROM  #TEMP_MIL_SIT3 order by 1 desc FOR XML PATH ('ReportMilitarSituation'), root ('ArrayOfReportMilitarSituation'))
+
+DELETE FROM Report WHERE source=@Source
+INSERT INTO Report VALUES (@newId,@NameReport,@value,'',@ReportState,'',@Source,@newId,GETUTCDATE())
+SELECT @TotalRecords = COUNT(1) FROM #TEMP_MIL_SIT3
+SELECT * FROM Report WHERE [key]=@newId
+
+END

@@ -1498,7 +1498,8 @@ namespace Ks.Admin.Controllers
 
             var periods = CommonHelper.ConvertToSelectListItem(_loanSettings.Periods, ',');
             periods.Insert(0, new SelectListItem { Value = "0", Text = "------------------" });
-            var totalOfContribution = _contributionService.GetAllPayments(customerId);
+            var contribution = _contributionService.GetContributionsByCustomer(customerId,1).FirstOrDefault();
+            var totalOfContribution = _contributionService.GetAllPayments(contribution.Id);
             var totalOfCyclesPayments = totalOfContribution.Count(x => x.StateId == (int)ContributionState.Pagado);
             var model = (LoanModel)Session["loanModel"];
             if (model == null || !model.IsPostBack)
