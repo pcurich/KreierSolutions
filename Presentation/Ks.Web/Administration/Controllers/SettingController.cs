@@ -403,7 +403,7 @@ namespace Ks.Admin.Controllers
             if (!string.IsNullOrEmpty(stateActivitySettings.CashFlow))
             {
                 model = XmlHelper.XmlToObject<List<CashFlowModel>>(@stateActivitySettings.CashFlow);
-                model = model.OrderBy(x => x.Since).ToList();
+                model = model.OrderBy(x => x.Amount).ToList();
             }
 
             var gridModel = new DataSourceResult

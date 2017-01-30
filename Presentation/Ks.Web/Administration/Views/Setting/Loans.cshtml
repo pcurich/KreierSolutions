@@ -102,11 +102,18 @@
                 @Html.ValidationMessageFor(model => model.Periods)
             </td>
             <td class="adminTitle">
-                @Html.KsLabelFor(model => model.DayOfPaymentLoan):
+                @Html.KsLabelFor(model => model.DayOfPaymentLoanCopere):
             </td>
             <td class="adminData">
-                @Html.EditorFor(model => model.DayOfPaymentLoan)
-                @Html.ValidationMessageFor(model => model.DayOfPaymentLoan)
+                @Html.EditorFor(model => model.DayOfPaymentLoanCopere)
+                @Html.ValidationMessageFor(model => model.DayOfPaymentLoanCopere)
+            </td>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.DayOfPaymentLoanCaja):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.DayOfPaymentLoanCaja)
+                @Html.ValidationMessageFor(model => model.DayOfPaymentLoanCaja)
             </td>
         </tr>
             <tr>

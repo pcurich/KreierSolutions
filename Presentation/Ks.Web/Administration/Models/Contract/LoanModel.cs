@@ -101,6 +101,8 @@ namespace Ks.Admin.Models.Contract
         public int StateId { get; set; }
         public List<SelectListItem> States { get; set; }
 
+        [KsResourceDisplayName("Admin.Contract.Loan.Fields.Day")]
+        public int Day { get; set; }
         [KsResourceDisplayName("Admin.Contract.Loan.Fields.Month")]
         public int MonthId { get; set; }
         public List<SelectListItem> Months { get; set; }
@@ -157,7 +159,7 @@ namespace Ks.Admin.Models.Contract
     {
         [KsResourceDisplayName("Admin.Contract.Loan.Fields.Period")]
         public int Period { get; set; }
-        [KsResourceDisplayName("Admin.Contract.Loan.Fields.Amount")]
+        [KsResourceDisplayName("Admin.Contract.Loan.Fields.LoanAmount")]
         [UIHint("Decimal")]
         public decimal Amount { get; set; }
         [KsResourceDisplayName("Admin.Contract.Loan.Fields.Tea")]

@@ -418,26 +418,30 @@ namespace Ks.Services.ExportImport
                 #region Summary
 
                 worksheet.Cells["A6:A9"].Style.Font.Bold = true;
-                worksheet.Cells["D6:D9"].Style.Font.Bold = true;
+                worksheet.Cells["E6:E9"].Style.Font.Bold = true;
                 worksheet.Cells["G6:G9"].Style.Font.Bold = true;
 
                 worksheet.Cells["A6"].Value = "Aportante:";
+                worksheet.Cells["B6:C6"].Merge = true;
                 worksheet.Cells["B6"].Value = customer.GetFullName();
                 worksheet.Cells["A7"].Value = "Dni:";
+                worksheet.Cells["B7:C7"].Merge = true;
                 worksheet.Cells["B7"].Value = customer.GetGenericAttribute(SystemCustomerAttributeNames.Dni);
                 worksheet.Cells["A8"].Value = "N° Adm:";
+                worksheet.Cells["B8:C8"].Merge = true;
                 worksheet.Cells["B8"].Value = customer.GetGenericAttribute(SystemCustomerAttributeNames.AdmCode);
-                worksheet.Cells["A9"].Value = "Fecha de Solicitud:";
+                worksheet.Cells["A9"].Value = "Solicitado:";
+                worksheet.Cells["B9:C9"].Merge = true;
                 worksheet.Cells["B9"].Value = _dateTimeHelper.ConvertToUserTime(loan.CreatedOnUtc, DateTimeKind.Utc).ToString(CultureInfo.InvariantCulture);
 
-                worksheet.Cells["D6"].Value = "Plazo:";
-                worksheet.Cells["E6"].Value = string.Format("{0} Meses", loan.Period);
-                worksheet.Cells["D7"].Value = "Cuota Mensual:";
-                worksheet.Cells["E7"].Value = loan.MonthlyQuota.ToString("c", new CultureInfo("es-PE"));
-                worksheet.Cells["D8"].Value = "Importe:";
-                worksheet.Cells["E8"].Value = loan.LoanAmount.ToString("c", new CultureInfo("es-PE"));
-                worksheet.Cells["D9"].Value = "Total a Girar:";
-                worksheet.Cells["E9"].Value = loan.TotalToPay.ToString("c", new CultureInfo("es-PE"));
+                worksheet.Cells["E6"].Value = "Plazo:";
+                worksheet.Cells["F6"].Value = string.Format("{0} Meses", loan.Period);
+                worksheet.Cells["E7"].Value = "Cuota Mensual:";
+                worksheet.Cells["F7"].Value = loan.MonthlyQuota.ToString("c", new CultureInfo("es-PE"));
+                worksheet.Cells["E8"].Value = "Importe:";
+                worksheet.Cells["F8"].Value = loan.LoanAmount.ToString("c", new CultureInfo("es-PE"));
+                worksheet.Cells["E9"].Value = "Total a Girar:";
+                worksheet.Cells["F9"].Value = loan.TotalToPay.ToString("c", new CultureInfo("es-PE"));
 
                 worksheet.Cells["G6"].Value = "T.E.A:";
                 worksheet.Cells["H6"].Value = (loan.Tea / 100).ToString("p", new CultureInfo("es-PE"));
@@ -453,7 +457,7 @@ namespace Ks.Services.ExportImport
                 //Create Headers and format them 
                 var properties = new[]
                     {
-                        "Mes","Año","Cuota","Capital","Interes","Cuota Mensual","Monto Pagado","Estado"
+                        "Cuota","Año","Mes","Capital","Interes","Cuota Mensual","Monto Pagado","Estado"
                     };
                 for (var i = 0; i < properties.Length; i++)
                 {
@@ -473,19 +477,25 @@ namespace Ks.Services.ExportImport
                 foreach (var p in reportLoanPayment)
                 {
                     var col = 1;
-                    worksheet.Cells[row, col].Value = p.MonthName;
+                    worksheet.Cells[row, col].Value = p.Quota;
+                    worksheet.Cells[row, col].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
                     col++;
                     worksheet.Cells[row, col].Value = p.Year;
+                    worksheet.Cells[row, col].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
                     col++;
-                    worksheet.Cells[row, col].Value = p.Quota;
+                    worksheet.Cells[row, col].Value = p.MonthName;
                     col++;
                     worksheet.Cells[row, col].Value = p.MonthlyCapital.ToString("c", new CultureInfo("es-PE"));
+                    worksheet.Cells[row, col].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
                     col++;
                     worksheet.Cells[row, col].Value = p.MonthlyFee.ToString("c", new CultureInfo("es-PE"));
+                    worksheet.Cells[row, col].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
                     col++;
                     worksheet.Cells[row, col].Value = p.MonthlyQuota.ToString("c", new CultureInfo("es-PE"));
+                    worksheet.Cells[row, col].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
                     col++;
                     worksheet.Cells[row, col].Value = p.MonthlyPayed.ToString("c", new CultureInfo("es-PE"));
+                    worksheet.Cells[row, col].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
                     col++;
                     worksheet.Cells[row, col].Value = GetStateLoanName(p.StateId);
 
@@ -499,12 +509,16 @@ namespace Ks.Services.ExportImport
                 worksheet.Cells[row, 1].Value = "Total";
                 worksheet.Cells[row, 1].Style.Font.Bold = true;
                 worksheet.Cells[row, 4].Value = totalMonthlyCapital.ToString("c", new CultureInfo("es-PE"));
+                worksheet.Cells[row, 4].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
                 worksheet.Cells[row, 4].Style.Font.Bold = true;
                 worksheet.Cells[row, 5].Value = totalMonthlyFee.ToString("c", new CultureInfo("es-PE"));
+                worksheet.Cells[row, 5].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
                 worksheet.Cells[row, 5].Style.Font.Bold = true;
                 worksheet.Cells[row, 6].Value = totalMonthlyQuota.ToString("c", new CultureInfo("es-PE"));
+                worksheet.Cells[row, 6].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
                 worksheet.Cells[row, 6].Style.Font.Bold = true;
                 worksheet.Cells[row, 7].Value = totalMonthlyPayed.ToString("c", new CultureInfo("es-PE"));
+                worksheet.Cells[row, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
                 worksheet.Cells[row, 7].Style.Font.Bold = true;
 
                 for (var i = 1; i <= worksheet.Dimension.Columns; i++)

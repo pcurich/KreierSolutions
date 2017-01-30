@@ -8,7 +8,8 @@ namespace Ks.Core.Domain.Contract
         public string Periods { get; set; }
         public double Tea { get; set; }
         public double Safe { get; set; }
-        public int DayOfPaymentLoan { get; set; }
+        public int DayOfPaymentLoanCopere { get; set; }
+        public int DayOfPaymentLoanCaja { get; set; }
 
         #region Clase A
 

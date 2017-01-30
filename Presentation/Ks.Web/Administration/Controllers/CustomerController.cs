@@ -1504,6 +1504,10 @@ namespace Ks.Admin.Controllers
             var model = (LoanModel)Session["loanModel"];
             if (model == null || !model.IsPostBack)
             {
+                var military = customer.GetAttribute<int>(SystemCustomerAttributeNames.MilitarySituationId);
+                var dayOfPaymentLoan = military == 1
+                    ? _loanSettings.DayOfPaymentLoanCopere
+                    : military == 2 ? _loanSettings.DayOfPaymentLoanCaja : 0;
                 var result = new LoanModel
                 {
                     CustomerId = customer.Id,
@@ -1511,6 +1515,7 @@ namespace Ks.Admin.Controllers
                     TotalOfCycle = totalOfCyclesPayments,
                     Years = DateTime.Now.GetYearsList(_localizationService,0, 2),
                     Months = DateTime.Now.GetMonthsList(_localizationService),
+                    Day = dayOfPaymentLoan,
                     MonthId = DateTime.Now.Month == 12 ? 1 : DateTime.Now.Month,
                     YearId = DateTime.Now.Month == 12 ? DateTime.Now.Year + 1 : DateTime.Now.Year,
                 };
@@ -1534,11 +1539,16 @@ namespace Ks.Admin.Controllers
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
                 return AccessDeniedView();
 
+            var customer = _customerService.GetCustomerById(model.CustomerId);
+            var military = customer.GetAttribute<int>(SystemCustomerAttributeNames.MilitarySituationId);
+            var dayOfPaymentLoan = military == 1 ? _loanSettings.DayOfPaymentLoanCopere : military==2?_loanSettings.DayOfPaymentLoanCaja:0;
+
             if (!ModelState.IsValid)
             {
                 var periods = CommonHelper.ConvertToSelectListItem(_loanSettings.Periods, ',');
                 periods.Insert(0, new SelectListItem { Value = "0", Text = "----" });
                 model.Periods = periods;
+                model.Day = dayOfPaymentLoan;
                 model.Years = DateTime.Now.GetYearsList(_localizationService, 0, 2);
                 model.Months = DateTime.Now.GetMonthsList(_localizationService);
                 return View(model);
@@ -1567,7 +1577,7 @@ namespace Ks.Admin.Controllers
                 ErrorNotification(_localizationService.GetResource("Admin.Contract.Loan.StateActivity.Warranty.Error"));
                 model.IsPostBack = false;
             }
-            var estimated = new DateTime(model.YearId, model.MonthId, _loanSettings.DayOfPaymentLoan);
+            var estimated = new DateTime(model.YearId, model.MonthId, dayOfPaymentLoan);
             if (estimated.Ticks < DateTime.Now.Ticks)
             {
                 ErrorNotification("No puede ingresar una fecha anterior al cronograma de pagos establecido ( Primera Cuota: " + estimated.ToShortDateString() + ")");
@@ -1585,7 +1595,13 @@ namespace Ks.Admin.Controllers
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
                 return AccessDeniedView();
 
-            var estimated = new DateTime(model.YearId, model.MonthId, _loanSettings.DayOfPaymentLoan);
+            var customer = _customerService.GetCustomerById(model.CustomerId);
+            var military = customer.GetAttribute<int>(SystemCustomerAttributeNames.MilitarySituationId);
+            var dayOfPaymentLoan = military == 1
+                ? _loanSettings.DayOfPaymentLoanCopere
+                : military == 2 ? _loanSettings.DayOfPaymentLoanCaja : 0;
+
+            var estimated = new DateTime(model.YearId, model.MonthId, dayOfPaymentLoan);
             if (estimated.Ticks < DateTime.Now.Ticks)
             {
                 ErrorNotification("No puede ingresar una fecha anterior al cronograma de pagos establecido");
@@ -1631,7 +1647,7 @@ namespace Ks.Admin.Controllers
                         MonthlyFee = (loan.TotalFeed / loan.Period),
                         MonthlyCapital = (loan.MonthlyQuota - loan.TotalFeed / loan.Period),
                         MonthlyQuota = (loan.MonthlyQuota),
-                        ScheduledDateOnUtc = (estimated.AddMonths(cycle)),
+                        ScheduledDateOnUtc = (estimated.AddMonths(cycle-1)),
                         ProcessedDateOnUtc = null,
                         StateId = 1,
                         IsAutomatic = true
@@ -1708,10 +1724,11 @@ namespace Ks.Admin.Controllers
         protected virtual CashFlowModel PrepareCashFlow(decimal cashFlow)
         {
             var avalibleCashFlow = XmlHelper.XmlToObject<List<CashFlowModel>>(_loanSettings.CashFlow);
+            avalibleCashFlow = avalibleCashFlow.OrderBy(x => x.Amount).ToList();
             for (int i = 0; i < avalibleCashFlow.Count; i++)
             {
                 if (i + 1 != avalibleCashFlow.Count)
-                    if (avalibleCashFlow[i].Amount <= cashFlow && avalibleCashFlow[i + 1].Amount >= cashFlow)
+                    if (avalibleCashFlow[i].Amount <= cashFlow && cashFlow < avalibleCashFlow[i + 1].Amount)
                         return avalibleCashFlow[i];
             }
             return null;
