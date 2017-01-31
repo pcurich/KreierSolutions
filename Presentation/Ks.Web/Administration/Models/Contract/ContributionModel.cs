@@ -84,5 +84,9 @@ namespace Ks.Admin.Models.Contract
         public List<SelectListItem> YearsList { get; set; }
         public List<SelectListItem> Banks { get; set; }
 
+        public decimal Amount1 { get; set; }
+        public decimal Amount2 { get; set; }
+        public decimal Amount3 { get; set; }
+
     }
 }

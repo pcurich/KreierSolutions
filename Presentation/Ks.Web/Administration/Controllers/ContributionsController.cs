@@ -146,6 +146,7 @@ namespace Ks.Admin.Controllers
                 toModel.CreatedOn = _dateTimeHelper.ConvertToUserTime(x.CreatedOnUtc, DateTimeKind.Utc);
                 if (x.UpdatedOnUtc.HasValue)
                     toModel.UpdatedOn = _dateTimeHelper.ConvertToUserTime(x.UpdatedOnUtc.Value, DateTimeKind.Utc);
+
                 return toModel;
             });
 
@@ -191,7 +192,7 @@ namespace Ks.Admin.Controllers
             model.NameAmount2 = _contributionSettings.NameAmount2;
             model.IsActiveAmount3 = _contributionSettings.IsActiveAmount3;
             model.NameAmount3 = _contributionSettings.NameAmount3;
-
+            
             return View(model);
         }
 
@@ -226,6 +227,9 @@ namespace Ks.Admin.Controllers
                         : x.ProcessedDateOnUtc;
                     m.Type = x.IsAutomatic ? "Automatico" : "Manual";
                     m.State = x.ContributionState.ToSelectList().FirstOrDefault(r => r.Value == x.StateId.ToString()).Text;
+                    m.Amount1 = _contributionSettings.Amount1;
+                    m.Amount2 = _contributionSettings.Amount2;
+                    m.Amount3 = _contributionSettings.Amount3;
                     return m;
                 }),
                 Total = contributionPayments.TotalCount

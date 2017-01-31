@@ -5871,7 +5871,7 @@
 		<Value>Fecha de cobro procesada.</Value>
 	</LocaleResource>
 	<LocaleResource Name="Admin.Contract.ContributionPayments.Fields.AmountTotal">
-		<Value>Valor Total de aportación.</Value>
+		<Value>Valor Total.</Value>
 	</LocaleResource>
 	<LocaleResource Name="Admin.Contract.ContributionPayments.Fields.AmountTotal.Hint">
 		<Value>Monto Total de la aportacion en el caso en que se tenga mas de un monto de aportación.</Value>
