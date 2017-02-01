@@ -276,6 +276,24 @@ namespace Ks.Admin.Controllers
             var paymentSettings = _settingService.LoadSetting<ContributionSettings>(storeScope);
 
             var model = paymentSettings.ToModel();
+            model.Amount1Sources= new List<SelectListItem>
+            {
+                new SelectListItem{Value = "0", Text = "Todos" },
+                new SelectListItem{Value = "1", Text = "Copere" },
+                new SelectListItem{Value = "2", Text = "Caja" },
+            };
+            model.Amount2Sources = new List<SelectListItem>
+            {
+                new SelectListItem{Value = "0", Text = "Todos" },
+                new SelectListItem{Value = "1", Text = "Copere" },
+                new SelectListItem{Value = "2", Text = "Caja" },
+            };
+            model.Amount3Sources = new List<SelectListItem>
+            {
+                new SelectListItem{Value = "0", Text = "Todos" },
+                new SelectListItem{Value = "1", Text = "Copere" },
+                new SelectListItem{Value = "2", Text = "Caja" },
+            };
             return View(model);
         }
 

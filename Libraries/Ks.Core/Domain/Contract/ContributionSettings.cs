@@ -16,7 +16,7 @@ namespace Ks.Core.Domain.Contract
         /// Gets or sets the cycle of delay.
         /// </summary>
         public int CycleOfDelay { get; set; }
-
+        public decimal AmountMeta { get; set; }
         /// <summary>
         /// Gets or sets the maximum charge.
         /// </summary>
@@ -65,6 +65,10 @@ namespace Ks.Core.Domain.Contract
         /// Gets or sets the amount of discount.
         /// </summary>
         public decimal Amount3 { get; set; }
-        
+
+        public int Amount1Source { get; set; }
+        public int Amount2Source { get; set; }
+        public int Amount3Source { get; set; }
+
     }
 }

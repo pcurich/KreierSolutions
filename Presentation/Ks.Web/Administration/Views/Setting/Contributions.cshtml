@@ -128,6 +128,15 @@
             </td>
         </tr>
         <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.AmountMeta):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.AmountMeta)
+                @Html.ValidationMessageFor(model => model.AmountMeta)
+            </td>
+        </tr>
+        <tr>
             <td class="adminTitle"></td>
             <td class="adminData">
                 <input type="submit" name="viewresultpopup" class="k-button" value="@T("Comprobar")" />
@@ -184,6 +193,12 @@
             <td class="adminData">
                 @Html.EditorFor(model => model.Amount1)
                 @Html.ValidationMessageFor(model => model.NameAmount1)
+                @Html.DropDownListFor(model => model.Amount1Source, Model.Amount1Sources)
+                <script>
+                    $(document).ready(function () {
+                        $('#@Html.FieldIdFor(model => model.Amount1Source)').width(250).kendoDropDownList();
+                    });
+                </script>
             </td>
         </tr>
         <tr>
@@ -210,6 +225,12 @@
             <td class="adminData">
                 @Html.EditorFor(model => model.Amount2)
                 @Html.ValidationMessageFor(model => model.Amount2)
+                @Html.DropDownListFor(model => model.Amount2Source, Model.Amount2Sources)
+                <script>
+                    $(document).ready(function () {
+                        $('#@Html.FieldIdFor(model => model.Amount2Source)').width(250).kendoDropDownList();
+                    });
+                </script>
             </td>
         </tr>
         <tr>
@@ -236,7 +257,15 @@
             <td class="adminData">
                 @Html.EditorFor(model => model.Amount3)
                 @Html.ValidationMessageFor(model => model.Amount3)
+             @Html.DropDownListFor(model => model.Amount3Source, Model.Amount3Sources)
+            <script>
+                $(document).ready(function () {
+                    $('#@Html.FieldIdFor(model => model.Amount3Source)').width(250).kendoDropDownList();
+                });
+            </script>
+                
             </td>
+
         </tr>
     </table>
 }

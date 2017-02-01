@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Web.Mvc;
 using FluentValidation.Attributes;
 using Ks.Admin.Validators.Settings;
 using Ks.Web.Framework;
@@ -9,6 +10,13 @@ namespace Ks.Admin.Models.Settings
     [Validator(typeof(PaymentSettingsModelValidator))]
     public class ContributionSettingsModel : BaseKsModel
     {
+        public ContributionSettingsModel()
+        {
+            Amount1Sources = new List<SelectListItem>();
+            Amount2Sources = new List<SelectListItem>();
+            Amount3Sources = new List<SelectListItem>();
+        }
+
         [KsResourceDisplayName("Admin.Configuration.Settings.ContributionSettings.TotalCycle")]
         public int TotalCycle { get; set; }
 
@@ -17,6 +25,8 @@ namespace Ks.Admin.Models.Settings
 
         [KsResourceDisplayName("Admin.Configuration.Settings.ContributionSettings.CycleOfDelay")]
         public int CycleOfDelay { get; set; }
+        [KsResourceDisplayName("Admin.Configuration.Settings.ContributionSettings.AmountMeta")]
+        public decimal AmountMeta { get; set; }
 
         [KsResourceDisplayName("Admin.Configuration.Settings.ContributionSettings.MaximumCharge")]
         public decimal MaximumCharge { get; set; }
@@ -39,6 +49,17 @@ namespace Ks.Admin.Models.Settings
         public bool IsActiveAmount3 { set; get; }
         [KsResourceDisplayName("Admin.Configuration.Settings.ContributionSettings.Amount3")]
         public decimal Amount3 { get; set; }
+
+        [KsResourceDisplayName("Admin.Configuration.Settings.ContributionSettings.AmountSource")]
+        public int Amount1Source { get; set; }
+        [KsResourceDisplayName("Admin.Configuration.Settings.ContributionSettings.AmountSource")]
+        public int Amount2Source { get; set; }
+        [KsResourceDisplayName("Admin.Configuration.Settings.ContributionSettings.AmountSource")]
+        public int Amount3Source { get; set; }
+
+        public List<SelectListItem> Amount1Sources { get; set; }
+        public List<SelectListItem> Amount2Sources { get; set; }
+        public List<SelectListItem> Amount3Sources { get; set; }
 
         public List<CustumerToChange> CustumerToChange { get; set; }
     }

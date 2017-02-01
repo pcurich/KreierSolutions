@@ -1373,7 +1373,7 @@ namespace Ks.Admin.Controllers
                 CustomerAdmCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode),
                 CustomerCompleteName = customer.GetFullName(),
                 TotalOfCycles = _contributionSettings.TotalCycle,
-                AmountMeta = (_contributionSettings.Amount1 + _contributionSettings.Amount2 + _contributionSettings.Amount3) * _contributionSettings.TotalCycle,
+                AmountMeta = (_contributionSettings.AmountMeta),
                 CreatedOn = DateTime.UtcNow,
                 AuthorizeDiscount = _sequenceIdsSettings.AuthorizeDiscount,
                 DayOfPayment = _contributionSettings.DayOfPaymentContribution,

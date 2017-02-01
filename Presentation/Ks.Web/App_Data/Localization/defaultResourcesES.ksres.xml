@@ -4540,6 +4540,12 @@
 	<LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.Amount1.Hint">
 		<Value>Valor del primer monto a descontarse de forma periodica</Value>
 	</LocaleResource>
+	<LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.AmountSource">
+		<Value>Disponible</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.AmountSource.Hint">
+		<Value>Valor disponible para caja o copere o ambos</Value>
+	</LocaleResource>
 	<LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.Amount2">
 		<Value>Valor del segundo monto</Value>
 	</LocaleResource>
@@ -4558,6 +4564,12 @@
 	<LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.CycleOfDelay.Hint">
 		<Value>Cantidad de ciclos que se debe acumular antes de dar de baja a un afiliado</Value>
 	</LocaleResource>
+	<LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.AmountMeta">
+		<Value>Total esperado</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.AmountMeta.Hint">
+		<Value>Total esperado (34.85*420)</Value>
+	</LocaleResource>	
 	<LocaleResource Name="Admin.Configuration.Settings.ContributionSettings.MaximumCharge"> 
 		<Value>Cargo Maximo</Value>
 	</LocaleResource>
