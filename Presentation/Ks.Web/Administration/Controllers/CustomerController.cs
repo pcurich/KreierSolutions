@@ -1431,21 +1431,19 @@ namespace Ks.Admin.Controllers
                         Active = true,
                         CreatedOnUtc = DateTime.UtcNow,
                         UpdatedOnUtc = null,
-                        AmountMeta = (_contributionSettings.Amount1 + _contributionSettings.Amount2 + _contributionSettings.Amount3) * _contributionSettings.TotalCycle,
+                        AmountMeta =  _contributionSettings.AmountMeta,
                         TotalOfCycles = _contributionSettings.TotalCycle,
                         ContributionPayments = new List<ContributionPayment>(model.TotalOfCycles)
                     };
 
+                var militarySituation = customer.GetAttribute<int>(SystemCustomerAttributeNames.MilitarySituationId);
+
                 for (var cycle = 0; cycle < model.TotalOfCycles; cycle++)
                 {
-                    contribution.ContributionPayments.Add(new ContributionPayment
+                    var contributionPayment = new ContributionPayment
                     {
                         Number = cycle + 1,
-                        Amount1 = _contributionSettings.Amount1,
-                        Amount2 = _contributionSettings.Amount2,
-                        Amount3 = _contributionSettings.Amount3,
-                        AmountTotal = _contributionSettings.Amount1 + _contributionSettings.Amount2 + _contributionSettings.Amount3,
-                        StateId = 1,
+                        StateId = (int)ContributionState.Pendiente,
                         BankName = "",
                         AccountNumber = "",
                         TransactionNumber = "",
@@ -1454,7 +1452,27 @@ namespace Ks.Admin.Controllers
                         IsAutomatic = true,
                         ScheduledDateOnUtc = _dateTimeHelper.ConvertToUtcTime(estimated.AddMonths(cycle)),
                         ProcessedDateOnUtc = null
-                    });
+                    };
+
+                    if (_contributionSettings.IsActiveAmount1 && _contributionSettings.Amount1Source == 0)
+                        contributionPayment.Amount1 = _contributionSettings.Amount1;
+                    if (_contributionSettings.IsActiveAmount1 && _contributionSettings.Amount1Source == militarySituation)
+                        contributionPayment.Amount1 = _contributionSettings.Amount1;
+
+                    if (_contributionSettings.IsActiveAmount2 && _contributionSettings.Amount2Source == 0)
+                        contributionPayment.Amount2 = _contributionSettings.Amount2;
+                    if (_contributionSettings.IsActiveAmount2 && _contributionSettings.Amount2Source == militarySituation)
+                        contributionPayment.Amount2 = _contributionSettings.Amount2;
+
+                    if (_contributionSettings.IsActiveAmount3 && _contributionSettings.Amount3Source == 0)
+                        contributionPayment.Amount3 = _contributionSettings.Amount3;
+                    if (_contributionSettings.IsActiveAmount3 && _contributionSettings.Amount3Source == militarySituation)
+                        contributionPayment.Amount3 = _contributionSettings.Amount3;
+
+                    contributionPayment.AmountTotal = contributionPayment.Amount1 + contributionPayment.Amount2 +
+                                                      contributionPayment.Amount3;
+
+                    contribution.ContributionPayments.Add(contributionPayment);
                 }
 
                 _contributionService.InsertContribution(contribution);
