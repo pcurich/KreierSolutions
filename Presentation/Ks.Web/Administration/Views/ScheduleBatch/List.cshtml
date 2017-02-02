@@ -1,12 +1,20 @@
-﻿@{
+﻿@model Ks.Admin.Models.Batchs.ScheduleBatchModel
+@{
     //page title
     ViewBag.Title = T("Admin.System.ScheduleBatchs").Text;
 }
 @Html.AntiForgeryToken()
 <div class="section-header">
     <div class="title">
-        <img src="@Url.Content("~/Administration/Content/images/ico-system.png")" alt="" />
+        <img src="@Url.Content("~/Administration/Content/images/ico-system.png")" alt=""/>
         @T("Admin.System.ScheduleBatchs")
+    </div>
+    <div class="options">
+        <input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")" />
+        <input type="submit" name="save-continue" class="k-button" value="@T("Admin.Common.SaveContinue")" />
+        <a href="@Url.Action("ExportTxtPre", new { id = Model.Id })" class="k-button">@T("Admin.Configuration.Languages.Export")</a>
+        <input type="button" id="importxml" class="k-button" value="@T("Admin.Configuration.Languages.Import")" />
+        <span id="language-delete" class="k-button">@T("Admin.Common.Delete")</span>
     </div>
 </div>
 <script type="text/javascript">
