@@ -1395,6 +1395,7 @@
     <Compile Include="Infrastructure\AutoMapperStartupTask.cs" />
     <Compile Include="Infrastructure\Cache\ModelCacheEventConsumer.cs" />
     <Compile Include="Infrastructure\DependencyRegistrar.cs" />
+    <Compile Include="Models\Batchs\ScheduleBatchFiles.cs" />
     <Compile Include="Models\Batchs\ScheduleBatchListModel.cs" />
     <Compile Include="Models\Batchs\ScheduleBatchModel.cs" />
     <Compile Include="Models\Common\AddressAttributeModel.cs" />

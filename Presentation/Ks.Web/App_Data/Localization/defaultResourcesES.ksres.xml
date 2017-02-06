@@ -9014,6 +9014,19 @@
 		<Value>NOTA: NO haga clic dos veces.</Value>
 	</LocaleResource>
 
+	<LocaleResource Name="Admin.Configuration.ScheduleBatch.TxtFile">
+		<Value>Archivo TXT</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Configuration.ScheduleBatch.TxtFile.Note1">
+		<Value>NOTA: Puede tardar varios minutos.</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Configuration.ScheduleBatch.TxtFile.Note2">
+		<Value>NOTA: NO haga clic dos veces.</Value>
+	</LocaleResource>	
+	<LocaleResource Name="Admin.Configuration.ScheduleBatch.Imported">
+		<Value>El archivo se han cargado.</Value>
+	</LocaleResource>
+	
 	<LocaleResource Name="Admin.Configuration.Measures">
 		<Value>Medidas</Value>
 	</LocaleResource>

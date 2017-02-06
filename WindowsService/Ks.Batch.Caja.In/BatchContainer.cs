@@ -12,20 +12,21 @@ namespace Ks.Batch.Caja.In
         private FileSystemWatcher _watcher;
         public string Connection;
         public string PathValue;
+        public string SysName;
         public ScheduleBatch Batch;
 
         public bool Start()
         {
             Read();
-            Install();
+            //Install();
             Log.InfoFormat("Time: {0}; Action: {1}; ", DateTime.Now, "BatchContainer.Start()");
-            Enabled();
+            //Enabled();
             return true;
         }
 
         public bool Stop()
         {
-            UnInstall();
+            //UnInstall();
             Log.InfoFormat("Time: {0}; Action: {1}; ", DateTime.Now, "BatchContainer.Stop()");
             return true;
         }
@@ -33,14 +34,14 @@ namespace Ks.Batch.Caja.In
         public bool Pause()
         {
             Log.InfoFormat("Time: {0}; Action: {1}; ", DateTime.Now, "BatchContainer.Pause()");
-            Disabled();
+            //Disabled();
             return true;
         }
 
         public bool Continue()
         {
             Log.InfoFormat("Time: {0}; Action: {1}; ", DateTime.Now, "BatchContainer.Continue()");
-            Enabled();
+           // Enabled();
             return true;
         }
 
@@ -86,7 +87,15 @@ namespace Ks.Batch.Caja.In
         {
             Connection = ConfigurationManager.ConnectionStrings["ACMR"].ConnectionString;
             PathValue = ConfigurationManager.AppSettings["Path"];
-            Batch = XmlHelper.Deserialize<ScheduleBatch>(Path.Combine(PathValue, "ScheduleBatch.xml"));
+            SysName = ConfigurationManager.AppSettings["SysName"];
+            
+            var dao = new Dao(Connection);
+            dao.Connect();
+            Batch=dao.GetScheduleBatch(SysName);
+            dao.Close();
+
+            if (!Directory.Exists(Path.Combine(Batch.PathBase, Batch.FolderRead)))
+                Directory.CreateDirectory(Path.Combine(Batch.PathBase, Batch.FolderRead));
 
             _watcher = new FileSystemWatcher(Path.Combine(Batch.PathBase, Batch.FolderRead), "*.txt");
             _watcher.Created += Watcher.FileCreated;

@@ -1475,7 +1475,7 @@ namespace Ks.Admin.Controllers
                     contribution.ContributionPayments.Add(contributionPayment);
                 }
 
-                _contributionService.InsertContribution(contribution);.KI98
+                _contributionService.InsertContribution(contribution);
 
                 #endregion
 

@@ -71,5 +71,7 @@ namespace Ks.Core.Domain.Batchs
             get { return (ScheduleBatchFrecuency)FrecuencyId; }
             set { FrecuencyId = (int)value; }
         }
+
+        public bool UpdateData { get; set; }
     }
 }

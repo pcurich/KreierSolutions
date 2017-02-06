@@ -14,6 +14,7 @@ namespace Ks.Batch.Copere.In
         private static readonly LogWriter Log = HostLogger.Get<Watcher>();
         private static ScheduleBatch Batch { get; set; }
         private static string Path { get; set; }
+        private static string SysName { get; set; }
         private static string Connection { get; set; }
 
         public static void FileCreated(object sender, FileSystemEventArgs e)
@@ -21,7 +22,12 @@ namespace Ks.Batch.Copere.In
             Thread.Sleep(1000 * 3); //10 Sec because is not atomic
             Path = ConfigurationManager.AppSettings["Path"];
             Connection = ConfigurationManager.ConnectionStrings["ACMR"].ConnectionString;
-            Batch = XmlHelper.Deserialize<ScheduleBatch>(System.IO.Path.Combine(Path, "ScheduleBatch.xml"));
+            SysName = ConfigurationManager.AppSettings["SysName"];
+            
+            var dao = new Dao(Connection);
+            dao.Connect();
+            Batch = dao.GetScheduleBatch(SysName);
+            dao.Close();
 
             var file = e.Name.Substring(0, e.Name.Length - 4);
             var length = file.Length;
@@ -39,7 +45,7 @@ namespace Ks.Batch.Copere.In
                 InsertData(infos);
                 UpdateScheduleBatch();
                 MoveFile(e.FullPath, e.Name);
-                WakeUpMerge();
+               // WakeUpMerge();
 
             }
             catch (Exception ex)

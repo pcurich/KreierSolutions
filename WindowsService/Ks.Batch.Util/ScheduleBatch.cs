@@ -19,6 +19,7 @@ namespace Ks.Batch.Util
         public DateTime? NextExecutionOnUtc { get; set; }
         public DateTime? LastExecutionOnUtc { get; set; }
         public bool Enabled { get; set; }
+        public bool UpdateData { get; set; }
 
         public bool Equals(ScheduleBatch obj)
         {

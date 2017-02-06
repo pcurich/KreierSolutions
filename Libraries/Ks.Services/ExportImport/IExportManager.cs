@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Ks.Core.Domain.Directory;
 using System.IO;
+using Ks.Core.Domain.Batchs;
 using Ks.Core.Domain.Contract;
 using Ks.Core.Domain.Customers;
 using Ks.Core.Domain.Reports;
@@ -30,5 +31,6 @@ namespace Ks.Services.ExportImport
         void ExportSummaryContributionToXlsx(MemoryStream stream, int fromId, int toId, int typeId, IList<ReportSummaryContribution> summaryContribution);
         void ExportBenefitToXlsx(MemoryStream stream, Benefit getBenefitById, IList<ReportBenefit> benefit);
         void ExportMilitarSituationToXlsx(MemoryStream stream, string militarySituation, IList<ReportMilitarSituation> militarSituations);
+        string ExportScheduleTxt(ScheduleBatch schedule);
     }
 }

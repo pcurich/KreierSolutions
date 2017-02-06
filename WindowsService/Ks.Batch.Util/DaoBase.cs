@@ -213,7 +213,9 @@ namespace Ks.Batch.Util
                           "NextExecutionOnUtc=@NextExecutionOnUtc , " +
                           "LastExecutionOnUtc=@LastExecutionOnUtc , " +
                           "PeriodYear=@PeriodYear , " +
-                          "PeriodMonth=@PeriodMonth " +
+                          "PeriodMonth=@PeriodMonth , " +
+                          "Enabled=@Enabled , "+
+                          "UpdateData=@UpdateData  " +
                           "where SystemName=@SystemName ";
 
                     var pNextExecutionOnUtc = new SqlParameter { ParameterName = "@NextExecutionOnUtc", SqlDbType = SqlDbType.DateTime2, Direction = ParameterDirection.Input, Value = batch.NextExecutionOnUtc };
@@ -221,6 +223,8 @@ namespace Ks.Batch.Util
                     var pPeriodYear = new SqlParameter { ParameterName = "@PeriodYear", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = batch.PeriodYear };
                     var pPeriodMonth = new SqlParameter { ParameterName = "@PeriodMonth", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = batch.PeriodMonth };
                     var pSystemName = new SqlParameter { ParameterName = "@SystemName", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = batch.SystemName };
+                    var pEnabled = new SqlParameter { ParameterName = "@Enabled", SqlDbType = SqlDbType.Bit, Direction = ParameterDirection.Input, Value = batch.Enabled };
+                    var pUpdateData = new SqlParameter { ParameterName = "@UpdateData", SqlDbType = SqlDbType.Bit, Direction = ParameterDirection.Input, Value = batch.UpdateData };
 
                     Command = new SqlCommand(Sql, Connection);
 
@@ -229,6 +233,8 @@ namespace Ks.Batch.Util
                     Command.Parameters.Add(pPeriodMonth);
                     Command.Parameters.Add(pPeriodYear);
                     Command.Parameters.Add(pSystemName);
+                    Command.Parameters.Add(pEnabled);
+                    Command.Parameters.Add(pUpdateData);
 
                     Command.ExecuteNonQuery();
                 }
@@ -321,6 +327,54 @@ namespace Ks.Batch.Util
             }
         }
 
+        public ScheduleBatch GetScheduleBatch(string sysName)
+        {
+            if (IsConnected)
+            {
+                ScheduleBatch result = null;
+                try
+                {
+                    Log.InfoFormat("Time: {0}: Action: {1}", DateTime.Now, "Start to Select");
+                    Sql = "Select * from ScheduleBatch where SystemName='" + sysName + "'";
+                    Command = new SqlCommand(Sql, Connection);
+                    var sqlReader = Command.ExecuteReader();
+                    while (sqlReader.Read())
+                    {
+                        result = new ScheduleBatch
+                        {
+                            Id = sqlReader.GetInt32(0),
+                            Name = sqlReader.GetString(1),
+                            SystemName = sqlReader.GetString(2),
+                            PathBase = sqlReader.GetString(3),
+                            FolderRead = sqlReader.GetString(4),
+                            FolderLog = sqlReader.GetString(5),
+                            FolderMoveToDone = sqlReader.GetString(6),
+                            FolderMoveToError = sqlReader.GetString(7),
+                            FrecuencyId = sqlReader.GetInt32(8),
+                            PeriodYear = sqlReader.GetInt32(9),
+                            PeriodMonth = sqlReader.GetInt32(10),
+                            Enabled = sqlReader.GetBoolean(14)
+                        };
+                        if (!sqlReader.IsDBNull(11))
+                            result.StartExecutionOnUtc = sqlReader.GetDateTime(11);
+                        if (!sqlReader.IsDBNull(12))
+                            result.NextExecutionOnUtc = sqlReader.GetDateTime(12);
+                        if (!sqlReader.IsDBNull(13))
+                            result.LastExecutionOnUtc = sqlReader.GetDateTime(13);
+                    }
+
+                    sqlReader.Close();
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    Log.FatalFormat("Time: {0} Error: {1}", DateTime.Now, ex.Message);
+                    return null;
+                }
+            }
+            return null;
+        }
+
         #region Utilities
 
         private bool IsInstalled(string systemName)
@@ -379,6 +433,7 @@ namespace Ks.Batch.Util
                 Log.FatalFormat("Action: {0} Error: {1}", "DaoBase.Exec(" + option + ")", ex.Message);
             }
         }
+
 
 
         #endregion

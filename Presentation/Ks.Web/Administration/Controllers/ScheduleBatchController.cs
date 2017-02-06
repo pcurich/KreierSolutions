@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web.Mvc;
 using Ks.Admin.Extensions;
 using Ks.Admin.Models.Batchs;
 using Ks.Core.Domain.Batchs;
 using Ks.Services.Batchs;
+using Ks.Services.ExportImport;
 using Ks.Services.Helpers;
 using Ks.Services.Localization;
 using Ks.Services.Logging;
@@ -13,6 +16,7 @@ using Ks.Services.Security;
 using Ks.Web.Framework;
 using Ks.Web.Framework.Controllers;
 using Ks.Web.Framework.Kendoui;
+using Ks.Web.Framework.Mvc;
 
 namespace Ks.Admin.Controllers
 {
@@ -26,6 +30,7 @@ namespace Ks.Admin.Controllers
         private readonly ILocalizationService _localizationService;
         private readonly ICustomerActivityService _customerActivityService;
         private readonly ScheduleBatchsSetting _scheduleBatchsSetting;
+        private readonly IExportManager _exportManager;
 
         #endregion
 
@@ -35,7 +40,7 @@ namespace Ks.Admin.Controllers
             IPermissionService permissionService,
             IDateTimeHelper dateTimeHelper, ILocalizationService localizationService,
             ICustomerActivityService customerActivityService,
-            ScheduleBatchsSetting scheduleBatchsSetting)
+            ScheduleBatchsSetting scheduleBatchsSetting, IExportManager exportManager)
         {
             this._scheduleBatchService = scheduleBatchService;
             this._permissionService = permissionService;
@@ -43,6 +48,7 @@ namespace Ks.Admin.Controllers
             this._localizationService = localizationService;
             this._customerActivityService = customerActivityService;
             this._scheduleBatchsSetting = scheduleBatchsSetting;
+            this._exportManager = exportManager;
         }
 
         #endregion
@@ -227,6 +233,204 @@ namespace Ks.Admin.Controllers
             model.AvailableYears = DateTime.Now.GetYearsList(_localizationService);
 
             return View(model);
+        }
+
+
+        public ActionResult ExportTxtPre(int id)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageScheduleBatchs))
+                return AccessDeniedView();
+
+            var schedule = _scheduleBatchService.GetBatchById(id);
+            if (schedule == null)
+                //No  scheduleBatch  found with the specified id
+                return RedirectToAction("List");
+            try
+            {
+                schedule.Enabled = true;
+                schedule.UpdateData = false;
+                _scheduleBatchService.UpdateBatch(schedule);
+
+                this.Server.ScriptTimeout=60*60;
+
+                var txt = _exportManager.ExportScheduleTxt(schedule);
+                string name = string.Empty;
+                if (schedule.SystemName.Trim().ToUpper() == ("KS.BATCH.CAJA.OUT"))
+                    name = string.Format("6008_{0}00", schedule.PeriodYear.ToString("0000") + schedule.PeriodMonth.ToString("00"));
+                else
+                    name = string.Format("8001_{0}00", schedule.PeriodYear.ToString("0000") + schedule.PeriodMonth.ToString("00"));
+                name += "-previo.txt";
+                return new TxtDownloadResult(txt, name);
+            }
+            catch (Exception exc)
+            {
+                ErrorNotification(exc);
+                return RedirectToAction("List");
+            }
+
+        }
+
+        public ActionResult ExportTxt(int id)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageScheduleBatchs))
+                return AccessDeniedView();
+
+            var schedule = _scheduleBatchService.GetBatchById(id);
+            if (schedule == null)
+                //No  scheduleBatch  found with the specified id
+                return RedirectToAction("List");
+            try
+            {
+                schedule.Enabled = true;
+                schedule.UpdateData = true;
+                _scheduleBatchService.UpdateBatch(schedule);
+
+                this.Server.ScriptTimeout = 60 * 60;
+
+                var txt = _exportManager.ExportScheduleTxt(schedule);
+                string name = string.Empty;
+                if (schedule.SystemName == ("Ks.Batch.Caja.Out"))
+                    name=string.Format("6008_{0}00", schedule.PeriodYear.ToString("0000") + schedule.PeriodMonth.ToString("00"));
+                else
+                    name = string.Format("8001_{0}00", schedule.PeriodYear.ToString("0000") + schedule.PeriodMonth.ToString("00"));
+                name += ".txt";
+                return new TxtDownloadResult(txt, name);
+            }
+            catch (Exception exc)
+            {
+                ErrorNotification(exc);
+                return RedirectToAction("List");
+            }
+
+        }
+
+        public ActionResult Download(int name)
+        {
+            return null;
+        }
+
+        public ActionResult CreateMerge(int id)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageScheduleBatchs))
+                return AccessDeniedView();
+
+            var schedule = _scheduleBatchService.GetBatchById(id);
+            if (schedule == null)
+                //No  scheduleBatch  found with the specified id
+                return RedirectToAction("List");
+
+            //set page timeout to 5 minutes
+            this.Server.ScriptTimeout = 300;
+
+            try
+            {
+                if (schedule.SystemName == ("Ks.Batch.Caja.Out"))
+                {
+                    var path = @"C:\inetpub\wwwroot\Acmr\App_Data\Service\Ks.Batch.Merge\Read";
+                    path = System.IO.Path.Combine(path, "CajaWakeUp.txt");
+                    using (var myFile = System.IO.File.Create(path))
+                    {
+                        TextWriter tw = new StreamWriter(myFile);
+                        tw.WriteLine("CajaWakeUp");
+                        tw.Close();
+                    }
+                }
+                else
+                {
+                    var path = @"C:\inetpub\wwwroot\Acmr\App_Data\Service\Ks.Batch.Merge\Read";
+                    path = System.IO.Path.Combine(path, "CopereWakeUp.txt");
+                    using (var myFile = System.IO.File.Create(path))
+                    {
+                        TextWriter tw = new StreamWriter(myFile);
+                        tw.WriteLine("CopereWakeUp");
+                        tw.Close();
+                    }
+                }
+ 
+
+                SuccessNotification(_localizationService.GetResource("Admin.Configuration.ScheduleBatch.Imported"));
+                return RedirectToAction("Edit", new { id = schedule.Id });
+            }
+            catch (Exception exc)
+            {
+                ErrorNotification(exc);
+                return RedirectToAction("Edit", new { id = schedule.Id });
+            }
+
+        }
+
+        [HttpPost]
+        public ActionResult ImportTxt(int id, FormCollection form)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageScheduleBatchs))
+                return AccessDeniedView();
+
+            var schedule = _scheduleBatchService.GetBatchById(id);
+            if (schedule == null)
+                //No  scheduleBatch  found with the specified id
+                return RedirectToAction("List");
+
+            //set page timeout to 5 minutes
+            this.Server.ScriptTimeout = 300;
+
+            try
+            {
+                var file = Request.Files["importtxtfile"];
+                if (file != null && file.ContentLength > 0)
+                {
+                    using (var sr = new StreamReader(file.InputStream, Encoding.UTF8))
+                    {
+                        string content = sr.ReadToEnd();
+                        var path = Path.Combine(schedule.PathBase, schedule.FolderRead);
+                        string destPath = Path.Combine(path, file.FileName);
+
+                        if (!System.IO.Directory.Exists(path))
+                            Directory.CreateDirectory(path);
+                        System.IO.File.WriteAllText(destPath, content);
+                    }
+
+                }
+                else
+                {
+                    ErrorNotification(_localizationService.GetResource("Admin.Common.UploadFile"));
+                    return RedirectToAction("Edit", new { id = schedule.Id });
+                }
+
+                SuccessNotification(_localizationService.GetResource("Admin.Configuration.ScheduleBatch.Imported"));
+                return RedirectToAction("Edit", new { id = schedule.Id });
+            }
+            catch (Exception exc)
+            {
+                ErrorNotification(exc);
+                return RedirectToAction("Edit", new { id = schedule.Id });
+            }
+        }
+
+        [HttpPost]
+        public ActionResult ListFiles(int id, DataSourceRequest command)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageScheduleBatchs))
+                return AccessDeniedView();
+
+            var schedule = _scheduleBatchService.GetBatchById(id);
+
+            var models = Directory.GetFiles(System.IO.Path.Combine(schedule.PathBase, schedule.FolderMoveToDone)).Select(
+                x =>
+                {
+                    var model = new ScheduleBatchFiles
+                    {
+                        Name = x
+                    };
+                    return model;
+                }).ToList();
+
+            var gridModel = new DataSourceResult
+            {
+                Data = models,
+                Total = models.Count
+            };
+
+            return Json(gridModel);
         }
 
         #endregion

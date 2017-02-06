@@ -1,0 +1,7 @@
+ENTIDAD: 8001   ASOCIACIÓN "AUXILIO COOPERATIVO MILITAR DE RETIRO"
+
+Nº   AÑO  MES  PLANILLA   CADENA    CODIGO    APELLIDOS Y NOMBRES                  IMP. DSCTO    IMP.DITELE
+1    2016 11   301-REM    211711  123456911-ABAD/MONTERO/REGNER                         35.00            0
+2    2016 11   301-REM    211711  109961200-ABAD/SALAS/CARLOS ALBERTO                   35.00            0
+
+                                                                 TOTAL:                 70.00            0

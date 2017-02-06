@@ -69,6 +69,8 @@ namespace Ks.Admin.Models.Batchs
         [AllowHtml]
         public bool Enabled { get; set; }
 
+        public bool UpdateData { get; set; }
+
         public List<SelectListItem> AvailableMonths { get; set; }
         public List<SelectListItem> AvailableYears { get; set; }
         public List<SelectListItem> AvailableFrecuencies { get; set; }

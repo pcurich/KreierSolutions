@@ -25,22 +25,17 @@
         <li @Html.RenderSelectedTabIndex(0, GetSelectedTabIndex())>
             @T("Admin.Common.Info")
         </li>
+        <li @Html.RenderSelectedTabIndex(1, GetSelectedTabIndex())>
+            Archivos
+        </li>
     </ul>
     <div>
         @TabInfo()
     </div>
+    <div>
+        @TabFiles()
+    </div>
 </div>
-
-@{
-    //custom tabs
-    var eventMessage = new AdminTabStripCreated(this.Html, "country-edit");
-    EngineContext.Current.Resolve<IEventPublisher>().Publish(eventMessage);
-    foreach (var eventBlock in eventMessage.BlocksToRender)
-    {
-        @eventBlock
-    }
-}
-
 
 @*save selected tab index*@
 <input type="hidden" id="selected-tab-index" name="selected-tab-index" value="@(GetSelectedTabIndex())">
@@ -53,38 +48,30 @@
                 @Html.KsLabelFor(model => model.Name):
             </td>
             <td class="adminData">
-                @Html.EditorFor(model => model.Name)
-                @Html.ValidationMessageFor(model => model.Name)
+                @Model.Name
             </td>
         </tr>
-        <tr>
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.FrecuencyId):
-            </td>
-            <td class="adminData">
-                @Html.DropDownListFor(model => model.FrecuencyId, Model.AvailableFrecuencies)
-                @Html.ValidationMessageFor(model => model.FrecuencyId)
-                <script>
-                    $(document).ready(function () {
-                        $('#@Html.FieldIdFor(model => model.FrecuencyId)').kendoDropDownList();
-                    });
-                </script>
+        @*<tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.FrecuencyId):
+                </td>
+                <td class="adminData">
+                    @Html.DropDownListFor(model => model.FrecuencyId, Model.AvailableFrecuencies)
+                    @Html.ValidationMessageFor(model => model.FrecuencyId)
+                    <script>
+                        $(document).ready(function () {
+                            $('#@Html.FieldIdFor(model => model.FrecuencyId)').kendoDropDownList();
+                        });
+                    </script>
 
-            </td>
-        </tr>
+                </td>
+            </tr>*@
         <tr>
             <td class="adminTitle">
                 @Html.KsLabelFor(model => model.PeriodYear):
             </td>
             <td class="adminData">
-                @Html.DropDownListFor(model => model.PeriodYear, Model.AvailableYears)
-                @Html.ValidationMessageFor(model => model.PeriodYear)
-                <script>
-                    $(document).ready(function () {
-                        $('#@Html.FieldIdFor(model => model.PeriodYear)').kendoDropDownList();
-                    });
-                </script>
-
+                @Model.PeriodYear
             </td>
         </tr>
         <tr>
@@ -92,14 +79,7 @@
                 @Html.KsLabelFor(model => model.PeriodMonth):
             </td>
             <td class="adminData">
-                @Html.DropDownListFor(model => model.PeriodMonth, Model.AvailableMonths)
-                @Html.ValidationMessageFor(model => model.PeriodMonth)
-                <script>
-                    $(document).ready(function () {
-                        $('#@Html.FieldIdFor(model => model.PeriodMonth)').kendoDropDownList();
-                    });
-                </script>
-
+                @Model.PeriodMonth
             </td>
         </tr>
         <tr>
@@ -110,31 +90,31 @@
                 @Model.PathBase
             </td>
         </tr>
-        <tr>
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.StartExecutionOn):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.StartExecutionOn)
-                @Html.ValidationMessageFor(model => model.StartExecutionOn)
-                @*<script>
-                        $(document).ready(function () {
-                            $('#@Html.FieldIdFor(model => model.StartExecutionOn)').kendoDateTimePicker({
-                                ARIATemplate: "Date: #=kendo.toString(@Model.StartExecutionOn, 'G')#"
-                        });
-                        });
-                    </script>*@
-            </td>
-        </tr>
-        <tr>
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.NextExecutionOn):
-            </td>
-            <td class="adminData">
-                @Model.NextExecutionOn
+        @*<tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.StartExecutionOn):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.StartExecutionOn)
+                    @Html.ValidationMessageFor(model => model.StartExecutionOn)
+                    @*<script>
+                            $(document).ready(function () {
+                                $('#@Html.FieldIdFor(model => model.StartExecutionOn)').kendoDateTimePicker({
+                                    ARIATemplate: "Date: #=kendo.toString(@Model.StartExecutionOn, 'G')#"
+                            });
+                            });
+                        </script>
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.NextExecutionOn):
+                </td>
+                <td class="adminData">
+                    @Model.NextExecutionOn
 
-            </td>
-        </tr>
+                </td>
+            </tr>*@
         <tr>
             <td class="adminTitle">
                 @Html.KsLabelFor(model => model.LastExecutionOn):
@@ -149,6 +129,63 @@
             </td>
             <td class="adminData">
                 @Html.CheckBoxFor(model => model.Enabled, new { @disabled = "disabled" })
+            </td>
+        </tr>
+    </table>
+}
+
+@helper TabFiles()
+{
+    <table class="adminContent">
+        <tr>
+            <td>
+                <div id="files-grid"></div>
+
+                <script>
+                    $(document).ready(function () {
+                        $("#files-grid").kendoGrid({
+                            dataSource: {
+                                type: "json",
+                                transport: {
+                                    read: {
+                                        url: "@Html.Raw(Url.Action("ListFiles", "ScheduleBatch",new {id=Model.Id}))",
+                                        type: "POST",
+                                        dataType: "json",
+                                        data: addAntiForgeryToken
+                                    }
+                                },
+                                schema: {
+                                    data: "Data",
+                                    total: "Total",
+                                    errors: "Errors"
+                                },
+                                error: function (e) {
+                                    display_kendoui_grid_error(e);
+                                    // Cancel the changes
+                                    this.cancelChanges();
+                                },
+                                serverPaging: true,
+                                serverFiltering: true,
+                                serverSorting: true
+                            },
+                            pageable: {
+                                refresh: true,
+                                numeric: false,
+                                previousNext: false,
+                                info: false
+                            },
+                            editable: {
+                                confirmation: false,
+                                mode: "inline"
+                            },
+                            scrollable: false,
+                            columns: [{
+                                field: "Name",
+                                title: "@T("Admin.Configuration.Languages.Fields.Name")"
+                            }]
+                        });
+                    });
+                </script>
             </td>
         </tr>
     </table>

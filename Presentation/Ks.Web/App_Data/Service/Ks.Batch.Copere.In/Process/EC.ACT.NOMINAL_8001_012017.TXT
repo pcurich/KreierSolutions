@@ -1,0 +1,6 @@
+ENTIDAD: 8001   ASOCIACIÓN "AUXILIO COOPERATIVO MILITAR DE RETIRO"
+
+Nº   AÑO  MES  PLANILLA   CADENA    CODIGO    APELLIDOS Y NOMBRES                  IMP. DSCTO    IMP.DITELE
+1    2017 01   301-REM    211711  456789125-XXXX/XXXXXXX/XXXXXX                        35.00            0
+
+                                                                 TOTAL:                35.00            0

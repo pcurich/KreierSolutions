@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using Ks.Core;
 using Ks.Core.Domain;
+using Ks.Core.Domain.Batchs;
 using Ks.Core.Domain.Contract;
 using Ks.Core.Domain.Customers;
 using Ks.Core.Domain.Reports;
@@ -1355,7 +1356,7 @@ namespace Ks.Services.ExportImport
                     col++;
                     worksheet.Cells[row, col].Value = militarySituation;
                     col++;
-                    worksheet.Cells[row, col].Value = p.ContributionState?"Activo":"Inactivo";
+                    worksheet.Cells[row, col].Value = p.ContributionState ? "Activo" : "Inactivo";
                     col++;
                     worksheet.Cells[row, col].Value = p.ContributionAuthorizeDiscont;
                     col++;
@@ -1363,7 +1364,7 @@ namespace Ks.Services.ExportImport
                     col++;
                     worksheet.Cells[row, col].Value = p.ContributionAmountPayed;
                     col++;
-                    worksheet.Cells[row, col].Value = p.ContributionAmountMeta-p.ContributionAmountPayed;
+                    worksheet.Cells[row, col].Value = p.ContributionAmountMeta - p.ContributionAmountPayed;
                     col++;
                     worksheet.Cells[row, col].Value = p.LoanState ? "Activo" : "Inactivo";
                     col++;
@@ -1396,6 +1397,38 @@ namespace Ks.Services.ExportImport
             throw new NotImplementedException();
         }
 
+        public virtual string ExportScheduleTxt(ScheduleBatch schedule)
+        {
+            var nameFile = "";
+            if (schedule.SystemName.Trim().ToUpper() == ("KS.BATCH.CAJA.OUT"))
+                nameFile = string.Format("6008_{0}00.txt", schedule.PeriodYear.ToString("0000") + schedule.PeriodMonth.ToString("00"));
+            else
+                nameFile = string.Format("8001_{0}00.txt", schedule.PeriodYear.ToString("0000") + schedule.PeriodMonth.ToString("00"));
+            System.IO.StreamReader file =
+                new System.IO.StreamReader(
+                    System.IO.Path.Combine(System.IO.Path.Combine(schedule.PathBase, schedule.FolderMoveToDone),
+                        nameFile));
+
+            var fileReaded = File.ReadAllLines(Path.Combine(Path.Combine(schedule.PathBase, schedule.FolderMoveToDone),
+                        nameFile));
+
+            var sb = new StringBuilder();
+
+            using (var reader = new StreamReader(Path.Combine(Path.Combine(schedule.PathBase, schedule.FolderMoveToDone), nameFile)))
+            {
+                var line = reader.ReadLine();
+                while (line != null)
+                {
+                    sb.AppendLine(line);
+                    line = reader.ReadLine();
+                }
+            }
+
+            return sb.ToString();
+
+        }
+
+        
         #endregion
 
         #region Utilities

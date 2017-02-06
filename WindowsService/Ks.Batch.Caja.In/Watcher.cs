@@ -14,13 +14,20 @@ namespace Ks.Batch.Caja.In
         private static readonly LogWriter Log = HostLogger.Get<Watcher>();
         private static ScheduleBatch Batch { get; set; }
         private static string Path { get; set; }
+        private static string SysName { get; set; }
         private static string Connection { get; set; }
         public static void FileCreated(object sender, FileSystemEventArgs e)
         {
             Thread.Sleep(1000 * 3); //10 Sec because is not atomic
             Path = ConfigurationManager.AppSettings["Path"];
             Connection = ConfigurationManager.ConnectionStrings["ACMR"].ConnectionString;
-            Batch = XmlHelper.Deserialize<ScheduleBatch>(System.IO.Path.Combine(Path, "ScheduleBatch.xml"));
+
+            SysName = ConfigurationManager.AppSettings["SysName"];
+
+            var dao = new Dao(Connection);
+            dao.Connect();
+            Batch = dao.GetScheduleBatch(SysName);
+            dao.Close();
 
             Batch.PeriodYear = Convert.ToInt32(e.Name.Split(' ')[1]);
             Batch.PeriodMonth = Convert.ToInt32(e.Name.Split(' ')[2].Substring(0, 2));
@@ -33,7 +40,7 @@ namespace Ks.Batch.Caja.In
                 InsertData(infos);
                 UpdateScheduleBatch();
                 MoveFile(e.FullPath, e.Name);
-                WakeUpMerge();
+                //WakeUpMerge();
 
             }
             catch (Exception ex)

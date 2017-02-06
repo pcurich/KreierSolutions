@@ -1,0 +1,1267 @@
+2016-12-03 08:00:07.6823|INFO|Ks.Batch.Copere.In.Watcher|Starting Reading file 'C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Read\8001_20161200.txt'
+2016-12-03 08:00:07.6823|INFO|Ks.Batch.Copere.In.Watcher|File readed with '0' records
+2016-12-03 08:00:07.7003|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-03 08:00:07.7003|INFO|Ks.Batch.Util.DaoBase|Action: Dao.Process(Ks.Batch.Copere.In)
+2016-12-03 08:00:07.7158|INFO|Ks.Batch.Util.DaoBase|Action: Dao.GetParentOut()
+2016-12-03 08:00:07.7158|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-03 08:00:07.7353|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-03 08:00:07.7353|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UpdateScheduleBatch(Ks.Batch.Copere.In)
+2016-12-03 08:00:07.7493|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-03 08:00:07.7628|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-03 08:01:13.8638|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopping
+2016-12-03 08:01:13.8738|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-03 08:01:13.8738|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UnInstall(Ks.Batch.Copere.In)
+2016-12-03 08:01:13.8878|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-03 08:01:13.8878|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-03 08:01:13.9063|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 03/12/2016 08:01:13 a.m.; Action: BatchContainer.Stop(); 
+2016-12-03 08:01:13.9063|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopped
+2016-12-03 08:01:17.1735|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-03 08:01:17.2105|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-03 08:01:17.2776|DEBUG|Topshelf.Runtime.Windows.WindowsHostEnvironment|Started by the Windows services process
+2016-12-03 08:01:17.2776|DEBUG|Topshelf.Builders.RunBuilder|Running as a service, creating service host.
+2016-12-03 08:01:17.3041|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|Starting as a Windows service
+2016-12-03 08:01:17.3166|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting up as a windows service application
+2016-12-03 08:01:17.3276|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting
+2016-12-03 08:01:17.3276|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Current Directory: C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy
+2016-12-03 08:01:17.3471|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Arguments: 
+2016-12-03 08:01:17.7969|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-03 08:01:17.8675|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Copere.In)
+2016-12-03 08:01:17.8770|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-03 08:01:17.8875|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-03 08:01:17.8875|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 03/12/2016 08:01:17 a.m.; Action: BatchContainer.Start(); 
+2016-12-03 08:01:17.9065|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-03 08:01:17.9185|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Exec(Ks.Batch.Copere.In,1)
+2016-12-03 08:01:17.9320|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-03 08:01:17.9320|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Started
+2016-12-03 08:01:20.5260|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopping
+2016-12-03 08:01:20.5260|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-03 08:01:20.5469|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UnInstall(Ks.Batch.Copere.In)
+2016-12-03 08:01:20.5469|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-03 08:01:20.5659|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-03 08:01:20.5779|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 03/12/2016 08:01:20 a.m.; Action: BatchContainer.Stop(); 
+2016-12-03 08:01:20.5779|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopped
+2016-12-03 08:01:53.4374|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-03 08:01:53.4830|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-03 08:01:53.5553|DEBUG|Topshelf.Builders.RunBuilder|Running as a console application, creating the console host.
+2016-12-03 08:01:53.5848|DEBUG|Topshelf.Hosts.ConsoleRunHost|Starting up as a console application
+2016-12-03 08:01:54.2423|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-03 08:01:54.3619|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Copere.In)
+2016-12-03 08:01:54.3719|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-03 08:01:54.4050|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-03 08:01:54.4050|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 03/12/2016 08:01:54 a.m.; Action: BatchContainer.Start(); 
+2016-12-03 08:01:54.4300|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-03 08:01:54.4430|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Exec(Ks.Batch.Copere.In,1)
+2016-12-03 08:01:54.4880|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-03 08:01:54.4990|INFO|Topshelf.Hosts.ConsoleRunHost|The Ks.Batch.Copere.In service is now running, press Control+C to exit.
+2016-12-03 08:02:31.2235|INFO|Ks.Batch.Copere.In.Watcher|Starting Reading file 'C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Read\EC.ACT.NOMINAL_8001_122016.TXT'
+2016-12-03 08:03:09.8036|INFO|Ks.Batch.Copere.In.Watcher|File readed with '1' records
+2016-12-03 08:03:10.3030|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-03 08:03:10.3145|INFO|Ks.Batch.Util.DaoBase|Action: Dao.Process(Ks.Batch.Copere.In)
+2016-12-03 08:03:10.3240|INFO|Ks.Batch.Util.DaoBase|Action: Dao.GetParentOut()
+2016-12-03 08:03:10.4351|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-03 08:03:10.6938|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-03 08:03:10.7048|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UpdateScheduleBatch(Ks.Batch.Copere.In)
+2016-12-03 08:03:10.7138|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-03 08:03:10.7525|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-03 08:31:05.3999|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-03 08:31:05.4359|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-03 08:31:05.4950|DEBUG|Topshelf.Runtime.Windows.WindowsHostEnvironment|Started by the Windows services process
+2016-12-03 08:31:05.4950|DEBUG|Topshelf.Builders.RunBuilder|Running as a service, creating service host.
+2016-12-03 08:31:05.5222|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|Starting as a Windows service
+2016-12-03 08:31:05.5342|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting up as a windows service application
+2016-12-03 08:31:05.5452|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting
+2016-12-03 08:31:05.5452|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Current Directory: C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy
+2016-12-03 08:31:05.5632|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Arguments: 
+2016-12-03 08:31:06.0014|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-03 08:31:06.0694|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Copere.In)
+2016-12-03 08:31:06.0784|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-03 08:31:06.0904|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-03 08:31:06.0904|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 03/12/2016 08:31:06 a.m.; Action: BatchContainer.Start(); 
+2016-12-03 08:31:06.1094|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-03 08:31:06.1194|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Exec(Ks.Batch.Copere.In,1)
+2016-12-03 08:31:06.1194|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-03 08:31:06.1425|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Started
+2016-12-03 08:31:36.7658|INFO|Ks.Batch.Copere.In.Watcher|Starting Reading file 'C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Read\EC.ACT.NOMINAL_8001_012017.TXT'
+2016-12-03 08:31:36.7918|INFO|Ks.Batch.Copere.In.Watcher|File readed with '1' records
+2016-12-03 08:31:36.7918|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-03 08:31:36.8129|INFO|Ks.Batch.Util.DaoBase|Action: Dao.Process(Ks.Batch.Copere.In)
+2016-12-03 08:31:36.8129|INFO|Ks.Batch.Util.DaoBase|Action: Dao.GetParentOut()
+2016-12-03 08:31:36.9459|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-03 08:31:36.9673|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-03 08:31:36.9814|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UpdateScheduleBatch(Ks.Batch.Copere.In)
+2016-12-03 08:31:36.9944|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-03 08:31:37.0174|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-03 08:53:51.9840|INFO|Ks.Batch.Copere.In.Watcher|Starting Reading file 'C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Read\EC.ACT.NOMINAL_8001_022017.TXT'
+2016-12-03 08:53:51.9840|INFO|Ks.Batch.Copere.In.Watcher|File readed with '3' records
+2016-12-03 08:53:52.0010|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-03 08:53:52.0180|INFO|Ks.Batch.Util.DaoBase|Action: Dao.Process(Ks.Batch.Copere.In)
+2016-12-03 08:53:52.0270|INFO|Ks.Batch.Util.DaoBase|Action: Dao.GetParentOut()
+2016-12-03 08:53:52.0710|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-03 08:53:52.0810|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-03 08:53:52.0890|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UpdateScheduleBatch(Ks.Batch.Copere.In)
+2016-12-03 08:53:52.0890|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-03 08:53:52.1101|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-03 08:56:57.9388|INFO|Ks.Batch.Copere.In.Watcher|Starting Reading file 'C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Read\EC.ACT.NOMINAL_8001_022017.TXT'
+2016-12-03 08:56:57.9478|INFO|Ks.Batch.Copere.In.Watcher|File readed with '3' records
+2016-12-03 08:56:57.9478|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-03 08:56:57.9649|INFO|Ks.Batch.Util.DaoBase|Action: Dao.Process(Ks.Batch.Copere.In)
+2016-12-03 08:56:57.9649|INFO|Ks.Batch.Util.DaoBase|Action: Dao.GetParentOut()
+2016-12-03 08:56:57.9899|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-03 08:56:57.9989|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-03 08:56:57.9989|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UpdateScheduleBatch(Ks.Batch.Copere.In)
+2016-12-03 08:56:58.0149|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-03 08:56:58.0279|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-03 09:51:34.5604|INFO|Ks.Batch.Copere.In.Watcher|Starting Reading file 'C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Read\EC.ACT.NOMINAL_8001_012017.TXT'
+2016-12-03 09:51:34.5604|INFO|Ks.Batch.Copere.In.Watcher|File readed with '1' records
+2016-12-03 09:51:34.5774|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-03 09:51:34.6355|INFO|Ks.Batch.Util.DaoBase|Action: Dao.Process(Ks.Batch.Copere.In)
+2016-12-03 09:51:34.6355|INFO|Ks.Batch.Util.DaoBase|Action: Dao.GetParentOut()
+2016-12-03 09:51:34.6625|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-03 09:51:34.6715|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-03 09:51:34.6715|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UpdateScheduleBatch(Ks.Batch.Copere.In)
+2016-12-03 09:51:34.6885|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-03 09:51:34.7025|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-03 09:51:34.7165|ERROR|Ks.Batch.Copere.In.Watcher|Error in Reading file:'C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Read\EC.ACT.NOMINAL_8001_012017.TXT'
+2016-12-03 09:51:34.7165|ERROR|Ks.Batch.Copere.In.Watcher|Exception: 'No se puede crear un archivo que ya existe.
+'
+2016-12-03 09:52:20.1219|INFO|Ks.Batch.Copere.In.Watcher|Starting Reading file 'C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Read\EC.ACT.NOMINAL_8001_012017.TXT'
+2016-12-03 09:52:20.1380|INFO|Ks.Batch.Copere.In.Watcher|File readed with '1' records
+2016-12-03 09:52:20.1380|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-03 09:52:20.1650|INFO|Ks.Batch.Util.DaoBase|Action: Dao.Process(Ks.Batch.Copere.In)
+2016-12-03 09:52:20.1780|INFO|Ks.Batch.Util.DaoBase|Action: Dao.GetParentOut()
+2016-12-03 09:52:20.1940|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-03 09:52:20.2070|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-03 09:52:20.2210|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UpdateScheduleBatch(Ks.Batch.Copere.In)
+2016-12-03 09:52:20.2360|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-03 09:52:20.2500|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-03 10:10:14.5299|INFO|Ks.Batch.Copere.In.Watcher|Starting Reading file 'C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Read\EC.ACT.NOMINAL_8001_022017.TXT'
+2016-12-03 10:10:14.5450|INFO|Ks.Batch.Copere.In.Watcher|File readed with '1' records
+2016-12-03 10:10:14.5580|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-03 10:10:14.5930|INFO|Ks.Batch.Util.DaoBase|Action: Dao.Process(Ks.Batch.Copere.In)
+2016-12-03 10:10:14.6070|INFO|Ks.Batch.Util.DaoBase|Action: Dao.GetParentOut()
+2016-12-03 10:10:14.6280|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-03 10:10:14.6410|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-03 10:10:14.6540|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UpdateScheduleBatch(Ks.Batch.Copere.In)
+2016-12-03 10:10:14.6680|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-03 10:10:14.6871|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-03 10:32:33.9168|INFO|Ks.Batch.Copere.In.Watcher|Starting Reading file 'C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Read\EC.ACT.NOMINAL_8001_032017.TXT'
+2016-12-03 10:32:33.9168|INFO|Ks.Batch.Copere.In.Watcher|File readed with '1' records
+2016-12-03 10:32:33.9429|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-03 10:32:33.9909|INFO|Ks.Batch.Util.DaoBase|Action: Dao.Process(Ks.Batch.Copere.In)
+2016-12-03 10:32:34.0049|INFO|Ks.Batch.Util.DaoBase|Action: Dao.GetParentOut()
+2016-12-03 10:32:34.0609|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-03 10:32:34.0739|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-03 10:32:34.0739|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UpdateScheduleBatch(Ks.Batch.Copere.In)
+2016-12-03 10:32:34.1000|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-03 10:32:34.1230|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-03 10:32:34.1410|ERROR|Ks.Batch.Copere.In.Watcher|Error in Reading file:'C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Read\EC.ACT.NOMINAL_8001_032017.TXT'
+2016-12-03 10:32:34.1540|ERROR|Ks.Batch.Copere.In.Watcher|Exception: 'No se puede crear un archivo que ya existe.
+'
+2016-12-03 10:33:27.4023|INFO|Ks.Batch.Copere.In.Watcher|Starting Reading file 'C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Read\EC.ACT.NOMINAL_8001_032017.TXT'
+2016-12-03 10:33:27.4173|INFO|Ks.Batch.Copere.In.Watcher|File readed with '1' records
+2016-12-03 10:33:27.4173|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-03 10:33:27.4453|INFO|Ks.Batch.Util.DaoBase|Action: Dao.Process(Ks.Batch.Copere.In)
+2016-12-03 10:33:27.4603|INFO|Ks.Batch.Util.DaoBase|Action: Dao.GetParentOut()
+2016-12-03 10:33:27.4843|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-03 10:33:27.5003|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-03 10:33:27.5133|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UpdateScheduleBatch(Ks.Batch.Copere.In)
+2016-12-03 10:33:27.5274|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-03 10:33:27.5454|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-04 20:57:15.8562|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopping
+2016-12-04 20:57:15.9101|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-04 20:57:15.9431|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UnInstall(Ks.Batch.Copere.In)
+2016-12-04 20:57:15.9601|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-04 20:57:15.9801|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-04 20:57:15.9974|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 04/12/2016 08:57:15 p.m.; Action: BatchContainer.Stop(); 
+2016-12-04 20:57:16.0154|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopped
+2016-12-05 20:54:49.6577|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-05 20:54:49.7377|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-05 20:54:49.7807|ERROR|Topshelf.Hosts.UninstallHost|The Ks.Batch.Copere.In service is not installed.
+2016-12-05 20:55:27.6156|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-05 20:55:27.6616|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-05 20:55:27.7046|DEBUG|Topshelf.Hosts.InstallHost|Attempting to install 'Ks.Batch.Copere.In'
+2016-12-05 20:55:27.7497|INFO|Topshelf.Runtime.Windows.HostInstaller|Installing Ks Batch Copere In service
+2016-12-05 20:55:27.7997|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Opening Registry
+2016-12-05 20:55:27.8177|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Service path: "C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy\Ks.Batch.Copere.In.exe"
+2016-12-05 20:55:27.8347|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Image path: "C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy\Ks.Batch.Copere.In.exe"  -displayname "Ks Batch Copere In" -servicename "Ks.Batch.Copere.In"
+2016-12-05 20:55:27.8547|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Closing Registry
+2016-12-05 20:55:44.4479|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-05 20:55:44.4910|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-05 20:55:44.5560|DEBUG|Topshelf.Runtime.Windows.WindowsHostEnvironment|Started by the Windows services process
+2016-12-05 20:55:44.5750|DEBUG|Topshelf.Builders.RunBuilder|Running as a service, creating service host.
+2016-12-05 20:55:44.6031|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|Starting as a Windows service
+2016-12-05 20:55:44.6241|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting up as a windows service application
+2016-12-05 20:55:44.6381|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting
+2016-12-05 20:55:44.6381|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Current Directory: C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy
+2016-12-05 20:55:44.6601|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Arguments: 
+2016-12-05 20:55:45.0924|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-05 20:55:45.1594|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Copere.In)
+2016-12-05 20:55:45.1734|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-05 20:55:45.1884|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-05 20:55:45.2015|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 05/12/2016 08:55:45 p.m.; Action: BatchContainer.Start(); 
+2016-12-05 20:55:45.2145|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-05 20:55:45.2145|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Exec(Ks.Batch.Copere.In,1)
+2016-12-05 20:55:45.2425|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-05 20:55:45.2545|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Started
+2016-12-05 21:05:08.2114|INFO|Ks.Batch.Copere.In.Watcher|Starting Reading file 'C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Read\EC.ACT.NOMINAL_8001_122016.TXT'
+2016-12-05 21:05:08.2304|INFO|Ks.Batch.Copere.In.Watcher|File readed with '3' records
+2016-12-05 21:05:08.2304|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-05 21:05:08.2584|INFO|Ks.Batch.Util.DaoBase|Action: Dao.Process(Ks.Batch.Copere.In)
+2016-12-05 21:05:08.2714|INFO|Ks.Batch.Util.DaoBase|Action: Dao.GetParentOut()
+2016-12-05 21:05:08.3915|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-05 21:05:08.4025|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-05 21:05:08.4025|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UpdateScheduleBatch(Ks.Batch.Copere.In)
+2016-12-05 21:05:08.4225|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-05 21:05:08.4375|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-05 21:09:27.7631|INFO|Ks.Batch.Copere.In.Watcher|Starting Reading file 'C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Read\EC.ACT.NOMINAL_8001_012017.TXT'
+2016-12-05 21:09:27.7771|INFO|Ks.Batch.Copere.In.Watcher|File readed with '3' records
+2016-12-05 21:09:27.7771|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-05 21:09:27.7961|INFO|Ks.Batch.Util.DaoBase|Action: Dao.Process(Ks.Batch.Copere.In)
+2016-12-05 21:09:27.7961|INFO|Ks.Batch.Util.DaoBase|Action: Dao.GetParentOut()
+2016-12-05 21:09:27.8201|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-05 21:09:27.8291|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-05 21:09:27.8291|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UpdateScheduleBatch(Ks.Batch.Copere.In)
+2016-12-05 21:09:27.8451|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-05 21:09:27.8581|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-05 21:11:06.2915|INFO|Ks.Batch.Copere.In.Watcher|Starting Reading file 'C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Read\EC.ACT.NOMINAL_8001_022017.TXT'
+2016-12-05 21:11:06.2915|INFO|Ks.Batch.Copere.In.Watcher|File readed with '3' records
+2016-12-05 21:11:06.3095|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-05 21:11:06.3095|INFO|Ks.Batch.Util.DaoBase|Action: Dao.Process(Ks.Batch.Copere.In)
+2016-12-05 21:11:06.3275|INFO|Ks.Batch.Util.DaoBase|Action: Dao.GetParentOut()
+2016-12-05 21:11:06.3436|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-05 21:11:06.3436|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-05 21:11:06.3626|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UpdateScheduleBatch(Ks.Batch.Copere.In)
+2016-12-05 21:11:06.3716|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-05 21:11:06.3716|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-05 21:12:55.3133|INFO|Ks.Batch.Copere.In.Watcher|Starting Reading file 'C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Read\EC.ACT.NOMINAL_8001_032017.TXT'
+2016-12-05 21:12:55.3233|INFO|Ks.Batch.Copere.In.Watcher|File readed with '3' records
+2016-12-05 21:12:55.3233|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-05 21:12:55.3403|INFO|Ks.Batch.Util.DaoBase|Action: Dao.Process(Ks.Batch.Copere.In)
+2016-12-05 21:12:55.3403|INFO|Ks.Batch.Util.DaoBase|Action: Dao.GetParentOut()
+2016-12-05 21:12:55.3660|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-05 21:12:55.3767|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-05 21:12:55.3867|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UpdateScheduleBatch(Ks.Batch.Copere.In)
+2016-12-05 21:12:55.3867|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-05 21:12:55.4100|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-05 22:56:05.6684|INFO|Ks.Batch.Copere.In.Watcher|Starting Reading file 'C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Read\EC.ACT.NOMINAL_8001_122016.TXT'
+2016-12-05 22:56:05.6824|INFO|Ks.Batch.Copere.In.Watcher|File readed with '3' records
+2016-12-05 22:56:05.6824|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-05 22:56:05.7304|INFO|Ks.Batch.Util.DaoBase|Action: Dao.Process(Ks.Batch.Copere.In)
+2016-12-05 22:56:05.7304|INFO|Ks.Batch.Util.DaoBase|Action: Dao.GetParentOut()
+2016-12-05 22:56:05.7614|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-05 22:56:05.7614|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-05 22:56:05.7834|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UpdateScheduleBatch(Ks.Batch.Copere.In)
+2016-12-05 22:56:05.7955|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-05 22:56:05.8115|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-05 22:59:20.8359|INFO|Ks.Batch.Copere.In.Watcher|Starting Reading file 'C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Read\EC.ACT.NOMINAL_8001_012017.TXT'
+2016-12-05 22:59:20.8449|INFO|Ks.Batch.Copere.In.Watcher|File readed with '3' records
+2016-12-05 22:59:20.8539|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-05 22:59:20.8539|INFO|Ks.Batch.Util.DaoBase|Action: Dao.Process(Ks.Batch.Copere.In)
+2016-12-05 22:59:20.8699|INFO|Ks.Batch.Util.DaoBase|Action: Dao.GetParentOut()
+2016-12-05 22:59:20.8699|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-05 22:59:20.8939|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-05 22:59:20.9030|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UpdateScheduleBatch(Ks.Batch.Copere.In)
+2016-12-05 22:59:20.9030|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-05 22:59:20.9240|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-05 23:01:11.4993|INFO|Ks.Batch.Copere.In.Watcher|Starting Reading file 'C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Read\EC.ACT.NOMINAL_8001_022017.TXT'
+2016-12-05 23:01:11.5103|INFO|Ks.Batch.Copere.In.Watcher|File readed with '3' records
+2016-12-05 23:01:11.5103|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-05 23:01:11.5308|INFO|Ks.Batch.Util.DaoBase|Action: Dao.Process(Ks.Batch.Copere.In)
+2016-12-05 23:01:11.5308|INFO|Ks.Batch.Util.DaoBase|Action: Dao.GetParentOut()
+2016-12-05 23:01:11.5594|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-05 23:01:11.5594|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-05 23:01:11.5804|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UpdateScheduleBatch(Ks.Batch.Copere.In)
+2016-12-05 23:01:11.5914|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-05 23:01:11.6074|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-05 23:33:52.4650|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-05 23:33:52.5111|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-05 23:33:52.5471|DEBUG|Topshelf.Hosts.UninstallHost|Uninstalling Ks.Batch.Copere.In
+2016-12-05 23:33:52.5841|INFO|Topshelf.Runtime.Windows.HostInstaller|Uninstalling Ks.Batch.Copere.In service
+2016-12-05 23:33:52.6192|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopping
+2016-12-05 23:33:52.6342|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-05 23:33:52.6572|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UnInstall(Ks.Batch.Copere.In)
+2016-12-05 23:33:52.6692|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-05 23:33:52.6832|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-05 23:33:52.6832|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 05/12/2016 11:33:52 p.m.; Action: BatchContainer.Stop(); 
+2016-12-05 23:33:52.7062|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopped
+2016-12-05 23:41:07.8954|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-05 23:41:07.9294|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-05 23:41:07.9584|DEBUG|Topshelf.Hosts.InstallHost|Attempting to install 'Ks.Batch.Copere.In'
+2016-12-05 23:41:07.9894|INFO|Topshelf.Runtime.Windows.HostInstaller|Installing Ks Batch Copere In service
+2016-12-05 23:41:08.0301|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Opening Registry
+2016-12-05 23:41:08.0301|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Service path: "C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy\Ks.Batch.Copere.In.exe"
+2016-12-05 23:41:08.0491|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Image path: "C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy\Ks.Batch.Copere.In.exe"  -displayname "Ks Batch Copere In" -servicename "Ks.Batch.Copere.In"
+2016-12-05 23:41:08.0591|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Closing Registry
+2016-12-05 23:41:34.6749|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-05 23:41:34.7054|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-05 23:41:34.7584|DEBUG|Topshelf.Runtime.Windows.WindowsHostEnvironment|Started by the Windows services process
+2016-12-05 23:41:34.7675|DEBUG|Topshelf.Builders.RunBuilder|Running as a service, creating service host.
+2016-12-05 23:41:34.7835|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|Starting as a Windows service
+2016-12-05 23:41:34.7955|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting up as a windows service application
+2016-12-05 23:41:34.7955|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting
+2016-12-05 23:41:34.8165|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Current Directory: C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy
+2016-12-05 23:41:34.8255|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Arguments: 
+2016-12-05 23:41:35.1497|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-05 23:41:35.2007|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Copere.In)
+2016-12-05 23:41:35.2007|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-05 23:41:35.2218|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-05 23:41:35.2318|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 05/12/2016 11:41:35 p.m.; Action: BatchContainer.Start(); 
+2016-12-05 23:41:35.2318|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-05 23:41:35.2498|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Exec(Ks.Batch.Copere.In,1)
+2016-12-05 23:41:35.2618|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-05 23:41:35.2618|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Started
+2016-12-06 00:00:26.0097|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-06 00:00:26.0567|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-06 00:00:26.0957|DEBUG|Topshelf.Hosts.UninstallHost|Uninstalling Ks.Batch.Copere.In
+2016-12-06 00:00:26.1347|INFO|Topshelf.Runtime.Windows.HostInstaller|Uninstalling Ks.Batch.Copere.In service
+2016-12-06 00:00:26.1720|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopping
+2016-12-06 00:00:26.1880|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-06 00:00:26.2100|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UnInstall(Ks.Batch.Copere.In)
+2016-12-06 00:00:26.2250|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-06 00:00:26.2410|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-06 00:00:26.2561|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 06/12/2016 12:00:26 a.m.; Action: BatchContainer.Stop(); 
+2016-12-06 00:00:26.2701|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopped
+2016-12-06 00:01:31.1031|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-06 00:01:31.1431|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-06 00:01:31.1821|DEBUG|Topshelf.Hosts.InstallHost|Attempting to install 'Ks.Batch.Copere.In'
+2016-12-06 00:01:31.2252|INFO|Topshelf.Runtime.Windows.HostInstaller|Installing Ks Batch Copere In service
+2016-12-06 00:01:31.2812|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Opening Registry
+2016-12-06 00:01:31.2952|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Service path: "C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy\Ks.Batch.Copere.In.exe"
+2016-12-06 00:01:31.3092|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Image path: "C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy\Ks.Batch.Copere.In.exe"  -displayname "Ks Batch Copere In" -servicename "Ks.Batch.Copere.In"
+2016-12-06 00:01:31.3252|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Closing Registry
+2016-12-06 00:02:02.4336|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-06 00:02:02.4667|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-06 00:02:02.5197|DEBUG|Topshelf.Runtime.Windows.WindowsHostEnvironment|Started by the Windows services process
+2016-12-06 00:02:02.5307|DEBUG|Topshelf.Builders.RunBuilder|Running as a service, creating service host.
+2016-12-06 00:02:02.5487|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|Starting as a Windows service
+2016-12-06 00:02:02.5637|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting up as a windows service application
+2016-12-06 00:02:02.5777|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting
+2016-12-06 00:02:02.5887|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Current Directory: C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy
+2016-12-06 00:02:02.5887|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Arguments: 
+2016-12-06 00:02:02.9230|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-06 00:02:02.9820|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Copere.In)
+2016-12-06 00:02:02.9820|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-06 00:02:03.0110|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-06 00:02:03.0110|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 06/12/2016 12:02:03 a.m.; Action: BatchContainer.Start(); 
+2016-12-06 00:02:03.0350|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-06 00:02:03.0470|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Exec(Ks.Batch.Copere.In,1)
+2016-12-06 00:02:03.0651|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-06 00:02:03.0771|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Started
+2016-12-06 00:35:18.0583|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-06 00:35:18.1003|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-06 00:35:18.1373|DEBUG|Topshelf.Hosts.UninstallHost|Uninstalling Ks.Batch.Copere.In
+2016-12-06 00:35:18.1744|INFO|Topshelf.Runtime.Windows.HostInstaller|Uninstalling Ks.Batch.Copere.In service
+2016-12-06 00:35:18.2032|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopping
+2016-12-06 00:35:18.2192|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-06 00:35:18.2432|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UnInstall(Ks.Batch.Copere.In)
+2016-12-06 00:35:18.2562|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-06 00:35:18.2702|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-06 00:35:18.2842|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 06/12/2016 12:35:18 a.m.; Action: BatchContainer.Stop(); 
+2016-12-06 00:35:18.2982|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopped
+2016-12-06 00:35:59.7144|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-06 00:35:59.7555|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-06 00:35:59.7955|DEBUG|Topshelf.Hosts.InstallHost|Attempting to install 'Ks.Batch.Copere.In'
+2016-12-06 00:35:59.8395|INFO|Topshelf.Runtime.Windows.HostInstaller|Installing Ks Batch Copere In service
+2016-12-06 00:35:59.8866|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Opening Registry
+2016-12-06 00:35:59.9016|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Service path: "C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy\Ks.Batch.Copere.In.exe"
+2016-12-06 00:35:59.9016|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Image path: "C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy\Ks.Batch.Copere.In.exe"  -displayname "Ks Batch Copere In" -servicename "Ks.Batch.Copere.In"
+2016-12-06 00:35:59.9296|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Closing Registry
+2016-12-06 00:36:18.7889|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-06 00:36:18.8289|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-06 00:36:18.8909|DEBUG|Topshelf.Runtime.Windows.WindowsHostEnvironment|Started by the Windows services process
+2016-12-06 00:36:18.9059|DEBUG|Topshelf.Builders.RunBuilder|Running as a service, creating service host.
+2016-12-06 00:36:18.9270|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|Starting as a Windows service
+2016-12-06 00:36:18.9500|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting up as a windows service application
+2016-12-06 00:36:18.9720|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting
+2016-12-06 00:36:18.9920|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Current Directory: C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy
+2016-12-06 00:36:19.0130|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Arguments: 
+2016-12-06 00:36:19.4673|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-06 00:36:19.5414|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Copere.In)
+2016-12-06 00:36:19.5614|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-06 00:36:19.5844|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-06 00:36:19.5974|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 06/12/2016 12:36:19 a.m.; Action: BatchContainer.Start(); 
+2016-12-06 00:36:19.6114|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-06 00:36:19.6254|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Exec(Ks.Batch.Copere.In,1)
+2016-12-06 00:36:19.6414|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-06 00:36:19.6554|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Started
+2016-12-06 00:41:40.6244|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-06 00:41:40.6764|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-06 00:41:40.7224|DEBUG|Topshelf.Hosts.UninstallHost|Uninstalling Ks.Batch.Copere.In
+2016-12-06 00:41:40.7615|INFO|Topshelf.Runtime.Windows.HostInstaller|Uninstalling Ks.Batch.Copere.In service
+2016-12-06 00:41:40.7962|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopping
+2016-12-06 00:41:40.8141|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-06 00:41:40.8321|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UnInstall(Ks.Batch.Copere.In)
+2016-12-06 00:41:40.8481|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-06 00:41:40.8671|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-06 00:41:40.8832|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 06/12/2016 12:41:40 a.m.; Action: BatchContainer.Stop(); 
+2016-12-06 00:41:40.9042|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopped
+2016-12-06 00:43:12.5198|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-06 00:43:12.5618|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-06 00:43:12.5999|DEBUG|Topshelf.Hosts.InstallHost|Attempting to install 'Ks.Batch.Copere.In'
+2016-12-06 00:43:12.6426|INFO|Topshelf.Runtime.Windows.HostInstaller|Installing Ks Batch Copere In service
+2016-12-06 00:43:12.6946|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Opening Registry
+2016-12-06 00:43:12.7097|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Service path: "C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy\Ks.Batch.Copere.In.exe"
+2016-12-06 00:43:12.7237|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Image path: "C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy\Ks.Batch.Copere.In.exe"  -displayname "Ks Batch Copere In" -servicename "Ks.Batch.Copere.In"
+2016-12-06 00:43:12.7417|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Closing Registry
+2016-12-06 00:43:46.8168|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-06 00:43:46.8588|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-06 00:43:46.9269|DEBUG|Topshelf.Runtime.Windows.WindowsHostEnvironment|Started by the Windows services process
+2016-12-06 00:43:46.9419|DEBUG|Topshelf.Builders.RunBuilder|Running as a service, creating service host.
+2016-12-06 00:43:46.9659|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|Starting as a Windows service
+2016-12-06 00:43:46.9849|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting up as a windows service application
+2016-12-06 00:43:47.0009|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting
+2016-12-06 00:43:47.0159|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Current Directory: C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy
+2016-12-06 00:43:47.0289|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Arguments: 
+2016-12-06 00:43:47.4552|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-06 00:43:47.5323|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Copere.In)
+2016-12-06 00:43:47.5483|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-06 00:43:47.5673|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-06 00:43:47.5833|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 06/12/2016 12:43:47 a.m.; Action: BatchContainer.Start(); 
+2016-12-06 00:43:47.5993|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-06 00:43:47.6143|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Exec(Ks.Batch.Copere.In,1)
+2016-12-06 00:43:47.6333|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-06 00:43:47.6473|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Started
+2016-12-06 00:48:38.0673|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopping
+2016-12-06 00:48:38.0863|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-06 00:48:38.1013|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UnInstall(Ks.Batch.Copere.In)
+2016-12-06 00:48:38.1163|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-06 00:48:38.1373|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-06 00:48:38.1373|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 06/12/2016 12:48:38 a.m.; Action: BatchContainer.Stop(); 
+2016-12-06 00:48:38.1644|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopped
+2016-12-06 00:57:29.8446|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-06 00:57:29.8906|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-06 00:57:29.9316|DEBUG|Topshelf.Hosts.UninstallHost|Uninstalling Ks.Batch.Copere.In
+2016-12-06 00:57:29.9737|INFO|Topshelf.Runtime.Windows.HostInstaller|Uninstalling Ks.Batch.Copere.In service
+2016-12-06 01:02:03.3506|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-06 01:02:03.3946|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-06 01:02:03.4361|DEBUG|Topshelf.Hosts.InstallHost|Attempting to install 'Ks.Batch.Copere.In'
+2016-12-06 01:02:03.4791|INFO|Topshelf.Runtime.Windows.HostInstaller|Installing Ks Batch Copere In service
+2016-12-06 01:02:03.5301|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Opening Registry
+2016-12-06 01:02:03.5452|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Service path: "C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy\Ks.Batch.Copere.In.exe"
+2016-12-06 01:02:03.5592|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Image path: "C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy\Ks.Batch.Copere.In.exe"  -displayname "Ks Batch Copere In" -servicename "Ks.Batch.Copere.In"
+2016-12-06 01:02:03.5732|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Closing Registry
+2016-12-06 01:03:18.8798|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-06 01:03:18.9199|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-06 01:03:18.9879|DEBUG|Topshelf.Runtime.Windows.WindowsHostEnvironment|Started by the Windows services process
+2016-12-06 01:03:19.0019|DEBUG|Topshelf.Builders.RunBuilder|Running as a service, creating service host.
+2016-12-06 01:03:19.0259|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|Starting as a Windows service
+2016-12-06 01:03:19.0446|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting up as a windows service application
+2016-12-06 01:03:19.0616|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting
+2016-12-06 01:03:19.0766|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Current Directory: C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy
+2016-12-06 01:03:19.0917|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Arguments: 
+2016-12-06 01:03:19.5314|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-06 01:03:19.6065|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Copere.In)
+2016-12-06 01:03:19.6235|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-06 01:03:19.6435|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-06 01:03:19.6595|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 06/12/2016 01:03:19 a.m.; Action: BatchContainer.Start(); 
+2016-12-06 01:03:19.6775|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-06 01:03:19.6956|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Exec(Ks.Batch.Copere.In,1)
+2016-12-06 01:03:19.7216|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-06 01:03:19.7376|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Started
+2016-12-06 01:06:02.8579|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-06 01:06:02.9040|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-06 01:06:02.9475|DEBUG|Topshelf.Hosts.UninstallHost|Uninstalling Ks.Batch.Copere.In
+2016-12-06 01:06:02.9890|INFO|Topshelf.Runtime.Windows.HostInstaller|Uninstalling Ks.Batch.Copere.In service
+2016-12-06 01:06:03.0261|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopping
+2016-12-06 01:06:03.0421|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-06 01:06:03.0591|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UnInstall(Ks.Batch.Copere.In)
+2016-12-06 01:06:03.0741|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-06 01:06:03.0891|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-06 01:06:03.1071|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 06/12/2016 01:06:03 a.m.; Action: BatchContainer.Stop(); 
+2016-12-06 01:06:03.1211|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopped
+2016-12-06 01:07:25.7490|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-06 01:07:25.7960|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-06 01:07:25.8556|DEBUG|Topshelf.Hosts.InstallHost|Attempting to install 'Ks.Batch.Copere.In'
+2016-12-06 01:07:25.9166|INFO|Topshelf.Runtime.Windows.HostInstaller|Installing Ks Batch Copere In service
+2016-12-06 01:07:25.9872|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Opening Registry
+2016-12-06 01:07:26.0182|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Service path: "C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy\Ks.Batch.Copere.In.exe"
+2016-12-06 01:07:26.0493|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Image path: "C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy\Ks.Batch.Copere.In.exe"  -displayname "Ks Batch Copere In" -servicename "Ks.Batch.Copere.In"
+2016-12-06 01:07:26.0933|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Closing Registry
+2016-12-06 01:12:28.7304|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-06 01:12:28.7715|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-06 01:12:28.8095|DEBUG|Topshelf.Hosts.UninstallHost|Uninstalling Ks.Batch.Copere.In
+2016-12-06 01:12:28.8465|INFO|Topshelf.Runtime.Windows.HostInstaller|Uninstalling Ks.Batch.Copere.In service
+2016-12-06 01:15:18.9886|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-06 01:15:19.0291|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-06 01:15:19.0682|DEBUG|Topshelf.Hosts.InstallHost|Attempting to install 'Ks.Batch.Copere.In'
+2016-12-06 01:15:19.1107|INFO|Topshelf.Runtime.Windows.HostInstaller|Installing Ks Batch Copere In service
+2016-12-06 01:15:19.1627|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Opening Registry
+2016-12-06 01:15:19.1772|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Service path: "C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy\Ks.Batch.Copere.In.exe"
+2016-12-06 01:15:19.1903|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Image path: "C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy\Ks.Batch.Copere.In.exe"  -displayname "Ks Batch Copere In" -servicename "Ks.Batch.Copere.In"
+2016-12-06 01:15:19.2038|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Closing Registry
+2016-12-06 01:20:12.5773|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-06 01:20:12.6093|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-06 01:20:12.6609|DEBUG|Topshelf.Runtime.Windows.WindowsHostEnvironment|Started by the Windows services process
+2016-12-06 01:20:12.6709|DEBUG|Topshelf.Builders.RunBuilder|Running as a service, creating service host.
+2016-12-06 01:20:12.6869|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|Starting as a Windows service
+2016-12-06 01:20:12.6989|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting up as a windows service application
+2016-12-06 01:20:12.6989|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting
+2016-12-06 01:20:12.7289|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Current Directory: C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy
+2016-12-06 01:20:12.7459|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Arguments: 
+2016-12-06 01:20:13.0791|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-06 01:20:13.1452|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Copere.In)
+2016-12-06 01:20:13.1642|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-06 01:20:13.1792|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-06 01:20:13.1922|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 06/12/2016 01:20:13 a.m.; Action: BatchContainer.Start(); 
+2016-12-06 01:20:13.2062|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-06 01:20:13.2192|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Exec(Ks.Batch.Copere.In,1)
+2016-12-06 01:20:13.2332|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-06 01:20:13.2462|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Started
+2016-12-06 01:23:06.1765|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Service is being shutdown
+2016-12-06 01:23:06.1921|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopped
+2016-12-06 08:44:19.1509|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-06 08:44:19.3402|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-06 08:44:19.3922|DEBUG|Topshelf.Runtime.Windows.WindowsHostEnvironment|Started by the Windows services process
+2016-12-06 08:44:19.4087|DEBUG|Topshelf.Builders.RunBuilder|Running as a service, creating service host.
+2016-12-06 08:44:19.4352|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|Starting as a Windows service
+2016-12-06 08:44:19.4577|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting up as a windows service application
+2016-12-06 08:44:19.4785|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting
+2016-12-06 08:44:19.4945|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Current Directory: C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy
+2016-12-06 08:44:19.5085|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Arguments: 
+2016-12-06 08:44:20.0178|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-06 08:44:20.1119|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Copere.In)
+2016-12-06 08:44:20.1279|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-06 08:44:20.1499|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-06 08:44:20.1740|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 06/12/2016 08:44:20 a.m.; Action: BatchContainer.Start(); 
+2016-12-06 08:44:20.1940|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-06 08:44:20.2150|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Exec(Ks.Batch.Copere.In,1)
+2016-12-06 08:44:20.2485|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-06 08:44:20.2745|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Started
+2016-12-06 09:01:42.5497|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-06 09:01:42.5978|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-06 09:01:42.6388|DEBUG|Topshelf.Hosts.UninstallHost|Uninstalling Ks.Batch.Copere.In
+2016-12-06 09:01:42.6798|INFO|Topshelf.Runtime.Windows.HostInstaller|Uninstalling Ks.Batch.Copere.In service
+2016-12-06 09:01:42.7129|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopping
+2016-12-06 09:01:42.7299|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-06 09:01:42.7629|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UnInstall(Ks.Batch.Copere.In)
+2016-12-06 09:01:42.7829|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-06 09:01:42.8019|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-06 09:01:42.8230|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 06/12/2016 09:01:42 a.m.; Action: BatchContainer.Stop(); 
+2016-12-06 09:01:42.8390|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopped
+2016-12-06 09:13:45.3222|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-06 09:13:45.3722|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-06 09:13:45.4173|DEBUG|Topshelf.Hosts.InstallHost|Attempting to install 'Ks.Batch.Copere.In'
+2016-12-06 09:13:45.4669|INFO|Topshelf.Runtime.Windows.HostInstaller|Installing Ks Batch Copere In service
+2016-12-06 09:13:45.5240|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Opening Registry
+2016-12-06 09:13:45.5400|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Service path: "C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy\Ks.Batch.Copere.In.exe"
+2016-12-06 09:13:45.5550|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Image path: "C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy\Ks.Batch.Copere.In.exe"  -displayname "Ks Batch Copere In" -servicename "Ks.Batch.Copere.In"
+2016-12-06 09:13:45.5720|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Closing Registry
+2016-12-06 09:14:08.6623|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-06 09:14:08.7141|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-06 09:14:08.7732|DEBUG|Topshelf.Runtime.Windows.WindowsHostEnvironment|Started by the Windows services process
+2016-12-06 09:14:08.7912|DEBUG|Topshelf.Builders.RunBuilder|Running as a service, creating service host.
+2016-12-06 09:14:08.8212|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|Starting as a Windows service
+2016-12-06 09:14:08.8442|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting up as a windows service application
+2016-12-06 09:14:08.8652|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting
+2016-12-06 09:14:08.8842|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Current Directory: C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy
+2016-12-06 09:14:08.9012|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Arguments: 
+2016-12-06 09:14:09.3716|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-06 09:14:09.4628|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Copere.In)
+2016-12-06 09:14:09.4808|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-06 09:14:09.5008|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-06 09:14:09.5179|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 06/12/2016 09:14:09 a.m.; Action: BatchContainer.Start(); 
+2016-12-06 09:14:09.5369|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-06 09:14:09.5549|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Exec(Ks.Batch.Copere.In,1)
+2016-12-06 09:14:09.5753|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-06 09:14:09.5933|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Started
+2016-12-06 09:16:17.3867|INFO|Ks.Batch.Copere.In.Watcher|Starting Reading file 'C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Read\EC.ACT.NOMINAL_8001_122016.TXT'
+2016-12-06 09:16:17.4178|INFO|Ks.Batch.Copere.In.Watcher|File readed with '3' records
+2016-12-06 09:16:17.4368|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-06 09:16:17.4578|INFO|Ks.Batch.Util.DaoBase|Action: Dao.Process(Ks.Batch.Copere.In)
+2016-12-06 09:16:17.4808|INFO|Ks.Batch.Util.DaoBase|Action: Dao.GetParentOut()
+2016-12-06 09:16:17.5589|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-06 09:16:17.5789|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-06 09:16:17.5999|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UpdateScheduleBatch(Ks.Batch.Copere.In)
+2016-12-06 09:16:17.6179|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-06 09:16:17.6409|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-06 09:17:39.2418|INFO|Ks.Batch.Copere.In.Watcher|Starting Reading file 'C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Read\EC.ACT.NOMINAL_8001_012017.TXT'
+2016-12-06 09:17:39.2608|INFO|Ks.Batch.Copere.In.Watcher|File readed with '3' records
+2016-12-06 09:17:39.2798|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-06 09:17:39.2958|INFO|Ks.Batch.Util.DaoBase|Action: Dao.Process(Ks.Batch.Copere.In)
+2016-12-06 09:17:39.3128|INFO|Ks.Batch.Util.DaoBase|Action: Dao.GetParentOut()
+2016-12-06 09:17:39.3366|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-06 09:17:39.3536|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-06 09:17:39.3706|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UpdateScheduleBatch(Ks.Batch.Copere.In)
+2016-12-06 09:17:39.3876|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-06 09:17:39.4056|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-06 09:18:39.2490|INFO|Ks.Batch.Copere.In.Watcher|Starting Reading file 'C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Read\EC.ACT.NOMINAL_8001_022017.TXT'
+2016-12-06 09:18:39.2715|INFO|Ks.Batch.Copere.In.Watcher|File readed with '3' records
+2016-12-06 09:18:39.2920|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-06 09:18:39.3090|INFO|Ks.Batch.Util.DaoBase|Action: Dao.Process(Ks.Batch.Copere.In)
+2016-12-06 09:18:39.3255|INFO|Ks.Batch.Util.DaoBase|Action: Dao.GetParentOut()
+2016-12-06 09:18:39.3445|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-06 09:18:39.3611|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-06 09:18:39.3771|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UpdateScheduleBatch(Ks.Batch.Copere.In)
+2016-12-06 09:18:39.3941|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-06 09:18:39.4121|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-07 00:08:02.5575|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-07 00:08:02.6840|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-07 00:08:02.7291|DEBUG|Topshelf.Hosts.UninstallHost|Uninstalling Ks.Batch.Copere.In
+2016-12-07 00:08:02.7811|INFO|Topshelf.Runtime.Windows.HostInstaller|Uninstalling Ks.Batch.Copere.In service
+2016-12-07 00:08:02.8151|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopping
+2016-12-07 00:08:02.8341|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-07 00:08:02.8722|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UnInstall(Ks.Batch.Copere.In)
+2016-12-07 00:08:02.8902|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-07 00:08:02.9082|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-07 00:08:02.9262|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 07/12/2016 12:08:02 a.m.; Action: BatchContainer.Stop(); 
+2016-12-07 00:08:02.9442|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopped
+2016-12-07 00:14:27.4269|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-07 00:14:27.4850|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-07 00:14:27.5350|DEBUG|Topshelf.Hosts.InstallHost|Attempting to install 'Ks.Batch.Copere.In'
+2016-12-07 00:14:27.5910|INFO|Topshelf.Runtime.Windows.HostInstaller|Installing Ks Batch Copere In service
+2016-12-07 00:14:27.6599|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Opening Registry
+2016-12-07 00:14:27.6814|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Service path: "C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy\Ks.Batch.Copere.In.exe"
+2016-12-07 00:14:27.7010|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Image path: "C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy\Ks.Batch.Copere.In.exe"  -displayname "Ks Batch Copere In" -servicename "Ks.Batch.Copere.In"
+2016-12-07 00:14:27.7195|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Closing Registry
+2016-12-07 00:16:05.7111|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-07 00:16:05.7611|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-07 00:16:05.8222|DEBUG|Topshelf.Runtime.Windows.WindowsHostEnvironment|Started by the Windows services process
+2016-12-07 00:16:05.8402|DEBUG|Topshelf.Builders.RunBuilder|Running as a service, creating service host.
+2016-12-07 00:16:05.8672|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|Starting as a Windows service
+2016-12-07 00:16:05.8892|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting up as a windows service application
+2016-12-07 00:16:05.9113|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting
+2016-12-07 00:16:05.9303|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Current Directory: C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy
+2016-12-07 00:16:05.9473|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Arguments: 
+2016-12-07 00:16:06.4206|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-07 00:16:06.5137|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Copere.In)
+2016-12-07 00:16:06.5337|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-07 00:16:06.5537|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-07 00:16:06.5717|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 07/12/2016 12:16:06 a.m.; Action: BatchContainer.Start(); 
+2016-12-07 00:16:06.5907|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-07 00:16:06.6107|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Exec(Ks.Batch.Copere.In,1)
+2016-12-07 00:16:06.6327|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-07 00:16:06.6507|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Started
+2016-12-07 00:19:15.0873|INFO|Ks.Batch.Copere.In.Watcher|Starting Reading file 'C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Read\EC.ACT.NOMINAL_8001_122016.TXT'
+2016-12-07 00:19:15.1323|INFO|Ks.Batch.Copere.In.Watcher|File readed with '3' records
+2016-12-07 00:19:15.1733|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-07 00:19:15.2204|INFO|Ks.Batch.Util.DaoBase|Action: Dao.Process(Ks.Batch.Copere.In)
+2016-12-07 00:19:15.2584|INFO|Ks.Batch.Util.DaoBase|Action: Dao.GetParentOut()
+2016-12-07 00:19:15.3915|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-07 00:19:15.4175|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-07 00:19:15.4495|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UpdateScheduleBatch(Ks.Batch.Copere.In)
+2016-12-07 00:19:15.4755|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-07 00:19:15.5026|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-07 00:23:13.7759|INFO|Ks.Batch.Copere.In.Watcher|Starting Reading file 'C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Read\EC.ACT.NOMINAL_8001_122016.TXT'
+2016-12-07 00:23:13.7979|INFO|Ks.Batch.Copere.In.Watcher|File readed with '3' records
+2016-12-07 00:23:13.8154|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-07 00:23:13.8424|INFO|Ks.Batch.Util.DaoBase|Action: Dao.Process(Ks.Batch.Copere.In)
+2016-12-07 00:23:13.8594|INFO|Ks.Batch.Util.DaoBase|Action: Dao.GetParentOut()
+2016-12-07 00:23:13.8809|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-07 00:23:13.8995|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-07 00:23:13.9170|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UpdateScheduleBatch(Ks.Batch.Copere.In)
+2016-12-07 00:23:13.9350|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-07 00:23:13.9540|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-07 00:25:13.3684|INFO|Ks.Batch.Copere.In.Watcher|Starting Reading file 'C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Read\EC.ACT.NOMINAL_8001_122016.TXT'
+2016-12-07 00:25:13.3969|INFO|Ks.Batch.Copere.In.Watcher|File readed with '3' records
+2016-12-07 00:25:13.4175|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-07 00:25:13.4365|INFO|Ks.Batch.Util.DaoBase|Action: Dao.Process(Ks.Batch.Copere.In)
+2016-12-07 00:25:13.4602|INFO|Ks.Batch.Util.DaoBase|Action: Dao.GetParentOut()
+2016-12-07 00:25:13.4842|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-07 00:25:13.5052|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-07 00:25:13.5242|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UpdateScheduleBatch(Ks.Batch.Copere.In)
+2016-12-07 00:25:13.5462|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-07 00:25:13.5693|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-07 00:26:13.3270|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopping
+2016-12-07 00:26:13.3470|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-07 00:26:13.3650|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UnInstall(Ks.Batch.Copere.In)
+2016-12-07 00:26:13.3820|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-07 00:26:13.4001|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-07 00:26:13.4171|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 07/12/2016 12:26:13 a.m.; Action: BatchContainer.Stop(); 
+2016-12-07 00:26:13.4341|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopped
+2016-12-07 00:29:15.8699|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-07 00:29:15.9389|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-07 00:29:16.0040|DEBUG|Topshelf.Builders.RunBuilder|Running as a console application, creating the console host.
+2016-12-07 00:29:16.0490|DEBUG|Topshelf.Hosts.ConsoleRunHost|Starting up as a console application
+2016-12-07 00:29:16.6834|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-07 00:29:16.8375|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Copere.In)
+2016-12-07 00:29:16.8655|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-07 00:29:16.9196|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-07 00:29:16.9386|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 07/12/2016 12:29:16 a.m.; Action: BatchContainer.Start(); 
+2016-12-07 00:29:16.9596|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-07 00:29:16.9786|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Exec(Ks.Batch.Copere.In,1)
+2016-12-07 00:29:17.0176|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-07 00:29:17.0477|INFO|Topshelf.Hosts.ConsoleRunHost|The Ks.Batch.Copere.In service is now running, press Control+C to exit.
+2016-12-07 00:29:38.7238|INFO|Ks.Batch.Copere.In.Watcher|Starting Reading file 'C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Read\EC.ACT.NOMINAL_8001_122016.TXT'
+2016-12-07 00:29:54.2929|INFO|Ks.Batch.Copere.In.Watcher|File readed with '3' records
+2016-12-07 00:29:57.0545|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-07 00:29:57.0755|INFO|Ks.Batch.Util.DaoBase|Action: Dao.Process(Ks.Batch.Copere.In)
+2016-12-07 00:29:57.0935|INFO|Ks.Batch.Util.DaoBase|Action: Dao.GetParentOut()
+2016-12-07 00:29:57.2304|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-07 00:29:57.6838|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-07 00:29:57.7038|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UpdateScheduleBatch(Ks.Batch.Copere.In)
+2016-12-07 00:29:57.7218|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-07 00:29:57.7628|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-07 00:39:08.2139|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-07 00:39:08.2649|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-07 00:39:08.3259|DEBUG|Topshelf.Runtime.Windows.WindowsHostEnvironment|Started by the Windows services process
+2016-12-07 00:39:08.3429|DEBUG|Topshelf.Builders.RunBuilder|Running as a service, creating service host.
+2016-12-07 00:39:08.3700|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|Starting as a Windows service
+2016-12-07 00:39:08.3920|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting up as a windows service application
+2016-12-07 00:39:08.4130|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting
+2016-12-07 00:39:08.4310|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Current Directory: C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy
+2016-12-07 00:39:08.4480|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Arguments: 
+2016-12-07 00:39:08.9395|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-07 00:39:09.0333|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Copere.In)
+2016-12-07 00:39:09.0513|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-07 00:39:09.0703|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-07 00:39:09.0883|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 07/12/2016 12:39:09 a.m.; Action: BatchContainer.Start(); 
+2016-12-07 00:39:09.1073|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-07 00:39:09.1253|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Exec(Ks.Batch.Copere.In,1)
+2016-12-07 00:39:09.1441|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-07 00:39:09.1618|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Started
+2016-12-07 00:48:17.1811|INFO|Ks.Batch.Copere.In.Watcher|Starting Reading file 'C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Read\EC.ACT.NOMINAL_8001_012017.TXT'
+2016-12-07 00:48:17.2321|INFO|Ks.Batch.Copere.In.Watcher|File readed with '3' records
+2016-12-07 00:48:17.2512|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-07 00:48:17.2812|INFO|Ks.Batch.Util.DaoBase|Action: Dao.Process(Ks.Batch.Copere.In)
+2016-12-07 00:48:17.3002|INFO|Ks.Batch.Util.DaoBase|Action: Dao.GetParentOut()
+2016-12-07 00:48:17.3832|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-07 00:48:17.4033|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-07 00:48:17.4233|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UpdateScheduleBatch(Ks.Batch.Copere.In)
+2016-12-07 00:48:17.4403|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-07 00:48:17.4623|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-07 00:51:11.3672|INFO|Ks.Batch.Copere.In.Watcher|Starting Reading file 'C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Read\EC.ACT.NOMINAL_8001_022017.TXT'
+2016-12-07 00:51:11.3863|INFO|Ks.Batch.Copere.In.Watcher|File readed with '3' records
+2016-12-07 00:51:11.4043|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-07 00:51:11.4223|INFO|Ks.Batch.Util.DaoBase|Action: Dao.Process(Ks.Batch.Copere.In)
+2016-12-07 00:51:11.4393|INFO|Ks.Batch.Util.DaoBase|Action: Dao.GetParentOut()
+2016-12-07 00:51:11.4603|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-07 00:51:11.4783|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-07 00:51:11.4953|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UpdateScheduleBatch(Ks.Batch.Copere.In)
+2016-12-07 00:51:11.5133|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-07 00:51:11.5394|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-07 00:59:22.4874|INFO|Ks.Batch.Copere.In.Watcher|Starting Reading file 'C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Read\EC.ACT.NOMINAL_8001_032017.TXT'
+2016-12-07 00:59:22.5074|INFO|Ks.Batch.Copere.In.Watcher|File readed with '3' records
+2016-12-07 00:59:22.5284|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-07 00:59:22.5555|INFO|Ks.Batch.Util.DaoBase|Action: Dao.Process(Ks.Batch.Copere.In)
+2016-12-07 00:59:22.5795|INFO|Ks.Batch.Util.DaoBase|Action: Dao.GetParentOut()
+2016-12-07 00:59:22.6025|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-07 00:59:22.6195|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-07 00:59:22.6355|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UpdateScheduleBatch(Ks.Batch.Copere.In)
+2016-12-07 00:59:22.6525|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-07 00:59:22.6705|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-11 21:47:15.3150|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopping
+2016-12-11 21:47:15.4373|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-11 21:47:25.6992|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect() Error: Cannot open database "ACMR3" requested by the login. The login failed.
+Login failed for user 'NT AUTHORITY\SYSTEM'.
+2016-12-11 21:47:25.7172|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UnInstall(Ks.Batch.Copere.In)
+2016-12-11 21:47:25.7342|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-11 21:47:25.7522|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In) Error: ExecuteReader requiere una Connection abierta y disponible. El estado actual de la conexión es cerrada.
+2016-12-11 21:47:25.7712|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.UnInstall(Ks.Batch.Copere.In) Error: ExecuteNonQuery requiere una Connection abierta y disponible. El estado actual de la conexión es cerrada.
+2016-12-11 21:47:25.7943|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 11/12/2016 09:47:25 p.m.; Action: BatchContainer.Stop(); 
+2016-12-11 21:47:25.8173|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopped
+2016-12-11 21:50:04.7320|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-11 21:50:04.7924|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-11 21:50:04.8445|DEBUG|Topshelf.Hosts.UninstallHost|Uninstalling Ks.Batch.Copere.In
+2016-12-11 21:50:04.8975|INFO|Topshelf.Runtime.Windows.HostInstaller|Uninstalling Ks.Batch.Copere.In service
+2016-12-11 21:50:42.6750|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-11 21:50:42.7320|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-11 21:50:42.7880|DEBUG|Topshelf.Hosts.InstallHost|Attempting to install 'Ks.Batch.Copere.In'
+2016-12-11 21:50:42.8471|INFO|Topshelf.Runtime.Windows.HostInstaller|Installing Ks Batch Copere In service
+2016-12-11 21:50:42.9171|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Opening Registry
+2016-12-11 21:50:42.9421|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Service path: "C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy\Ks.Batch.Copere.In.exe"
+2016-12-11 21:50:42.9651|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Image path: "C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy\Ks.Batch.Copere.In.exe"  -displayname "Ks Batch Copere In" -servicename "Ks.Batch.Copere.In"
+2016-12-11 21:50:42.9902|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Closing Registry
+2016-12-11 21:51:22.8512|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-11 21:51:22.9202|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-11 21:51:22.9982|DEBUG|Topshelf.Runtime.Windows.WindowsHostEnvironment|Started by the Windows services process
+2016-12-11 21:51:23.0273|DEBUG|Topshelf.Builders.RunBuilder|Running as a service, creating service host.
+2016-12-11 21:51:23.0623|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|Starting as a Windows service
+2016-12-11 21:51:23.0913|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting up as a windows service application
+2016-12-11 21:51:23.1183|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting
+2016-12-11 21:51:23.1424|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Current Directory: C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy
+2016-12-11 21:51:23.1665|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Arguments: 
+2016-12-11 21:51:23.7269|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-11 21:51:33.8589|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect() Error: Cannot open database "ACMR" requested by the login. The login failed.
+Login failed for user 'NT AUTHORITY\SYSTEM'.
+2016-12-11 21:51:33.8849|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Copere.In)
+2016-12-11 21:51:33.9079|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-11 21:51:33.9310|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In) Error: ExecuteReader requiere una Connection abierta y disponible. El estado actual de la conexión es cerrada.
+2016-12-11 21:51:33.9530|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Copere.In) Error: ExecuteNonQuery requiere una Connection abierta y disponible. El estado actual de la conexión es cerrada.
+2016-12-11 21:51:33.9820|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 11/12/2016 09:51:33 p.m.; Action: BatchContainer.Start(); 
+2016-12-11 21:51:34.0070|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-11 21:51:34.0350|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect() Error: Cannot open database "ACMR" requested by the login. The login failed.
+Login failed for user 'NT AUTHORITY\SYSTEM'.
+2016-12-11 21:51:34.0690|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Started
+2016-12-11 22:00:39.5171|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopping
+2016-12-11 22:00:39.5441|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-11 22:00:39.5792|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UnInstall(Ks.Batch.Copere.In)
+2016-12-11 22:00:39.6032|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-11 22:00:39.6312|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-11 22:00:39.6592|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 11/12/2016 10:00:39 p.m.; Action: BatchContainer.Stop(); 
+2016-12-11 22:00:39.6842|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopped
+2016-12-11 22:00:53.7791|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-11 22:00:53.8351|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-11 22:00:53.9042|DEBUG|Topshelf.Runtime.Windows.WindowsHostEnvironment|Started by the Windows services process
+2016-12-11 22:00:53.9272|DEBUG|Topshelf.Builders.RunBuilder|Running as a service, creating service host.
+2016-12-11 22:00:53.9612|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|Starting as a Windows service
+2016-12-11 22:00:53.9892|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting up as a windows service application
+2016-12-11 22:00:54.0183|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting
+2016-12-11 22:00:54.0483|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Current Directory: C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy
+2016-12-11 22:00:54.0713|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Arguments: 
+2016-12-11 22:00:54.5660|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-11 22:00:54.6644|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Copere.In)
+2016-12-11 22:00:54.6894|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-11 22:00:54.7206|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-11 22:00:54.7437|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 11/12/2016 10:00:54 p.m.; Action: BatchContainer.Start(); 
+2016-12-11 22:00:54.7687|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-11 22:00:54.7937|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Exec(Ks.Batch.Copere.In,1)
+2016-12-11 22:00:54.8217|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-11 22:00:54.8497|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Started
+2016-12-11 22:02:44.4564|INFO|Ks.Batch.Copere.In.Watcher|Starting Reading file 'C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Read\EC.ACT.NOMINAL_8001_122016.TXT'
+2016-12-11 22:02:44.4984|INFO|Ks.Batch.Copere.In.Watcher|File readed with '1' records
+2016-12-11 22:02:44.5274|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-11 22:02:44.5555|INFO|Ks.Batch.Util.DaoBase|Action: Dao.Process(Ks.Batch.Copere.In)
+2016-12-11 22:02:44.5785|INFO|Ks.Batch.Util.DaoBase|Action: Dao.GetParentOut()
+2016-12-11 22:02:44.6725|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-11 22:02:44.6995|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-11 22:02:44.7196|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UpdateScheduleBatch(Ks.Batch.Copere.In)
+2016-12-11 22:02:44.7366|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-11 22:02:44.7616|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-11 22:04:24.5484|INFO|Ks.Batch.Copere.In.Watcher|Starting Reading file 'C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Read\EC.ACT.NOMINAL_8001_122016.TXT'
+2016-12-11 22:04:24.5674|INFO|Ks.Batch.Copere.In.Watcher|File readed with '1' records
+2016-12-11 22:04:24.5854|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-11 22:04:24.6034|INFO|Ks.Batch.Util.DaoBase|Action: Dao.Process(Ks.Batch.Copere.In)
+2016-12-11 22:04:24.6205|INFO|Ks.Batch.Util.DaoBase|Action: Dao.GetParentOut()
+2016-12-11 22:04:24.6445|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-11 22:04:24.6645|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-11 22:04:24.6815|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UpdateScheduleBatch(Ks.Batch.Copere.In)
+2016-12-11 22:04:24.6975|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-11 22:04:24.7215|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-11 22:54:35.1122|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-11 22:54:35.1887|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-11 22:54:35.2548|DEBUG|Topshelf.Hosts.UninstallHost|Uninstalling Ks.Batch.Copere.In
+2016-12-11 22:54:35.3198|INFO|Topshelf.Runtime.Windows.HostInstaller|Uninstalling Ks.Batch.Copere.In service
+2016-12-11 22:54:35.3689|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopping
+2016-12-11 22:54:35.3999|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-11 22:54:35.4399|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UnInstall(Ks.Batch.Copere.In)
+2016-12-11 22:54:35.4649|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-11 22:54:35.4949|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-11 22:54:35.5200|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 11/12/2016 10:54:35 p.m.; Action: BatchContainer.Stop(); 
+2016-12-11 22:54:35.5460|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopped
+2016-12-11 22:55:27.2882|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-11 22:55:27.3542|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-11 22:55:27.4033|DEBUG|Topshelf.Hosts.InstallHost|Attempting to install 'Ks.Batch.Copere.In'
+2016-12-11 22:55:27.4663|INFO|Topshelf.Runtime.Windows.HostInstaller|Installing Ks Batch Copere In service
+2016-12-11 22:55:27.5344|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Opening Registry
+2016-12-11 22:55:27.5564|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Service path: "C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy\Ks.Batch.Copere.In.exe"
+2016-12-11 22:55:27.5744|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Image path: "C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy\Ks.Batch.Copere.In.exe"  -displayname "Ks Batch Copere In" -servicename "Ks.Batch.Copere.In"
+2016-12-11 22:55:27.6004|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Closing Registry
+2016-12-11 22:56:42.5725|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-11 22:56:42.6376|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-11 22:56:42.7236|DEBUG|Topshelf.Runtime.Windows.WindowsHostEnvironment|Started by the Windows services process
+2016-12-11 22:56:42.7416|DEBUG|Topshelf.Builders.RunBuilder|Running as a service, creating service host.
+2016-12-11 22:56:42.7776|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|Starting as a Windows service
+2016-12-11 22:56:42.8067|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting up as a windows service application
+2016-12-11 22:56:42.8287|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting
+2016-12-11 22:56:42.8477|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Current Directory: C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy
+2016-12-11 22:56:42.8687|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Arguments: 
+2016-12-11 22:56:43.4261|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-11 22:56:43.5351|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Copere.In)
+2016-12-11 22:56:43.5592|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-11 22:56:43.5892|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-11 22:56:43.6082|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 11/12/2016 10:56:43 p.m.; Action: BatchContainer.Start(); 
+2016-12-11 22:56:43.6282|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-11 22:56:43.6492|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Exec(Ks.Batch.Copere.In,1)
+2016-12-11 22:56:43.6812|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-11 22:56:43.7043|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Started
+2016-12-11 23:08:23.8285|INFO|Ks.Batch.Copere.In.Watcher|Starting Reading file 'C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Read\EC.ACT.NOMINAL_8001_012017.TXT'
+2016-12-11 23:08:23.8555|INFO|Ks.Batch.Copere.In.Watcher|File readed with '1' records
+2016-12-11 23:08:23.8675|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-11 23:08:23.8925|INFO|Ks.Batch.Util.DaoBase|Action: Dao.Process(Ks.Batch.Copere.In)
+2016-12-11 23:08:23.9076|INFO|Ks.Batch.Util.DaoBase|Action: Dao.GetParentOut()
+2016-12-11 23:08:23.9896|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-11 23:08:24.0166|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-11 23:08:24.0326|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UpdateScheduleBatch(Ks.Batch.Copere.In)
+2016-12-11 23:08:24.0537|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-11 23:08:24.0786|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-11 23:47:01.8348|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-11 23:47:01.9068|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-11 23:47:01.9729|DEBUG|Topshelf.Hosts.UninstallHost|Uninstalling Ks.Batch.Copere.In
+2016-12-11 23:47:02.0491|INFO|Topshelf.Runtime.Windows.HostInstaller|Uninstalling Ks.Batch.Copere.In service
+2016-12-11 23:47:02.1051|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopping
+2016-12-11 23:47:02.1338|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-11 23:47:02.1814|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UnInstall(Ks.Batch.Copere.In)
+2016-12-11 23:47:02.2074|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-11 23:47:02.2294|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-11 23:47:02.2564|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 11/12/2016 11:47:02 p.m.; Action: BatchContainer.Stop(); 
+2016-12-11 23:47:02.2854|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopped
+2016-12-11 23:47:53.4259|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-11 23:47:53.5130|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-11 23:47:53.5880|DEBUG|Topshelf.Hosts.InstallHost|Attempting to install 'Ks.Batch.Copere.In'
+2016-12-11 23:47:53.6573|INFO|Topshelf.Runtime.Windows.HostInstaller|Installing Ks Batch Copere In service
+2016-12-11 23:47:53.7561|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Opening Registry
+2016-12-11 23:47:53.7831|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Service path: "C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy\Ks.Batch.Copere.In.exe"
+2016-12-11 23:47:53.8103|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Image path: "C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy\Ks.Batch.Copere.In.exe"  -displayname "Ks Batch Copere In" -servicename "Ks.Batch.Copere.In"
+2016-12-11 23:47:53.8354|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Closing Registry
+2016-12-12 03:24:45.0298|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2016-12-12 03:24:45.0876|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-12 03:24:45.1531|DEBUG|Topshelf.Runtime.Windows.WindowsHostEnvironment|Started by the Windows services process
+2016-12-12 03:24:45.1721|DEBUG|Topshelf.Builders.RunBuilder|Running as a service, creating service host.
+2016-12-12 03:24:45.2052|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|Starting as a Windows service
+2016-12-12 03:24:45.2272|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting up as a windows service application
+2016-12-12 03:24:45.2497|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting
+2016-12-12 03:24:45.2697|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Current Directory: C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy
+2016-12-12 03:24:45.2912|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Arguments: 
+2016-12-12 03:24:45.7847|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-12 03:24:45.9127|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Copere.In)
+2016-12-12 03:24:45.9337|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2016-12-12 03:24:45.9587|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-12 03:24:45.9757|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 12/12/2016 03:24:45 a.m.; Action: BatchContainer.Start(); 
+2016-12-12 03:24:45.9968|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-12 03:24:46.0178|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Exec(Ks.Batch.Copere.In,1)
+2016-12-12 03:24:46.0408|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-12 03:24:46.0588|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Started
+2017-01-03 00:18:22.2467|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2017-01-03 00:18:22.3427|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2017-01-03 00:18:22.4018|DEBUG|Topshelf.Hosts.UninstallHost|Uninstalling Ks.Batch.Copere.In
+2017-01-03 00:18:22.4528|INFO|Topshelf.Runtime.Windows.HostInstaller|Uninstalling Ks.Batch.Copere.In service
+2017-01-03 00:19:35.3217|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2017-01-03 00:19:35.4960|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2017-01-03 00:19:35.5701|DEBUG|Topshelf.Hosts.InstallHost|Attempting to install 'Ks.Batch.Copere.In'
+2017-01-03 00:19:35.6411|INFO|Topshelf.Runtime.Windows.HostInstaller|Installing Ks Batch Copere In service
+2017-01-03 00:19:36.1916|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Opening Registry
+2017-01-03 00:19:36.2157|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Service path: "C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy\Ks.Batch.Copere.In.exe"
+2017-01-03 00:19:36.2437|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Image path: "C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy\Ks.Batch.Copere.In.exe"  -displayname "Ks Batch Copere In" -servicename "Ks.Batch.Copere.In"
+2017-01-03 00:19:36.2637|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Closing Registry
+2017-01-03 00:29:46.5215|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2017-01-03 00:29:46.6226|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2017-01-03 00:29:46.6876|DEBUG|Topshelf.Runtime.Windows.WindowsHostEnvironment|Started by the Windows services process
+2017-01-03 00:29:46.7057|DEBUG|Topshelf.Builders.RunBuilder|Running as a service, creating service host.
+2017-01-03 00:29:46.7382|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|Starting as a Windows service
+2017-01-03 00:29:46.7642|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting up as a windows service application
+2017-01-03 00:29:46.7922|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting
+2017-01-03 00:29:46.8132|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Current Directory: C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy
+2017-01-03 00:29:46.8322|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Arguments: 
+2017-01-03 00:29:47.4577|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2017-01-03 00:29:57.5905|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect() Error: Cannot open database "ACMR" requested by the login. The login failed.
+Login failed for user 'NT AUTHORITY\SYSTEM'.
+2017-01-03 00:29:57.6175|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Copere.In)
+2017-01-03 00:29:57.6495|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2017-01-03 00:29:57.6755|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In) Error: ExecuteReader requiere una Connection abierta y disponible. El estado actual de la conexión es cerrada.
+2017-01-03 00:29:57.6995|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Copere.In) Error: ExecuteNonQuery requiere una Connection abierta y disponible. El estado actual de la conexión es cerrada.
+2017-01-03 00:29:57.7296|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 03/01/2017 12:29:57 a.m.; Action: BatchContainer.Start(); 
+2017-01-03 00:29:57.7626|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2017-01-03 00:29:57.7866|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect() Error: Cannot open database "ACMR" requested by the login. The login failed.
+Login failed for user 'NT AUTHORITY\SYSTEM'.
+2017-01-03 00:29:57.8206|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Started
+2017-01-03 00:54:29.6684|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2017-01-03 00:54:29.7524|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2017-01-03 00:54:29.8075|DEBUG|Topshelf.Hosts.UninstallHost|Uninstalling Ks.Batch.Copere.In
+2017-01-03 00:54:29.8695|INFO|Topshelf.Runtime.Windows.HostInstaller|Uninstalling Ks.Batch.Copere.In service
+2017-01-03 00:54:29.9425|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopping
+2017-01-03 00:54:29.9836|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2017-01-03 00:54:40.0506|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect() Error: Cannot open database "ACMR" requested by the login. The login failed.
+Login failed for user 'NT AUTHORITY\SYSTEM'.
+2017-01-03 00:54:40.0836|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UnInstall(Ks.Batch.Copere.In)
+2017-01-03 00:54:40.1267|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2017-01-03 00:54:40.1627|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In) Error: ExecuteReader requiere una Connection abierta y disponible. El estado actual de la conexión es cerrada.
+2017-01-03 00:54:40.2037|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.UnInstall(Ks.Batch.Copere.In) Error: ExecuteNonQuery requiere una Connection abierta y disponible. El estado actual de la conexión es cerrada.
+2017-01-03 00:54:40.2427|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 03/01/2017 12:54:40 a.m.; Action: BatchContainer.Stop(); 
+2017-01-03 00:54:40.2858|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopped
+2017-01-03 00:56:31.4004|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2017-01-03 00:56:31.4884|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2017-01-03 00:56:31.5695|DEBUG|Topshelf.Hosts.InstallHost|Attempting to install 'Ks.Batch.Copere.In'
+2017-01-03 00:56:31.6488|INFO|Topshelf.Runtime.Windows.HostInstaller|Installing Ks Batch Copere In service
+2017-01-03 00:56:31.7524|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Opening Registry
+2017-01-03 00:56:31.7964|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Service path: "C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy\Ks.Batch.Copere.In.exe"
+2017-01-03 00:56:31.8284|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Image path: "C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy\Ks.Batch.Copere.In.exe"  -displayname "Ks Batch Copere In" -servicename "Ks.Batch.Copere.In"
+2017-01-03 00:56:31.8594|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Closing Registry
+2017-01-07 00:17:41.0810|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2017-01-07 00:17:41.3577|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2017-01-07 00:17:41.4102|DEBUG|Topshelf.Hosts.UninstallHost|Uninstalling Ks.Batch.Copere.In
+2017-01-07 00:17:41.4633|INFO|Topshelf.Runtime.Windows.HostInstaller|Uninstalling Ks.Batch.Copere.In service
+2017-01-07 00:18:31.7425|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2017-01-07 00:18:31.8246|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2017-01-07 00:18:31.8910|DEBUG|Topshelf.Hosts.InstallHost|Attempting to install 'Ks.Batch.Copere.In'
+2017-01-07 00:18:31.9591|INFO|Topshelf.Runtime.Windows.HostInstaller|Installing Ks Batch Copere In service
+2017-01-07 00:18:32.0459|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Opening Registry
+2017-01-07 00:18:32.0810|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Service path: "C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy\Ks.Batch.Copere.In.exe"
+2017-01-07 00:18:32.1157|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Image path: "C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy\Ks.Batch.Copere.In.exe"  -displayname "Ks Batch Copere In" -servicename "Ks.Batch.Copere.In"
+2017-01-07 00:18:32.1527|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Closing Registry
+2017-01-07 00:26:36.7298|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2017-01-07 00:26:36.7848|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2017-01-07 00:26:36.8459|DEBUG|Topshelf.Runtime.Windows.WindowsHostEnvironment|Started by the Windows services process
+2017-01-07 00:26:36.8669|DEBUG|Topshelf.Builders.RunBuilder|Running as a service, creating service host.
+2017-01-07 00:26:36.8959|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|Starting as a Windows service
+2017-01-07 00:26:36.9189|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting up as a windows service application
+2017-01-07 00:26:36.9400|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting
+2017-01-07 00:26:36.9570|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Current Directory: C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy
+2017-01-07 00:26:36.9750|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Arguments: 
+2017-01-07 00:26:37.5692|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2017-01-07 00:26:37.6584|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Copere.In)
+2017-01-07 00:26:37.6764|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2017-01-07 00:26:37.7010|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2017-01-07 00:26:37.7190|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 07/01/2017 12:26:37 a.m.; Action: BatchContainer.Start(); 
+2017-01-07 00:26:37.7380|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2017-01-07 00:26:37.7560|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Exec(Ks.Batch.Copere.In,1)
+2017-01-07 00:26:37.7770|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2017-01-07 00:26:37.7950|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Started
+2017-01-07 00:27:42.7889|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Pausing service
+2017-01-07 00:27:42.8084|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 07/01/2017 12:27:42 a.m.; Action: BatchContainer.Pause(); 
+2017-01-07 00:27:42.8264|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2017-01-07 00:27:42.8434|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Exec(Ks.Batch.Copere.In,0)
+2017-01-07 00:27:42.8654|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2017-01-07 00:27:42.8829|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Paused
+2017-01-07 00:36:23.2304|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopping
+2017-01-07 00:36:23.2504|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2017-01-07 00:36:23.2774|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UnInstall(Ks.Batch.Copere.In)
+2017-01-07 00:36:23.2944|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2017-01-07 00:36:23.3114|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2017-01-07 00:36:23.3284|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 07/01/2017 12:36:23 a.m.; Action: BatchContainer.Stop(); 
+2017-01-07 00:36:23.3454|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopped
+2017-01-07 00:36:25.2838|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Copere.In
+[Success] DisplayName Ks Batch Copere In
+[Success] Description This process read a file from Copere and Update data base
+[Success] ServiceName Ks.Batch.Copere.In
+2017-01-07 00:36:25.3328|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2017-01-07 00:36:25.3888|DEBUG|Topshelf.Runtime.Windows.WindowsHostEnvironment|Started by the Windows services process
+2017-01-07 00:36:25.4058|DEBUG|Topshelf.Builders.RunBuilder|Running as a service, creating service host.
+2017-01-07 00:36:25.4329|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|Starting as a Windows service
+2017-01-07 00:36:25.4539|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting up as a windows service application
+2017-01-07 00:36:25.4739|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting
+2017-01-07 00:36:25.4909|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Current Directory: C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy
+2017-01-07 00:36:25.5079|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Arguments: 
+2017-01-07 00:36:25.9952|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2017-01-07 00:36:26.0820|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Copere.In)
+2017-01-07 00:36:26.1000|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2017-01-07 00:36:26.1180|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2017-01-07 00:36:26.1360|INFO|Ks.Batch.Copere.In.BatchContainer|Time: 07/01/2017 12:36:26 a.m.; Action: BatchContainer.Start(); 
+2017-01-07 00:36:26.1531|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2017-01-07 00:36:26.1711|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Exec(Ks.Batch.Copere.In,1)
+2017-01-07 00:36:26.1908|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2017-01-07 00:36:26.2078|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Started
+2017-01-07 02:55:05.9860|INFO|Ks.Batch.Copere.In.Watcher|Starting Reading file 'C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Read\EC.ACT.NOMINAL_8001_012017.TXT'
+2017-01-07 02:55:06.0180|INFO|Ks.Batch.Copere.In.Watcher|File readed with '1' records
+2017-01-07 02:55:06.0450|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2017-01-07 02:55:06.0750|INFO|Ks.Batch.Util.DaoBase|Action: Dao.Process(Ks.Batch.Copere.In)
+2017-01-07 02:55:06.0940|INFO|Ks.Batch.Util.DaoBase|Action: Dao.GetParentOut()
+2017-01-07 02:55:06.1921|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2017-01-07 02:55:06.2131|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2017-01-07 02:55:06.2321|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UpdateScheduleBatch(Ks.Batch.Copere.In)
+2017-01-07 02:55:06.2521|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2017-01-07 02:55:06.2802|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2017-01-07 02:56:47.8816|INFO|Ks.Batch.Copere.In.Watcher|Starting Reading file 'C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Read\EC.ACT.NOMINAL_8001_022017.TXT'
+2017-01-07 02:56:47.9016|INFO|Ks.Batch.Copere.In.Watcher|File readed with '1' records
+2017-01-07 02:56:47.9186|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2017-01-07 02:56:47.9366|INFO|Ks.Batch.Util.DaoBase|Action: Dao.Process(Ks.Batch.Copere.In)
+2017-01-07 02:56:47.9536|INFO|Ks.Batch.Util.DaoBase|Action: Dao.GetParentOut()
+2017-01-07 02:56:47.9826|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2017-01-07 02:56:48.0036|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2017-01-07 02:56:48.0257|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UpdateScheduleBatch(Ks.Batch.Copere.In)
+2017-01-07 02:56:48.0487|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Copere.In)
+2017-01-07 02:56:48.0667|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2017-01-08 17:25:03.7832|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Service is being shutdown
+2017-01-08 17:25:06.8150|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopped

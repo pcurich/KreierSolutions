@@ -1,0 +1,427 @@
+2016-12-11 21:46:52.2769|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopping
+2016-12-11 21:46:52.6959|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-11 21:47:02.7938|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect() Error: Cannot open database "ACMR3" requested by the login. The login failed.
+Login failed for user 'NT AUTHORITY\SYSTEM'.
+2016-12-11 21:47:02.8018|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UnInstall(Ks.Batch.Caja.In)
+2016-12-11 21:47:02.8018|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Caja.In)
+2016-12-11 21:47:02.8168|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Caja.In) Error: ExecuteReader requiere una Connection abierta y disponible. El estado actual de la conexión es cerrada.
+2016-12-11 21:47:02.8168|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.UnInstall(Ks.Batch.Caja.In) Error: ExecuteNonQuery requiere una Connection abierta y disponible. El estado actual de la conexión es cerrada.
+2016-12-11 21:47:02.8419|INFO|Ks.Batch.Caja.In.BatchContainer|Time: 11/12/2016 09:47:02 p.m.; Action: BatchContainer.Stop(); 
+2016-12-11 21:47:02.8569|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopped
+2016-12-11 21:49:51.7787|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Caja.In
+[Success] DisplayName Ks Batch Caja In
+[Success] Description This process read a file from Caja and Update data base
+[Success] ServiceName Ks.Batch.Caja.In
+2016-12-11 21:49:51.8276|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-11 21:49:51.8706|DEBUG|Topshelf.Hosts.UninstallHost|Uninstalling Ks.Batch.Caja.In
+2016-12-11 21:49:51.9665|INFO|Topshelf.Runtime.Windows.HostInstaller|Uninstalling Ks.Batch.Caja.In service
+2016-12-11 21:50:40.3132|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Caja.In
+[Success] DisplayName Ks Batch Caja In
+[Success] Description This process read a file from Caja and Update data base
+[Success] ServiceName Ks.Batch.Caja.In
+2016-12-11 21:50:40.3643|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-11 21:50:40.4083|DEBUG|Topshelf.Hosts.InstallHost|Attempting to install 'Ks.Batch.Caja.In'
+2016-12-11 21:50:40.4583|INFO|Topshelf.Runtime.Windows.HostInstaller|Installing Ks Batch Caja In service
+2016-12-11 21:50:40.5254|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Opening Registry
+2016-12-11 21:50:40.5424|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Service path: "C:\KS\ACMR\WinService\Ks.Batch.Caja.In\Deploy\Ks.Batch.Caja.In.exe"
+2016-12-11 21:50:40.5585|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Image path: "C:\KS\ACMR\WinService\Ks.Batch.Caja.In\Deploy\Ks.Batch.Caja.In.exe"  -displayname "Ks Batch Caja In" -servicename "Ks.Batch.Caja.In"
+2016-12-11 21:50:40.5765|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Closing Registry
+2016-12-11 21:50:57.6947|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Caja.In
+[Success] DisplayName Ks Batch Caja In
+[Success] Description This process read a file from Caja and Update data base
+[Success] ServiceName Ks.Batch.Caja.In
+2016-12-11 21:50:57.7507|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-11 21:50:57.8228|DEBUG|Topshelf.Runtime.Windows.WindowsHostEnvironment|Started by the Windows services process
+2016-12-11 21:50:57.8398|DEBUG|Topshelf.Builders.RunBuilder|Running as a service, creating service host.
+2016-12-11 21:50:57.8658|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|Starting as a Windows service
+2016-12-11 21:50:57.8878|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting up as a windows service application
+2016-12-11 21:50:57.9088|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting
+2016-12-11 21:50:57.9268|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Current Directory: C:\KS\ACMR\WinService\Ks.Batch.Caja.In\Deploy
+2016-12-11 21:50:57.9439|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Arguments: 
+2016-12-11 21:50:58.4422|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-11 21:51:08.6306|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect() Error: Cannot open database "ACMR" requested by the login. The login failed.
+Login failed for user 'NT AUTHORITY\SYSTEM'.
+2016-12-11 21:51:08.6806|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Caja.In)
+2016-12-11 21:51:08.7127|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Caja.In)
+2016-12-11 21:51:08.7447|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Caja.In) Error: ExecuteReader requiere una Connection abierta y disponible. El estado actual de la conexión es cerrada.
+2016-12-11 21:51:08.7877|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Caja.In) Error: ExecuteNonQuery requiere una Connection abierta y disponible. El estado actual de la conexión es cerrada.
+2016-12-11 21:51:08.8167|INFO|Ks.Batch.Caja.In.BatchContainer|Time: 11/12/2016 09:51:08 p.m.; Action: BatchContainer.Start(); 
+2016-12-11 21:51:08.8828|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-11 21:51:08.9136|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect() Error: Cannot open database "ACMR" requested by the login. The login failed.
+Login failed for user 'NT AUTHORITY\SYSTEM'.
+2016-12-11 21:51:08.9491|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Started
+2016-12-11 22:00:33.5930|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopping
+2016-12-11 22:00:33.6140|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-11 22:00:33.6490|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UnInstall(Ks.Batch.Caja.In)
+2016-12-11 22:00:33.6681|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Caja.In)
+2016-12-11 22:00:33.6921|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-11 22:00:33.7101|INFO|Ks.Batch.Caja.In.BatchContainer|Time: 11/12/2016 10:00:33 p.m.; Action: BatchContainer.Stop(); 
+2016-12-11 22:00:33.7283|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopped
+2016-12-11 22:00:50.3022|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Caja.In
+[Success] DisplayName Ks Batch Caja In
+[Success] Description This process read a file from Caja and Update data base
+[Success] ServiceName Ks.Batch.Caja.In
+2016-12-11 22:00:50.3542|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-11 22:00:50.4193|DEBUG|Topshelf.Runtime.Windows.WindowsHostEnvironment|Started by the Windows services process
+2016-12-11 22:00:50.4373|DEBUG|Topshelf.Builders.RunBuilder|Running as a service, creating service host.
+2016-12-11 22:00:50.4643|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|Starting as a Windows service
+2016-12-11 22:00:50.4873|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting up as a windows service application
+2016-12-11 22:00:50.5083|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting
+2016-12-11 22:00:50.5273|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Current Directory: C:\KS\ACMR\WinService\Ks.Batch.Caja.In\Deploy
+2016-12-11 22:00:50.5443|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Arguments: 
+2016-12-11 22:00:51.0167|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-11 22:00:51.1097|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Caja.In)
+2016-12-11 22:00:51.1277|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Caja.In)
+2016-12-11 22:00:51.1698|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-11 22:00:51.1888|INFO|Ks.Batch.Caja.In.BatchContainer|Time: 11/12/2016 10:00:51 p.m.; Action: BatchContainer.Start(); 
+2016-12-11 22:00:51.2078|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-11 22:00:51.2278|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Exec(Ks.Batch.Caja.In,1)
+2016-12-11 22:00:51.2548|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-11 22:00:51.2738|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Started
+2016-12-11 22:54:21.3242|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Caja.In
+[Success] DisplayName Ks Batch Caja In
+[Success] Description This process read a file from Caja and Update data base
+[Success] ServiceName Ks.Batch.Caja.In
+2016-12-11 22:54:21.3813|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-11 22:54:21.4343|DEBUG|Topshelf.Hosts.UninstallHost|Uninstalling Ks.Batch.Caja.In
+2016-12-11 22:54:21.4863|INFO|Topshelf.Runtime.Windows.HostInstaller|Uninstalling Ks.Batch.Caja.In service
+2016-12-11 22:54:21.5344|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopping
+2016-12-11 22:54:21.5534|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-11 22:54:21.5854|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UnInstall(Ks.Batch.Caja.In)
+2016-12-11 22:54:21.6004|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Caja.In)
+2016-12-11 22:54:21.6154|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-11 22:54:21.6284|INFO|Ks.Batch.Caja.In.BatchContainer|Time: 11/12/2016 10:54:21 p.m.; Action: BatchContainer.Stop(); 
+2016-12-11 22:54:21.6414|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopped
+2016-12-11 22:55:24.3592|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Caja.In
+[Success] DisplayName Ks Batch Caja In
+[Success] Description This process read a file from Caja and Update data base
+[Success] ServiceName Ks.Batch.Caja.In
+2016-12-11 22:55:24.4243|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-11 22:55:24.4843|DEBUG|Topshelf.Hosts.InstallHost|Attempting to install 'Ks.Batch.Caja.In'
+2016-12-11 22:55:24.5383|INFO|Topshelf.Runtime.Windows.HostInstaller|Installing Ks Batch Caja In service
+2016-12-11 22:55:24.6224|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Opening Registry
+2016-12-11 22:55:24.6374|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Service path: "C:\KS\ACMR\WinService\Ks.Batch.Caja.In\Deploy\Ks.Batch.Caja.In.exe"
+2016-12-11 22:55:24.6514|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Image path: "C:\KS\ACMR\WinService\Ks.Batch.Caja.In\Deploy\Ks.Batch.Caja.In.exe"  -displayname "Ks Batch Caja In" -servicename "Ks.Batch.Caja.In"
+2016-12-11 22:55:24.6694|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Closing Registry
+2016-12-11 22:55:42.0814|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Caja.In
+[Success] DisplayName Ks Batch Caja In
+[Success] Description This process read a file from Caja and Update data base
+[Success] ServiceName Ks.Batch.Caja.In
+2016-12-11 22:55:42.1515|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-11 22:55:42.2395|DEBUG|Topshelf.Runtime.Windows.WindowsHostEnvironment|Started by the Windows services process
+2016-12-11 22:55:42.2546|DEBUG|Topshelf.Builders.RunBuilder|Running as a service, creating service host.
+2016-12-11 22:55:42.2826|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|Starting as a Windows service
+2016-12-11 22:55:42.3056|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting up as a windows service application
+2016-12-11 22:55:42.3256|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting
+2016-12-11 22:55:42.3406|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Current Directory: C:\KS\ACMR\WinService\Ks.Batch.Caja.In\Deploy
+2016-12-11 22:55:42.3576|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Arguments: 
+2016-12-11 22:55:42.9530|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-11 22:55:43.0611|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Caja.In)
+2016-12-11 22:55:43.0751|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Caja.In)
+2016-12-11 22:55:43.0921|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-11 22:55:43.1051|INFO|Ks.Batch.Caja.In.BatchContainer|Time: 11/12/2016 10:55:43 p.m.; Action: BatchContainer.Start(); 
+2016-12-11 22:55:43.1181|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-11 22:55:43.1321|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Exec(Ks.Batch.Caja.In,1)
+2016-12-11 22:55:43.1582|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-11 22:55:43.1802|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Started
+2016-12-11 23:46:46.9273|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Caja.In
+[Success] DisplayName Ks Batch Caja In
+[Success] Description This process read a file from Caja and Update data base
+[Success] ServiceName Ks.Batch.Caja.In
+2016-12-11 23:46:46.9974|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-11 23:46:47.0523|DEBUG|Topshelf.Hosts.UninstallHost|Uninstalling Ks.Batch.Caja.In
+2016-12-11 23:46:47.1084|INFO|Topshelf.Runtime.Windows.HostInstaller|Uninstalling Ks.Batch.Caja.In service
+2016-12-11 23:46:47.1650|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopping
+2016-12-11 23:46:47.1850|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-11 23:46:47.2205|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UnInstall(Ks.Batch.Caja.In)
+2016-12-11 23:46:47.2395|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Caja.In)
+2016-12-11 23:46:47.2585|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-11 23:46:47.2765|INFO|Ks.Batch.Caja.In.BatchContainer|Time: 11/12/2016 11:46:47 p.m.; Action: BatchContainer.Stop(); 
+2016-12-11 23:46:47.2965|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopped
+2016-12-11 23:47:50.4908|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Caja.In
+[Success] DisplayName Ks Batch Caja In
+[Success] Description This process read a file from Caja and Update data base
+[Success] ServiceName Ks.Batch.Caja.In
+2016-12-11 23:47:50.5488|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-11 23:47:50.6142|DEBUG|Topshelf.Hosts.InstallHost|Attempting to install 'Ks.Batch.Caja.In'
+2016-12-11 23:47:50.6763|INFO|Topshelf.Runtime.Windows.HostInstaller|Installing Ks Batch Caja In service
+2016-12-11 23:47:50.7583|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Opening Registry
+2016-12-11 23:47:50.7743|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Service path: "C:\KS\ACMR\WinService\Ks.Batch.Caja.In\Deploy\Ks.Batch.Caja.In.exe"
+2016-12-11 23:47:50.7943|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Image path: "C:\KS\ACMR\WinService\Ks.Batch.Caja.In\Deploy\Ks.Batch.Caja.In.exe"  -displayname "Ks Batch Caja In" -servicename "Ks.Batch.Caja.In"
+2016-12-11 23:47:50.8074|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Closing Registry
+2016-12-11 23:53:33.0553|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Caja.In
+[Success] DisplayName Ks Batch Caja In
+[Success] Description This process read a file from Caja and Update data base
+[Success] ServiceName Ks.Batch.Caja.In
+2016-12-11 23:53:33.1093|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2016-12-11 23:53:33.1794|DEBUG|Topshelf.Runtime.Windows.WindowsHostEnvironment|Started by the Windows services process
+2016-12-11 23:53:33.1954|DEBUG|Topshelf.Builders.RunBuilder|Running as a service, creating service host.
+2016-12-11 23:53:33.2294|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|Starting as a Windows service
+2016-12-11 23:53:33.2514|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting up as a windows service application
+2016-12-11 23:53:33.2684|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting
+2016-12-11 23:53:33.2874|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Current Directory: C:\KS\ACMR\WinService\Ks.Batch.Caja.In\Deploy
+2016-12-11 23:53:33.2995|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Arguments: 
+2016-12-11 23:53:33.9957|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-11 23:53:34.1086|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Caja.In)
+2016-12-11 23:53:34.1236|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Caja.In)
+2016-12-11 23:53:34.1411|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-11 23:53:34.1601|INFO|Ks.Batch.Caja.In.BatchContainer|Time: 11/12/2016 11:53:34 p.m.; Action: BatchContainer.Start(); 
+2016-12-11 23:53:34.1776|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2016-12-11 23:53:34.1921|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Exec(Ks.Batch.Caja.In,1)
+2016-12-11 23:53:34.2101|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2016-12-11 23:53:34.2271|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Started
+2017-01-03 00:18:08.7083|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Caja.In
+[Success] DisplayName Ks Batch Caja In
+[Success] Description This process read a file from Caja and Update data base
+[Success] ServiceName Ks.Batch.Caja.In
+2017-01-03 00:18:08.7743|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2017-01-03 00:18:08.8674|DEBUG|Topshelf.Hosts.UninstallHost|Uninstalling Ks.Batch.Caja.In
+2017-01-03 00:18:08.9729|INFO|Topshelf.Runtime.Windows.HostInstaller|Uninstalling Ks.Batch.Caja.In service
+2017-01-03 00:19:32.7673|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Caja.In
+[Success] DisplayName Ks Batch Caja In
+[Success] Description This process read a file from Caja and Update data base
+[Success] ServiceName Ks.Batch.Caja.In
+2017-01-03 00:19:32.8444|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2017-01-03 00:19:32.9124|DEBUG|Topshelf.Hosts.InstallHost|Attempting to install 'Ks.Batch.Caja.In'
+2017-01-03 00:19:32.9705|INFO|Topshelf.Runtime.Windows.HostInstaller|Installing Ks Batch Caja In service
+2017-01-03 00:19:33.3708|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Opening Registry
+2017-01-03 00:19:33.3708|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Service path: "C:\KS\ACMR\WinService\Ks.Batch.Caja.In\Deploy\Ks.Batch.Caja.In.exe"
+2017-01-03 00:19:33.4038|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Image path: "C:\KS\ACMR\WinService\Ks.Batch.Caja.In\Deploy\Ks.Batch.Caja.In.exe"  -displayname "Ks Batch Caja In" -servicename "Ks.Batch.Caja.In"
+2017-01-03 00:19:33.4168|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Closing Registry
+2017-01-03 00:20:15.7852|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Caja.In
+[Success] DisplayName Ks Batch Caja In
+[Success] Description This process read a file from Caja and Update data base
+[Success] ServiceName Ks.Batch.Caja.In
+2017-01-03 00:20:15.8713|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2017-01-03 00:20:15.9483|DEBUG|Topshelf.Runtime.Windows.WindowsHostEnvironment|Started by the Windows services process
+2017-01-03 00:20:15.9663|DEBUG|Topshelf.Builders.RunBuilder|Running as a service, creating service host.
+2017-01-03 00:20:15.9963|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|Starting as a Windows service
+2017-01-03 00:20:16.0163|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting up as a windows service application
+2017-01-03 00:20:16.0374|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting
+2017-01-03 00:20:16.0494|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Current Directory: C:\KS\ACMR\WinService\Ks.Batch.Caja.In\Deploy
+2017-01-03 00:20:16.0634|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Arguments: 
+2017-01-03 00:20:16.6908|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2017-01-03 00:20:27.5200|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect() Error: Cannot open database "ACMR" requested by the login. The login failed.
+Login failed for user 'NT AUTHORITY\SYSTEM'.
+2017-01-03 00:20:27.5480|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Caja.In)
+2017-01-03 00:20:27.5670|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Caja.In)
+2017-01-03 00:20:27.6201|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Caja.In) Error: ExecuteReader requiere una Connection abierta y disponible. El estado actual de la conexión es cerrada.
+2017-01-03 00:20:27.6431|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Caja.In) Error: ExecuteNonQuery requiere una Connection abierta y disponible. El estado actual de la conexión es cerrada.
+2017-01-03 00:20:27.6621|INFO|Ks.Batch.Caja.In.BatchContainer|Time: 03/01/2017 12:20:27 a.m.; Action: BatchContainer.Start(); 
+2017-01-03 00:20:27.6821|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2017-01-03 00:20:27.7001|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect() Error: Cannot open database "ACMR" requested by the login. The login failed.
+Login failed for user 'NT AUTHORITY\SYSTEM'.
+2017-01-03 00:20:27.7201|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Started
+2017-01-03 00:53:57.4348|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Caja.In
+[Success] DisplayName Ks Batch Caja In
+[Success] Description This process read a file from Caja and Update data base
+[Success] ServiceName Ks.Batch.Caja.In
+2017-01-03 00:53:58.0168|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2017-01-03 00:53:58.0639|DEBUG|Topshelf.Hosts.UninstallHost|Uninstalling Ks.Batch.Caja.In
+2017-01-03 00:53:58.1169|INFO|Topshelf.Runtime.Windows.HostInstaller|Uninstalling Ks.Batch.Caja.In service
+2017-01-03 00:53:58.1880|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopping
+2017-01-03 00:53:58.2140|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2017-01-03 00:54:08.2702|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect() Error: Cannot open database "ACMR" requested by the login. The login failed.
+Login failed for user 'NT AUTHORITY\SYSTEM'.
+2017-01-03 00:54:08.2922|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UnInstall(Ks.Batch.Caja.In)
+2017-01-03 00:54:08.3142|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Caja.In)
+2017-01-03 00:54:08.3332|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Caja.In) Error: ExecuteReader requiere una Connection abierta y disponible. El estado actual de la conexión es cerrada.
+2017-01-03 00:54:08.3592|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.UnInstall(Ks.Batch.Caja.In) Error: ExecuteNonQuery requiere una Connection abierta y disponible. El estado actual de la conexión es cerrada.
+2017-01-03 00:54:08.3873|INFO|Ks.Batch.Caja.In.BatchContainer|Time: 03/01/2017 12:54:08 a.m.; Action: BatchContainer.Stop(); 
+2017-01-03 00:54:08.4103|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopped
+2017-01-03 00:56:29.2736|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Caja.In
+[Success] DisplayName Ks Batch Caja In
+[Success] Description This process read a file from Caja and Update data base
+[Success] ServiceName Ks.Batch.Caja.In
+2017-01-03 00:56:29.3307|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2017-01-03 00:56:29.4047|DEBUG|Topshelf.Hosts.InstallHost|Attempting to install 'Ks.Batch.Caja.In'
+2017-01-03 00:56:29.4848|INFO|Topshelf.Runtime.Windows.HostInstaller|Installing Ks Batch Caja In service
+2017-01-03 00:56:29.5889|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Opening Registry
+2017-01-03 00:56:29.6169|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Service path: "C:\KS\ACMR\WinService\Ks.Batch.Caja.In\Deploy\Ks.Batch.Caja.In.exe"
+2017-01-03 00:56:29.6439|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Image path: "C:\KS\ACMR\WinService\Ks.Batch.Caja.In\Deploy\Ks.Batch.Caja.In.exe"  -displayname "Ks Batch Caja In" -servicename "Ks.Batch.Caja.In"
+2017-01-03 00:56:29.6679|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Closing Registry
+2017-01-03 00:57:02.9841|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Caja.In
+[Success] DisplayName Ks Batch Caja In
+[Success] Description This process read a file from Caja and Update data base
+[Success] ServiceName Ks.Batch.Caja.In
+2017-01-03 00:57:03.0471|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2017-01-03 00:57:03.1462|DEBUG|Topshelf.Runtime.Windows.WindowsHostEnvironment|Started by the Windows services process
+2017-01-03 00:57:03.1732|DEBUG|Topshelf.Builders.RunBuilder|Running as a service, creating service host.
+2017-01-03 00:57:03.2042|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|Starting as a Windows service
+2017-01-03 00:57:03.2302|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting up as a windows service application
+2017-01-03 00:57:03.2522|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting
+2017-01-03 00:57:03.2712|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Current Directory: C:\KS\ACMR\WinService\Ks.Batch.Caja.In\Deploy
+2017-01-03 00:57:03.2892|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Arguments: 
+2017-01-03 00:57:03.8663|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2017-01-03 00:57:14.1349|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect() Error: Cannot open database "ACMR" requested by the login. The login failed.
+Login failed for user 'NT AUTHORITY\SYSTEM'.
+2017-01-03 00:57:14.1569|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Caja.In)
+2017-01-03 00:57:14.1779|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Caja.In)
+2017-01-03 00:57:14.2009|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Caja.In) Error: ExecuteReader requiere una Connection abierta y disponible. El estado actual de la conexión es cerrada.
+2017-01-03 00:57:14.2292|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Caja.In) Error: ExecuteNonQuery requiere una Connection abierta y disponible. El estado actual de la conexión es cerrada.
+2017-01-03 00:57:14.2640|INFO|Ks.Batch.Caja.In.BatchContainer|Time: 03/01/2017 12:57:14 a.m.; Action: BatchContainer.Start(); 
+2017-01-03 00:57:14.3001|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2017-01-03 00:57:14.3341|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect() Error: Cannot open database "ACMR" requested by the login. The login failed.
+Login failed for user 'NT AUTHORITY\SYSTEM'.
+2017-01-03 00:57:14.3681|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Started
+2017-01-03 00:58:44.0715|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopping
+2017-01-03 00:58:44.1067|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2017-01-03 00:58:44.1607|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UnInstall(Ks.Batch.Caja.In)
+2017-01-03 00:58:44.1848|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Caja.In)
+2017-01-03 00:58:44.2605|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2017-01-03 00:58:44.2855|INFO|Ks.Batch.Caja.In.BatchContainer|Time: 03/01/2017 12:58:44 a.m.; Action: BatchContainer.Stop(); 
+2017-01-03 00:58:44.3135|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopped
+2017-01-03 00:58:57.5648|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Caja.In
+[Success] DisplayName Ks Batch Caja In
+[Success] Description This process read a file from Caja and Update data base
+[Success] ServiceName Ks.Batch.Caja.In
+2017-01-03 00:58:57.6509|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2017-01-03 00:58:57.7522|DEBUG|Topshelf.Runtime.Windows.WindowsHostEnvironment|Started by the Windows services process
+2017-01-03 00:58:57.7862|DEBUG|Topshelf.Builders.RunBuilder|Running as a service, creating service host.
+2017-01-03 00:58:57.8382|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|Starting as a Windows service
+2017-01-03 00:58:57.8683|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting up as a windows service application
+2017-01-03 00:58:57.8943|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting
+2017-01-03 00:58:57.9153|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Current Directory: C:\KS\ACMR\WinService\Ks.Batch.Caja.In\Deploy
+2017-01-03 00:58:57.9413|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Arguments: 
+2017-01-03 00:58:58.5988|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2017-01-03 00:58:58.8089|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Caja.In)
+2017-01-03 00:58:58.8319|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Caja.In)
+2017-01-03 00:58:58.8890|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2017-01-03 00:58:58.9130|INFO|Ks.Batch.Caja.In.BatchContainer|Time: 03/01/2017 12:58:58 a.m.; Action: BatchContainer.Start(); 
+2017-01-03 00:58:58.9360|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2017-01-03 00:58:58.9600|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Exec(Ks.Batch.Caja.In,1)
+2017-01-03 00:58:59.0677|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2017-01-03 00:58:59.1027|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Started
+2017-01-06 23:40:47.9104|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Service is being shutdown
+2017-01-06 23:40:49.9218|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopped
+2017-01-07 00:17:23.4692|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Caja.In
+[Success] DisplayName Ks Batch Caja In
+[Success] Description This process read a file from Caja and Update data base
+[Success] ServiceName Ks.Batch.Caja.In
+2017-01-07 00:17:23.6383|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2017-01-07 00:17:23.6889|DEBUG|Topshelf.Hosts.UninstallHost|Uninstalling Ks.Batch.Caja.In
+2017-01-07 00:17:23.7505|INFO|Topshelf.Runtime.Windows.HostInstaller|Uninstalling Ks.Batch.Caja.In service
+2017-01-07 00:18:29.9265|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Caja.In
+[Success] DisplayName Ks Batch Caja In
+[Success] Description This process read a file from Caja and Update data base
+[Success] ServiceName Ks.Batch.Caja.In
+2017-01-07 00:18:29.9970|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2017-01-07 00:18:30.0581|DEBUG|Topshelf.Hosts.InstallHost|Attempting to install 'Ks.Batch.Caja.In'
+2017-01-07 00:18:30.1111|INFO|Topshelf.Runtime.Windows.HostInstaller|Installing Ks Batch Caja In service
+2017-01-07 00:18:30.1805|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Opening Registry
+2017-01-07 00:18:30.1965|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Service path: "C:\KS\ACMR\WinService\Ks.Batch.Caja.In\Deploy\Ks.Batch.Caja.In.exe"
+2017-01-07 00:18:30.2115|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Image path: "C:\KS\ACMR\WinService\Ks.Batch.Caja.In\Deploy\Ks.Batch.Caja.In.exe"  -displayname "Ks Batch Caja In" -servicename "Ks.Batch.Caja.In"
+2017-01-07 00:18:30.2295|DEBUG|Topshelf.Runtime.Windows.HostInstaller|Closing Registry
+2017-01-07 00:24:22.8305|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Caja.In
+[Success] DisplayName Ks Batch Caja In
+[Success] Description This process read a file from Caja and Update data base
+[Success] ServiceName Ks.Batch.Caja.In
+2017-01-07 00:24:22.8776|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2017-01-07 00:24:22.9416|DEBUG|Topshelf.Runtime.Windows.WindowsHostEnvironment|Started by the Windows services process
+2017-01-07 00:24:22.9566|DEBUG|Topshelf.Builders.RunBuilder|Running as a service, creating service host.
+2017-01-07 00:24:22.9796|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|Starting as a Windows service
+2017-01-07 00:24:22.9986|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting up as a windows service application
+2017-01-07 00:24:23.0137|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting
+2017-01-07 00:24:23.0257|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Current Directory: C:\KS\ACMR\WinService\Ks.Batch.Caja.In\Deploy
+2017-01-07 00:24:23.0257|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Arguments: 
+2017-01-07 00:24:23.5750|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2017-01-07 00:24:34.1428|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect() Error: Cannot open database "ACMR" requested by the login. The login failed.
+Login failed for user 'NT AUTHORITY\SYSTEM'.
+2017-01-07 00:24:34.1589|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Caja.In)
+2017-01-07 00:24:34.1719|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Caja.In)
+2017-01-07 00:24:34.2306|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Caja.In) Error: ExecuteReader requiere una Connection abierta y disponible. El estado actual de la conexión es cerrada.
+2017-01-07 00:24:34.2447|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Caja.In) Error: ExecuteNonQuery requiere una Connection abierta y disponible. El estado actual de la conexión es cerrada.
+2017-01-07 00:24:34.2627|INFO|Ks.Batch.Caja.In.BatchContainer|Time: 07/01/2017 12:24:34 a.m.; Action: BatchContainer.Start(); 
+2017-01-07 00:24:34.2817|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2017-01-07 00:24:34.2987|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect() Error: Cannot open database "ACMR" requested by the login. The login failed.
+Login failed for user 'NT AUTHORITY\SYSTEM'.
+2017-01-07 00:24:34.3167|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Started
+2017-01-07 00:24:37.0837|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopping
+2017-01-07 00:24:37.1047|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2017-01-07 00:24:37.1217|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect() Error: Cannot open database "ACMR" requested by the login. The login failed.
+Login failed for user 'NT AUTHORITY\SYSTEM'.
+2017-01-07 00:24:37.1397|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UnInstall(Ks.Batch.Caja.In)
+2017-01-07 00:24:37.1577|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Caja.In)
+2017-01-07 00:24:37.1747|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Caja.In) Error: ExecuteReader requiere una Connection abierta y disponible. El estado actual de la conexión es cerrada.
+2017-01-07 00:24:37.1957|FATAL|Ks.Batch.Util.DaoBase|Action: DaoBase.UnInstall(Ks.Batch.Caja.In) Error: ExecuteNonQuery requiere una Connection abierta y disponible. El estado actual de la conexión es cerrada.
+2017-01-07 00:24:37.2188|INFO|Ks.Batch.Caja.In.BatchContainer|Time: 07/01/2017 12:24:37 a.m.; Action: BatchContainer.Stop(); 
+2017-01-07 00:24:37.2418|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopped
+2017-01-07 00:26:22.6585|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Caja.In
+[Success] DisplayName Ks Batch Caja In
+[Success] Description This process read a file from Caja and Update data base
+[Success] ServiceName Ks.Batch.Caja.In
+2017-01-07 00:26:22.7145|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2017-01-07 00:26:22.7766|DEBUG|Topshelf.Runtime.Windows.WindowsHostEnvironment|Started by the Windows services process
+2017-01-07 00:26:22.7996|DEBUG|Topshelf.Builders.RunBuilder|Running as a service, creating service host.
+2017-01-07 00:26:22.8326|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|Starting as a Windows service
+2017-01-07 00:26:22.8606|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting up as a windows service application
+2017-01-07 00:26:22.8867|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting
+2017-01-07 00:26:22.9107|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Current Directory: C:\KS\ACMR\WinService\Ks.Batch.Caja.In\Deploy
+2017-01-07 00:26:22.9337|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Arguments: 
+2017-01-07 00:26:23.4101|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2017-01-07 00:26:23.5062|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Caja.In)
+2017-01-07 00:26:23.5292|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Caja.In)
+2017-01-07 00:26:23.5602|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2017-01-07 00:26:23.5843|INFO|Ks.Batch.Caja.In.BatchContainer|Time: 07/01/2017 12:26:23 a.m.; Action: BatchContainer.Start(); 
+2017-01-07 00:26:23.6093|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2017-01-07 00:26:23.6323|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Exec(Ks.Batch.Caja.In,1)
+2017-01-07 00:26:23.6853|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2017-01-07 00:26:23.7063|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Started
+2017-01-07 00:27:34.8683|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Pausing service
+2017-01-07 00:27:34.8883|INFO|Ks.Batch.Caja.In.BatchContainer|Time: 07/01/2017 12:27:34 a.m.; Action: BatchContainer.Pause(); 
+2017-01-07 00:27:34.9063|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2017-01-07 00:27:34.9243|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Exec(Ks.Batch.Caja.In,0)
+2017-01-07 00:27:34.9453|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2017-01-07 00:27:34.9653|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Paused
+2017-01-07 00:36:12.9266|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopping
+2017-01-07 00:36:12.9477|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2017-01-07 00:36:12.9751|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.UnInstall(Ks.Batch.Caja.In)
+2017-01-07 00:36:12.9921|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Caja.In)
+2017-01-07 00:36:13.0131|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2017-01-07 00:36:13.0301|INFO|Ks.Batch.Caja.In.BatchContainer|Time: 07/01/2017 12:36:13 a.m.; Action: BatchContainer.Stop(); 
+2017-01-07 00:36:13.0471|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopped
+2017-01-07 00:36:15.0133|INFO|Topshelf.HostFactory|Configuration Result:
+[Success] Name Ks.Batch.Caja.In
+[Success] DisplayName Ks Batch Caja In
+[Success] Description This process read a file from Caja and Update data base
+[Success] ServiceName Ks.Batch.Caja.In
+2017-01-07 00:36:15.0593|INFO|Topshelf.HostConfigurators.HostConfiguratorImpl|Topshelf v3.3.154.0, .NET Framework v4.0.30319.42000
+2017-01-07 00:36:15.1114|DEBUG|Topshelf.Runtime.Windows.WindowsHostEnvironment|Started by the Windows services process
+2017-01-07 00:36:15.1234|DEBUG|Topshelf.Builders.RunBuilder|Running as a service, creating service host.
+2017-01-07 00:36:15.1444|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|Starting as a Windows service
+2017-01-07 00:36:15.1614|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting up as a windows service application
+2017-01-07 00:36:15.1764|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Starting
+2017-01-07 00:36:15.1884|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Current Directory: C:\KS\ACMR\WinService\Ks.Batch.Caja.In\Deploy
+2017-01-07 00:36:15.1994|DEBUG|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Arguments: 
+2017-01-07 00:36:15.6612|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2017-01-07 00:36:15.7642|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Install(Ks.Batch.Caja.In)
+2017-01-07 00:36:15.7798|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.IsInstalled(Ks.Batch.Caja.In)
+2017-01-07 00:36:15.7953|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2017-01-07 00:36:15.8078|INFO|Ks.Batch.Caja.In.BatchContainer|Time: 07/01/2017 12:36:15 a.m.; Action: BatchContainer.Start(); 
+2017-01-07 00:36:15.8233|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Connect()
+2017-01-07 00:36:15.8233|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Exec(Ks.Batch.Caja.In,1)
+2017-01-07 00:36:15.8478|INFO|Ks.Batch.Util.DaoBase|Action: DaoBase.Close()
+2017-01-07 00:36:15.8598|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Started
+2017-01-08 17:25:03.7675|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Service is being shutdown
+2017-01-08 17:25:06.8150|INFO|Topshelf.Runtime.Windows.WindowsServiceHost|[Topshelf] Stopped

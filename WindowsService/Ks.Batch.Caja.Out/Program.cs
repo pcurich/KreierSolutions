@@ -28,7 +28,7 @@ namespace Ks.Batch.Caja.Out
                             .AddTrigger(() =>
                                 TriggerBuilder.Create()
                                     .WithSimpleSchedule(builder => builder
-                                        .WithIntervalInSeconds(60)
+                                        .WithIntervalInSeconds(30)
                                         .RepeatForever())
                                     .Build())
                             );
@@ -46,6 +46,9 @@ namespace Ks.Batch.Caja.Out
                 serviceConfig.EnablePauseAndContinue();
                 serviceConfig.StartAutomatically();
             });
+
+            //Job job = new Job();
+            //job.Execute(null);
         }
     }
 }

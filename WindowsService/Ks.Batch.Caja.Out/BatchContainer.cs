@@ -10,20 +10,21 @@ namespace Ks.Batch.Caja.Out
         private static readonly LogWriter Log = HostLogger.Get<BatchContainer>();
         public string Connection;
         public string PathValue;
+        public string SysName;
         public ScheduleBatch Batch;
         
         public bool Start()
         {
             Read();
-            Install();
+            //Install();
             Log.InfoFormat("Time: {0}; Action: {1}; ", DateTime.Now, "BatchContainer.Start()");
-            Enabled();
+           // Enabled();
             return true;
         }
 
         public bool Stop()
         {
-            UnInstall();
+            //UnInstall();
             Log.InfoFormat("Time: {0}; Action: {1}; ", DateTime.Now, "BatchContainer.Stop()");
             return true;
         }
@@ -31,14 +32,14 @@ namespace Ks.Batch.Caja.Out
         public bool Pause()
         {
             Log.InfoFormat("Time: {0}; Action: {1}; ", DateTime.Now, "BatchContainer.Pause()");
-            Disabled();
+           // Disabled();
             return true;
         }
 
         public bool Continue()
         {
             Log.InfoFormat("Time: {0}; Action: {1}; ", DateTime.Now, "BatchContainer.Continue()");
-            Enabled();
+           // Enabled();
             return true;
         }
 
@@ -84,7 +85,12 @@ namespace Ks.Batch.Caja.Out
         {
             Connection = ConfigurationManager.ConnectionStrings["ACMR"].ConnectionString;
             PathValue = ConfigurationManager.AppSettings["Path"];
-            Batch = XmlHelper.Deserialize<ScheduleBatch>(System.IO.Path.Combine(PathValue, "ScheduleBatch.xml"));
+            SysName = ConfigurationManager.AppSettings["SysName"];
+
+            var dao = new Dao(Connection);
+            dao.Connect();
+            Batch = dao.GetScheduleBatch(SysName);
+            dao.Close();
         }
     }
 }
