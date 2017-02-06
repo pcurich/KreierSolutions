@@ -45,6 +45,7 @@ namespace Ks.Batch.Copere.Out
                 if (FileOut.Count != 0)
                 {
                     DeleteReport(Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00"), Batch.SystemName);
+                    DeleteReport(Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00"), "Ks.Batch.Copere.In");
                     CompleteCustomerName();
                     var guid = CreateReportIn(Batch, XmlHelper.Serialize2String(new List<Info>(ReportOut.Values)));
                     CreateReportOut(guid, Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00"), "Ks.Batch.Copere.In");
@@ -187,7 +188,7 @@ namespace Ks.Batch.Copere.Out
                     FileOut.Add(customerId, fileOutTem[customerId]);
 
 
-                if (customerIds2.Count > 0)
+                if (customerIds2.Count > 0 && Batch.UpdateData)
                     UpdateDataContribution(customerIds2);
 
 
@@ -306,7 +307,7 @@ namespace Ks.Batch.Copere.Out
                         customerIds2.Add(repo.Value.CustomerId);
                 }
 
-                if (customerIds2.Count > 0)
+                if (customerIds2.Count > 0  && Batch.UpdateData)
                     UpdateDataLoan(customerIds2);
 
             }
@@ -389,7 +390,8 @@ namespace Ks.Batch.Copere.Out
 
                 Sql = " SELECT EntityId, Attribute =[Key], Value FROM GenericAttribute " +
                       " WHERE KeyGroup='Customer' and  [Key] in ('Dni','AdmCode') AND " +
-                      " EntityId IN ( SELECT EntityId FROM GenericAttribute WHERE [Key]='MilitarySituationId' AND Value=1)";
+                      " EntityId IN ( SELECT EntityId FROM GenericAttribute WHERE [Key]='MilitarySituationId' AND Value=1)" +
+                      " ORDER BY 1 ";
 
                 Command = new SqlCommand(Sql, Connection);
                 var sqlReader = Command.ExecuteReader();

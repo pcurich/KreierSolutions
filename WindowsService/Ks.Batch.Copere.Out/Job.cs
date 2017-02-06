@@ -4,28 +4,37 @@ using System.Configuration;
 using System.IO;
 using Ks.Batch.Util;
 using Quartz;
+using Topshelf.Logging;
 
 namespace Ks.Batch.Copere.Out
 {
     public class Job : IJob
     {
+        public static readonly LogWriter Log = HostLogger.Get<Job>();
         private ScheduleBatch Batch { get; set; }
         private string Path { get; set; }
+        public string SysName;
         private string Connection { get; set; }
 
         public void Execute(IJobExecutionContext context)
         {
             Path = ConfigurationManager.AppSettings["Path"];
             Connection = ConfigurationManager.ConnectionStrings["ACMR"].ConnectionString;
-            Batch = XmlHelper.Deserialize<ScheduleBatch>(System.IO.Path.Combine(Path, "ScheduleBatch.xml"));
 
-            if (Batch.NextExecutionOnUtc.HasValue && DateTime.Now >=
-                DateTimeHelper.ConvertToUserTime(Batch.NextExecutionOnUtc.Value, TimeZoneInfo.Utc))
+            SysName = ConfigurationManager.AppSettings["SysName"];
+
+            var dao = new Dao(Connection);
+            dao.Connect();
+            Batch = dao.GetScheduleBatch(SysName);
+            dao.Close();
+
+
+            if (Batch.Enabled)
             {
                 if (!ExistFile())
                 {
                     var records = DataBase();
-                    if (records.Count!=0)
+                    if (records.Count != 0)
                     {
                         SyncFiles(records);
                         UpdateScheduleBatch();
@@ -60,14 +69,26 @@ namespace Ks.Batch.Copere.Out
         protected bool ExistFile()
         {
             var nameFile = string.Format("8001_{0}00.txt", Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00"));
-            return File.Exists(System.IO.Path.Combine(System.IO.Path.Combine(Path, Batch.FolderMoveToDone), nameFile));
+            try
+            {
+                Log.InfoFormat("Action: {0}", "Job.ExistFile()");
+                if (File.Exists(System.IO.Path.Combine(System.IO.Path.Combine(Path, Batch.FolderMoveToDone), nameFile)))
+                    File.Delete(System.IO.Path.Combine(System.IO.Path.Combine(Path, Batch.FolderMoveToDone), nameFile));
+
+            }
+            catch (Exception ex)
+            {
+                Log.FatalFormat("Action: {0} Error: {1}", "Job.ExistFile(" + nameFile + ")", ex.Message);
+            }
+
+            return false;
         }
 
         protected void UpdateScheduleBatch(bool executed = true)
         {
             var dao = new Dao(Connection);
             dao.Connect();
-            if (executed)
+            if (executed && Batch.UpdateData)
             {
                 if (Batch.NextExecutionOnUtc.HasValue)
                     Batch.NextExecutionOnUtc = Batch.FrecuencyId == 30 ?
@@ -84,6 +105,8 @@ namespace Ks.Batch.Copere.Out
             }
 
             Batch.LastExecutionOnUtc = DateTime.UtcNow;
+            Batch.Enabled = false;
+            Batch.UpdateData = false;
             dao.UpdateScheduleBatch(Batch);
             dao.Close();
         }

@@ -28,7 +28,7 @@ namespace Ks.Batch.Copere.Out
                             .AddTrigger(() =>
                                 TriggerBuilder.Create()
                                     .WithSimpleSchedule(builder => builder
-                                        .WithIntervalInSeconds(60)
+                                        .WithIntervalInSeconds(30)
                                         .RepeatForever())
                                     .Build())
                             );

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Globalization;
 using System.Linq;
 using Ks.Batch.Util;
 using Ks.Batch.Util.Model;
@@ -11,6 +10,7 @@ namespace Ks.Batch.Caja.Out
 {
     public class Dao : DaoBase
     {
+
         private Dictionary<int, Info> ReportOut { get; set; }
         private Dictionary<int, string> FileOut { get; set; }
 
@@ -42,6 +42,7 @@ namespace Ks.Batch.Caja.Out
                 if (FileOut.Count != 0)
                 {
                     DeleteReport(Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00"), Batch.SystemName);
+                    DeleteReport(Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00"), "Ks.Batch.Caja.In");
                     CompleteCustomerName();
                     var guid = CreateReportIn(Batch, XmlHelper.Serialize2String(new List<Info>(ReportOut.Values)));
                     CreateReportOut(guid, Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00"),"Ks.Batch.Caja.In");
@@ -184,7 +185,7 @@ namespace Ks.Batch.Caja.Out
                 foreach (var customerId in customerIds2)
                     FileOut.Add(customerId, fileOutTem[customerId]);
 
-                if (customerIds2.Count > 0)
+                if (customerIds2.Count > 0 && Batch.UpdateData)
                     UpdateDataContribution(customerIds2);
             }
             catch (Exception ex)
@@ -196,7 +197,6 @@ namespace Ks.Batch.Caja.Out
 
         private void GetLoanPayment(List<int> customerIds)
         {
-            var reportOut2 = new Dictionary<int, Info>();
             try
             {
                 Log.InfoFormat("Action: {0}", "Dao.GetLoanPayments(" + string.Join(",", customerIds.ToArray()) + ")");
@@ -302,7 +302,7 @@ namespace Ks.Batch.Caja.Out
                         customerIds2.Add(repo.Value.CustomerId);
                 }
 
-                if (customerIds2.Count > 0)
+                if (customerIds2.Count > 0 && Batch.UpdateData)
                     UpdateDataLoan(customerIds2);
 
             }
@@ -359,7 +359,8 @@ namespace Ks.Batch.Caja.Out
 
                 Sql = "SELECT EntityId, Attribute =[Key], Value FROM GenericAttribute " +
                   " WHERE KeyGroup='Customer' and  [Key] in ('Dni','AdmCode') AND " +
-                  " EntityId IN ( SELECT EntityId FROM GenericAttribute WHERE [Key]='MilitarySituationId' AND Value=2)";
+                  " EntityId IN ( SELECT EntityId FROM GenericAttribute WHERE [Key]='MilitarySituationId' AND Value=2) " +
+                      " ORDER BY 1";
                 Command = new SqlCommand(Sql, Connection);
                 var sqlReader = Command.ExecuteReader();
 
