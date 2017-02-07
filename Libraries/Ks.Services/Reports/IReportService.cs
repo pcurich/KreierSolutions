@@ -13,5 +13,6 @@ namespace Ks.Services.Reports
         IList<ReportBenefit> GetContributionBenefit(int fromMonth, int fromYear, int toMonth, int toYear, int typeId,int sourceId);
 
         IList<ReportMilitarSituation> GetMilitarSituation(int militarySituationId, int loanState = -1, int contributionState = -1);
+        List<Info> GetInfo(string source, string period);
     }
 }

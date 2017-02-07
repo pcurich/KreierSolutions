@@ -337,6 +337,29 @@ namespace Ks.Services.Reports
             return new List<ReportMilitarSituation>();
         }
 
+        public virtual List<Info> GetInfo(string source, string period)
+        {
+            var sql = "SELECT value FROM report WHERE Period=@Period and Source=@Source";
+
+            var pPeriod = _dataProvider.GetParameter();
+            pPeriod.ParameterName = "Period";
+            pPeriod.Value = period;
+            pPeriod.DbType = DbType.String;
+
+            var pSource = _dataProvider.GetParameter();
+            pSource.ParameterName = "Source";
+            pSource.Value = source;
+            pSource.DbType = DbType.String;
+
+            var data= _dbContext.SqlQuery<string>(sql, pPeriod, pSource);
+
+            var firstOrDefault = data.FirstOrDefault();
+            if (firstOrDefault != null)
+                return new List<Info>(XmlHelper.XmlToObject<List<Info>>(firstOrDefault));
+
+            return new List<Info>();
+        }
+
         #endregion
 
     }

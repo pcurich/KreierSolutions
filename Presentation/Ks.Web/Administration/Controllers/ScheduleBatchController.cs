@@ -12,6 +12,7 @@ using Ks.Services.ExportImport;
 using Ks.Services.Helpers;
 using Ks.Services.Localization;
 using Ks.Services.Logging;
+using Ks.Services.Reports;
 using Ks.Services.Security;
 using Ks.Web.Framework;
 using Ks.Web.Framework.Controllers;
@@ -31,6 +32,7 @@ namespace Ks.Admin.Controllers
         private readonly ICustomerActivityService _customerActivityService;
         private readonly ScheduleBatchsSetting _scheduleBatchsSetting;
         private readonly IExportManager _exportManager;
+        private readonly IReportService _reportService;
 
         #endregion
 
@@ -39,7 +41,7 @@ namespace Ks.Admin.Controllers
         public ScheduleBatchController(IScheduleBatchService scheduleBatchService,
             IPermissionService permissionService,
             IDateTimeHelper dateTimeHelper, ILocalizationService localizationService,
-            ICustomerActivityService customerActivityService,
+            ICustomerActivityService customerActivityService, IReportService reportService,
             ScheduleBatchsSetting scheduleBatchsSetting, IExportManager exportManager)
         {
             this._scheduleBatchService = scheduleBatchService;
@@ -49,6 +51,7 @@ namespace Ks.Admin.Controllers
             this._customerActivityService = customerActivityService;
             this._scheduleBatchsSetting = scheduleBatchsSetting;
             this._exportManager = exportManager;
+            this._reportService = reportService;
         }
 
         #endregion
@@ -87,12 +90,27 @@ namespace Ks.Admin.Controllers
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageScheduleBatchs))
                 return AccessDeniedView();
+            var model = new ScheduleBatchModel();
 
-            return View();
+            model.ReportInfo = new ReportInfo
+            {
+                AvailableMonths = DateTime.Now.GetMonthsList(_localizationService),
+                AvailableYears = DateTime.Now.GetYearsList(_localizationService, -5, 15)
+            };
+
+            model.ReportInfo.Types.Add(new SelectListItem { Text = "---------------", Value = "0" });
+            model.ReportInfo.Types.Add(new SelectListItem { Text = "Copere", Value = "1" });
+            model.ReportInfo.Types.Add(new SelectListItem { Text = "Caja", Value = "2" });
+
+            model.ReportInfo.SubTypes.Add(new SelectListItem { Text = "---------------", Value = "0" });
+            model.ReportInfo.SubTypes.Add(new SelectListItem { Text = "Envio", Value = "1" });
+            model.ReportInfo.SubTypes.Add(new SelectListItem { Text = "Recepcion", Value = "2" });
+            model.ReportInfo.SubTypes.Add(new SelectListItem { Text = "Resultado", Value = "3" });
+            return View(model);
         }
 
         [HttpPost]
-        public ActionResult List(DataSourceRequest command)
+        public ActionResult ListBatchs(DataSourceRequest command)
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageScheduleBatchs))
                 return AccessDeniedView();
@@ -251,7 +269,7 @@ namespace Ks.Admin.Controllers
                 schedule.UpdateData = false;
                 _scheduleBatchService.UpdateBatch(schedule);
 
-                this.Server.ScriptTimeout=60*60;
+                this.Server.ScriptTimeout = 60 * 60;
 
                 var txt = _exportManager.ExportScheduleTxt(schedule);
                 string name = string.Empty;
@@ -290,7 +308,7 @@ namespace Ks.Admin.Controllers
                 var txt = _exportManager.ExportScheduleTxt(schedule);
                 string name = string.Empty;
                 if (schedule.SystemName == ("Ks.Batch.Caja.Out"))
-                    name=string.Format("6008_{0}00", schedule.PeriodYear.ToString("0000") + schedule.PeriodMonth.ToString("00"));
+                    name = string.Format("6008_{0}00", schedule.PeriodYear.ToString("0000") + schedule.PeriodMonth.ToString("00"));
                 else
                     name = string.Format("8001_{0}00", schedule.PeriodYear.ToString("0000") + schedule.PeriodMonth.ToString("00"));
                 name += ".txt";
@@ -304,9 +322,98 @@ namespace Ks.Admin.Controllers
 
         }
 
-        public ActionResult Download(int name)
+        [HttpPost]
+        public ActionResult List(ScheduleBatchModel model)
         {
-            return null;
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageScheduleBatchs))
+                return AccessDeniedView();
+
+
+
+
+            var source = "";
+            if (model.ReportInfo.TypeId == 1 && model.ReportInfo.SubTypeId == 1) //Copere Envio
+                source = "Ks.Batch.Copere.Out";
+            if (model.ReportInfo.TypeId == 1 && model.ReportInfo.SubTypeId == 2) //Copere Recepcion
+                source = "Ks.Batch.Copere.In";
+            if (model.ReportInfo.TypeId == 1 && model.ReportInfo.SubTypeId == 3)
+                source = "Ks.Batch.Copere.In,Ks.Batch.Copere.Out";
+
+            if (model.ReportInfo.TypeId == 2 && model.ReportInfo.SubTypeId == 1) //Caja Envio
+                source = "Ks.Batch.Caja.Out";
+            if (model.ReportInfo.TypeId == 2 && model.ReportInfo.SubTypeId == 2) //Caja Recepcion
+                source = "Ks.Batch.Caja.In";
+            if (model.ReportInfo.TypeId == 2 && model.ReportInfo.SubTypeId == 3)
+                source = "Ks.Batch.Caja.Out,Ks.Batch.Caja.In";
+
+            if (source == "")
+                return RedirectToAction("List");
+            try
+            {
+                byte[] bytes;
+                using (var stream = new MemoryStream())
+                {
+                    if (source.Split(',').Count() == 2)
+                    {
+                        var envio = _reportService.GetInfo(source.Split(',')[0],
+                            model.ReportInfo.YearId.ToString("0000") + model.ReportInfo.MonthId.ToString("00"));
+                        _exportManager.ExportReportInfoToXlsx(stream, source, envio);
+
+                        var recepcion = _reportService.GetInfo(source.Split(',')[0],
+                            model.ReportInfo.YearId.ToString("0000") + model.ReportInfo.MonthId.ToString("00"));
+                        _exportManager.ExportReportInfoToXlsx(stream, source, recepcion);
+                    }
+                    else
+                    {
+                        var info = _reportService.GetInfo(source, model.ReportInfo.YearId.ToString("0000") + model.ReportInfo.MonthId.ToString("00"));
+                        _exportManager.ExportReportInfoToXlsx(stream, source, info);
+                    }
+                    
+
+
+
+
+
+                    
+                    bytes = stream.ToArray();
+                }
+                //Response.ContentType = "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                //Response.AddHeader("content-disposition", "attachment; filename=Aportaciones.xlsx");
+                return File(bytes, "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Reporte de Interfaz.xlsx");
+            }
+            catch (Exception exc)
+            {
+                ErrorNotification(exc);
+                return RedirectToAction("List");
+            }
+
+
+            //var report = _exportManager.ExportReportInfoToXls(source, model.ReportInfo.YearId.ToString("0000")+ model.ReportInfo.MonthId.ToString("00"));
+            //if (report == null)
+            //    //No  scheduleBatch  found with the specified id
+            //    return RedirectToAction("List");
+            //try
+            //{
+            //    schedule.Enabled = true;
+            //    schedule.UpdateData = true;
+            //    _scheduleBatchService.UpdateBatch(schedule);
+
+            //    this.Server.ScriptTimeout = 60 * 60;
+
+            //    var txt = _exportManager.ExportScheduleTxt(schedule);
+            //    string name = string.Empty;
+            //    if (schedule.SystemName == ("Ks.Batch.Caja.Out"))
+            //        name = string.Format("6008_{0}00", schedule.PeriodYear.ToString("0000") + schedule.PeriodMonth.ToString("00"));
+            //    else
+            //        name = string.Format("8001_{0}00", schedule.PeriodYear.ToString("0000") + schedule.PeriodMonth.ToString("00"));
+            //    name += ".txt";
+            //    return new TxtDownloadResult(txt, name);
+            //}
+            //catch (Exception exc)
+            //{
+            //    ErrorNotification(exc);
+            //    return RedirectToAction("List");
+            //}
         }
 
         public ActionResult CreateMerge(int id)
@@ -346,7 +453,7 @@ namespace Ks.Admin.Controllers
                         tw.Close();
                     }
                 }
- 
+
 
                 SuccessNotification(_localizationService.GetResource("Admin.Configuration.ScheduleBatch.Imported"));
                 return RedirectToAction("Edit", new { id = schedule.Id });

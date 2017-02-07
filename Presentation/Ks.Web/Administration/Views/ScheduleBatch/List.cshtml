@@ -6,112 +6,210 @@
 @Html.AntiForgeryToken()
 <div class="section-header">
     <div class="title">
-        <img src="@Url.Content("~/Administration/Content/images/ico-system.png")" alt=""/>
+        <img src="@Url.Content("~/Administration/Content/images/ico-system.png")" alt="" />
         @T("Admin.System.ScheduleBatchs")
     </div>
     <div class="options">
     </div>
 </div>
-<script type="text/javascript">
+
+
+<script>
     $(document).ready(function () {
-        $("#schedule-tasks-grid").on("click", ".run-now", function (e) {
-            showThrobber('@Html.Raw(HttpUtility.JavaScriptStringEncode(T("Admin.System.ScheduleTasks.RunNow.Progress").Text))');
+        $("#batchs-edit").kendoTabStrip({
+            animation: {
+                open: {
+                    effects: "fadeIn"
+                }
+            },
+            select: tabstrip_on_tab_select
         });
     });
 </script>
-<table class="adminContent">
-    <tr>
-        <td>
-            <strong>@T("Admin.System.ScheduleBatchs.StopService")</strong>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <div id="schedule-batchs-grid"></div>
+<div id="batchs-edit">
+    <ul>
+        <li @Html.RenderSelectedTabIndex(0, GetSelectedTabIndex())>
+            Servicios
+        </li>
+        <li @Html.RenderSelectedTabIndex(1, GetSelectedTabIndex())>
+            Descargar
+        </li>
+    </ul>
+    <div>
+        @TabList()
+    </div>
+    <div>
+        @TabDownload()
+    </div>
+</div>
 
-            <script>
-                $(document).ready(function() {
-                    $("#schedule-batchs-grid").kendoGrid({
-                        dataSource: {
-                            type: "json",
-                            transport: {
-                                read: {
-                                    url: "@Html.Raw(Url.Action("List", "ScheduleBatch"))",
-                                    type: "POST",
-                                    dataType: "json",
-                                    data: addAntiForgeryToken
+@*save selected tab index*@
+<input type="hidden" id="selected-tab-index" name="selected-tab-index" value="@(GetSelectedTabIndex())">
+
+@helper TabList()
+{
+
+    <table class="adminContent">
+        <tr>
+            <td>
+                <strong>@T("Admin.System.ScheduleBatchs.StopService")</strong>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div id="schedule-batchs-grid"></div>
+
+                <script>
+                    $(document).ready(function() {
+                        $("#schedule-batchs-grid").kendoGrid({
+                            dataSource: {
+                                type: "json",
+                                transport: {
+                                    read: {
+                                        url: "@Html.Raw(Url.Action("ListBatchs", "ScheduleBatch"))",
+                                        type: "POST",
+                                        dataType: "json",
+                                        data: addAntiForgeryToken
+                                    }
+                                },
+                                schema: {
+                                    data: "Data",
+                                    total: "Total",
+                                    errors: "Errors"
+                                },
+                                error: function(e) {
+                                    display_kendoui_grid_error(e);
+                                    // Cancel the changes
+                                    this.cancelChanges();
+                                },
+                                serverPaging: true,
+                                serverFiltering: true,
+                                serverSorting: true
+                            },
+                            pageable: {
+                                refresh: true,
+                                numeric: false,
+                                previousNext: false,
+                                info: false
+                            },
+                            editable: {
+                                confirmation: false,
+                                mode: "inline"
+                            },
+                            scrollable: false,
+                            columns: [
+                                {
+                                    field: "Name",
+                                    title: "@T("Admin.System.ScheduleBatchs.Fields.Name")"
                                 }
-                            },
-                            schema: {
-                                data: "Data",
-                                total: "Total",
-                                errors: "Errors"
-                            },
-                            error: function(e) {
-                                display_kendoui_grid_error(e);
-                                // Cancel the changes
-                                this.cancelChanges();
-                            },
-                            serverPaging: true,
-                            serverFiltering: true,
-                            serverSorting: true
-                        },
-                        pageable: {
-                            refresh: true,
-                            numeric: false,
-                            previousNext: false,
-                            info: false
-                        },
-                        editable: {
-                            confirmation: false,
-                            mode: "inline"
-                        },
-                        scrollable: false,
-                        columns: [
-                        {
-                            field: "Name",
-                            title: "@T("Admin.System.ScheduleBatchs.Fields.Name")"
-                        }
-                        @*, {
+                                @*, {
                             field: "FrecuencyName",
                             title: "@T("Admin.System.ScheduleBatchs.Fields.Frecuency")"
                         }*@
-                        ,{
-                            field: "StartExecutionOn",
-                            title: "@T("Admin.System.ScheduleBatchs.Fields.StartExecutionOn")",
-                            headerAttributes: { style: "text-align:center" },
-                            attributes: { style: "text-align:center" },
-                            type: "date",
-                            format: "{0:G}"
-                        }, {
-                            field: "NextExecutionOn",
-                            title: "@T("Admin.System.ScheduleBatchs.Fields.NextExecutionOn")",
-                            headerAttributes: { style: "text-align:center" },
-                            attributes: { style: "text-align:center" },
-                            type: "date",
-                            format: "{0:G}"
-                        }, {
-                            field: "LastExecutionOn",
-                            title: "@T("Admin.System.ScheduleBatchs.Fields.LastExecutionOn")",
-                            headerAttributes: { style: "text-align:center" },
-                            attributes: { style: "text-align:center" },
-                            type: "date",
-                            format: "{0:G}"
-                        }, {
-                            field: "Enabled",
-                            title: "@T("Admin.System.ScheduleBatchs.Fields.Enabled")",
-                            headerAttributes: { style: "text-align:center" },
-                            attributes: { style: "text-align:center" },
-                            template: '<img src="@Url.Content("~/Administration/Content/images/")active-#=Enabled#.gif" />'
-                        }, {
-                            field: "Id",
-                            title: "@T("Admin.Common.Edit")",
-                            template: '<a href="Edit/#=Id#">@T("Admin.Common.Edit")</a>'
-                            }
-                        ]
+                                , {
+                                    field: "StartExecutionOn",
+                                    title: "@T("Admin.System.ScheduleBatchs.Fields.StartExecutionOn")",
+                                    headerAttributes: { style: "text-align:center" },
+                                    attributes: { style: "text-align:center" },
+                                    type: "date",
+                                    format: "{0:G}"
+                                }, {
+                                    field: "NextExecutionOn",
+                                    title: "@T("Admin.System.ScheduleBatchs.Fields.NextExecutionOn")",
+                                    headerAttributes: { style: "text-align:center" },
+                                    attributes: { style: "text-align:center" },
+                                    type: "date",
+                                    format: "{0:G}"
+                                }, {
+                                    field: "LastExecutionOn",
+                                    title: "@T("Admin.System.ScheduleBatchs.Fields.LastExecutionOn")",
+                                    headerAttributes: { style: "text-align:center" },
+                                    attributes: { style: "text-align:center" },
+                                    type: "date",
+                                    format: "{0:G}"
+                                }, {
+                                    field: "Enabled",
+                                    title: "@T("Admin.System.ScheduleBatchs.Fields.Enabled")",
+                                    headerAttributes: { style: "text-align:center" },
+                                    attributes: { style: "text-align:center" },
+                                    template: '<img src="@Url.Content("~/Administration/Content/images/")active-#=Enabled#.gif" />'
+                                }, {
+                                    field: "Id",
+                                    title: "@T("Admin.Common.Edit")",
+                                    template: '<a href="Edit/#=Id#">@T("Admin.Common.Edit")</a>'
+                                }
+                            ]
+                        });
                     });
-                });
-            </script>
-        </td>
-    </tr>
-</table>
+                </script>
+            </td>
+        </tr>
+    </table>
+}
+
+@helper TabDownload()
+{
+    using (Html.BeginForm("List", "ScheduleBatch", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <table width="100%">
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ReportInfo.YearId):
+                </td>
+                <td class="adminData">
+                    @Html.DropDownListFor(model => model.ReportInfo.YearId, Model.ReportInfo.AvailableYears)
+                    <script>
+                        $(document).ready(function () {
+                            $('#@Html.FieldIdFor(model => model.ReportInfo.YearId)').width(250).kendoDropDownList();
+                        });
+                    </script>
+                </td>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ReportInfo.TypeId):
+                </td>
+                <td class="adminData">
+                    @Html.DropDownListFor(model => model.ReportInfo.TypeId, Model.ReportInfo.Types)
+                    <script>
+                        $(document).ready(function () {
+                            $('#@Html.FieldIdFor(model => model.ReportInfo.TypeId)').width(250).kendoDropDownList();
+                        });
+                    </script>
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ReportInfo.MonthId):
+                </td>
+                <td class="adminData">
+                    @Html.DropDownListFor(model => model.ReportInfo.MonthId, Model.ReportInfo.AvailableMonths)
+                    <script>
+                        $(document).ready(function () {
+                            $('#@Html.FieldIdFor(model => model.ReportInfo.MonthId)').width(250).kendoDropDownList();
+                        });
+                    </script>
+                </td>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ReportInfo.SubTypeId):
+                </td>
+                <td class="adminData">
+                    @Html.DropDownListFor(model => model.ReportInfo.SubTypeId, Model.ReportInfo.SubTypes)
+                    <script>
+                        $(document).ready(function () {
+                            $('#@Html.FieldIdFor(model => model.ReportInfo.SubTypeId)').width(250).kendoDropDownList();
+                        });
+                    </script>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td colspan="2">
+                    <input type="submit" class="k-button" value="Exporta" />
+                </td>
+            </tr>
+        </table>
+    }
+}

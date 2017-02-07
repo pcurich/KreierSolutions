@@ -32,5 +32,6 @@ namespace Ks.Services.ExportImport
         void ExportBenefitToXlsx(MemoryStream stream, Benefit getBenefitById, IList<ReportBenefit> benefit);
         void ExportMilitarSituationToXlsx(MemoryStream stream, string militarySituation, IList<ReportMilitarSituation> militarSituations);
         string ExportScheduleTxt(ScheduleBatch schedule);
+        void ExportReportInfoToXlsx(MemoryStream stream, string source, List<Info> period);
     }
 }

@@ -353,7 +353,8 @@ namespace Ks.Batch.Util
                             FrecuencyId = sqlReader.GetInt32(8),
                             PeriodYear = sqlReader.GetInt32(9),
                             PeriodMonth = sqlReader.GetInt32(10),
-                            Enabled = sqlReader.GetBoolean(14)
+                            Enabled = sqlReader.GetBoolean(14),
+                            UpdateData = sqlReader.GetBoolean(15)
                         };
                         if (!sqlReader.IsDBNull(11))
                             result.StartExecutionOnUtc = sqlReader.GetDateTime(11);

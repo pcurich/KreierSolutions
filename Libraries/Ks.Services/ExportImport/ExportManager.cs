@@ -1428,7 +1428,126 @@ namespace Ks.Services.ExportImport
 
         }
 
-        
+        public virtual void ExportReportInfoToXlsx(MemoryStream stream, string source, List<Info> info)
+        {
+            if (stream == null)
+                throw new ArgumentNullException("stream");
+
+            using (var xlPackage = new ExcelPackage(stream))
+            {
+                // get handle to the existing worksheet
+                var worksheet = xlPackage.Workbook.Worksheets.Add(source.Replace("."," ").Replace("Ks","").Replace("Batch","").Trim());
+                
+                var properties = new[]
+                    {
+                        "Año","Mes","AsociadoId","Nombre","Cod Adm","Dni","Total Aportacion","Total Pagado","Total Apoyo",
+                        "Couta Aportacion","Monto 1", "Monto 2", "Monto 3","Monto Anterior","Monto Total","Monto Aportado","EstadoAportacionId","Es Automatico","Banco",
+                        "Cuenta","Transaccion","Referencia", "Descripcion",
+                        "Couta Apoyo","Couta Mensual","Interes","Capital","Monto Pagado","EstadoApoyoId","Es Automatico","Banco",
+                        "Cuenta","Transaccion","Referencia", "Descripcion"
+                        
+                    };
+                for (var i = 0; i < properties.Length; i++)
+                {
+                    worksheet.Cells[1, i + 1].Value = properties[i];
+                    worksheet.Cells[1, i + 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    worksheet.Cells[1, i + 1].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(128, 235, 142));
+                    worksheet.Cells[1, i + 1].Style.Fill.BackgroundColor.Tint = 0.599993896298105M;
+                    worksheet.Cells[1, i + 1].Style.Font.Bold = true;
+                }
+
+                var row = 2;
+
+                foreach (var p in info)
+                {
+                    var col = 1;
+                    worksheet.Cells[row, col].Value = p.Year;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.Month ;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.CustomerId;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.CompleteName;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.AdminCode;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.Dni;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.TotalContribution;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.TotalPayed;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.TotalLoan;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.InfoContribution.Number;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.InfoContribution.Amount1;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.InfoContribution.Amount2;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.InfoContribution.Amount3;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.InfoContribution.AmountOld;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.InfoContribution.AmountTotal;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.InfoContribution.AmountPayed;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.InfoContribution.StateId;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.InfoContribution.IsAutomatic;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.InfoContribution.BankName;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.InfoContribution.AccountNumber;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.InfoContribution.TransactionNumber;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.InfoContribution.Reference;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.InfoContribution.Description;
+                    col++;
+
+                    foreach (var infoLoan in p.InfoLoans)
+                    {
+                        worksheet.Cells[row, col].Value = infoLoan.Quota;
+                        col++;
+                        worksheet.Cells[row, col].Value = infoLoan.MonthlyQuota;
+                        col++;
+                        worksheet.Cells[row, col].Value = infoLoan.MonthlyFee;
+                        col++;
+                        worksheet.Cells[row, col].Value = infoLoan.MonthlyCapital;
+                        col++;
+                        worksheet.Cells[row, col].Value = infoLoan.MonthlyPayed;
+                        col++;
+                        worksheet.Cells[row, col].Value = infoLoan.StateId;
+                        col++;
+                        worksheet.Cells[row, col].Value = infoLoan.IsAutomatic;
+                        col++;
+                        worksheet.Cells[row, col].Value = infoLoan.BankName;
+                        col++;
+                        worksheet.Cells[row, col].Value = infoLoan.AccountNumber;
+                        col++;
+                        worksheet.Cells[row, col].Value = infoLoan.TransactionNumber;
+                        col++;
+                        worksheet.Cells[row, col].Value = infoLoan.Reference;
+                        col++;
+                        worksheet.Cells[row, col].Value = infoLoan.Description;
+                        col++;
+                        row++;
+                        col = col - 12;
+                    }
+                    row++;
+                }
+
+                for (var i = 1; i <= worksheet.Dimension.Columns; i++)
+                {
+                    worksheet.Column(i).AutoFit();
+                }
+                xlPackage.Save();
+            }
+        }
+
         #endregion
 
         #region Utilities

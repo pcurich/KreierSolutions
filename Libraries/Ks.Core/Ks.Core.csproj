@@ -190,6 +190,9 @@
     <Compile Include="Domain\Messages\MessageTemplatesSettings.cs" />
     <Compile Include="Domain\Messages\QueuedEmail.cs" />
     <Compile Include="Domain\Messages\QueuedEmailPriority.cs" />
+    <Compile Include="Domain\Reports\Info.cs" />
+    <Compile Include="Domain\Reports\InfoContribution.cs" />
+    <Compile Include="Domain\Reports\InfoLoan.cs" />
     <Compile Include="Domain\Reports\ReportBenefit.cs" />
     <Compile Include="Domain\Reports\ReportContributionBenefit.cs" />
     <Compile Include="Domain\Reports\ReportContributionPayment.cs" />
