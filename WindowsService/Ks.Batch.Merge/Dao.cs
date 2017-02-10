@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using Ks.Batch.Util;
 using Ks.Batch.Util.Model;
 using Topshelf.Logging;
@@ -65,7 +66,7 @@ namespace Ks.Batch.Merge
             }
 
         }
-        
+
         #region Copere
         public void ProcessCopere(Report report, List<Info> listResponse, List<Info> listRequest, string bankName)
         {
@@ -237,15 +238,21 @@ namespace Ks.Batch.Merge
 
             if (infoContributionPayedComplete.Count > 0)
             {
-                UpdateContributionPaymentCopere(infoContributionPayedComplete, report.Period);
+                var infoPartial = SplitInfoContribution(infoContributionPayedComplete);
+                foreach (var info in infoPartial)
+                    UpdateContributionPaymentCopere(info.Value, report.Period);
             }
             if (infoContributionIncomplete.Count > 0)
             {
-                UpdateContributionPaymentCopere(infoContributionIncomplete, report.Period);
+                var infoPartial = SplitInfoContribution(infoContributionIncomplete);
+                foreach (var info in infoPartial)
+                    UpdateContributionPaymentCopere(info.Value, report.Period);
             }
             if (infoContributionNoCash.Count > 0)
             {
-                UpdateContributionPaymentCopere(infoContributionNoCash, report.Period);
+                var infoPartial = SplitInfoContribution(infoContributionNoCash);
+                foreach (var info in infoPartial)
+                    UpdateContributionPaymentCopere(info.Value, report.Period);
             }
 
             #endregion
@@ -253,15 +260,21 @@ namespace Ks.Batch.Merge
             #region LoanPayment
             if (infoLoanPayedComplete.Count > 0)
             {
-                UpdateLoanPaymentCopere(infoLoanPayedComplete, report.Period);
+                var infoPartial = SplitInfoLoan(infoLoanPayedComplete);
+                foreach (var info in infoPartial)
+                    UpdateLoanPaymentCopere(info.Value, report.Period);
             }
             if (infoLoanIncomplete.Count > 0)
             {
-                UpdateLoanPaymentCopere(infoLoanIncomplete, report.Period);
+                var infoPartial = SplitInfoLoan(infoLoanIncomplete);
+                foreach (var info in infoPartial)
+                    UpdateLoanPaymentCopere(info.Value, report.Period);
             }
             if (infoLoanNoCash.Count > 0)
             {
-                UpdateLoanPaymentCopere(infoLoanNoCash, report.Period);
+                var infoPartial = SplitInfoLoan(infoLoanNoCash);
+                foreach (var info in infoPartial)
+                    UpdateLoanPaymentCopere(info.Value, report.Period);
             }
 
             #endregion
@@ -283,6 +296,7 @@ namespace Ks.Batch.Merge
 
                 Sql = "UpdateContributionPaymentCopere @XmlPackage,@Year, @Month";
                 Command = new SqlCommand(Sql, Connection);
+                Command.CommandTimeout = 1800;
                 Command.Parameters.AddWithValue("@XmlPackage", xml);
                 Command.Parameters.AddWithValue("@Year", Convert.ToInt32(year));
                 Command.Parameters.AddWithValue("@Month", Convert.ToInt32(month));
@@ -308,6 +322,7 @@ namespace Ks.Batch.Merge
 
                 Sql = "UpdateLoanPaymentCopere @XmlPackage,@Year, @Month";
                 Command = new SqlCommand(Sql, Connection);
+                Command.CommandTimeout = 1800;
                 Command.Parameters.AddWithValue("@XmlPackage", xml);
                 Command.Parameters.AddWithValue("@Year", Convert.ToInt32(year));
                 Command.Parameters.AddWithValue("@Month", Convert.ToInt32(month));
@@ -489,17 +504,24 @@ namespace Ks.Batch.Merge
 
             #region ContributionPayment
 
+
             if (infoContributionPayedComplete.Count > 0)
             {
-                UpdateContributionPaymentCaja(infoContributionPayedComplete, report.Period);
+                var infoPartial = SplitInfoContribution(infoContributionPayedComplete);
+                foreach (var info in infoPartial)
+                    UpdateContributionPaymentCaja(info.Value, report.Period);
             }
             if (infoContributionIncomplete.Count > 0)
             {
-                UpdateContributionPaymentCaja(infoContributionIncomplete, report.Period);
+                var infoPartial = SplitInfoContribution(infoContributionIncomplete);
+                foreach (var info in infoPartial)
+                    UpdateContributionPaymentCaja(info.Value, report.Period);
             }
             if (infoContributionNoCash.Count > 0)
             {
-                UpdateContributionPaymentCaja(infoContributionNoCash, report.Period);
+                var infoPartial = SplitInfoContribution(infoContributionNoCash);
+                foreach (var info in infoPartial)
+                    UpdateContributionPaymentCaja(info.Value, report.Period);
             }
 
             #endregion
@@ -507,15 +529,21 @@ namespace Ks.Batch.Merge
             #region LoanPayment
             if (infoLoanPayedComplete.Count > 0)
             {
-                UpdateLoanPaymentCaja(infoLoanPayedComplete, report.Period);
+                var infoPartial = SplitInfoLoan(infoLoanPayedComplete);
+                foreach (var info in infoPartial)
+                    UpdateLoanPaymentCaja(info.Value, report.Period);
             }
             if (infoLoanIncomplete.Count > 0)
             {
-                UpdateLoanPaymentCaja(infoLoanIncomplete, report.Period);
+                var infoPartial = SplitInfoLoan(infoLoanIncomplete);
+                foreach (var info in infoPartial)
+                    UpdateLoanPaymentCaja(info.Value, report.Period);
             }
             if (infoLoanNoCash.Count > 0)
             {
-                UpdateLoanPaymentCaja(infoLoanNoCash, report.Period);
+                var infoPartial = SplitInfoLoan(infoLoanNoCash);
+                foreach (var info in infoPartial)
+                    UpdateLoanPaymentCaja(info.Value, report.Period);
             }
 
             #endregion
@@ -537,6 +565,7 @@ namespace Ks.Batch.Merge
 
                 Sql = "UpdateContributionPaymentCaja @XmlPackage,@Year, @Month";
                 Command = new SqlCommand(Sql, Connection);
+                Command.CommandTimeout = 1800;
                 Command.Parameters.AddWithValue("@XmlPackage", xml);
                 Command.Parameters.AddWithValue("@Year", Convert.ToInt32(year));
                 Command.Parameters.AddWithValue("@Month", Convert.ToInt32(month));
@@ -562,6 +591,7 @@ namespace Ks.Batch.Merge
 
                 Sql = "UpdateLoanPaymentCaja @XmlPackage,@Year, @Month";
                 Command = new SqlCommand(Sql, Connection);
+                Command.CommandTimeout = 1800;
                 Command.Parameters.AddWithValue("@XmlPackage", xml);
                 Command.Parameters.AddWithValue("@Year", Convert.ToInt32(year));
                 Command.Parameters.AddWithValue("@Month", Convert.ToInt32(month));
@@ -640,6 +670,56 @@ namespace Ks.Batch.Merge
 
         }
 
+        private Dictionary<int, List<InfoContribution>> SplitInfoContribution(List<InfoContribution> data)
+        {
+            int x = 1;
+            int y = 1;
+            var result = new Dictionary<int, List<InfoContribution>>();
+
+            List<InfoContribution> partial = new List<InfoContribution>();
+            foreach (var infoContribution in data)
+            {
+                if (x > 100)
+                {
+                    x = 1;
+                    result.Add(y, partial);
+                    partial = new List<InfoContribution>();
+                    y++;
+                }
+                else
+                {
+                    partial.Add(infoContribution);
+                    x++;
+                }
+            }
+
+            return result;
+        }
+        private Dictionary<int, List<InfoLoan>> SplitInfoLoan(List<InfoLoan> data)
+        {
+            int x = 1;
+            int y = 1;
+            var result = new Dictionary<int, List<InfoLoan>>();
+
+            List<InfoLoan> partial = new List<InfoLoan>();
+            foreach (var infoContribution in data)
+            {
+                if (x > 100)
+                {
+                    x = 1;
+                    result.Add(y, partial);
+                    partial = new List<InfoLoan>();
+                    y++;
+                }
+                else
+                {
+                    partial.Add(infoContribution);
+                    x++;
+                }
+            }
+
+            return result;
+        }
         #endregion
 
     }

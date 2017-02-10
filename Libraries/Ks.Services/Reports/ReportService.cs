@@ -277,7 +277,7 @@ namespace Ks.Services.Reports
             pTotalRecords.DbType = DbType.Int32;
 
             //invoke stored procedure
-            var data = _dbContext.ExecuteStoredProcedureList<Report>("ReportContributionBenefit", pFromYear, pFromMonth, pToYear,pToMonth,pType,pBenefitId, pNameReport, pReportState, pSource, pTotalRecords);
+            var data = _dbContext.ExecuteStoredProcedureList<Report>("ReportContributionBenefit", pFromYear, pFromMonth, pToYear, pToMonth, pType, pBenefitId, pNameReport, pReportState, pSource, pTotalRecords);
 
             //return products
             var totalRecords = (pTotalRecords.Value != DBNull.Value) ? Convert.ToInt32(pTotalRecords.Value) : 0;
@@ -299,7 +299,7 @@ namespace Ks.Services.Reports
             pLoanState.ParameterName = "LoanState";
             pLoanState.Value = loanState;
             pLoanState.DbType = DbType.Int32;
-            
+
             var pContributionState = _dataProvider.GetParameter();
             pContributionState.ParameterName = "ContributionState";
             pContributionState.Value = contributionState;
@@ -351,13 +351,13 @@ namespace Ks.Services.Reports
             pSource.Value = source;
             pSource.DbType = DbType.String;
 
-            var data= _dbContext.SqlQuery<string>(sql, pPeriod, pSource);
+            var data = _dbContext.SqlQuery<string>(sql, pPeriod, pSource);
 
             var firstOrDefault = data.FirstOrDefault();
-            if (firstOrDefault != null)
+            if (firstOrDefault != null || firstOrDefault.Length > 1)
                 return new List<Info>(XmlHelper.XmlToObject<List<Info>>(firstOrDefault));
 
-            return new List<Info>();
+            return null;
         }
 
         #endregion

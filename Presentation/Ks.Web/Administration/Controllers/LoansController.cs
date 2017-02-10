@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web.Mvc;
 using Ks.Admin.Extensions;
 using Ks.Admin.Models.Contract;
@@ -10,12 +11,15 @@ using Ks.Core;
 using Ks.Core.Domain.Common;
 using Ks.Core.Domain.Contract;
 using Ks.Core.Domain.Customers;
+using Ks.Core.Domain.Directory;
 using Ks.Core.Domain.Messages;
 using Ks.Services.Common;
+using Ks.Services.Configuration;
 using Ks.Services.Contract;
 using Ks.Services.Customers;
 using Ks.Services.ExportImport;
 using Ks.Services.Helpers;
+using Ks.Services.KsSystems;
 using Ks.Services.Localization;
 using Ks.Services.Logging;
 using Ks.Services.Messages;
@@ -31,6 +35,8 @@ namespace Ks.Admin.Controllers
         #region Fields
 
         private readonly IPermissionService _permissionService;
+        private readonly IKsSystemService _ksSystemService;
+        private readonly ISettingService _settingService;
         private readonly ILoanService _loanService;
         private readonly ICustomerService _customerService;
         private readonly IGenericAttributeService _genericAttributeService;
@@ -47,16 +53,11 @@ namespace Ks.Admin.Controllers
 
         #region Constructors
 
-        public LoansController(IPermissionService permissionService,
-            ILoanService loanService, ICustomerService customerService,
-            IGenericAttributeService genericAttributeService,
-            IDateTimeHelper dateTimeHelper, ICustomerActivityService customerActivityService,
-            ILocalizationService localizationService, IExportManager exportManager,
-            BankSettings bankSettings, IWorkContext workContext,
-            IWorkFlowService workFlowService,
-            IReturnPaymentService returnPaymentService)
+        public LoansController(IPermissionService permissionService, IKsSystemService ksSystemService, ISettingService settingService, ILoanService loanService, ICustomerService customerService, IGenericAttributeService genericAttributeService, IDateTimeHelper dateTimeHelper, ICustomerActivityService customerActivityService, ILocalizationService localizationService, IExportManager exportManager, IReturnPaymentService returnPaymentService, IWorkContext workContext, IWorkFlowService workFlowService, BankSettings bankSettings)
         {
             _permissionService = permissionService;
+            _ksSystemService = ksSystemService;
+            _settingService = settingService;
             _loanService = loanService;
             _customerService = customerService;
             _genericAttributeService = genericAttributeService;
@@ -64,10 +65,10 @@ namespace Ks.Admin.Controllers
             _customerActivityService = customerActivityService;
             _localizationService = localizationService;
             _exportManager = exportManager;
-            _bankSettings = bankSettings;
-            _workContext = workContext;
             _returnPaymentService = returnPaymentService;
+            _workContext = workContext;
             _workFlowService = workFlowService;
+            _bankSettings = bankSettings;
         }
 
         #endregion
@@ -449,6 +450,138 @@ namespace Ks.Admin.Controllers
         #endregion
 
         #region Reports
+
+        public ActionResult Download(int id)
+        {
+            var loan = _loanService.GetLoanById(id);
+            var html = PrepareBody(loan);
+            var stream = new MemoryStream((html.ConvertHtmlToPdf()));
+            return new PdfDownloadResult(stream, "Archivo.pdf");
+        }
+
+        private string PrepareBody(Loan loan)
+        {
+            var sb = new StringBuilder();
+
+            //Generando las cabeceras
+            sb.Append("</br></br>");
+            sb.Append("<table style='font-family:arial; font-size:18px; width:100%;' cellspacing='5' cellpadding='5'>");
+            sb.Append("<tr>" +
+                          "<td align='center' colspan='3'>" +
+                            "<h2>N°Orden de Pago " + loan.LoanNumber + "</h2>" +
+                          "</td>" +
+                      "</tr>");
+
+            var customer = _customerService.GetCustomerById(loan.CustomerId);
+            //tabla de resumen
+            sb.Append("<tr>" +
+                      "<td align='left' style='width:70%;'>");
+            sb.Append("<table style='font-family:arial; font-size:12px;'>" +
+                         "<tr>" +
+                             "<td rowspan='4' style='width:30%;'><b>Destinatario:</b></td>" +
+                             "<td style='width:40%;'> " + customer.GetFullName() + " </td>" +
+                             "<td rowspan='4' style='width:30%;'><b>Banco:</b></td>" +
+                             "<td style='width:40%;'> " + loan.BankName + " </td>" +
+                         "</tr>" +
+                        "</table>" +
+                         "<table style='font-family:arial; font-size:12px;'>" +
+                         "<tr>" +
+                             "<td rowspan='4' style='width:25%;'><b>N° Administrativo:</b></td>" +
+                             "<td style='width:40%;'> " + customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode) + " </td>" +
+                             "<td rowspan='4' style='width:25%;'><b>N°Cheque:</b></td>" +
+                             "<td style='width:40%;'> " + loan.CheckNumber + " </td>" +
+                         "</tr>" +
+                        "</table>" +
+        "</td>" +
+      "</tr>");
+            sb.Append("</table>");
+
+            sb.Append("</br></br>");
+            sb.Append("<h2><b>Apoyo Económico S/ " + loan.LoanAmount + " Plazo: " + loan.Period + " meses</b></h2>");
+            sb.Append("<table style='border:1px solid black;'>" +
+                        "<tr>" +
+                            "<td style='width:60%; border-bottom: 1px solid #ddd;'>Descripcion de la cuenta</td>" +
+                            "<td style='width:15%; border-bottom: 1px solid #ddd;'>Cargo</td>" +
+                            "<td style='width:15%; border-bottom: 1px solid #ddd;'>Abono</td>" +
+                      "</tr>"+
+                       "<tr>" +
+                            "<td style='width:60%;'>MONTO TOTAL CON INTERESES</td>" +
+                            "<td style='width:15%;'> S/"+loan.TotalAmount+"</td>" +
+                            "<td style='width:15%;'> </td>" +
+                      "</tr>" +
+                      "<tr>" +
+                            "<td style='width:60%;'>SEGURO DESGRAVAMEN "+loan.Safe+"%</td>" +
+                            "<td style='width:15%;'></td>" +
+                            "<td style='width:15%;'> S/"+ loan.TotalSafe +"</td>" +
+                      "</tr>" +
+                       "<tr>" +
+                            "<td style='width:60%;'>INTERESES TOTALES DIFERIDOS</td>" +
+                            "<td style='width:15%;'></td>" +
+                            "<td style='width:15%;'> S/" + loan.TotalFeed + "</td>" +
+                      "</tr>" +
+                       "<tr>" +
+                            "<td style='width:60%;'>CTA CTE MN N° "+loan.AccountNumber+"</td>" +
+                            "<td style='width:15%;'></td>" +
+                            "<td style='width:15%;'> S/" + loan.TotalToPay + "</td>" +
+                      "</tr>" +
+                "</table>");
+            sb.Append("</br>");
+
+            sb.Append("<table style='border:1px solid black;'>" +
+                      "<tr>" +
+                      "<td style='width:45%;'>Importe a descontarse en: " + loan.Period + "</td>" +
+                      "<td style='width:45%;'>Cuotas Mensuales: S/" + loan.MonthlyQuota + " </td>" +
+                      "</tr>" +
+                      "</table>");
+
+ 
+            sb.Append("</br>");
+            sb.Append("</br>");
+            sb.Append("</br>");
+
+            var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
+            var setting = _settingService.LoadSetting<SignatureSettings>(storeScope);
+
+            sb.Append("<table style='border:0px solid black;'>" +
+                "<tr style='color:white;'><td>.</td><td>.</td></tr>" +
+                "<tr style='color:white;' ><td>.</td><td>.</td></tr>" +
+                "<tr style='color:white;' ><td>.</td><td>.</td></tr>" +
+                "<tr style='color:white;' ><td>.</td><td>.</td></tr>" +
+                "<tr style='color:white;' ><td>.</td><td>.</td></tr>" +
+                      "<tr>" +
+                      "<td style='width:45%;' align='center'>--------------------------------------------</td>" +
+                      "<td style='width:45%;' align='center'>--------------------------------------------</td>" +
+                      "</tr>" +
+                      "<tr>" +
+                      "<td style='width:45%;' align='center'>" + setting.BenefitCenterName + "</td>" +
+                      "<td style='width:45%;' align='center'>" + setting.BenefitLeftName + "</td>" +
+                      "</tr>" +
+                      "<tr>" +
+                      "<td style='width:45%;' align='center'>" + setting.BenefitCenterPosition + "</td>" +
+                      "<td style='width:45%;' align='center'>" + setting.BenefitLeftPosition + "</td>" +
+                      "</tr>" +
+                      "</table>");
+
+            sb.Append("</br>");
+            sb.Append("</br>");
+            sb.Append("</br>");
+            sb.Append("</br>");
+            sb.Append("</br>");
+            
+             sb.Append("<table style='border:0px solid black;'>" +
+                       "<tr>"+
+                      "<td style='width:90%;' align='center'>--------------------------------------------</td>" +
+                      "</tr>" +
+                      "<tr>" +
+                      "<td style='width:90%;' align='center'>" + customer.GetFullName() + "</td>" +
+                      "</tr>" +
+                      "<tr>" +
+                      "<td style='width:90%;' align='center'>DNI:" + customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode) + "</td>" +
+                      "</tr>" +
+                      "</table>");
+
+            return sb.ToString();
+        }
 
         [HttpPost, ActionName("Edit")]
         [FormValueRequired("exportexcel")]

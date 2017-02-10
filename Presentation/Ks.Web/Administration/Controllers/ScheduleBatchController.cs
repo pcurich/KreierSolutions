@@ -328,9 +328,6 @@ namespace Ks.Admin.Controllers
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageScheduleBatchs))
                 return AccessDeniedView();
 
-
-
-
             var source = "";
             if (model.ReportInfo.TypeId == 1 && model.ReportInfo.SubTypeId == 1) //Copere Envio
                 source = "Ks.Batch.Copere.Out";
@@ -357,24 +354,20 @@ namespace Ks.Admin.Controllers
                     {
                         var envio = _reportService.GetInfo(source.Split(',')[0],
                             model.ReportInfo.YearId.ToString("0000") + model.ReportInfo.MonthId.ToString("00"));
-                        _exportManager.ExportReportInfoToXlsx(stream, source, envio);
+                        if (envio != null)
+                            _exportManager.ExportReportInfoToXlsx(stream, source, envio);
 
                         var recepcion = _reportService.GetInfo(source.Split(',')[0],
                             model.ReportInfo.YearId.ToString("0000") + model.ReportInfo.MonthId.ToString("00"));
-                        _exportManager.ExportReportInfoToXlsx(stream, source, recepcion);
+                        if (recepcion != null)
+                            _exportManager.ExportReportInfoToXlsx(stream, source, recepcion);
                     }
                     else
                     {
                         var info = _reportService.GetInfo(source, model.ReportInfo.YearId.ToString("0000") + model.ReportInfo.MonthId.ToString("00"));
                         _exportManager.ExportReportInfoToXlsx(stream, source, info);
                     }
-                    
 
-
-
-
-
-                    
                     bytes = stream.ToArray();
                 }
                 //Response.ContentType = "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
@@ -386,34 +379,6 @@ namespace Ks.Admin.Controllers
                 ErrorNotification(exc);
                 return RedirectToAction("List");
             }
-
-
-            //var report = _exportManager.ExportReportInfoToXls(source, model.ReportInfo.YearId.ToString("0000")+ model.ReportInfo.MonthId.ToString("00"));
-            //if (report == null)
-            //    //No  scheduleBatch  found with the specified id
-            //    return RedirectToAction("List");
-            //try
-            //{
-            //    schedule.Enabled = true;
-            //    schedule.UpdateData = true;
-            //    _scheduleBatchService.UpdateBatch(schedule);
-
-            //    this.Server.ScriptTimeout = 60 * 60;
-
-            //    var txt = _exportManager.ExportScheduleTxt(schedule);
-            //    string name = string.Empty;
-            //    if (schedule.SystemName == ("Ks.Batch.Caja.Out"))
-            //        name = string.Format("6008_{0}00", schedule.PeriodYear.ToString("0000") + schedule.PeriodMonth.ToString("00"));
-            //    else
-            //        name = string.Format("8001_{0}00", schedule.PeriodYear.ToString("0000") + schedule.PeriodMonth.ToString("00"));
-            //    name += ".txt";
-            //    return new TxtDownloadResult(txt, name);
-            //}
-            //catch (Exception exc)
-            //{
-            //    ErrorNotification(exc);
-            //    return RedirectToAction("List");
-            //}
         }
 
         public ActionResult CreateMerge(int id)

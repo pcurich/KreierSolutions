@@ -154,6 +154,7 @@
     <Compile Include="Mvc\Routes\RoutePublisher.cs" />
     <Compile Include="Mvc\TxtDownloadResult.cs" />
     <Compile Include="Mvc\XmlDownloadResult.cs" />
+    <Compile Include="PdfDownloadResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PublicKsSystemAllowNavigationAttribute.cs" />
     <Compile Include="PublicSystemAllowNavigationAttribut.cs" />

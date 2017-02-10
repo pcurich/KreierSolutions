@@ -501,7 +501,7 @@ CREATE PROCEDURE FixQuotaCopere
 AS
 BEGIN 
 	
-	Declare @MaxToPay int= (select value from Setting where Name  =  'contributionsettings.maximumcharge')
+	Declare @MaxToPay decimal(6,2)= (select value from Setting where Name  =  'contributionsettings.maximumcharge')
 	DECLARE @ContributionPaymentId INT
 	DECLARE @NextId INT 
 	DECLARE @OffSet decimal(12,2) 
@@ -589,7 +589,7 @@ AS
 BEGIN
  
 	
-	Declare @MaxToPay int= (select value from Setting where Name  =  'contributionsettings.maximumcharge')
+	Declare @MaxToPay decimal(6,2)= (select value from Setting where Name  =  'contributionsettings.maximumcharge')
 	DECLARE @ContributionPaymentId INT
 	DECLARE @NextId INT 
 	DECLARE @OffSet decimal(12,2) 
@@ -747,9 +747,7 @@ WHERE #ContributionPaymentCopereTmp4.ContributionPaymentId=ContributionPayment.I
 --3) Update Data 5 {PagoParcial = 3, Pagado = 4, SinLiquidez=5}
 ------------------------------------------------------------------------
 
-Declare @ValueOfQuota1 int= (select Value from Setting where Name  = 'contributionsettings.amount1')
-Declare @ValueOfQuota2 int= (select Value from Setting where Name  = 'contributionsettings.amount2')
-Declare @ValueOfQuota3 int= (select Value from Setting where Name  = 'contributionsettings.amount3')
+Declare @MaximumCharge decimal(6,2)= (select Value from Setting where Name  = 'contributionsettings.maximumcharge')
 
 UPDATE  ContributionPayment 
 set 
@@ -766,7 +764,7 @@ WHERE #ContributionPaymentCopereTmp5.ContributionPaymentId=ContributionPayment.I
 UPDATE  ContributionPayment 
 SET 
 ContributionPayment.AmountTotal=ContributionPayment.AmountTotal+TMP.NoPayed,
-contributionPayment.AmountOld=@ValueOfQuota1+@ValueOfQuota2+@ValueOfQuota3,
+contributionPayment.AmountOld=@MaximumCharge,
 ContributionPayment.NumberOld=TMP.Number,
 ContributionPayment.[Description] ='Valor de la couta aumentado por el sistema ACMR debido a la falta de liquitdez de la cuota N° ' + CAST(TMP.Number as nvarchar(3)),
 ContributionPayment.AccountNumber  = cast(convert(NVARCHAR, getutcdate(), 112) +REPLACE(convert(NVARCHAR, getutcdate(), 114) ,':','') as nvarchar(50))
@@ -913,9 +911,7 @@ WHERE #ContributionPaymentCajaTmp4.ContributionPaymentId=ContributionPayment.Id
 --3) Update Data 5 {PagoParcial = 3, Pagado = 4, SinLiquidez=5}
 ------------------------------------------------------------------------
 
-Declare @ValueOfQuota1 int= (select Value from Setting where Name  = 'contributionsettings.amount1')
-Declare @ValueOfQuota2 int= (select Value from Setting where Name  = 'contributionsettings.amount2')
-Declare @ValueOfQuota3 int= (select Value from Setting where Name  = 'contributionsettings.amount3')
+Declare @MaximumCharge decimal(6,2)= (select Value from Setting where Name  = 'contributionsettings.maximumcharge')
 
 UPDATE  ContributionPayment 
 set 
@@ -932,7 +928,7 @@ WHERE #ContributionPaymentCajaTmp5.ContributionPaymentId=ContributionPayment.Id
 UPDATE  ContributionPayment 
 SET 
 ContributionPayment.AmountTotal=ContributionPayment.AmountTotal+TMP.NoPayed,
-contributionPayment.AmountOld=@ValueOfQuota1+@ValueOfQuota2+@ValueOfQuota3,
+contributionPayment.AmountOld=@MaximumCharge,
 ContributionPayment.NumberOld=TMP.Number,
 ContributionPayment.[Description] ='Valor de la couta aumentado por el sistema ACMR debido a la falta de liquitdez de la cuota N° ' + CAST(TMP.Number as nvarchar(3)),
 ContributionPayment.AccountNumber  = cast(convert(NVARCHAR, getutcdate(), 112) +REPLACE(convert(NVARCHAR, getutcdate(), 114) ,':','') as nvarchar(50))

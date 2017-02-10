@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Threading;
+using Ks.Batch.Util;
 using Ks.Batch.Util.Model;
 
 namespace Ks.Batch.Merge
@@ -22,6 +24,12 @@ namespace Ks.Batch.Merge
 
             var dao = new Dao(connection);
             dao.Connect();
+
+            var batch = dao.GetScheduleBatch("Ks.Batch.Merge");
+            batch.Enabled = true;
+            batch.LastExecutionOnUtc = DateTime.UtcNow;
+            dao.UpdateScheduleBatch(batch);
+
             var listData = dao.GetData();
 
             if (listData.Count == 2)
@@ -31,7 +39,14 @@ namespace Ks.Batch.Merge
                 dao.ProcessCopere(_reportCopere, _copereIn, _copereOut,"Copere");
             if (_cajaOut != null && _cajaIn != null && _cajaOut.Count > 0 && _cajaIn.Count > 0 && e.Name == "CajaWakeUp.txt")
                 dao.ProcessCaja(_reportCaja, _cajaIn, _cajaOut,"Caja");
+            
+            batch.Enabled = false;
+            batch.LastExecutionOnUtc = DateTime.UtcNow;
+            dao.UpdateScheduleBatch(batch);
+
             dao.Close();
+
+            
 
             File.Delete(e.FullPath);
         }

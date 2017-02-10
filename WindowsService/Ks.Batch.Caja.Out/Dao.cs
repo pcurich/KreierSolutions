@@ -359,8 +359,9 @@ namespace Ks.Batch.Caja.Out
 
                 Sql = "SELECT EntityId, Attribute =[Key], Value FROM GenericAttribute " +
                   " WHERE KeyGroup='Customer' and  [Key] in ('Dni','AdmCode') AND " +
-                  " EntityId IN ( SELECT EntityId FROM GenericAttribute WHERE [Key]='MilitarySituationId' AND Value=2) " +
+                  " EntityId IN ( SELECT EntityId FROM GenericAttribute WHERE [Key]='MilitarySituationId' AND Value=2 AND EntityId IN  (SELECT Id FROM CUSTOMER WHERE ACTIVE=1  ) ) " +
                       " ORDER BY 1";
+
                 Command = new SqlCommand(Sql, Connection);
                 var sqlReader = Command.ExecuteReader();
 

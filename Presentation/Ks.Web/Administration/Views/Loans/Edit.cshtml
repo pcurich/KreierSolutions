@@ -12,13 +12,14 @@
             @T("Admin.Contract.Loan.AddNew") @Html.ActionLink("(" + T("Admin.Contract.Loan.BackToList") + ")", "List")
         </div>
         <div class="options">
-            <input type="button" id="createcustompayment" class="k-button" value="@T("Admin.Contract.LoanPayments.CustomPayment")" />
+            <a href="@Url.Action("Download", new { id = Model.LoanId })" class="k-button">@T("Constancia")</a>
+            <input type="button" id="createcustompayment" class="k-button" value="@T("Admin.Contract.LoanPayments.CustomPayment")"/>
             <input type="submit" name="exportexcel" class="k-button" value="@T("Admin.Common.ExportToExcel")"/>
             <input type="submit" name="exportexcelKardex" class="k-button" value="@T("Admin.Contract.LoanPayments.ExportToExcel.Kardex")"/>
             <span id="loan-delete" class="k-button">Cancelar Apoyo</span>
             <script type="text/javascript">
-                $('#createcustompayment').click(function () {
-                    window.location.replace('@Url.Action("CreateCustomPayment", "Loans", new { id = Model.LoanId })');
+                $('#createcustompayment').click(function() {
+                    window.location.replace('@Url.Action("CreateCustomPayment", "Loans", new {id = Model.LoanId})');
                 });
             </script>
         </div>

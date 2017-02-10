@@ -354,7 +354,7 @@ namespace Ks.Admin.Controllers
                     model.Contribution.CreatedOn = _dateTimeHelper.ConvertToUserTime(contribution.CreatedOnUtc, DateTimeKind.Utc);
                     if (contribution.UpdatedOnUtc.HasValue)
                     {
-                        model.Contribution.TotalOfCycles = ((contribution.UpdatedOnUtc.Value.Year - contribution.CreatedOnUtc.Year) * 12) + contribution.UpdatedOnUtc.Value.Month - contribution.CreatedOnUtc.Month;
+                        //model.Contributiomodel.IsPostBack = false;n.TotalOfCycles = ((contribution.UpdatedOnUtc.Value.Year - contribution.CreatedOnUtc.Year) * 12) + contribution.UpdatedOnUtc.Value.Month - contribution.CreatedOnUtc.Month;
                         model.Contribution.TotalOfCycles = Convert.ToInt32(Math.Round(contribution.UpdatedOnUtc.Value.Subtract(contribution.CreatedOnUtc).Days / (365.25 / 12), 2));
                         model.Contribution.UpdatedOn = _dateTimeHelper.ConvertToUserTime(contribution.UpdatedOnUtc.Value, DateTimeKind.Utc);
                     }
@@ -1559,7 +1559,7 @@ namespace Ks.Admin.Controllers
 
             var customer = _customerService.GetCustomerById(model.CustomerId);
             var military = customer.GetAttribute<int>(SystemCustomerAttributeNames.MilitarySituationId);
-            var dayOfPaymentLoan = military == 1 ? _loanSettings.DayOfPaymentLoanCopere : military==2?_loanSettings.DayOfPaymentLoanCaja:0;
+            var dayOfPaymentLoan = military == 1 ? _loanSettings.DayOfPaymentLoanCopere : military==2?_loanSettings.DayOfPaymentLoanCaja:1;
 
             if (!ModelState.IsValid)
             {
@@ -1655,15 +1655,15 @@ namespace Ks.Admin.Controllers
                     UpdatedOnUtc = null
                 };
 
-
+                var feed = Math.Round(loan.TotalFeed / loan.Period,2);
                 for (var cycle = 1; cycle <= model.Period; cycle++)
                 {
                     loan.LoanPayments.Add(new LoanPayment
                     {
                         //Active = false,
                         Quota = cycle,
-                        MonthlyFee = (loan.TotalFeed / loan.Period),
-                        MonthlyCapital = (loan.MonthlyQuota - loan.TotalFeed / loan.Period),
+                        MonthlyFee = feed,
+                        MonthlyCapital = (loan.MonthlyQuota-feed),
                         MonthlyQuota = (loan.MonthlyQuota),
                         ScheduledDateOnUtc = (estimated.AddMonths(cycle-1)),
                         ProcessedDateOnUtc = null,
@@ -2015,6 +2015,8 @@ namespace Ks.Admin.Controllers
             var totalSafe = model.LoanAmount * Convert.ToDecimal(_loanSettings.Safe);
 
             model.CustomerCompleteName = customer.GetFullName();
+            var temp = Math.Round((model.LoanAmount - totalSafe),2);
+
             model.PreCashFlow = new PreCashFlowModel
             {
                 Period = model.Period,
@@ -2023,9 +2025,9 @@ namespace Ks.Admin.Controllers
                 Safe = _loanSettings.Safe * 100,
                 TotalFeed = (totalfeed),
                 TotalSafe = (totalSafe),
-                MonthlyQuota = ((model.LoanAmount + totalfeed) / model.Period),
+                MonthlyQuota = (Math.Round(((model.LoanAmount + totalfeed) / model.Period),2)),
                 TotalAmount = (totalfeed + model.LoanAmount),
-                TotalToPay = (model.LoanAmount - totalSafe),
+                TotalToPay = temp,
                 StateName = model.IsAuthorized ? "Aprobado" : "No Aprobado"
             };
 
