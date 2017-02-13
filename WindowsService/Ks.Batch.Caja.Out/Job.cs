@@ -32,22 +32,19 @@ namespace Ks.Batch.Caja.Out
 
             if (Batch.Enabled)
             {
-                if (!ExistFile())
+                ExistFile();
+
+                var records = DataBase();
+                if (records.Count != 0)
                 {
-                    var records = DataBase();
-                    if (records.Count != 0)
-                    {
-                        SyncFiles(records);
-                        UpdateScheduleBatch();
-                    }
-                    else
-                    {
-                        UpdateScheduleBatch(false);
-                    }
+                    SyncFiles(records);
+                    UpdateScheduleBatch();
+                }
+                else
+                {
+                    UpdateScheduleBatch(false);
                 }
             }
-            else
-                UpdateScheduleBatch(false);
         }
 
         #region Util
@@ -67,7 +64,7 @@ namespace Ks.Batch.Caja.Out
             File.WriteAllLines(System.IO.Path.Combine(System.IO.Path.Combine(Path, Batch.FolderMoveToDone), nameFile), result);
         }
 
-        protected bool ExistFile()
+        protected void ExistFile()
         {
             var nameFile = string.Format("6008_{0}00.txt", Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00"));
             try
@@ -81,7 +78,7 @@ namespace Ks.Batch.Caja.Out
             {
                 Log.FatalFormat("Action: {0} Error: {1}", "Job.ExistFile(" + nameFile + ")", ex.Message);
             }
-            return false;
+ 
         }
 
         protected void UpdateScheduleBatch(bool executed = true)
@@ -90,10 +87,8 @@ namespace Ks.Batch.Caja.Out
             dao.Connect();
             if (executed && Batch.UpdateData)
             {
-                if (Batch.NextExecutionOnUtc.HasValue)
-                    Batch.NextExecutionOnUtc = Batch.FrecuencyId == 30 ?
-                        Batch.NextExecutionOnUtc.Value.AddMonths(Batch.FrecuencyId) :
-                        Batch.NextExecutionOnUtc.Value.AddDays(Batch.FrecuencyId);
+                if (Batch.NextExecutionOnUtc != null)
+                    Batch.NextExecutionOnUtc = Batch.NextExecutionOnUtc.Value.AddSeconds(30);
 
                 if (Batch.PeriodMonth == 12)
                 {

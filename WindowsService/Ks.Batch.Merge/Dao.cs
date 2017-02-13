@@ -87,8 +87,7 @@ namespace Ks.Batch.Merge
                 request.InfoContribution.BankName = bankName;
                 request.InfoContribution.Description = "Proceso automática por el sistema ACMR";
 
-                var info1 = request;
-                response = listResponse.FirstOrDefault(x => x.AdminCode == info1.AdminCode);
+                response = listResponse.FirstOrDefault(x => x.AdminCode.Trim() == request.AdminCode.Trim());
                 if (response == null)
                 {
                     #region Sin liquidez en Contribution y Loan
@@ -238,21 +237,21 @@ namespace Ks.Batch.Merge
 
             if (infoContributionPayedComplete.Count > 0)
             {
-                var infoPartial = SplitInfoContribution(infoContributionPayedComplete);
+                var infoPartial = LinqExtensions.Split(infoContributionPayedComplete, 50);
                 foreach (var info in infoPartial)
-                    UpdateContributionPaymentCopere(info.Value, report.Period);
+                    UpdateContributionPaymentCopere(info.ToList(), report.Period);
             }
             if (infoContributionIncomplete.Count > 0)
             {
-                var infoPartial = SplitInfoContribution(infoContributionIncomplete);
+                var infoPartial = LinqExtensions.Split(infoContributionIncomplete, 50);
                 foreach (var info in infoPartial)
-                    UpdateContributionPaymentCopere(info.Value, report.Period);
+                    UpdateContributionPaymentCopere(info.ToList(), report.Period);
             }
             if (infoContributionNoCash.Count > 0)
             {
-                var infoPartial = SplitInfoContribution(infoContributionNoCash);
+                var infoPartial = LinqExtensions.Split(infoContributionNoCash, 50);
                 foreach (var info in infoPartial)
-                    UpdateContributionPaymentCopere(info.Value, report.Period);
+                    UpdateContributionPaymentCopere(info.ToList(), report.Period);
             }
 
             #endregion
@@ -260,21 +259,21 @@ namespace Ks.Batch.Merge
             #region LoanPayment
             if (infoLoanPayedComplete.Count > 0)
             {
-                var infoPartial = SplitInfoLoan(infoLoanPayedComplete);
+                var infoPartial = LinqExtensions.Split(infoLoanPayedComplete, 50);
                 foreach (var info in infoPartial)
-                    UpdateLoanPaymentCopere(info.Value, report.Period);
+                    UpdateLoanPaymentCopere(info.ToList(), report.Period);
             }
             if (infoLoanIncomplete.Count > 0)
             {
-                var infoPartial = SplitInfoLoan(infoLoanIncomplete);
+                var infoPartial = LinqExtensions.Split(infoLoanIncomplete, 50);
                 foreach (var info in infoPartial)
-                    UpdateLoanPaymentCopere(info.Value, report.Period);
+                    UpdateLoanPaymentCopere(info.ToList(), report.Period);
             }
             if (infoLoanNoCash.Count > 0)
             {
-                var infoPartial = SplitInfoLoan(infoLoanNoCash);
+                var infoPartial = LinqExtensions.Split(infoLoanNoCash, 50);
                 foreach (var info in infoPartial)
-                    UpdateLoanPaymentCopere(info.Value, report.Period);
+                    UpdateLoanPaymentCopere(info.ToList(), report.Period);
             }
 
             #endregion
@@ -507,21 +506,21 @@ namespace Ks.Batch.Merge
 
             if (infoContributionPayedComplete.Count > 0)
             {
-                var infoPartial = SplitInfoContribution(infoContributionPayedComplete);
+                var infoPartial = LinqExtensions.Split(infoContributionPayedComplete, 50);
                 foreach (var info in infoPartial)
-                    UpdateContributionPaymentCaja(info.Value, report.Period);
+                    UpdateContributionPaymentCaja(info.ToList(), report.Period);
             }
             if (infoContributionIncomplete.Count > 0)
             {
-                var infoPartial = SplitInfoContribution(infoContributionIncomplete);
+                var infoPartial = LinqExtensions.Split(infoContributionIncomplete, 50);
                 foreach (var info in infoPartial)
-                    UpdateContributionPaymentCaja(info.Value, report.Period);
+                    UpdateContributionPaymentCaja(info.ToList(), report.Period);
             }
             if (infoContributionNoCash.Count > 0)
             {
-                var infoPartial = SplitInfoContribution(infoContributionNoCash);
+                var infoPartial = LinqExtensions.Split(infoContributionNoCash, 50);
                 foreach (var info in infoPartial)
-                    UpdateContributionPaymentCaja(info.Value, report.Period);
+                    UpdateContributionPaymentCaja(info.ToList(), report.Period);
             }
 
             #endregion
@@ -529,21 +528,21 @@ namespace Ks.Batch.Merge
             #region LoanPayment
             if (infoLoanPayedComplete.Count > 0)
             {
-                var infoPartial = SplitInfoLoan(infoLoanPayedComplete);
+                var infoPartial = LinqExtensions.Split(infoLoanPayedComplete, 50);
                 foreach (var info in infoPartial)
-                    UpdateLoanPaymentCaja(info.Value, report.Period);
+                    UpdateLoanPaymentCaja(info.ToList(), report.Period);
             }
             if (infoLoanIncomplete.Count > 0)
             {
-                var infoPartial = SplitInfoLoan(infoLoanIncomplete);
+                var infoPartial = LinqExtensions.Split(infoLoanIncomplete, 50);
                 foreach (var info in infoPartial)
-                    UpdateLoanPaymentCaja(info.Value, report.Period);
+                    UpdateLoanPaymentCaja(info.ToList(), report.Period);
             }
             if (infoLoanNoCash.Count > 0)
             {
-                var infoPartial = SplitInfoLoan(infoLoanNoCash);
+                var infoPartial = LinqExtensions.Split(infoLoanNoCash, 50);
                 foreach (var info in infoPartial)
-                    UpdateLoanPaymentCaja(info.Value, report.Period);
+                    UpdateLoanPaymentCaja(info.ToList(), report.Period);
             }
 
             #endregion
@@ -679,7 +678,7 @@ namespace Ks.Batch.Merge
             List<InfoContribution> partial = new List<InfoContribution>();
             foreach (var infoContribution in data)
             {
-                if (x > 100)
+                if (x > 500)
                 {
                     x = 1;
                     result.Add(y, partial);
@@ -704,7 +703,7 @@ namespace Ks.Batch.Merge
             List<InfoLoan> partial = new List<InfoLoan>();
             foreach (var infoContribution in data)
             {
-                if (x > 100)
+                if (x > 500)
                 {
                     x = 1;
                     result.Add(y, partial);

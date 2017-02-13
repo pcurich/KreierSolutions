@@ -31,22 +31,20 @@ namespace Ks.Batch.Copere.Out
 
             if (Batch.Enabled)
             {
-                if (!ExistFile())
+                ExistFile();
+
+                var records = DataBase();
+                if (records.Count != 0)
                 {
-                    var records = DataBase();
-                    if (records.Count != 0)
-                    {
-                        SyncFiles(records);
-                        UpdateScheduleBatch();
-                    }
-                    else
-                    {
-                        UpdateScheduleBatch(false);
-                    }
+                    SyncFiles(records);
+                    UpdateScheduleBatch();
+                }
+                else
+                {
+                    UpdateScheduleBatch(false);
                 }
             }
-            else
-                UpdateScheduleBatch(false);
+
         }
 
         #region Util
@@ -62,11 +60,18 @@ namespace Ks.Batch.Copere.Out
 
         protected void SyncFiles(List<string> result)
         {
-            var nameFile = string.Format("8001_{0}00.txt", Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00"));
-            File.WriteAllLines(System.IO.Path.Combine(System.IO.Path.Combine(Path, Batch.FolderMoveToDone), nameFile), result);
+            try
+            {
+                var nameFile = string.Format("8001_{0}00.txt", Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00"));
+                File.WriteAllLines(System.IO.Path.Combine(System.IO.Path.Combine(Path, Batch.FolderMoveToDone), nameFile), result);
+            }
+            catch (Exception ex)
+            {
+                Log.FatalFormat("Action: {0} Error: {1}", "Job.SyncFiles()", ex.Message);
+            }
         }
 
-        protected bool ExistFile()
+        protected void ExistFile()
         {
             var nameFile = string.Format("8001_{0}00.txt", Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00"));
             try
@@ -80,20 +85,17 @@ namespace Ks.Batch.Copere.Out
             {
                 Log.FatalFormat("Action: {0} Error: {1}", "Job.ExistFile(" + nameFile + ")", ex.Message);
             }
-
-            return false;
         }
 
         protected void UpdateScheduleBatch(bool executed = true)
         {
             var dao = new Dao(Connection);
             dao.Connect();
+            Log.InfoFormat("Action: Start{0}", "Job.UpdateScheduleBatch(executed=" + executed + " ,Batch=" + Batch.ToString() + ")");
             if (executed && Batch.UpdateData)
             {
-                if (Batch.NextExecutionOnUtc.HasValue)
-                    Batch.NextExecutionOnUtc = Batch.FrecuencyId == 30 ?
-                        Batch.NextExecutionOnUtc.Value.AddMonths(Batch.FrecuencyId) :
-                        Batch.NextExecutionOnUtc.Value.AddDays(Batch.FrecuencyId);
+                if (Batch.NextExecutionOnUtc != null)
+                    Batch.NextExecutionOnUtc = Batch.NextExecutionOnUtc.Value.AddSeconds(30);
 
                 if (Batch.PeriodMonth == 12)
                 {
@@ -108,6 +110,7 @@ namespace Ks.Batch.Copere.Out
             Batch.Enabled = false;
             Batch.UpdateData = false;
             dao.UpdateScheduleBatch(Batch);
+            Log.InfoFormat("Action: End{0}", "Job.UpdateScheduleBatch(executed=" + executed + " ,Batch=" + Batch.ToString() + ")");
             dao.Close();
         }
 

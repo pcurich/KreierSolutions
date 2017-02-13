@@ -191,7 +191,7 @@ namespace Ks.Services.Contract
                 query = query.Where(x => x.AccountNumber == accountNumber);
             if (type != null)
                 query = query.Where(x => x.IsAutomatic == type.Value);
-            query.OrderBy(x => x.Quota);
+            query=query.OrderBy(x => x.Quota);
 
             return new PagedList<LoanPayment>(query.ToList(), pageIndex, pageSize);
         }

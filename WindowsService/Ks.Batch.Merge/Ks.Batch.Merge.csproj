@@ -67,6 +67,7 @@
   <ItemGroup>
     <Compile Include="BatchContainer.cs" />
     <Compile Include="Dao.cs" />
+    <Compile Include="LinqExtensions.cs" />
     <Compile Include="Watcher.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

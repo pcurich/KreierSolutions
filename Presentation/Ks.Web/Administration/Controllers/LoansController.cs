@@ -476,7 +476,7 @@ namespace Ks.Admin.Controllers
             //tabla de resumen
             sb.Append("<tr>" +
                       "<td align='left' style='width:70%;'>");
-            sb.Append("<table style='font-family:arial; font-size:12px;'>" +
+            sb.Append("<table style='font-family:arial; font-size:10px;'>" +
                          "<tr>" +
                              "<td rowspan='4' style='width:30%;'><b>Destinatario:</b></td>" +
                              "<td style='width:40%;'> " + customer.GetFullName() + " </td>" +
@@ -484,11 +484,11 @@ namespace Ks.Admin.Controllers
                              "<td style='width:40%;'> " + loan.BankName + " </td>" +
                          "</tr>" +
                         "</table>" +
-                         "<table style='font-family:arial; font-size:12px;'>" +
+                         "<table style='font-family:arial; font-size:10px;'>" +
                          "<tr>" +
-                             "<td rowspan='4' style='width:25%;'><b>N° Administrativo:</b></td>" +
+                             "<td rowspan='4' style='width:30%;'><b>N° Admin:</b></td>" +
                              "<td style='width:40%;'> " + customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode) + " </td>" +
-                             "<td rowspan='4' style='width:25%;'><b>N°Cheque:</b></td>" +
+                             "<td rowspan='4' style='width:30%;'><b>N°Cheque:</b></td>" +
                              "<td style='width:40%;'> " + loan.CheckNumber + " </td>" +
                          "</tr>" +
                         "</table>" +
@@ -497,12 +497,12 @@ namespace Ks.Admin.Controllers
             sb.Append("</table>");
 
             sb.Append("</br></br>");
-            sb.Append("<h2><b>Apoyo Económico S/ " + loan.LoanAmount + " Plazo: " + loan.Period + " meses</b></h2>");
-            sb.Append("<table style='border:1px solid black;'>" +
+            sb.Append("<p style='font-family:arial; font-size:10px;'><b>Apoyo Económico S/ " + loan.LoanAmount + " Plazo: " + loan.Period + " meses</b></p>");
+            sb.Append("<table style='border:1px solid black; font-size:10px;'>" +
                         "<tr>" +
                             "<td style='width:60%; border-bottom: 1px solid #ddd;'>Descripcion de la cuenta</td>" +
                             "<td style='width:15%; border-bottom: 1px solid #ddd;'>Cargo</td>" +
-                            "<td style='width:15%; border-bottom: 1px solid #ddd;'>Abono</td>" +
+                            "<td style='width:15%; border-bottom: 1px solid #ddd;' align='right'>Abono</td>" +
                       "</tr>"+
                        "<tr>" +
                             "<td style='width:60%;'>MONTO TOTAL CON INTERESES</td>" +
@@ -512,25 +512,25 @@ namespace Ks.Admin.Controllers
                       "<tr>" +
                             "<td style='width:60%;'>SEGURO DESGRAVAMEN "+loan.Safe+"%</td>" +
                             "<td style='width:15%;'></td>" +
-                            "<td style='width:15%;'> S/"+ loan.TotalSafe +"</td>" +
+                            "<td style='width:15%;' align='right'> S/" + loan.TotalSafe + "</td>" +
                       "</tr>" +
                        "<tr>" +
                             "<td style='width:60%;'>INTERESES TOTALES DIFERIDOS</td>" +
                             "<td style='width:15%;'></td>" +
-                            "<td style='width:15%;'> S/" + loan.TotalFeed + "</td>" +
+                            "<td style='width:15%;' align='right'> S/" + loan.TotalFeed + "</td>" +
                       "</tr>" +
                        "<tr>" +
                             "<td style='width:60%;'>CTA CTE MN N° "+loan.AccountNumber+"</td>" +
                             "<td style='width:15%;'></td>" +
-                            "<td style='width:15%;'> S/" + loan.TotalToPay + "</td>" +
+                            "<td style='width:15%;' align='right'> S/" + loan.TotalToPay + "</td>" +
                       "</tr>" +
                 "</table>");
             sb.Append("</br>");
 
-            sb.Append("<table style='border:1px solid black;'>" +
+            sb.Append("<table style='border:1px solid black; font-size:10px;'>" +
                       "<tr>" +
-                      "<td style='width:45%;'>Importe a descontarse en: " + loan.Period + "</td>" +
-                      "<td style='width:45%;'>Cuotas Mensuales: S/" + loan.MonthlyQuota + " </td>" +
+                      "<td style='width:35%;'>Importe a descontarse en: " + loan.Period + "</td>" +
+                      "<td style='width:35%;'>Cuotas Mensuales: S/" + loan.MonthlyQuota + " </td>" +
                       "</tr>" +
                       "</table>");
 
@@ -542,8 +542,10 @@ namespace Ks.Admin.Controllers
             var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
             var setting = _settingService.LoadSetting<SignatureSettings>(storeScope);
 
-            sb.Append("<table style='border:0px solid black;'>" +
+            sb.Append("<table style='border:0px solid black; font-size:10px;'>" +
                 "<tr style='color:white;'><td>.</td><td>.</td></tr>" +
+                "<tr style='color:white;' ><td>.</td><td>.</td></tr>" +
+                "<tr style='color:white;' ><td>.</td><td>.</td></tr>" +
                 "<tr style='color:white;' ><td>.</td><td>.</td></tr>" +
                 "<tr style='color:white;' ><td>.</td><td>.</td></tr>" +
                 "<tr style='color:white;' ><td>.</td><td>.</td></tr>" +
@@ -560,6 +562,25 @@ namespace Ks.Admin.Controllers
                       "<td style='width:45%;' align='center'>" + setting.BenefitCenterPosition + "</td>" +
                       "<td style='width:45%;' align='center'>" + setting.BenefitLeftPosition + "</td>" +
                       "</tr>" +
+                      "<tr style='color:white;'><td>.</td><td>.</td></tr>" +
+                "<tr style='color:white;' ><td>.</td><td>.</td></tr>" +
+                "<tr style='color:white;' ><td>.</td><td>.</td></tr>" +
+                "<tr style='color:white;' ><td>.</td><td>.</td></tr>" +
+                "<tr style='color:white;' ><td>.</td><td>.</td></tr>" +
+                "<tr style='color:white;' ><td>.</td><td>.</td></tr>" +
+                "<tr style='color:white;' ><td>.</td><td>.</td></tr>" +
+                 "<tr>" +
+                      "<td style='width:45%;' align='center'>--------------------------------------------</td>" +
+                      "<td style='width:45%;' align='center'>--------------------------------------------</td>" +
+                      "</tr>" +
+                      "<tr>" +
+                      "<td style='width:45%;' align='center'>" + setting.LoanRightName + "</td>" +
+                      "<td style='width:45%;' align='center'>" + setting.LoanLeftName + "</td>" +
+                      "</tr>" +
+                      "<tr>" +
+                      "<td style='width:45%;' align='center'>" + setting.LoanRightPosition+ "</td>" +
+                      "<td style='width:45%;' align='center'>" + setting.LoanLeftPosition + "</td>" +
+                      "</tr>" +
                       "</table>");
 
             sb.Append("</br>");
@@ -567,8 +588,10 @@ namespace Ks.Admin.Controllers
             sb.Append("</br>");
             sb.Append("</br>");
             sb.Append("</br>");
-            
-             sb.Append("<table style='border:0px solid black;'>" +
+            sb.Append("</br>");
+            sb.Append("</br>");
+
+            sb.Append("<table style='border:0px solid black; font-size:10px;'>" +
                        "<tr>"+
                       "<td style='width:90%;' align='center'>--------------------------------------------</td>" +
                       "</tr>" +

@@ -15,5 +15,10 @@ namespace Ks.Core.Domain.Directory
         public string BenefitRightName { get; set; }
         public string BenefitRightPosition { get; set; }
 
+        public string LoanRightName { get; set; }
+        public string LoanRightPosition { get; set; }
+
+        public string LoanLeftName { get; set; }
+        public string LoanLeftPosition { get; set; }
     }
 }

@@ -21,6 +21,18 @@ namespace Ks.Batch.Util
         public bool Enabled { get; set; }
         public bool UpdateData { get; set; }
 
+        public override string ToString()
+        {
+            return "{SystemName=" + SystemName +
+                ",PeriodYear=" + PeriodYear +
+                ",PeriodMonth=" + PeriodMonth +
+                ",StartExecution=" + StartExecutionOnUtc +
+                ",NextExecution=" + NextExecutionOnUtc +
+                ",LastExecution=" + LastExecutionOnUtc +
+                ",Enabled=" + Enabled +
+                ",UpdateData=" + UpdateData +"}";
+        }
+
         public bool Equals(ScheduleBatch obj)
         {
             return Id == obj.Id && Name.Trim() == obj.Name.Trim() && SystemName.Trim() == obj.SystemName.Trim() &&

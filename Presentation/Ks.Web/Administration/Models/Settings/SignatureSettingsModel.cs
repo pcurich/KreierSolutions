@@ -21,5 +21,14 @@ namespace Ks.Admin.Models.Settings
         public string BenefitRightName { get; set; }
         [KsResourceDisplayName("Admin.Configuration.Settings.Signature.BenefitRightPosition")]
         public string BenefitRightPosition { get; set; }
+
+        [KsResourceDisplayName("Admin.Configuration.Settings.Signature.LoanRightName")]
+        public string LoanRightName { get; set; }
+        [KsResourceDisplayName("Admin.Configuration.Settings.Signature.LoanRightPosition")]
+        public string LoanRightPosition { get; set; }
+        [KsResourceDisplayName("Admin.Configuration.Settings.Signature.LoanLeftName")]
+        public string LoanLeftName { get; set; }
+        [KsResourceDisplayName("Admin.Configuration.Settings.Signature.LoanLeftPosition")]
+        public string LoanLeftPosition { get; set; }
     }
 }

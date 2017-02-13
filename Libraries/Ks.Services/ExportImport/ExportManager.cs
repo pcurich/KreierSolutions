@@ -1404,24 +1404,16 @@ namespace Ks.Services.ExportImport
                 nameFile = string.Format("6008_{0}00.txt", schedule.PeriodYear.ToString("0000") + schedule.PeriodMonth.ToString("00"));
             else
                 nameFile = string.Format("8001_{0}00.txt", schedule.PeriodYear.ToString("0000") + schedule.PeriodMonth.ToString("00"));
-            System.IO.StreamReader file =
-                new System.IO.StreamReader(
-                    System.IO.Path.Combine(System.IO.Path.Combine(schedule.PathBase, schedule.FolderMoveToDone),
-                        nameFile));
+ 
 
             var fileReaded = File.ReadAllLines(Path.Combine(Path.Combine(schedule.PathBase, schedule.FolderMoveToDone),
                         nameFile));
 
             var sb = new StringBuilder();
 
-            using (var reader = new StreamReader(Path.Combine(Path.Combine(schedule.PathBase, schedule.FolderMoveToDone), nameFile)))
+            foreach (var s in fileReaded)
             {
-                var line = reader.ReadLine();
-                while (line != null)
-                {
-                    sb.AppendLine(line);
-                    line = reader.ReadLine();
-                }
+                sb.AppendLine(s);
             }
 
             return sb.ToString();

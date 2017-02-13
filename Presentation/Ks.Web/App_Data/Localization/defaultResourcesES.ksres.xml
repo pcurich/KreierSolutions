@@ -4243,6 +4243,30 @@
 	<LocaleResource Name="Admin.Configuration.Settings.Signature.BenefitRightPosition.Hint">
 		<Value>Beneficio - Derecha - Cargo</Value>
 	</LocaleResource> 
+	<LocaleResource Name="Admin.Configuration.Settings.Signature.LoanRightPosition">	
+		<Value>Apoyo - Derecha - Cargo</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Configuration.Settings.Signature.LoanRightPosition.Hint">
+		<Value>Apoyo - Derecha - Cargo</Value>
+	</LocaleResource> 
+		<LocaleResource Name="Admin.Configuration.Settings.Signature.LoanRightName">	
+		<Value>Apoyo - Derecha - Nombre</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Configuration.Settings.Signature.LoanRightName.Hint">
+		<Value>Apoyo - Derecha - Nombre</Value>
+	</LocaleResource> 
+		<LocaleResource Name="Admin.Configuration.Settings.Signature.LoanLeftPosition">	
+		<Value>Apoyo - Izquierda - Cargo</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Configuration.Settings.Signature.LoanLeftPosition.Hint">
+		<Value>Apoyo - Izquierda - Cargo</Value>
+	</LocaleResource> 
+		<LocaleResource Name="Admin.Configuration.Settings.Signature.LoanLeftName">	
+		<Value>Apoyo - Izquierda - Nombre</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Configuration.Settings.Signature.LoanLeftName.Hint">
+		<Value>Apoyo - Izquierda - Nombre</Value>
+	</LocaleResource> 	
 	<LocaleResource Name="Admin.Configuration.Settings.Media">
 		<Value>Configuración de Medios</Value>
 	</LocaleResource>

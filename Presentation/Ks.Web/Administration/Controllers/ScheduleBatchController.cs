@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Web.Mvc;
 using Ks.Admin.Extensions;
 using Ks.Admin.Models.Batchs;
@@ -267,9 +268,10 @@ namespace Ks.Admin.Controllers
             {
                 schedule.Enabled = true;
                 schedule.UpdateData = false;
+
                 _scheduleBatchService.UpdateBatch(schedule);
 
-                this.Server.ScriptTimeout = 60 * 60;
+                Thread.Sleep(30*1000);
 
                 var txt = _exportManager.ExportScheduleTxt(schedule);
                 string name = string.Empty;
@@ -303,7 +305,7 @@ namespace Ks.Admin.Controllers
                 schedule.UpdateData = true;
                 _scheduleBatchService.UpdateBatch(schedule);
 
-                this.Server.ScriptTimeout = 60 * 60;
+                Thread.Sleep(30 * 1000);
 
                 var txt = _exportManager.ExportScheduleTxt(schedule);
                 string name = string.Empty;
@@ -350,6 +352,7 @@ namespace Ks.Admin.Controllers
                 byte[] bytes;
                 using (var stream = new MemoryStream())
                 {
+
                     if (source.Split(',').Count() == 2)
                     {
                         var envio = _reportService.GetInfo(source.Split(',')[0],
@@ -357,7 +360,7 @@ namespace Ks.Admin.Controllers
                         if (envio != null)
                             _exportManager.ExportReportInfoToXlsx(stream, source, envio);
 
-                        var recepcion = _reportService.GetInfo(source.Split(',')[0],
+                        var recepcion = _reportService.GetInfo(source.Split(',')[1],
                             model.ReportInfo.YearId.ToString("0000") + model.ReportInfo.MonthId.ToString("00"));
                         if (recepcion != null)
                             _exportManager.ExportReportInfoToXlsx(stream, source, recepcion);

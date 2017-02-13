@@ -104,6 +104,38 @@
                 @Html.ValidationMessageFor(model => model.BenefitRightName)
             </td>
         </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.LoanLeftPosition):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.LoanLeftPosition)
+                @Html.ValidationMessageFor(model => model.LoanLeftPosition)
+            </td>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.LoanLeftName):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.LoanLeftName)
+                @Html.ValidationMessageFor(model => model.LoanLeftName)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.LoanRightPosition):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.LoanRightPosition)
+                @Html.ValidationMessageFor(model => model.LoanRightPosition)
+            </td>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.LoanRightName):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.LoanRightName)
+                @Html.ValidationMessageFor(model => model.LoanRightName)
+            </td>
+        </tr>
     </table>
 }
 }
