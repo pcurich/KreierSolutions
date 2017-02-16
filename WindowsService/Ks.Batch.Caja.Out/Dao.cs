@@ -158,32 +158,36 @@ namespace Ks.Batch.Caja.Out
 
                         info.TotalContribution = sqlReader.GetDecimal(sqlReader.GetOrdinal("AmountTotal"));
                     }
-                    ReportOut.Remove(sqlReader.GetInt32(0));
-                    reportOut2.Add(sqlReader.GetInt32(0), info);
+                    ReportOut[sqlReader.GetInt32(0)] = info;
+                    //ReportOut.Remove(sqlReader.GetInt32(0));
+                    //reportOut2.Add(sqlReader.GetInt32(0), info);
                 }
 
                 sqlReader.Close();
-                ReportOut.Clear();
+                //ReportOut.Clear();
 
-                foreach (var pk in reportOut2)
+                foreach (var pk in ReportOut)
                 {
-                    customerIds2.Add(pk.Key);
-                    ReportOut.Add(pk.Key, pk.Value);
+                    if (pk.Value.InfoContribution != null)
+                    {
+                        customerIds2.Add(pk.Key);
+                        //ReportOut.Add(pk.Key, pk.Value);
+                    }
                 }
 
-                var fileOutTem = new Dictionary<int, string>();
-                foreach (var customerId in customerIds2)
-                {
-                    string data;
-                    FileOut.TryGetValue(customerId, out data);
-                    if (data != null)
-                        fileOutTem.Add(customerId, data);
-                }
+                //var fileOutTem = new Dictionary<int, string>();
+                //foreach (var customerId in customerIds2)
+                //{
+                //    string data;
+                //    FileOut.TryGetValue(customerId, out data);
+                //    if (data != null)
+                //        fileOutTem.Add(customerId, data);
+                //}
 
-                FileOut.Clear();
+                //FileOut.Clear();
 
-                foreach (var customerId in customerIds2)
-                    FileOut.Add(customerId, fileOutTem[customerId]);
+                //foreach (var customerId in customerIds2)
+                //    FileOut.Add(customerId, fileOutTem[customerId]);
 
                 if (customerIds2.Count > 0 && Batch.UpdateData)
                     UpdateDataContribution(customerIds2);
@@ -314,7 +318,35 @@ namespace Ks.Batch.Caja.Out
 
         private void MergeData(IEnumerable<int> customerIds)
         {
-            var contributions = (from customerId in customerIds where FileOut.ContainsKey(customerId) 
+            var customerIds2 = new List<int>();
+            var fileOutTem = new Dictionary<int, string>();
+            var reportOut2 = new Dictionary<int, Info>();
+
+            foreach (var customerId in customerIds)
+            {
+                if (ReportOut[customerId].InfoContribution != null || ReportOut[customerId].InfoLoans != null)
+                {
+                    string data;
+                    customerIds2.Add(customerId);
+                    reportOut2.Add(customerId, ReportOut[customerId]);
+                    FileOut.TryGetValue(customerId, out data);
+                    if (data != null)
+                        fileOutTem.Add(customerId, data);
+                }
+            }
+
+            FileOut.Clear();
+            ReportOut.Clear();
+
+            foreach (var customerId in customerIds2)
+                FileOut.Add(customerId, fileOutTem[customerId]);
+
+            foreach (var customerId in customerIds2)
+                ReportOut.Add(customerId, reportOut2[customerId]);
+
+            
+            
+            var contributions = (from customerId in customerIds2 where FileOut.ContainsKey(customerId) 
                                  let total = ReportOut[customerId].TotalContribution + ReportOut[customerId].TotalLoan 
                                  select 
                                  string.Format("{0}  {1}{2}{3}", 

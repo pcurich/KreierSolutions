@@ -312,7 +312,7 @@ namespace Ks.Batch.Copere.Out
                         customerIds2.Add(repo.Value.CustomerId);
                 }
 
-                if (customerIds2.Count > 0  && Batch.UpdateData)
+                if (customerIds2.Count > 0 && Batch.UpdateData)
                     UpdateDataLoan(customerIds2);
 
             }
@@ -330,11 +330,11 @@ namespace Ks.Batch.Copere.Out
 
             foreach (var customerId in customerIds)
             {
-                if (ReportOut[customerId].InfoContribution != null && ReportOut[customerId].InfoLoans != null)
+                if (ReportOut[customerId].InfoContribution != null || ReportOut[customerId].InfoLoans != null)
                 {
                     string data;
                     customerIds2.Add(customerId);
-                    reportOut2.Add(customerId,ReportOut[customerId]);
+                    reportOut2.Add(customerId, ReportOut[customerId]);
                     FileOut.TryGetValue(customerId, out data);
                     if (data != null)
                         fileOutTem.Add(customerId, data);
@@ -347,6 +347,9 @@ namespace Ks.Batch.Copere.Out
             foreach (var customerId in customerIds2)
                 FileOut.Add(customerId, fileOutTem[customerId]);
 
+            foreach (var customerId in customerIds2)
+                ReportOut.Add(customerId, reportOut2[customerId]);
+
             var contributions = new List<string>();
             var loans = new List<string>();
 
@@ -354,26 +357,31 @@ namespace Ks.Batch.Copere.Out
             {
                 if (FileOut.ContainsKey(customerId))
                 {
-                    var lineContribution = string.Format("{0}        {1}{2}",
-                    FileOut[customerId].Replace(AMOUNT,
-                        (Math.Round(ReportOut[customerId].TotalContribution * 100)).
-                            ToString(CultureInfo.InvariantCulture).PadLeft(13, '0')).Replace(".", ""),
-                            Batch.PeriodYear, Batch.PeriodMonth.ToString("00"));
+                    if (ReportOut[customerId].TotalContribution > 0)
+                    {
+                        var lineContribution = string.Format("{0}        {1}{2}",
+                        FileOut[customerId].Replace(AMOUNT,
+                            (Math.Round(ReportOut[customerId].TotalContribution * 100)).
+                                ToString(CultureInfo.InvariantCulture).PadLeft(13, '0')).Replace(".", ""),
+                                Batch.PeriodYear, Batch.PeriodMonth.ToString("00"));
 
-                    contributions.Add(lineContribution);
+                        contributions.Add(lineContribution);
+                    }
 
-                    string lineLoan = null;
                     if (ReportOut[customerId].TotalLoan > 0)
                     {
                         foreach (var infoLoan in ReportOut[customerId].InfoLoans)
                         {
-                            lineLoan = string.Format("{0}        {1}{2}",
-                            FileOut[customerId].Replace(AMOUNT,
-                            (Math.Round(infoLoan.MonthlyQuota * 100)).
-                                ToString(CultureInfo.InvariantCulture).PadLeft(13, '0')).Replace(".", "").Replace(",", ""),
-                                Batch.PeriodYear, Batch.PeriodMonth.ToString("00"));
+                            if (infoLoan.MonthlyQuota > 0)
+                            {
+                                var lineLoan = string.Format("{0}        {1}{2}",
+                                    FileOut[customerId].Replace(AMOUNT,
+                                        (Math.Round(infoLoan.MonthlyQuota * 100)).
+                                            ToString(CultureInfo.InvariantCulture).PadLeft(13, '0')).Replace(".", "").Replace(",", ""),
+                                    Batch.PeriodYear, Batch.PeriodMonth.ToString("00"));
 
-                            loans.Add(lineLoan);
+                                loans.Add(lineLoan);
+                            }
                         }
                     }
                 }
@@ -455,7 +463,7 @@ namespace Ks.Batch.Copere.Out
 
                         FileOut.Add(entityId, string.Format("8A{0}8001{1}0000000000000{2}", admCode, AMOUNT, NUMBER));
                         customerIds.Add(entityId);
-                        ReportOut.Add(entityId, new Info { InfoContribution=null, InfoLoans=null, CustomerId = entityId, AdminCode = admCode, HasAdminCode = true, Dni = dni, HasDni = true });
+                        ReportOut.Add(entityId, new Info { InfoContribution = null, InfoLoans = null, CustomerId = entityId, AdminCode = admCode, HasAdminCode = true, Dni = dni, HasDni = true });
                         entityId = repeatEntityId = count = 0;
                     }
                 }
