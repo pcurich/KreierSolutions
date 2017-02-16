@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
 using System.Linq;
+using System.Net.NetworkInformation;
 using Ks.Batch.Util;
 using Ks.Batch.Util.Model;
 
@@ -124,7 +125,7 @@ namespace Ks.Batch.Copere.Out
 
                 var sqlReader = Command.ExecuteReader();
 
-                var reportOut2 = new Dictionary<int, Info>();
+                //var reportOut2 = new Dictionary<int, Info>();
                 var customerIds2 = new List<int>();
 
                 while (sqlReader.Read())
@@ -161,31 +162,35 @@ namespace Ks.Batch.Copere.Out
 
                         info.TotalContribution = sqlReader.GetDecimal(sqlReader.GetOrdinal("AmountTotal"));
                     }
-                    ReportOut.Remove(sqlReader.GetInt32(0));
-                    reportOut2.Add(sqlReader.GetInt32(0), info);
+                    ReportOut[sqlReader.GetInt32(0)] = info;
+                    //ReportOut.Remove(sqlReader.GetInt32(0));
+                    //reportOut2.Add(sqlReader.GetInt32(0), info);
                 }
                 sqlReader.Close();
-                ReportOut.Clear();
+                //ReportOut.Clear();
 
-                foreach (var pk in reportOut2)
+                foreach (var pk in ReportOut)
                 {
-                    customerIds2.Add(pk.Key);
-                    ReportOut.Add(pk.Key, pk.Value);
+                    if (pk.Value.InfoContribution != null)
+                    {
+                        customerIds2.Add(pk.Key);
+                        //ReportOut.Add(pk.Key, pk.Value);
+                    }
                 }
 
-                var fileOutTem = new Dictionary<int, string>();
-                foreach (var customerId in customerIds2)
-                {
-                    string data;
-                    FileOut.TryGetValue(customerId, out data);
-                    if (data != null)
-                        fileOutTem.Add(customerId, data);
-                }
+                //var fileOutTem = new Dictionary<int, string>();
+                //foreach (var customerId in customerIds2)
+                //{
+                //    string data;
+                //    FileOut.TryGetValue(customerId, out data);
+                //    if (data != null)
+                //        fileOutTem.Add(customerId, data);
+                //}
 
-                FileOut.Clear();
+                //FileOut.Clear();
 
-                foreach (var customerId in customerIds2)
-                    FileOut.Add(customerId, fileOutTem[customerId]);
+                //foreach (var customerId in customerIds2)
+                //    FileOut.Add(customerId, fileOutTem[customerId]);
 
 
                 if (customerIds2.Count > 0 && Batch.UpdateData)
@@ -319,10 +324,33 @@ namespace Ks.Batch.Copere.Out
 
         private void MergeData(IEnumerable<int> customerIds)
         {
+            var customerIds2 = new List<int>();
+            var fileOutTem = new Dictionary<int, string>();
+            var reportOut2 = new Dictionary<int, Info>();
+
+            foreach (var customerId in customerIds)
+            {
+                if (ReportOut[customerId].InfoContribution != null && ReportOut[customerId].InfoLoans != null)
+                {
+                    string data;
+                    customerIds2.Add(customerId);
+                    reportOut2.Add(customerId,ReportOut[customerId]);
+                    FileOut.TryGetValue(customerId, out data);
+                    if (data != null)
+                        fileOutTem.Add(customerId, data);
+                }
+            }
+
+            FileOut.Clear();
+            ReportOut.Clear();
+
+            foreach (var customerId in customerIds2)
+                FileOut.Add(customerId, fileOutTem[customerId]);
+
             var contributions = new List<string>();
             var loans = new List<string>();
 
-            foreach (var customerId in customerIds)
+            foreach (var customerId in customerIds2)
             {
                 if (FileOut.ContainsKey(customerId))
                 {
@@ -427,7 +455,7 @@ namespace Ks.Batch.Copere.Out
 
                         FileOut.Add(entityId, string.Format("8A{0}8001{1}0000000000000{2}", admCode, AMOUNT, NUMBER));
                         customerIds.Add(entityId);
-                        ReportOut.Add(entityId, new Info { CustomerId = entityId, AdminCode = admCode, HasAdminCode = true, Dni = dni, HasDni = true });
+                        ReportOut.Add(entityId, new Info { InfoContribution=null, InfoLoans=null, CustomerId = entityId, AdminCode = admCode, HasAdminCode = true, Dni = dni, HasDni = true });
                         entityId = repeatEntityId = count = 0;
                     }
                 }
