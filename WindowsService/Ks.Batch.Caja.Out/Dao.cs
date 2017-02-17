@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
+using System.Threading;
 using Ks.Batch.Util;
 using Ks.Batch.Util.Model;
 
@@ -32,6 +34,10 @@ namespace Ks.Batch.Caja.Out
 
                 List<int> customerIds;
                 ReportOut = new Dictionary<int, Info>();
+                
+                CultureInfo culture = new CultureInfo("es-PE");
+                Thread.CurrentThread.CurrentCulture = culture;
+                Thread.CurrentThread.CurrentUICulture = culture;
 
                 GetCustomer(out customerIds);
                 GetContributionPayments(customerIds);

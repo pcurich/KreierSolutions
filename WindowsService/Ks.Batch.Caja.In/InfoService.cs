@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.Threading;
 using Ks.Batch.Util.Model;
 using Topshelf.Logging;
 
@@ -12,6 +14,10 @@ namespace Ks.Batch.Caja.In
 
         public static List<Info> ReadFile(string path)
         {
+            CultureInfo culture = new CultureInfo("es-PE");
+            Thread.CurrentThread.CurrentCulture = culture;
+            Thread.CurrentThread.CurrentUICulture = culture;
+
             var lines = File.ReadLines(path);
             var result = new List<Info>();
 
