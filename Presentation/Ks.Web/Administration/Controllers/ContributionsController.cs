@@ -522,6 +522,7 @@ namespace Ks.Admin.Controllers
                 {
                     AmountToPay = model.AmountPayed,
                     CreatedOnUtc = DateTime.UtcNow,
+                    UpdatedOnUtc = DateTime.UtcNow,
                     PaymentNumber = maxNumber + 1,
                     ReturnPaymentTypeId = (int)ReturnPaymentType.Aportacion,
                     CustomerId = model.CustomerId
