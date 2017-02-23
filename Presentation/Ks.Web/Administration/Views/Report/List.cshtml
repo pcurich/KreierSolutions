@@ -46,6 +46,9 @@
         <li @Html.RenderSelectedTabIndex(5, GetSelectedTabIndex())>
             @T("Admin.Catalog.Report.MilitarSituation")
         </li>
+        <li @Html.RenderSelectedTabIndex(5, GetSelectedTabIndex())>
+            @T("Admin.Catalog.Report.SumaryBankPayment")
+        </li>
     </ul>
     <div>
         @TabGlobal()
@@ -64,6 +67,9 @@
     </div>
     <div>
         @TabMilitarSituation()
+    </div>
+    <div>
+        @TabBankPayment()
     </div>
 </div>
 
@@ -386,6 +392,67 @@
                 </td>
                 <td class="adminTitle"></td>
                 <td class="adminTitle"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td colspan="2">
+                    <input type="submit" class="k-button" value="@T("Admin.Common.ExportToExcel")" />
+                </td>
+            </tr>
+        </table>
+    }
+}
+
+@helper TabBankPayment()
+{
+    using (Html.BeginForm("BankPaymentReport", "Report", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <table width="100%">
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.SumaryBankPayment.From):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.SumaryBankPayment.From)
+                    @Html.ValidationMessageFor(model => model.SumaryBankPayment.From)
+                </td>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.SumaryBankPayment.To):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.SumaryBankPayment.To)
+                    @Html.ValidationMessageFor(model => model.SumaryBankPayment.To)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.SumaryBankPayment.TypeId):
+                </td>
+                <td class="adminData">
+                    @Html.DropDownListFor(model => model.SumaryBankPayment.TypeId, Model.SumaryBankPayment.Types)
+                    @Html.ValidationMessageFor(model => model.SumaryBankPayment.TypeId)
+                    <script>
+                        $(document).ready(function () {
+                            $('#@Html.FieldIdFor(model => model.SumaryBankPayment.TypeId)').width(250).kendoDropDownList();
+                        });
+                    </script>
+                </td>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.SumaryBankPayment.SourceId):
+                </td>
+                <td class="adminData">
+                    @Html.DropDownListFor(model => model.SumaryBankPayment.SourceId, Model.SumaryBankPayment.Sources)
+                    @Html.ValidationMessageFor(model => model.SumaryBankPayment.SourceId)
+                    <script>
+                        $(document).ready(function () {
+                            $('#@Html.FieldIdFor(model => model.SumaryBankPayment.SourceId)').width(250).kendoDropDownList();
+                        });
+                    </script>
+                </td>
             </tr>
             <tr>
                 <td></td>

@@ -165,6 +165,23 @@ namespace Ks.Admin.Controllers
                         new SelectListItem { Value = "3", Text = "Inactivo" },
                     }
                 },
+                SumaryBankPayment = new SumaryBankPayment
+                {
+                    Types = new List<SelectListItem>
+                    {
+                        new SelectListItem {Value = "0", Text = "-----------------"},
+                        new SelectListItem {Value = "1", Text = "Todos"},
+                        new SelectListItem {Value = "2", Text = "Copere"},
+                        new SelectListItem {Value = "3", Text = "Caja Pensión Militar Policial"}
+                    },
+                    Sources = new List<SelectListItem>
+                    {
+                        new SelectListItem {Value = "0", Text = "-----------------"},
+                        new SelectListItem {Value = "1", Text = "Todos"},
+                        new SelectListItem {Value = "2", Text = "Aportaciones"},
+                        new SelectListItem {Value = "3", Text = "Apoyo Social Economico"}
+                    },
+                },
                 ReportBenefit = new ReportBenefit()
             };
 
@@ -443,6 +460,65 @@ namespace Ks.Admin.Controllers
                     //Response.ContentType = "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
                     //Response.AddHeader("content-disposition", "attachment; filename=Aportaciones.xlsx");
                     return File(bytes, "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Reporte Beneficios.xlsx");
+                }
+                catch (Exception exc)
+                {
+                    ErrorNotification(exc);
+                    return RedirectToAction("List");
+                }
+            }
+            ErrorNotification(errorMessage);
+            return RedirectToAction("List");
+        }
+
+        [HttpPost]
+        public ActionResult BankPaymentReport(ReportListModel model)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageReports))
+                return AccessDeniedView();
+
+            var hasError = false;
+            var errorMessage = string.Empty;
+
+            if (!model.SumaryBankPayment.From.HasValue)
+            {
+                errorMessage += _localizationService.GetResource("Admin.Catalog.SumaryBankPayment.Fields.From.Required") + " - ";
+                hasError = true;
+            }
+            if (!model.SumaryBankPayment.To.HasValue)
+            {
+                errorMessage += _localizationService.GetResource("Admin.Catalog.SumaryBankPayment.Fields.To.Required") + " - ";
+                hasError = true;
+            }
+            if (model.SumaryBankPayment.TypeId == 0)
+            {
+                errorMessage += _localizationService.GetResource("Admin.Catalog.SumaryBankPayment.Fields.Type.Required") + " - ";
+                hasError = true;
+            }
+            if (model.SumaryBankPayment.SourceId == 0)
+            {
+                errorMessage += _localizationService.GetResource("Admin.Catalog.SumaryBankPayment.Fields.Source.Required") + " - ";
+                hasError = true;
+            }
+
+
+            if (!hasError)
+            {
+                var summaryBankPayment = _reportService.GetBankPayment(
+                    model.SumaryBankPayment.From.Value.Year, model.SumaryBankPayment.From.Value.Month, model.SumaryBankPayment.From.Value.Day,
+                    model.SumaryBankPayment.To.Value.Year, model.SumaryBankPayment.To.Value.Month, model.SumaryBankPayment.To.Value.Day,
+                    model.SumaryBankPayment.TypeId, model.SumaryBankPayment.SourceId);
+                try
+                {
+                    byte[] bytes;
+                    using (var stream = new MemoryStream())
+                    {
+                        _exportManager.ExportBankPaymentToXlsx(stream, model.SumaryBankPayment.From.Value,model.SumaryBankPayment.To.Value, summaryBankPayment);
+                        bytes = stream.ToArray();
+                    }
+                    //Response.ContentType = "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                    //Response.AddHeader("content-disposition", "attachment; filename=Aportaciones.xlsx");
+                    return File(bytes, "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Reporte Depositos Bancarios.xlsx");
                 }
                 catch (Exception exc)
                 {

@@ -329,6 +329,7 @@ C.CustomerId in (SELECT ENTITYID FROM GenericAttribute WHERE [KEY]='AdmCode' and
 AND YEAR(CP.ScheduledDateOnUtc)=2016 AND MONTH(CP.ScheduledDateOnUtc)=11
 ORDER BY Number
 
+select * from report
 
 ---------------------------------
 --CLEAN DATA
@@ -337,7 +338,8 @@ UPDATE Contribution SET IsDelay=0, DelayCycles=0, Active=1, UpdatedOnUtc=NULL, A
 UPDATE ContributionPayment SET  NumberOld =0, AmountOld =0, AmountPayed=0, AmountTotal=35, TransactionNumber='',AccountNumber='', ProcessedDateOnUtc=null, StateId=1, IsAutomatic=1, BankName=null,Description=''
 UPDATE Loan SET IsDelay=0,  Active=1, UpdatedOnUtc=NULL, TotalPayed=0
 UPDATE LoanPayment SET  MonthlyPayed =0,  ProcessedDateOnUtc=null, StateId=1, IsAutomatic=1, BankName=null,AccountNumber='',Description=''
-delete Report
+delete ReportAMOR
+
 update ScheduleBatch set PeriodMonth=1, PeriodYear=2017,  NextExecutionOnUtc =GETUTCDATE() where  SystemName IN ('Ks.Batch.Copere.Out','Ks.Batch.Copere.In')
 update ScheduleBatch set PeriodMonth=1, PeriodYear=2017,  NextExecutionOnUtc =GETUTCDATE() where  SystemName IN ('Ks.Batch.Caja.In','Ks.Batch.Caja.Out')
 select * from ContributionPayment

@@ -1404,7 +1404,7 @@ namespace Ks.Services.ExportImport
                 nameFile = string.Format("6008_{0}00.txt", schedule.PeriodYear.ToString("0000") + schedule.PeriodMonth.ToString("00"));
             else
                 nameFile = string.Format("8001_{0}00.txt", schedule.PeriodYear.ToString("0000") + schedule.PeriodMonth.ToString("00"));
- 
+
 
             var fileReaded = File.ReadAllLines(Path.Combine(Path.Combine(schedule.PathBase, schedule.FolderMoveToDone),
                         nameFile));
@@ -1420,6 +1420,89 @@ namespace Ks.Services.ExportImport
 
         }
 
+        public virtual void ExportBankPaymentToXlsx(MemoryStream stream, DateTime from, DateTime to, IList<ReportBankPayment> summaryBankPayment)
+        {
+            if (stream == null)
+                throw new ArgumentNullException("stream");
+
+            using (var xlPackage = new ExcelPackage(stream))
+            {
+                // get handle to the existing worksheet
+                var worksheet = xlPackage.Workbook.Worksheets.Add("Depositos Bancarios");
+                // var imagePath = _webHelper.MapPath(@"C:\inetpub\wwwroot\Acmr\Administration\Content\images\logo.png");
+                try
+                {
+
+                    var image = new Bitmap(new MemoryStream(Convert.FromBase64String(IMAGE)));
+                    var excelImage = worksheet.Drawings.AddPicture("ACMR", image);
+                    excelImage.From.Column = 0;
+                    excelImage.From.Row = 0;
+                }
+                catch (Exception e)
+                {
+                }
+
+                #region Summary
+
+                worksheet.Cells["A5:M5"].Merge = true;
+                worksheet.Cells["A6:M6"].Merge = true;
+                worksheet.Cells["A5:M6"].Style.Font.Bold = true;
+                worksheet.Cells["A5:M6"].Style.Font.Size = 20;
+                worksheet.Cells["A5:M6"].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
+                worksheet.Cells["A5"].Value = "DEPOSITOS BANCARIOS ";
+                worksheet.Cells["A6"].Value = "Desde: " + from.ToShortDateString() + " - Hasta: " + to.ToShortDateString();
+
+                #endregion
+
+
+                var properties = new[]
+                {
+                    "Nombre", "Cod Adm", "Dni", "Situacion Militar", "Nro Transaccion", "Fecha", "Monto", "Detalle", "Banco"
+                };
+
+                for (var i = 0; i < properties.Length; i++)
+                {
+                    worksheet.Cells[9, i + 1].Value = properties[i];
+                    worksheet.Cells[9, i + 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    worksheet.Cells[9, i + 1].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(128, 235, 142));
+                    worksheet.Cells[9, i + 1].Style.Fill.BackgroundColor.Tint = 0.599993896298105M;
+                    worksheet.Cells[9, i + 1].Style.Font.Bold = true;
+
+                    var row = 10;
+
+                    foreach (var p in summaryBankPayment)
+                    {
+                        var col = 1;
+                        worksheet.Cells[row, col].Value = p.LastName + "," + p.FirstName;
+                        col++;
+                        worksheet.Cells[row, col].Value = p.AdmCode;
+                        col++;
+                        worksheet.Cells[row, col].Value = p.Dni;
+                        col++;
+                        worksheet.Cells[row, col].Value = p.MilitarySituation;
+                        col++;
+                        worksheet.Cells[row, col].Value = p.TransactionNumber;
+                        col++;
+                        worksheet.Cells[row, col].Value = p.ProcessedDateOnUtc.ToShortDateString();
+                        col++;
+                        worksheet.Cells[row, col].Value = p.AmountPayed;
+                        col++;
+                        worksheet.Cells[row, col].Value = p.Reference;
+                        col++;
+                        worksheet.Cells[row, col].Value = p.BankName;
+                        col++;
+                        row++;
+                    }
+                }
+
+                for (var i = 1; i <= worksheet.Dimension.Columns; i++)
+                {
+                    worksheet.Column(i).AutoFit();
+                }
+                xlPackage.Save();
+            }
+        }
+
         public virtual void ExportReportInfoToXlsx(MemoryStream stream, string source, List<Info> info)
         {
             if (stream == null)
@@ -1428,8 +1511,8 @@ namespace Ks.Services.ExportImport
             using (var xlPackage = new ExcelPackage(stream))
             {
                 // get handle to the existing worksheet
-                var worksheet = xlPackage.Workbook.Worksheets.Add(source.Replace("."," ").Replace("Ks","").Replace("Batch","").Trim());
-                
+                var worksheet = xlPackage.Workbook.Worksheets.Add(source.Replace(".", " ").Replace("Ks", "").Replace("Batch", "").Trim());
+
                 var properties = new[]
                     {
                         "Año","Mes","AsociadoId","Nombre","Cod Adm","Dni","Total Aportacion","Total Pagado","Total Apoyo",
@@ -1455,7 +1538,7 @@ namespace Ks.Services.ExportImport
                     var col = 1;
                     worksheet.Cells[row, col].Value = p.Year;
                     col++;
-                    worksheet.Cells[row, col].Value = p.Month ;
+                    worksheet.Cells[row, col].Value = p.Month;
                     col++;
                     worksheet.Cells[row, col].Value = p.CustomerId;
                     col++;
@@ -1471,31 +1554,31 @@ namespace Ks.Services.ExportImport
                     col++;
                     worksheet.Cells[row, col].Value = p.TotalLoan;
                     col++;
-                    worksheet.Cells[row, col].Value = p.InfoContribution!=null? p.InfoContribution.Number.ToString():"";
+                    worksheet.Cells[row, col].Value = p.InfoContribution != null ? p.InfoContribution.Number.ToString() : "";
                     col++;
-                    worksheet.Cells[row, col].Value = p.InfoContribution!=null? p.InfoContribution.Amount1.ToString():"";
+                    worksheet.Cells[row, col].Value = p.InfoContribution != null ? p.InfoContribution.Amount1.ToString() : "";
                     col++;
-                    worksheet.Cells[row, col].Value = p.InfoContribution!=null? p.InfoContribution.Amount2.ToString():"";
+                    worksheet.Cells[row, col].Value = p.InfoContribution != null ? p.InfoContribution.Amount2.ToString() : "";
                     col++;
                     worksheet.Cells[row, col].Value = p.InfoContribution != null ? p.InfoContribution.Amount3.ToString() : "";
                     col++;
-                    worksheet.Cells[row, col].Value = p.InfoContribution != null ?p.InfoContribution.AmountOld.ToString():"";
+                    worksheet.Cells[row, col].Value = p.InfoContribution != null ? p.InfoContribution.AmountOld.ToString() : "";
                     col++;
-                    worksheet.Cells[row, col].Value = p.InfoContribution != null ?p.InfoContribution.AmountTotal.ToString():"";
+                    worksheet.Cells[row, col].Value = p.InfoContribution != null ? p.InfoContribution.AmountTotal.ToString() : "";
                     col++;
-                    worksheet.Cells[row, col].Value = p.InfoContribution != null ?p.InfoContribution.AmountPayed.ToString():"";
+                    worksheet.Cells[row, col].Value = p.InfoContribution != null ? p.InfoContribution.AmountPayed.ToString() : "";
                     col++;
-                    worksheet.Cells[row, col].Value = p.InfoContribution != null ?p.InfoContribution.StateId.ToString():"";
+                    worksheet.Cells[row, col].Value = p.InfoContribution != null ? p.InfoContribution.StateId.ToString() : "";
                     col++;
-                    worksheet.Cells[row, col].Value = p.InfoContribution != null ?p.InfoContribution.IsAutomatic.ToString():"";
+                    worksheet.Cells[row, col].Value = p.InfoContribution != null ? p.InfoContribution.IsAutomatic.ToString() : "";
                     col++;
-                    worksheet.Cells[row, col].Value = p.InfoContribution != null ?p.InfoContribution.BankName.ToString():"";
+                    worksheet.Cells[row, col].Value = p.InfoContribution != null ? p.InfoContribution.BankName.ToString() : "";
                     col++;
-                    worksheet.Cells[row, col].Value = p.InfoContribution != null ?p.InfoContribution.AccountNumber.ToString():"";
+                    worksheet.Cells[row, col].Value = p.InfoContribution != null ? p.InfoContribution.AccountNumber.ToString() : "";
                     col++;
-                    worksheet.Cells[row, col].Value = p.InfoContribution != null ?p.InfoContribution.TransactionNumber.ToString():"";
+                    worksheet.Cells[row, col].Value = p.InfoContribution != null ? p.InfoContribution.TransactionNumber.ToString() : "";
                     col++;
-                    worksheet.Cells[row, col].Value = p.InfoContribution != null ?p.InfoContribution.Reference.ToString():"";
+                    worksheet.Cells[row, col].Value = p.InfoContribution != null ? p.InfoContribution.Reference.ToString() : "";
                     col++;
                     worksheet.Cells[row, col].Value = p.InfoContribution != null ? p.InfoContribution.Description.ToString() : "";
                     col++;

@@ -10047,6 +10047,9 @@
 	<LocaleResource Name="Admin.Catalog.Report.MilitarSituation">
 		<Value>Situacion Militar</Value>
 	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.Report.SumaryBankPayment">
+		<Value>Depositos Bancarios</Value>
+	</LocaleResource>
 	<LocaleResource Name="Admin.Catalog.ReportGlobal.Fields.Source">
 		<Value>Origen</Value>
 	</LocaleResource>
@@ -10168,6 +10171,44 @@
 	<LocaleResource Name="Admin.Catalog.ReportMilitarySituation.Fields.LoanState.Required">
 		<Value>Se requiere un estado de apoyo</Value>
 	</LocaleResource>
+	
+	<LocaleResource Name="Admin.Catalog.SumaryBankPayment.Fields.From">
+		<Value>Desde</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.SumaryBankPayment.Fields.From.Hint">
+		<Value>Desde</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.SumaryBankPayment.Fields.From.Required">
+		<Value>Se requiere una fecha de inicio</Value>
+	</LocaleResource>	
+	<LocaleResource Name="Admin.Catalog.SumaryBankPayment.Fields.To">
+		<Value>Hasta</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.SumaryBankPayment.Fields.To.Hint">
+		<Value>Hasta</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.SumaryBankPayment.Fields.To.Required">
+		<Value>Se requiere una fecha hasta</Value>
+	</LocaleResource>
+		<LocaleResource Name="Admin.Catalog.SumaryBankPayment.Fields.Type">
+		<Value>Tipo</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.SumaryBankPayment.Fields.Type.Hint">
+		<Value>Tipo</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.SumaryBankPayment.Fields.Type.Required">
+		<Value>Se requiere un Tipo </Value>
+	</LocaleResource>	
+	<LocaleResource Name="Admin.Catalog.SumaryBankPayment.Fields.Source">
+		<Value>Fuente</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.SumaryBankPayment.Fields.Source.Hint">
+		<Value>Fuente</Value>
+	</LocaleResource>
+	<LocaleResource Name="Admin.Catalog.SumaryBankPayment.Fields.Source.Required">
+		<Value>Se requiere una Fuente</Value>
+	</LocaleResource>
+	
 	
 	<LocaleResource Name="Admin.Catalog.ReportBenefit.Fields.From">
 		<Value>Desde</Value>

@@ -14,5 +14,6 @@ namespace Ks.Services.Reports
 
         IList<ReportMilitarSituation> GetMilitarSituation(int militarySituationId, int loanState = -1, int contributionState = -1);
         List<Info> GetInfo(string source, string period);
+        IList<ReportBankPayment> GetBankPayment(int fromYear, int fromMonth, int fromDay, int toYear, int toMonth, int toDay, int typeId = -1, int sourceId = -1);
     }
 }

@@ -84,10 +84,15 @@ namespace Ks.Batch.Merge
             Info response;
             foreach (var request in listRequest)
             {
+                if (request.InfoContribution == null)
+                    request.InfoContribution = new InfoContribution();
+
                 request.InfoContribution.BankName = bankName;
                 request.InfoContribution.Description = "Proceso automática por el sistema ACMR";
 
-                response = listResponse.FirstOrDefault(x => x.AdminCode.Trim() == request.AdminCode.Trim());
+                var info1 = request;
+                response = listResponse.FirstOrDefault(x => x.AdminCode == info1.AdminCode);
+
                 if (response == null)
                 {
                     #region Sin liquidez en Contribution y Loan

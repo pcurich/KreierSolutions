@@ -997,6 +997,44 @@ namespace Ks.Admin.Controllers
                     _customerService.UpdateCustomer(customer);
                     PrepareSettingPaymentAmount(model);
 
+
+                    var contribution = _contributionService.GetContributionsByCustomer(customer.Id, 1);
+                    if (model.MilitarySituationId == 1)
+                    {
+                        //copere
+                        var payments = _contributionService.GetAllPayments(contribution.FirstOrDefault().Id, stateId: (int)ContributionState.Pendiente);
+                        foreach (var payment in payments)
+                        {
+                            payment.Amount1 = payment.Amount2 = payment.Amount3 = 0;
+                            if (_contributionSettings.Amount1Source == 0 || _contributionSettings.Amount1Source == 1)
+                                payment.Amount1 = _contributionSettings.Amount1;
+                            if (_contributionSettings.Amount2Source == 0 || _contributionSettings.Amount2Source == 1)
+                                payment.Amount2 = _contributionSettings.Amount2;
+                            if (_contributionSettings.Amount3Source == 0 || _contributionSettings.Amount3Source == 1)
+                                payment.Amount3 = _contributionSettings.Amount3;
+                            payment.AmountTotal = payment.Amount1 + payment.Amount2 + payment.Amount3;
+                            _contributionService.UpdateContributionPayment(payment);
+                        }
+                    }
+
+                    if (model.MilitarySituationId == 2)
+                    {
+                        //caja
+                        var payments = _contributionService.GetAllPayments(contribution.FirstOrDefault().Id, stateId: (int)ContributionState.Pendiente);
+                        foreach (var payment in payments)
+                        {
+                            payment.Amount1 = payment.Amount2 = payment.Amount3 = 0;
+                            if (_contributionSettings.Amount1Source == 0 || _contributionSettings.Amount1Source == 2)
+                                payment.Amount1 = _contributionSettings.Amount1;
+                            if (_contributionSettings.Amount2Source == 0 || _contributionSettings.Amount2Source == 2)
+                                payment.Amount2 = _contributionSettings.Amount2;
+                            if (_contributionSettings.Amount3Source == 0 || _contributionSettings.Amount3Source == 2)
+                                payment.Amount3 = _contributionSettings.Amount3;
+                            payment.AmountTotal = payment.Amount1 + payment.Amount2 + payment.Amount3;
+                            _contributionService.UpdateContributionPayment(payment);
+                        }
+                    }
+
                     //activity log
                     _customerActivityService.InsertActivity("EditMilitaryPerson", _localizationService.GetResource("ActivityLog.EditMilitaryPerson"), customer.Id, customer.Username ?? customer.Email);
 
@@ -1431,7 +1469,7 @@ namespace Ks.Admin.Controllers
                         Active = true,
                         CreatedOnUtc = DateTime.UtcNow,
                         UpdatedOnUtc = null,
-                        AmountMeta =  _contributionSettings.AmountMeta,
+                        AmountMeta = _contributionSettings.AmountMeta,
                         TotalOfCycles = _contributionSettings.TotalCycle,
                         ContributionPayments = new List<ContributionPayment>(model.TotalOfCycles)
                     };
@@ -1516,7 +1554,7 @@ namespace Ks.Admin.Controllers
 
             var periods = CommonHelper.ConvertToSelectListItem(_loanSettings.Periods, ',');
             periods.Insert(0, new SelectListItem { Value = "0", Text = "------------------" });
-            var contribution = _contributionService.GetContributionsByCustomer(customerId,1).FirstOrDefault();
+            var contribution = _contributionService.GetContributionsByCustomer(customerId, 1).FirstOrDefault();
             var totalOfContribution = _contributionService.GetAllPayments(contribution.Id);
             var totalOfCyclesPayments = totalOfContribution.Count(x => x.StateId == (int)ContributionState.Pagado);
             var model = (LoanModel)Session["loanModel"];
@@ -1531,7 +1569,7 @@ namespace Ks.Admin.Controllers
                     CustomerId = customer.Id,
                     Periods = periods,
                     TotalOfCycle = totalOfCyclesPayments,
-                    Years = DateTime.Now.GetYearsList(_localizationService,0, 2),
+                    Years = DateTime.Now.GetYearsList(_localizationService, 0, 2),
                     Months = DateTime.Now.GetMonthsList(_localizationService),
                     Day = dayOfPaymentLoan,
                     MonthId = DateTime.Now.Month == 12 ? 1 : DateTime.Now.Month,
@@ -1559,7 +1597,7 @@ namespace Ks.Admin.Controllers
 
             var customer = _customerService.GetCustomerById(model.CustomerId);
             var military = customer.GetAttribute<int>(SystemCustomerAttributeNames.MilitarySituationId);
-            var dayOfPaymentLoan = military == 1 ? _loanSettings.DayOfPaymentLoanCopere : military==2?_loanSettings.DayOfPaymentLoanCaja:1;
+            var dayOfPaymentLoan = military == 1 ? _loanSettings.DayOfPaymentLoanCopere : military == 2 ? _loanSettings.DayOfPaymentLoanCaja : 1;
 
             if (!ModelState.IsValid)
             {
@@ -1655,7 +1693,7 @@ namespace Ks.Admin.Controllers
                     UpdatedOnUtc = null
                 };
 
-                var feed = Math.Round(loan.TotalFeed / loan.Period,2);
+                var feed = Math.Round(loan.TotalFeed / loan.Period, 2);
                 for (var cycle = 1; cycle <= model.Period; cycle++)
                 {
                     loan.LoanPayments.Add(new LoanPayment
@@ -1663,9 +1701,9 @@ namespace Ks.Admin.Controllers
                         //Active = false,
                         Quota = cycle,
                         MonthlyFee = feed,
-                        MonthlyCapital = (loan.MonthlyQuota-feed),
+                        MonthlyCapital = (loan.MonthlyQuota - feed),
                         MonthlyQuota = (loan.MonthlyQuota),
-                        ScheduledDateOnUtc = (estimated.AddMonths(cycle-1)),
+                        ScheduledDateOnUtc = (estimated.AddMonths(cycle - 1)),
                         ProcessedDateOnUtc = null,
                         StateId = 1,
                         IsAutomatic = true
@@ -1998,8 +2036,8 @@ namespace Ks.Admin.Controllers
             if (!string.IsNullOrWhiteSpace(model.CustomerAdmCode))
             {
                 var entity = _genericAttributeService.GetAttributeForKeyValue("AdmCode", model.CustomerAdmCode);
-                if (entity!=null)
-                customer = _customerService.GetCustomerById(entity.EntityId);
+                if (entity != null)
+                    customer = _customerService.GetCustomerById(entity.EntityId);
             }
 
             var contribution = _contributionService.GetContributionsByCustomer(model.CustomerId, 1).FirstOrDefault();
@@ -2015,7 +2053,7 @@ namespace Ks.Admin.Controllers
             var totalSafe = model.LoanAmount * Convert.ToDecimal(_loanSettings.Safe);
 
             model.CustomerCompleteName = customer.GetFullName();
-            var temp = Math.Round((model.LoanAmount - totalSafe),2);
+            var temp = Math.Round((model.LoanAmount - totalSafe), 2);
 
             model.PreCashFlow = new PreCashFlowModel
             {
@@ -2025,7 +2063,7 @@ namespace Ks.Admin.Controllers
                 Safe = _loanSettings.Safe * 100,
                 TotalFeed = (totalfeed),
                 TotalSafe = (totalSafe),
-                MonthlyQuota = (Math.Round(((model.LoanAmount + totalfeed) / model.Period),2)),
+                MonthlyQuota = (Math.Round(((model.LoanAmount + totalfeed) / model.Period), 2)),
                 TotalAmount = (totalfeed + model.LoanAmount),
                 TotalToPay = temp,
                 StateName = model.IsAuthorized ? "Aprobado" : "No Aprobado"

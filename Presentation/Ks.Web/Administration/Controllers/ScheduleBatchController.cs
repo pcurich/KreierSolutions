@@ -399,7 +399,7 @@ namespace Ks.Admin.Controllers
 
             try
             {
-                if (schedule.SystemName == ("Ks.Batch.Caja.Out"))
+                if (schedule.SystemName == ("Ks.Batch.Caja.Out") || schedule.SystemName == ("Ks.Batch.Caja.In"))
                 {
                     var path = @"C:\inetpub\wwwroot\Acmr\App_Data\Service\Ks.Batch.Merge\Read";
                     path = System.IO.Path.Combine(path, "CajaWakeUp.txt");

@@ -1809,3 +1809,70 @@ SELECT * FROM Report WHERE [key]=@newId
 
 END
 GO
+
+CREATE PROCEDURE [dbo].[ReportSummaryBankPayment]
+(
+	@FromYear int,
+	@FromMonth int,
+	@FromDay int,
+	@ToYear int,
+	@ToMonth int,
+	@ToDay int,
+	@Type int, -- 0 TODOS, 1 COPERE  , 2 CAJA
+	@Data int, -- 0 TODOS,1 CONTRIBUTION, 2 LOAN
+	@NameReport nvarchar(255),
+	@ReportState int,
+	@Source nvarchar(250),
+	@TotalRecords int = null OUTPUT
+)
+AS
+BEGIN
+
+SELECT 
+l.CustomerId as CustomerId,
+FirstName='                                                               ', 
+LastName='                                                                ',
+AdmCode='                          ',
+Dni='                                                          ',
+MilitarySituation='                                                          ',
+lp.TransactionNumber,
+lp.ProcessedDateOnUtc,
+lp.Reference,
+lp.BankName,
+sum(lp.MonthlyPayed) as AmountPayed
+INTO  #Temp_Loan
+FROM Loan l 
+inner join LoanPayment lp on lp.loanId =l.id
+WHERE  lp.StateId=7 and 
+Year(lp.ProcessedDateOnUtc)*10000+Month(lp.ProcessedDateOnUtc)*100+day(lp.ProcessedDateOnUtc)>=(2016*10000+01*100+01) AND  
+	  Year(lp.ProcessedDateOnUtc)*10000+Month(lp.ProcessedDateOnUtc)*100+day(lp.ProcessedDateOnUtc)<=(2017*10000+03*100+01) 
+
+GROUP BY l.CustomerId,lp.TransactionNumber,lp.ProcessedDateOnUtc,lp.Reference,lp.BankName
+
+Update #Temp_Loan set Dni=Value
+FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#Temp_Loan.CustomerId AND [Key]='Dni'
+
+Update #Temp_Loan set AdmCode=Value
+FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#Temp_Loan.CustomerId AND [Key]='AdmCode'
+
+Update #Temp_Loan set FirstName=Value
+FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#Temp_Loan.CustomerId AND [Key]='FirstName'
+
+Update #Temp_Loan set LastName=Value
+FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#Temp_Loan.CustomerId AND [Key]='LastName'
+
+UPDATE #Temp_Loan SET MilitarySituation='CPMP'  WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=2) --CAJA
+
+UPDATE #Temp_Loan SET MilitarySituation='COPERE'  WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=1) --COPERE
+
+select * from #Temp_Loan
+DECLARE @newId uniqueidentifier =NEWID();
+DECLARE @value XML=(SELECT * FROM  #Temp_Loan order by 1 desc FOR XML PATH ('ReportBankPayment'), root ('ArrayOfReportBankPayment'))
+
+DELETE FROM Report WHERE source=@Source
+INSERT INTO Report VALUES (@newId,@NameReport,@value,'',@ReportState,'',@Source,@newId,GETUTCDATE())
+SELECT @TotalRecords = COUNT(1) FROM #Temp_Loan
+SELECT * FROM Report WHERE [key]=@newId
+
+END
+GO

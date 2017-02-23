@@ -193,6 +193,7 @@
     <Compile Include="Domain\Reports\Info.cs" />
     <Compile Include="Domain\Reports\InfoContribution.cs" />
     <Compile Include="Domain\Reports\InfoLoan.cs" />
+    <Compile Include="Domain\Reports\ReportBankPayment.cs" />
     <Compile Include="Domain\Reports\ReportBenefit.cs" />
     <Compile Include="Domain\Reports\ReportContributionBenefit.cs" />
     <Compile Include="Domain\Reports\ReportContributionPayment.cs" />

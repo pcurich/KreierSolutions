@@ -337,6 +337,81 @@ namespace Ks.Services.Reports
             return new List<ReportMilitarSituation>();
         }
 
+        public virtual IList<ReportBankPayment> GetBankPayment(int fromYear, int fromMonth, int fromDay, int toYear, int toMonth, int toDay, int typeId = -1, int sourceId = -1)
+        {
+            var pFromYear = _dataProvider.GetParameter();
+            pFromYear.ParameterName = "FromYear";
+            pFromYear.Value = fromYear;
+            pFromYear.DbType = DbType.Int32;
+
+            var pFromMonth = _dataProvider.GetParameter();
+            pFromMonth.ParameterName = "FromMonth";
+            pFromMonth.Value = fromMonth;
+            pFromMonth.DbType = DbType.Int32;
+
+            var pFromDay = _dataProvider.GetParameter();
+            pFromDay.ParameterName = "FromDay";
+            pFromDay.Value = fromDay;
+            pFromDay.DbType = DbType.Int32;
+
+            var pToYear = _dataProvider.GetParameter();
+            pToYear.ParameterName = "ToYear";
+            pToYear.Value = toYear;
+            pToYear.DbType = DbType.Int32;
+
+            var pToMonth = _dataProvider.GetParameter();
+            pToMonth.ParameterName = "ToMonth";
+            pToMonth.Value = toMonth;
+            pToMonth.DbType = DbType.Int32;
+
+            var pToDay = _dataProvider.GetParameter();
+            pToDay.ParameterName = "ToDay";
+            pToDay.Value = toDay;
+            pToDay.DbType = DbType.Int32;
+
+            var pType = _dataProvider.GetParameter();
+            pType.ParameterName = "Type";
+            pType.Value = typeId;
+            pType.DbType = DbType.Int32;
+
+            var pData = _dataProvider.GetParameter();
+            pData.ParameterName = "Data";
+            pData.Value = sourceId;
+            pData.DbType = DbType.Int32;
+
+            var pNameReport = _dataProvider.GetParameter();
+            pNameReport.ParameterName = "NameReport";
+            pNameReport.Value = "SummaryBankPayment";
+            pNameReport.DbType = DbType.String;
+
+            var pReportState = _dataProvider.GetParameter();
+            pReportState.ParameterName = "ReportState";
+            pReportState.Value = (int)ReportState.Completed;
+            pReportState.DbType = DbType.Int32;
+
+            var pSource = _dataProvider.GetParameter();
+            pSource.ParameterName = "Source";
+            pSource.Value = "Ks.Services.Report.GetSummaryBankPayment";
+            pSource.DbType = DbType.String;
+
+            var pTotalRecords = _dataProvider.GetParameter();
+            pTotalRecords.ParameterName = "TotalRecords";
+            pTotalRecords.Direction = ParameterDirection.Output;
+            pTotalRecords.DbType = DbType.Int32;
+
+            //invoke stored procedure
+            var data = _dbContext.ExecuteStoredProcedureList<Report>("ReportSummaryBankPayment",
+                pFromYear, pFromMonth, pFromDay, pToYear, pToMonth, pToDay, pType, pData,
+                pNameReport, pReportState, pSource, pTotalRecords);
+
+            //return products
+            var totalRecords = (pTotalRecords.Value != DBNull.Value) ? Convert.ToInt32(pTotalRecords.Value) : 0;
+            var firstOrDefault = data.FirstOrDefault();
+            if (firstOrDefault != null && firstOrDefault.Value != null)
+                return new List<ReportBankPayment>(XmlHelper.XmlToObject<List<ReportBankPayment>>(firstOrDefault.Value));
+
+            return new List<ReportBankPayment>();
+        }
         public virtual List<Info> GetInfo(string source, string period)
         {
             var sql = "SELECT value FROM report WHERE Period=@Period and Source=@Source";

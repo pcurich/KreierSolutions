@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using Ks.Web.Framework;
+using Org.BouncyCastle.Asn1.Mozilla;
 
 namespace Ks.Admin.Models.Report
 {
@@ -14,6 +15,7 @@ namespace Ks.Admin.Models.Report
         public ReportLoan ReportLoan { get; set; }
         public ReportContribution ReportContribution { get; set; }
         public ReportMilitarySituation ReportMilitarySituation { get; set; }
+        public SumaryBankPayment SumaryBankPayment  { get; set; }
 
     }
 
@@ -133,6 +135,29 @@ namespace Ks.Admin.Models.Report
         [KsResourceDisplayName("Admin.Catalog.ReportMilitarySituation.Fields.LoanState")]
         public int LoanStateId { get; set; }
         public List<SelectListItem> LoanStates { get; set; }
+    }
+
+    public class SumaryBankPayment
+    {
+        public SumaryBankPayment()
+        {
+            Sources= new List<SelectListItem>();
+            Types = new List<SelectListItem>();
+        }
+
+        [UIHint("DateNullable")]
+        [KsResourceDisplayName("Admin.Catalog.SumaryBankPayment.Fields.From")]
+        public DateTime? From { get; set; }
+        [UIHint("DateNullable")]
+        [KsResourceDisplayName("Admin.Catalog.SumaryBankPayment.Fields.To")]
+        public DateTime? To { get; set; }
+
+        public List<SelectListItem> Sources { get; set; }
+        public List<SelectListItem> Types { get; set; }
+        [KsResourceDisplayName("Admin.Catalog.SumaryBankPayment.Fields.Type")]
+        public int TypeId { get; set; }
+        [KsResourceDisplayName("Admin.Catalog.SumaryBankPayment.Fields.Source")]
+        public int SourceId { get; set; }
     }
 
     #endregion
