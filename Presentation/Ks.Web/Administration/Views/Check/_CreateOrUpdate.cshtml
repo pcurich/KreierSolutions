@@ -1,0 +1,164 @@
+﻿@model CheckCompareModel
+@Html.ValidationSummary(false)
+@Html.HiddenFor(x => x.Id)
+@Html.HiddenFor(x => x.After.EntityId)
+@Html.HiddenFor(x => x.After.EntityName)
+@Html.HiddenFor(x => x.After.EntityTypeId)
+@Html.HiddenFor(x => x.After.CheckStateId)
+
+
+<script>
+    $(document).ready(function () {
+        $("#check-edit").kendoTabStrip({
+            animation: {
+                open: {
+                    effects: "fadeIn"
+                }
+            },
+            select: tabstrip_on_tab_select
+        });
+    });
+</script>
+
+<div id="check-edit">
+    <ul>
+        <li @Html.RenderSelectedTabIndex(0, GetSelectedTabIndex())>
+            Vigente
+        </li>
+        <li @Html.RenderSelectedTabIndex(1, GetSelectedTabIndex())>
+            Nuevo
+        </li>
+    </ul>
+    <div>
+        @TabAfter()
+    </div>
+    <div>
+        @TabBefore()
+    </div>
+</div>
+@{
+    //custom tabs
+    var eventMessage = new AdminTabStripCreated(this.Html, "check-edit");
+    EngineContext.Current.Resolve<IEventPublisher>().Publish(eventMessage);
+    foreach (var eventBlock in eventMessage.BlocksToRender)
+    {
+        @eventBlock
+    }
+}
+
+@*save selected tab index*@
+<input type="hidden" id="selected-tab-index" name="selected-tab-index" value="@(GetSelectedTabIndex())">
+
+@helper TabAfter()
+{
+    <table width="100%">
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.After.AccountNumber):
+            </td>
+            <td class="adminData">
+                @Model.After.AccountNumber
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.After.BankName):
+            </td>
+            <td class="adminData">
+                @Model.After.BankName
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.After.CheckNumber):
+            </td>
+            <td class="adminData">
+                @Model.After.CheckNumber
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.After.Amount):
+            </td>
+            <td class="adminData">
+                @Model.After.Amount.ToString("c")
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.After.CheckStateName):
+            </td>
+            <td class="adminData">
+                @Model.After.CheckStateName
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.Before.EntityName):
+            </td>
+            <td class="adminData">
+                @Model.After.EntityName
+            </td>
+        </tr>
+    </table>
+}
+
+@helper TabBefore()
+{
+    <table width="100%">
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.Before.AccountNumber):
+            </td>
+            <td class="adminData">
+                @Html.TextBoxFor(model => model.Before.AccountNumber, new {@readonly = "readonly", @class = "text-box single-line"})
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.Before.BankName):
+            </td>
+            <td class="adminData">
+                @Html.DropDownListFor(model => model.Before.BankName, Model.Before.Banks)
+                <script>
+                    $(document).ready(function() {
+                        $('#@Html.FieldIdFor(x => x.Before.BankName)').width(250).kendoDropDownList();
+                    });
+                </script>
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.Before.CheckNumber):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.Before.CheckNumber)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.Before.Amount):
+            </td>
+            <td class="adminData">
+                @Model.After.Amount.ToString("c")
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.Before.Reason):
+            </td>
+            <td class="adminData">
+                @Html.TextAreaFor(model => model.Before.Reason)
+            </td>
+        </tr>
+    </table>
+
+    <script>
+    $(document).ready(function () {
+        $("#@Html.FieldIdFor(model => model.Before.BankName)").change(function () {
+            var selectedItem = $(this).val();
+            $("#@Html.FieldIdFor(model => model.Before.AccountNumber)").val(selectedItem);
+        });
+    });
+    </script>
+}

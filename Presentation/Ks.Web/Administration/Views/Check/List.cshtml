@@ -1,0 +1,205 @@
+﻿@model  CheckListModel
+@{
+    var defaultGridPageSize = EngineContext.Current.Resolve<Ks.Core.Domain.Common.AdminAreaSettings>().DefaultGridPageSize;
+    var gridPageSizes = EngineContext.Current.Resolve<Ks.Core.Domain.Common.AdminAreaSettings>().GridPageSizes;
+
+    //page title
+    ViewBag.Title = T("Admin.Contract.Checks").Text;
+}
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="section-header">
+        <div class="title">
+            <img src="@Url.Content("~/Administration/Content/images/ico-catalog.png")" alt=""/>
+            @T("Admin.Contract.Checks")
+        </div>
+        <div class="options">
+
+        </div>
+    </div>
+    <table width="100%">
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.SearchFrom):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.SearchFrom)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.SearchTo):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.SearchTo)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.EntityName):
+            </td>
+            <td class="adminData">
+                @Html.DropDownListFor(model => model.EntityName, Model.Entities)
+                <script>
+                    $(document).ready(function() {
+                        $('#@Html.FieldIdFor(x => x.EntityName)').width(250).kendoDropDownList();
+                    });
+                </script>
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.BankName):
+            </td>
+            <td class="adminData">
+                @Html.DropDownListFor(model => model.BankName, Model.Banks)
+                <script>
+                    $(document).ready(function() {
+                        $('#@Html.FieldIdFor(x => x.BankName)').width(250).kendoDropDownList();
+                    });
+                </script>
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.CheckNumber):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.CheckNumber)
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="button" id="search-checks" class="k-button" value="@T("Admin.Common.Search")"/>
+            </td>
+        </tr>
+    </table>
+    <table class="adminContent">
+        <tr>
+            <td>
+                <div id="cheks-grid"></div>
+
+                <script>
+    $(document).ready(function() {
+        $("#cheks-grid").kendoGrid({
+            dataSource: {
+                type: "json",
+                transport: {
+                    read: {
+                        url: "@Html.Raw(Url.Action("List", "Check"))",
+                        type: "POST",
+                        dataType: "json",
+                        data: additionalData
+                    }
+                },
+                schema: {
+                    data: "Data",
+                    total: "Total",
+                    errors: "Errors"
+                },
+                error: function(e) {
+                    display_kendoui_grid_error(e);
+                    // Cancel the changes
+                    this.cancelChanges();
+                },
+                pageSize: @(defaultGridPageSize),
+                serverPaging: true,
+                serverFiltering: true,
+                serverSorting: true
+            },
+            pageable: {
+                refresh: true,
+                pageSizes: [@(gridPageSizes)]
+            },
+            scrollable: false,
+            //dataBound: onDataBound,
+            columns: [
+                {
+                    field: "CreatedOn",
+                    title: "@T("Admin.Contract.Loan.Fields.CreatedOn")",
+                    width: 50,
+                    template: '#= CreatedOn!=null ? kendo.toString(CreatedOn,"dd/MM/yyyy","es-PE"): " "#',
+                    type: "date",
+                    format: "{0:G}"
+                }, {
+                    field: "EntityName",
+                    title: "@T("Admin.Contract.Check.Fields.EntityName")",
+                    width: 100
+                }, {
+                    field: "AccountNumber",
+                    title: "@T("Admin.Contract.Check.Fields.AccountNumber")",
+                    width: 20
+                }, {
+                    field: "BankName",
+                    title: "@T("Admin.Contract.Check.Fields.BankName")",
+                    width: 80
+                }, {
+                    field: "CheckNumber",
+                    title: "@T("Admin.Contract.Check.Fields.CheckNumber")",
+                    width: 50
+                }, {
+                    field: "Amount",
+                    title: "@T("Admin.Contract.Check.Fields.Amount")",
+                    width: 50,
+                    template: '#= kendo.toString(Amount,"c","es-PE") #',
+                    format: "{0:c2}"
+                }, {
+                    field: "CheckStateName",
+                    title: "@T("Admin.Contract.Check.Fields.CheckStateName")",
+                    width: 50
+                }, {
+                    field: "Reason",
+                    title: "@T("Admin.Contract.Check.Fields.Reason")",
+                    width: 100
+                },{
+                    field: "EntityId",
+                    title: "Remplazar",
+                    width: 20,
+                    template: "<a href='Edit?entityId=#=EntityId#&entityTypeId=#=EntityTypeId#'>@T("Admin.Common.Edit")</a>"
+                }
+            ]
+        });
+    });
+
+    function additionalData() {
+        var data = {
+            SearchFrom: $('#@Html.FieldIdFor(model => model.SearchFrom)').val(),
+            SearchTo: $('#@Html.FieldIdFor(model => model.SearchTo)').val(),
+            EntityName: $('#@Html.FieldIdFor(model => model.EntityName)').val(),
+            BankName: $('#@Html.FieldIdFor(model => model.BankName) option:selected').text(),
+            CheckNumber: $('#@Html.FieldIdFor(model => model.CheckNumber)').val()
+        };
+        addAntiForgeryToken(data);
+        return data;
+    }
+                </script>
+
+                <script type="text/javascript">
+                    $(document).ready(function() {
+                        $("#@Html.FieldIdFor(model => model.CheckNumber)").keydown(function(event) {
+                            if (event.keyCode == 13) {
+                                $("#search-checks").click();
+                                return false;
+                            }
+                        });
+
+                        //search button
+                        $('#search-checks').click(function() {
+                            var grid = $('#cheks-grid').data('kendoGrid');
+                            grid.dataSource.page(1); //new search. Set page size to 1
+                            //grid.dataSource.read(); we already loaded the grid above using "page" function
+                            //clear selected checkboxes
+                            $('.checkboxGroups').attr('checked', false).change();
+                            return false;
+                        });
+
+                        
+
+                    })
+                </script>
+
+            </td>
+        </tr>
+    </table>
+}

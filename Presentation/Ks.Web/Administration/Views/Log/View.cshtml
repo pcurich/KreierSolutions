@@ -1,0 +1,132 @@
+﻿@model LogModel
+@{
+    //page title
+    ViewBag.Title = T("Admin.System.Log.ViewLogDetails").Text;
+}
+
+<script>
+    $(document).ready(function () {
+        $("#log-view").kendoTabStrip({
+            animation: {
+                open: {
+                    effects: "fadeIn"
+                }
+            },
+            select: tabstrip_on_tab_select
+        });
+    });
+</script>
+
+<div class="section-header">
+    <div class="title">
+        <img src="@Url.Content("~/Administration/Content/images/ico-system.png")" alt="" />
+        @T("Admin.System.Log.ViewLogDetails") @Html.ActionLink("(" + T("Admin.System.Log.BackToList") + ")", "List")
+    </div>
+    <div class="options">
+        <span id="log-delete" class="k-button">@T("Admin.Common.Delete")</span>
+    </div>
+</div>
+
+<div id="log-view">
+    <ul>
+        <li @Html.RenderSelectedTabIndex(0, GetSelectedTabIndex())>
+            @T("Admin.Common.Info")
+        </li>
+    </ul>
+    <div>
+        @TabInfo()
+    </div>
+</div>
+
+@{
+    //custom tabs
+    var eventMessage = new AdminTabStripCreated(this.Html, "log-view");
+    EngineContext.Current.Resolve<IEventPublisher>().Publish(eventMessage);
+    foreach (var eventBlock in eventMessage.BlocksToRender)
+    {
+        @eventBlock
+    }
+}
+
+
+@*save selected tab index*@
+<input type="hidden" id="selected-tab-index" name="selected-tab-index" value="@(GetSelectedTabIndex())">
+
+@helper TabInfo()
+{
+    using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        <table class="adminContent">
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.LogLevel):
+                </td>
+                <td class="adminData">
+                    @Html.DisplayFor(model => model.LogLevel)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ShortMessage):
+                </td>
+                <td class="adminData">
+                    @Html.DisplayFor(model => model.ShortMessage)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.FullMessage):
+                </td>
+                <td class="adminData">
+                    @Html.DisplayFor(model => model.FullMessage)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.IpAddress):
+                </td>
+                <td class="adminData">
+                    @Html.DisplayFor(model => model.IpAddress)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.CustomerId):
+                </td>
+                <td class="adminData">
+                    @if (Model.CustomerId.HasValue)
+                    {
+                    @Html.ActionLink(!String.IsNullOrEmpty(Model.CustomerEmail) ? Model.CustomerEmail : T("Admin.Customers.Guest").Text, "Edit", "Customer", new { id = Model.CustomerId }, new { })
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.PageUrl):
+                </td>
+                <td class="adminData">
+                    @Html.DisplayFor(model => model.PageUrl)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ReferrerUrl):
+                </td>
+                <td class="adminData">
+                    @Html.DisplayFor(model => model.ReferrerUrl)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.CreatedOn):
+                </td>
+                <td class="adminData">
+                    @Html.DisplayFor(model => model.CreatedOn)
+                </td>
+            </tr>
+        </table>
+    }
+    @Html.DeleteConfirmation("log-delete")
+}
