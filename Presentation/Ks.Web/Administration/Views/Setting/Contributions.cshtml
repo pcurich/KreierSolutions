@@ -120,11 +120,20 @@
         </tr>
         <tr>
             <td class="adminTitle">
-                @Html.KsLabelFor(model => model.MaximumCharge):
+                @Html.KsLabelFor(model => model.MaximumChargeCaja):
             </td>
             <td class="adminData">
-                @Html.EditorFor(model => model.MaximumCharge)
-                @Html.ValidationMessageFor(model => model.MaximumCharge)
+                @Html.EditorFor(model => model.MaximumChargeCaja)
+                @Html.ValidationMessageFor(model => model.MaximumChargeCaja)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.MaximumChargeCopere):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.MaximumChargeCopere)
+                @Html.ValidationMessageFor(model => model.MaximumChargeCopere)
             </td>
         </tr>
         <tr>

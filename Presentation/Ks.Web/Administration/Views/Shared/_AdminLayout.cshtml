@@ -91,16 +91,9 @@
                     <div class="header">
                         <div class="logo">
                         </div>
-                        @*@Html.Widget("admin_header_before", area: "Admin")*@
-                        <div class="languageselector">
-                            @Html.Action("LanguageSelector", "Common", new { area = "Admin" })
-                        </div>
-                        @*@Html.Widget("admin_header_middle", area: "Admin")*@
-                        <div class="links">
-                            @Html.ActionLink(T("Admin.Header.PublicStore").Text, "Index", "Home", new { area = "" }, null)
+                       <div class="links">
                             @if (canManageMaintenance)
                             {
-                                <span class="separator">|</span>
                                 <a href="@webHelper.ModifyQueryString(Url.Action("ClearCache", "Common", new RouteValueDictionary {{ "area", "Admin" }}), "returnurl=" + HttpUtility.UrlEncode(HttpContext.Current.Request.RawUrl), null)">@T("Admin.Header.ClearCache")</a>
                                 <span class="separator">|</span>
                                 <a href="@webHelper.ModifyQueryString(Url.Action("RestartApplication", "Common", new RouteValueDictionary {{ "area", "Admin" }}), "returnurl=" + HttpUtility.UrlEncode(HttpContext.Current.Request.RawUrl), null)" id="restart-application">@T("Admin.Header.RestartApplication")</a>
@@ -116,7 +109,6 @@
                         <div class="version">
                             <span>kS @currentVersion</span>
                         </div>
-                        @*@Html.Widget("admin_header_after", area: "Admin")*@
                     </div>
                 }
                 @if (IsSectionDefined("headermenu"))

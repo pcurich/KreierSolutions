@@ -81,6 +81,7 @@
     <Compile Include="Mapping\Common\SearchTermMap.cs" />
     <Compile Include="Mapping\Configuration\SettingMap.cs" />
     <Compile Include="Mapping\Contract\BenefitMap.cs" />
+    <Compile Include="Mapping\Contract\CheckMap.cs" />
     <Compile Include="Mapping\Contract\ContributionBenefitBankMap.cs" />
     <Compile Include="Mapping\Contract\ContributionBenefitMap.cs" />
     <Compile Include="Mapping\Contract\ContributionMap.cs" />

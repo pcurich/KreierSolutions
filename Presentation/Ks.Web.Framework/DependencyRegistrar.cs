@@ -218,6 +218,7 @@ namespace Ks.Web.Framework
             builder.RegisterType<EmailSender>().As<IEmailSender>().InstancePerLifetimeScope();
             builder.RegisterType<ContributionService>().As<IContributionService>().InstancePerLifetimeScope();
             builder.RegisterType<LoanService>().As<ILoanService>().InstancePerLifetimeScope();
+            builder.RegisterType<CheckService>().As<ICheckService>().InstancePerLifetimeScope();
             builder.RegisterType<ReturnPaymentService>().As<IReturnPaymentService>().InstancePerLifetimeScope();
             builder.RegisterType<TabService>().As<ITabService>().InstancePerLifetimeScope();
             builder.RegisterType<BenefitService>().As<IBenefitService>().InstancePerLifetimeScope();

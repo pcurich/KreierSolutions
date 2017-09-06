@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using Ks.Admin.Extensions;
 using Ks.Admin.Models.Batchs;
 using Ks.Core.Domain.Batchs;
+using Ks.Core.Domain.Customers;
 using Ks.Services.Batchs;
 using Ks.Services.ExportImport;
 using Ks.Services.Helpers;
@@ -91,13 +92,15 @@ namespace Ks.Admin.Controllers
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageScheduleBatchs))
                 return AccessDeniedView();
-            var model = new ScheduleBatchModel();
-
-            model.ReportInfo = new ReportInfo
+            var model = new ScheduleBatchModel
             {
-                AvailableMonths = DateTime.Now.GetMonthsList(_localizationService),
-                AvailableYears = DateTime.Now.GetYearsList(_localizationService, -5, 15)
+                ReportInfo = new ReportInfo
+                {
+                    AvailableMonths = DateTime.Now.GetMonthsList(_localizationService),
+                    AvailableYears = DateTime.Now.GetYearsList(_localizationService, -5, 15)
+                }
             };
+
 
             model.ReportInfo.Types.Add(new SelectListItem { Text = "---------------", Value = "0" });
             model.ReportInfo.Types.Add(new SelectListItem { Text = "Copere", Value = "1" });
@@ -107,8 +110,21 @@ namespace Ks.Admin.Controllers
             model.ReportInfo.SubTypes.Add(new SelectListItem { Text = "Envio", Value = "1" });
             model.ReportInfo.SubTypes.Add(new SelectListItem { Text = "Recepcion", Value = "2" });
             model.ReportInfo.SubTypes.Add(new SelectListItem { Text = "Resultado", Value = "3" });
+
+            model.ReportInterface.AvailableMonths = DateTime.Now.GetMonthsList(_localizationService);
+            model.ReportInterface.AvailableYears = DateTime.Now.GetYearsList(_localizationService,-20,22);
+
+            model.ReportInterface.States.Add(new SelectListItem { Text = "Activo", Value = "2" });
+            model.ReportInterface.States.Add(new SelectListItem { Text = "Inactivo", Value = "1" });
+
+            
+            model.ReportInterface.Types=Ks.Web.Framework.Extensions.GetDescriptions(typeof(CustomerMilitarySituation));
+            model.ReportInterface.Types.Insert(0, new SelectListItem { Text = "---------------", Value = "0" });
+
             return View(model);
         }
+
+
 
         [HttpPost]
         public ActionResult ListBatchs(DataSourceRequest command)
@@ -382,6 +398,38 @@ namespace Ks.Admin.Controllers
                 ErrorNotification(exc);
                 return RedirectToAction("List");
             }
+        }
+
+        [HttpPost]
+        public ActionResult ListReport(ScheduleBatchModel model)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageScheduleBatchs))
+                return AccessDeniedView();
+
+
+            var interfaceLoan = _reportService.GetInterfaceLoan(
+                model.ReportInterface.YearId, model.ReportInterface.MonthId, model.ReportInterface.TypeId, model.ReportInterface.StateId - 1);
+            var interfaceContribution = _reportService.GetInterfaceContribution(
+                model.ReportInterface.YearId, model.ReportInterface.MonthId, model.ReportInterface.TypeId,model.ReportInterface.StateId-1);
+            try
+                {
+                    byte[] bytes;
+                    using (var stream = new MemoryStream())
+                    {
+                        _exportManager.ExportinterfaceToXlsx(stream, model.ReportInterface.YearId, model.ReportInterface.MonthId, interfaceLoan,interfaceContribution);
+                        bytes = stream.ToArray();
+                    }
+                    //Response.ContentType = "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                    //Response.AddHeader("content-disposition", "attachment; filename=Aportaciones.xlsx");
+                    return File(bytes, "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Reporte De Inerfaces.xlsx");
+                }
+                catch (Exception exc)
+                {
+                    ErrorNotification(exc);
+                    return RedirectToAction("List");
+                }
+            
+            return RedirectToAction("List");
         }
 
         public ActionResult CreateMerge(int id)

@@ -16,10 +16,12 @@ using Ks.Services.ExportImport;
 using Ks.Services.Helpers;
 using Ks.Services.Localization;
 using Ks.Services.Logging;
+using Ks.Services.Messages;
 using Ks.Services.Security;
 using Ks.Web.Framework;
 using Ks.Web.Framework.Controllers;
 using Ks.Web.Framework.Kendoui;
+using Ks.Core.Domain.Messages;
 
 namespace Ks.Admin.Controllers
 {
@@ -27,6 +29,7 @@ namespace Ks.Admin.Controllers
     {
         #region Fields
 
+        private readonly IWorkContext _workContext;
         private readonly IPermissionService _permissionService;
         private readonly IContributionService _contributionService;
         private readonly ICustomerService _customerService;
@@ -35,9 +38,9 @@ namespace Ks.Admin.Controllers
         private readonly ICustomerActivityService _customerActivityService;
         private readonly ILocalizationService _localizationService;
         private readonly IBenefitService _benefitService;
-        private readonly ITabService _tabService;
         private readonly IExportManager _exportManager;
         private readonly IReturnPaymentService _returnPaymentService;
+        private readonly IWorkFlowService _workFlowService;
 
         private readonly ContributionSettings _contributionSettings;
         private readonly BankSettings _bankSettings;
@@ -49,6 +52,7 @@ namespace Ks.Admin.Controllers
         #region Constructors
 
         public ContributionsController(
+            IWorkContext workContext,
             IPermissionService permissionService,
             IContributionService contributionService,
             ICustomerService customerService,
@@ -56,15 +60,16 @@ namespace Ks.Admin.Controllers
             IDateTimeHelper dateTimeHelper,
             ICustomerActivityService customerActivityService,
             ILocalizationService localizationService,
+            IWorkFlowService workFlowService,
             IExportManager exportManager,
             ContributionSettings contributionSettings,
             IReturnPaymentService returnPaymentService,
             IBenefitService benefitService,
-            ITabService tabService,
             BankSettings bankSettings,
             SequenceIdsSettings sequenceIdsSettings,
             BenefitValueSetting benefitValueSetting)
         {
+            _workContext = workContext;
             _permissionService = permissionService;
             _contributionService = contributionService;
             _customerService = customerService;
@@ -73,11 +78,11 @@ namespace Ks.Admin.Controllers
             _customerActivityService = customerActivityService;
             _localizationService = localizationService;
             _exportManager = exportManager;
+            _workFlowService = workFlowService;
             _contributionSettings = contributionSettings;
             _bankSettings = bankSettings;
             _returnPaymentService = returnPaymentService;
             _benefitService = benefitService;
-            _tabService = tabService;
             _benefitValueSetting = benefitValueSetting;
             _sequenceIdsSettings = sequenceIdsSettings;
         }
@@ -166,6 +171,7 @@ namespace Ks.Admin.Controllers
 
             var contribution = _contributionService.GetContributionById(id);
             var customer = _customerService.GetCustomerById(contribution.CustomerId);
+            var military = customer.GetAttribute<int>(SystemCustomerAttributeNames.MilitarySituationId);
             var model = new ContributionPaymentListModel
             {
                 ContributionId = id,
@@ -176,6 +182,8 @@ namespace Ks.Admin.Controllers
                 CustomerAdminCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode),
                 CustomerDni = customer.GetAttribute<string>(SystemCustomerAttributeNames.Dni),
                 CustomerFrom = _dateTimeHelper.ConvertToUserTime(contribution.CreatedOnUtc,DateTimeKind.Utc),
+                AuthorizeDiscount=contribution.AuthorizeDiscount,
+                MilitarySituationId = military == 1 ? "COPERE" : military==2 ?"CPMP":"OTROS",
                 Types = new List<SelectListItem>
                 {
                     new SelectListItem { Value = "0", Text = "--------------", Selected = true},
@@ -351,6 +359,42 @@ namespace Ks.Admin.Controllers
             }
         }
 
+        [HttpPost, ActionName("Edit")]
+        [FormValueRequired("exportexcel")]
+        public ActionResult ExportExcel(ContributionPaymentListModel model)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributions))
+                return AccessDeniedView();
+
+            var customer = _customerService.GetCustomerById(model.CustomerId);
+            var contribution = _contributionService.GetContributionById(model.ContributionId);
+            var reportContributionPayment = _contributionService.GetReportContributionPaymentFuture(model.ContributionId);
+            try
+            {
+                byte[] bytes;
+                using (var stream = new MemoryStream())
+                {
+                    _exportManager.ExportReportContributionPaymentToXlsx(stream, customer, contribution, reportContributionPayment);
+                    bytes = stream.ToArray();
+                }
+                //Response.ContentType = "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                //Response.AddHeader("content-disposition", "attachment; filename=Aportaciones.xlsx");
+                return File(bytes, "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Aportaciones.xlsx");
+            }
+            catch (Exception exc)
+            {
+                ErrorNotification(exc);
+                return RedirectToAction("List");
+            }
+        }
+
+        [HttpPost, ActionName("Edit")]
+        [FormValueRequired("exportpdf")]
+        public ActionResult ExportPdf(ContributionPaymentListModel model)
+        {
+            return null;
+        }
+
         #endregion
 
         #region CustomPayment
@@ -382,6 +426,8 @@ namespace Ks.Admin.Controllers
                 return View(model);
 
             var contribution = _contributionService.GetContributionById(model.ContributionId);
+            var customer = _customerService.GetCustomerById(contribution.CustomerId);
+            var militarySituation = customer.GetAttribute<int>(SystemCustomerAttributeNames.MilitarySituationId);
             var allPayment = _contributionService.GetAllPayments(contributionId: model.ContributionId, stateId: (int)ContributionState.Pendiente);
 
             #region Payed more then One Quota
@@ -391,6 +437,15 @@ namespace Ks.Admin.Controllers
             var isNextQuota = false;
             var valueNextQuotaAdd = 0.0M;
             var valueNextNumber = 0;
+            var maximumCharge = 0.0M;
+            if (militarySituation == 1)
+                maximumCharge = _contributionSettings.MaximumChargeCopere;
+            if (militarySituation == 2)
+                maximumCharge = _contributionSettings.MaximumChargeCaja;
+            if (militarySituation == 2)
+                maximumCharge = _contributionSettings.MaximumChargeCaja;
+
+
 
             foreach (var payment in allPayment)
             {
@@ -413,6 +468,10 @@ namespace Ks.Admin.Controllers
                     contribution.UpdatedOnUtc = DateTime.UtcNow;
                     contribution.AmountPayed += payment.AmountPayed;
                     contribution.IsDelay = false;
+                    
+                    //if (contribution.AmountPayed == payment.AmountPayed)
+                    //    contribution.Active = false;
+                    //Si lo cancelo ya no podre ver los beneficios
 
                     _contributionService.UpdateContribution(contribution);
 
@@ -431,7 +490,7 @@ namespace Ks.Admin.Controllers
                     //just one time, 
                     payment.IsAutomatic = false;
                     payment.AmountPayed = model.AmountPayed;
-                    payment.StateId = (int)ContributionState.PagoPersonal;
+                    payment.StateId = (int)ContributionState.PagoParcial;
                     payment.BankName = GetBank(model.BankName);
                     payment.AccountNumber = model.AccountNumber;
                     payment.TransactionNumber = model.TransactionNumber;
@@ -469,10 +528,11 @@ namespace Ks.Admin.Controllers
                         "El valor de la couta a aumentado debido a un prorrateo de una couta anterior N° " +
                         (valueNextNumber - 1);
 
-                    if (nextPayment.AmountTotal > _contributionSettings.MaximumCharge)
+                    //@todo no entiendo hay q revisar
+                    if (nextPayment.AmountTotal > maximumCharge)
                     {
-                        var temp = nextPayment.AmountTotal - _contributionSettings.MaximumCharge;
-                        nextPayment.AmountTotal = _contributionSettings.MaximumCharge;
+                        var temp = nextPayment.AmountTotal - maximumCharge;
+                        nextPayment.AmountTotal = maximumCharge;
                         valueNextQuotaAdd = temp;
                         valueNextNumber++;
                     }
@@ -524,8 +584,9 @@ namespace Ks.Admin.Controllers
                     CreatedOnUtc = DateTime.UtcNow,
                     UpdatedOnUtc = DateTime.UtcNow,
                     PaymentNumber = maxNumber + 1,
+                    StateId = (int)ReturnPaymentState.Creado,
                     ReturnPaymentTypeId = (int)ReturnPaymentType.Aportacion,
-                    CustomerId = model.CustomerId
+                    CustomerId = customer.Id
                 };
                 _returnPaymentService.InsertReturnPayment(returnPayment);
                 #endregion
@@ -534,6 +595,47 @@ namespace Ks.Admin.Controllers
                 var contributionBenefit = contribution.CreateBenefit(benefit, _benefitValueSetting.AmountBaseOfBenefit,
                     _sequenceIdsSettings.NumberOfLiquidation, _contributionSettings.TotalCycle / 12);
                 _benefitService.InsertContributionBenefit(contributionBenefit);
+
+                #region Flow - Return - Benefit
+
+                _workFlowService.InsertWorkFlow(new WorkFlow
+                {
+                    CustomerCreatedId = _workContext.CurrentCustomer.Id,
+                    EntityId = customer.Id,
+                    EntityName = CommonHelper.GetKsCustomTypeConverter(typeof(ReturnPayment)).ConvertToInvariantString(new Benefit()),
+                    RequireCustomer = false,
+                    RequireSystemRole = true,
+                    SystemRoleApproval = SystemCustomerRoleNames.Employee,
+                    CreatedOnUtc = DateTime.UtcNow,
+                    UpdatedOnUtc = DateTime.UtcNow,
+                    Active = true,
+                    Title = "Nueva Beneficio Asignado",
+                    Description = "Se ha asigado de manera automatica el beneficio " + benefit.Name +
+                        ", para el asociado " + customer.GetFullName() + ", con DNI: " +
+                        customer.GetAttribute<string>(SystemCustomerAttributeNames.Dni) +
+                        " y con CIP: " + customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode),
+                    GoTo = "Admin/Customer/Edit/" + customer.Id
+                });
+
+                _workFlowService.InsertWorkFlow(new WorkFlow
+                {
+                    CustomerCreatedId = _workContext.CurrentCustomer.Id,
+                    EntityId = returnPayment.Id,
+                    EntityName = CommonHelper.GetKsCustomTypeConverter(typeof(ReturnPayment)).ConvertToInvariantString(new ReturnPayment()),
+                    RequireCustomer = false,
+                    RequireSystemRole = true,
+                    SystemRoleApproval = SystemCustomerRoleNames.Employee,
+                    CreatedOnUtc = DateTime.UtcNow,
+                    UpdatedOnUtc = DateTime.UtcNow,
+                    Active = true,
+                    Title = "Nueva Devolución",
+                    Description = "Se requiere revision para una devolucion realizada por el pago de la aportación con N° de autorización de descuento " +
+                        contribution.AuthorizeDiscount + ", para el asociado " + customer.GetFullName() + ", con DNI: " +
+                        customer.GetAttribute<string>(SystemCustomerAttributeNames.Dni) +
+                        " y con CIP: " + customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode),
+                    GoTo = "Admin/ReturnPayment/Edit/" + returnPayment.Id
+                });
+                #endregion
             }
 
             #endregion

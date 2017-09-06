@@ -46,5 +46,17 @@ namespace Ks.Admin.Models.Contract
         public decimal TotalPayed { get; set; }
         [KsResourceDisplayName("Admin.Contract.ReturnPayment.CheckNumber")]
         public string CheckNumber { get; set; }
+        [KsResourceDisplayName("Admin.Contract.ReturnPayment.LoanNumber")]
+        public int LoanNumber { get; set; }
+        [KsResourceDisplayName("Admin.Contract.ReturnPayment.LoanAmount")]
+        public decimal LoanAmount { get; set; }
+        [KsResourceDisplayName("Admin.Contract.ReturnPayment.MonthlyQuota")]
+        public decimal MonthlyQuota { get; set; }
+        [KsResourceDisplayName("Admin.Contract.ReturnPayment.TotalAmount")]
+        public decimal TotalAmount { get; set; }
+
+        
+
+
     }
 }

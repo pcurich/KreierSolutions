@@ -10,6 +10,7 @@ namespace Ks.Core.Domain.Contract
         public double Safe { get; set; }
         public int DayOfPaymentLoanCopere { get; set; }
         public int DayOfPaymentLoanCaja { get; set; }
+        public int DayOfPaymentLoanCustom { get; set; }
 
         #region Clase A
 

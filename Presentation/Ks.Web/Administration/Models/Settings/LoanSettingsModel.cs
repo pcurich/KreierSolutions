@@ -15,6 +15,8 @@ namespace Ks.Admin.Models.Settings
         public int DayOfPaymentLoanCopere { get; set; }
         [KsResourceDisplayName("Admin.Configuration.Settings.StateActivitySettings.DayOfPaymentLoanCaja")]
         public int DayOfPaymentLoanCaja { get; set; }
+        [KsResourceDisplayName("Admin.Configuration.Settings.StateActivitySettings.DayOfPaymentLoanCustom")]
+        public int DayOfPaymentLoanCustom { get; set; }
 
 
         #region Clase A

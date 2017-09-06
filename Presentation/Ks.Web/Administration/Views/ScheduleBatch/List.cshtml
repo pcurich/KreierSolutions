@@ -34,12 +34,18 @@
         <li @Html.RenderSelectedTabIndex(1, GetSelectedTabIndex())>
             Descargar
         </li>
+        <li @Html.RenderSelectedTabIndex(2, GetSelectedTabIndex())>
+            Reporte
+        </li>
     </ul>
     <div>
         @TabList()
     </div>
     <div>
         @TabDownload()
+    </div>
+    <div>
+        @TabReport()
     </div>
 </div>
 
@@ -101,12 +107,13 @@
                                 {
                                     field: "Name",
                                     title: "@T("Admin.System.ScheduleBatchs.Fields.Name")"
-                                }
-                                @*, {
-                            field: "FrecuencyName",
-                            title: "@T("Admin.System.ScheduleBatchs.Fields.Frecuency")"
-                        }*@
-                                , {
+                                }, {
+                                    field: "PeriodYear",
+                                    title: "@T("Admin.System.ScheduleBatchs.Fields.PeriodYear")"
+                                }, {
+                                    field: "PeriodMonth",
+                                    title: "@T("Admin.System.ScheduleBatchs.Fields.PeriodMonth")"
+                                }, {
                                     field: "StartExecutionOn",
                                     title: "@T("Admin.System.ScheduleBatchs.Fields.StartExecutionOn")",
                                     headerAttributes: { style: "text-align:center" },
@@ -205,6 +212,66 @@
                 <td></td>
                 <td></td>
                 <td></td>
+                <td></td>
+                <td colspan="2">
+                    <input type="submit" class="k-button" value="Exporta" />
+                </td>
+            </tr>
+        </table>
+    }
+}
+
+@helper TabReport()
+{
+    using (Html.BeginForm("ListReport", "ScheduleBatch", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <table width="100%">
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ReportInterface.YearId):
+                </td>
+                <td class="adminData">
+                    @Html.DropDownListFor(model => model.ReportInterface.YearId, Model.ReportInterface.AvailableYears)
+                    <script>
+                        $(document).ready(function() {
+                            $('#@Html.FieldIdFor(model => model.ReportInterface.YearId)').width(100).kendoDropDownList();
+                        });
+                    </script>
+                </td>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ReportInterface.MonthId):
+                </td>
+                <td class="adminData">
+                    @Html.DropDownListFor(model => model.ReportInterface.MonthId, Model.ReportInterface.AvailableMonths)
+                    <script>
+                        $(document).ready(function () {
+                            $('#@Html.FieldIdFor(model => model.ReportInterface.MonthId)').width(100).kendoDropDownList();
+                        });
+                    </script>
+                </td>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ReportInterface.TypeId):
+                </td>
+                <td class="adminData">
+                    @Html.DropDownListFor(model => model.ReportInterface.TypeId, Model.ReportInterface.Types)
+                    <script>
+                        $(document).ready(function() {
+                            $('#@Html.FieldIdFor(model => model.ReportInterface.TypeId)').width(250).kendoDropDownList();
+                        });
+                    </script>
+                </td>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ReportInterface.StateId):
+                </td>
+                <td class="adminData">
+                    @Html.DropDownListFor(model => model.ReportInterface.StateId, Model.ReportInterface.States)
+                    <script>
+                        $(document).ready(function () {
+                            $('#@Html.FieldIdFor(model => model.ReportInterface.StateId)').width(250).kendoDropDownList();
+                        });
+                    </script>
+                </td>
                 <td></td>
                 <td colspan="2">
                     <input type="submit" class="k-button" value="Exporta" />

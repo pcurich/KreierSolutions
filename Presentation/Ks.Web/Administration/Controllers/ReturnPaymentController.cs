@@ -133,11 +133,7 @@ namespace Ks.Admin.Controllers
                     Total = returnPayment.Count()
                 };
                 return Json(gridModel);
-            }
-
-            
-
-            
+            } 
         }
 
         public ActionResult Edit(int id)
@@ -154,6 +150,7 @@ namespace Ks.Admin.Controllers
             model.Banks = _bankSettings.PrepareBanks();
             model.States = ReturnPaymentState.Aprobado.ToSelectList().ToList();
             var customer = _customerService.GetCustomerById(returnPayment.CustomerId);
+            model.CustomerId = customer.Id;
             model.CustomerAdmCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode);
             model.CustomerDni = customer.GetAttribute<string>(SystemCustomerAttributeNames.Dni);
             model.CustomerName = customer.GetFullName();
@@ -180,6 +177,7 @@ namespace Ks.Admin.Controllers
                     string.IsNullOrEmpty(returnPayment.BankName))
                 {
                     returnPayment = model.ToEntity(returnPayment);
+                    returnPayment.BankName = _bankSettings.PrepareBanks().Where(x => x.Value == model.BankName).FirstOrDefault().Text;
                     returnPayment.StateId = (int)ReturnPaymentState.PorAprobar;
                     returnPayment.UpdatedOnUtc = DateTime.UtcNow;
                     _returnPaymentService.UpdateReturnPayment(returnPayment);
@@ -190,7 +188,7 @@ namespace Ks.Admin.Controllers
                     {
                         CustomerCreatedId = _workContext.CurrentCustomer.Id,
                         EntityId=model.Id,
-                        EntityName =  CommonHelper.GetKsCustomTypeConverter(typeof(ReturnPayment)).ConvertToInvariantString(returnPayment),
+                        EntityName =  CommonHelper.GetKsCustomTypeConverter(typeof(ReturnPayment)).ConvertToInvariantString(new ReturnPayment()),
                         RequireCustomer = false,
                         RequireSystemRole = true,
                         SystemRoleApproval = SystemCustomerRoleNames.Manager,
@@ -199,8 +197,8 @@ namespace Ks.Admin.Controllers
                         Active = true,
                         Title = "Aprobar devolución",
                         Description = "Se requiere aprobacion para la emision del cheque N° " + model.CheckNumber +
-                        " del banco " + model.BankName + " bajo el concepto de devolucion por " + model.ReturnPaymentTypeName,
-                        GoTo = "../ReturnPayment/Edit/"+model.Id
+                        " del banco " + returnPayment.BankName + " bajo el concepto de devolucion por " + model.ReturnPaymentTypeName,
+                        GoTo = "Admin/ReturnPayment/Edit/"+model.Id
                     });
                     #endregion
 
@@ -219,21 +217,13 @@ namespace Ks.Admin.Controllers
                     returnPayment.UpdatedOnUtc = DateTime.UtcNow;
                     _returnPaymentService.UpdateReturnPayment(returnPayment);
 
-                    #region Flow Close 
-
-                    _workFlowService.CloseWorkFlow(model.Id,
-                        CommonHelper.GetKsCustomTypeConverter(typeof(ReturnPayment)).
-                        ConvertToInvariantString(returnPayment),SystemCustomerRoleNames.Manager);
-
-                    #endregion
-
                     #region Flow - Accepted Denied
 
                     _workFlowService.InsertWorkFlow(new WorkFlow
                     {
                         CustomerCreatedId = _workContext.CurrentCustomer.Id,
                         EntityId = model.Id,
-                        EntityName = CommonHelper.GetKsCustomTypeConverter(typeof(ReturnPayment)).ConvertToInvariantString(returnPayment),
+                        EntityName = CommonHelper.GetKsCustomTypeConverter(typeof(ReturnPayment)).ConvertToInvariantString(new ReturnPayment()),
                         RequireCustomer = false,
                         RequireSystemRole = true,
                         SystemRoleApproval = SystemCustomerRoleNames.Employee,
@@ -242,7 +232,7 @@ namespace Ks.Admin.Controllers
                         Active = true,
                         Title = "Resultado de la devolución N° " + model.PaymentNumber,
                         Description = "Devolución N° " + model.PaymentNumber + " ha sido " + Enum.GetName(typeof(ReturnPaymentState), model.StateId),
-                        GoTo = "../ReturnPayment/Edit/"+model.Id
+                        GoTo = "Admin/ReturnPayment/Edit/"+model.Id
                     });
                     #endregion
 
@@ -263,7 +253,15 @@ namespace Ks.Admin.Controllers
                 }
 
                 SuccessNotification(_localizationService.GetResource("Admin.Contract.ReturnPayment.Updated"));
-                
+
+                #region Flow Close
+
+                _workFlowService.CloseWorkFlow(model.Id,
+                    CommonHelper.GetKsCustomTypeConverter(typeof(ReturnPayment)).
+                    ConvertToInvariantString(new ReturnPayment()), SystemCustomerRoleNames.Employee);
+
+                #endregion
+
                 if (continueEditing)
                 {
                     //selected tab

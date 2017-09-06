@@ -162,12 +162,10 @@
   <ItemGroup>
     <Compile Include="Controllers\BasePublicController.cs" />
     <Compile Include="Controllers\CommonController.cs" />
-    <Compile Include="Controllers\CountryController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InstallController.cs" />
     <Compile Include="Controllers\KeepAliveController.cs" />
-    <Compile Include="Controllers\StatesProvincesController.cs" />
     <Compile Include="Extensions\AttributeParserHelper.cs" />
     <Compile Include="Extensions\ControllerExtensions.cs" />
     <Compile Include="Extensions\HtmlExtensions.cs" />
@@ -1179,16 +1177,10 @@
     <Content Include="Themes\DefaultClean\Content\images\watch.png" />
     <Content Include="Themes\DefaultClean\Content\images\wishlist-button.png" />
     <Content Include="Themes\DefaultClean\preview.jpg" />
-    <Content Include="Views\Common\HeaderLinks.cshtml" />
     <Content Include="Views\Shared\Head.cshtml" />
     <Content Include="Views\Shared\Header.cshtml" />
-    <Content Include="Views\Common\CurrencySelector.cshtml" />
-    <Content Include="Views\Common\LanguageSelector.cshtml" />
     <Content Include="Views\Shared\_Print.cshtml" />
     <Content Include="Views\Shared\_Root.cshtml" />
-    <Content Include="Views\Shared\OldInternetExplorerWarning.cshtml" />
-    <Content Include="Views\Common\JavaScriptDisabledWarning.cshtml" />
-    <Content Include="Views\Common\AdminHeaderLinks.cshtml" />
     <Content Include="Themes\DefaultClean\theme.config" />
     <Content Include="Themes\DefaultClean\Views\Shared\Head.cshtml" />
     <Content Include="Themes\DefaultClean\Views\Web.config" />
@@ -1662,9 +1654,6 @@
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Shared\_Notifications.cshtml" />
     <Content Include="Views\Common\PageNotFound.cshtml" />
@@ -1745,20 +1734,8 @@
     <Content Include="Views\Shared\_AddressAttributes.cshtml" />
     <Content Include="Views\Common\Favicon.cshtml" />
     <Content Include="Views\Customer\Login.cshtml" />
-    <Content Include="Views\Customer\Info.cshtml" />
-    <Content Include="Views\Customer\CustomerNavigation.cshtml" />
-    <Content Include="Views\Customer\ChangePassword.cshtml" />
-    <Content Include="Views\Customer\Avatar.cshtml" />
-    <Content Include="Views\Customer\Addresses.cshtml" />
-    <Content Include="Views\Customer\AddressAdd.cshtml" />
-    <Content Include="Views\Customer\AddressEdit.cshtml" />
-    <Content Include="Views\Customer\Register.cshtml" />
-    <Content Include="Views\Customer\RegisterResult.cshtml" />
     <Content Include="Views\Customer\PasswordRecovery.cshtml" />
     <Content Include="Views\Customer\PasswordRecoveryConfirm.cshtml" />
-    <Content Include="Views\Customer\_CustomerAttributes.cshtml" />
-    <Content Include="Views\Customer\_CheckUsernameAvailability.cshtml" />
-    <Content Include="Views\Customer\AccountActivation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

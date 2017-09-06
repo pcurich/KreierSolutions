@@ -26,7 +26,8 @@ namespace Ks.Batch.Caja.In
             {
                 try
                 {
-                    Sql = " UPDATE Report set Name=@Name, StateId=@StateId, Value=@Value, PathBase=@PathBase,Source=@Source, DateUtc=@DateUtc" +
+                    Sql = " UPDATE Report set Name=@Name, StateId=@StateId, " +
+                          " Value=@Value, PathBase=@PathBase,Source=@Source, DateUtc=@DateUtc" +
                           " WHERE [Key]=@Key";
 
                     Command = new SqlCommand(Sql, Connection);
@@ -62,7 +63,8 @@ namespace Ks.Batch.Caja.In
 
                 Command = new SqlCommand(Sql, Connection);
                 Command.Parameters.AddWithValue("@Source", Batch.SystemName);
-                Command.Parameters.AddWithValue("@Period", Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00"));
+                Command.Parameters.AddWithValue("@Period", Batch.PeriodYear.ToString("0000") + 
+                                                           Batch.PeriodMonth.ToString("00"));
 
                 var sqlReader = Command.ExecuteReader();
                 while (sqlReader.Read())

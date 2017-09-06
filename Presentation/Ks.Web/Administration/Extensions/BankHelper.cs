@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using Ks.Core.Domain.Contract;
 
@@ -23,6 +24,13 @@ namespace Ks.Admin.Extensions
                 model.Add(new SelectListItem { Value = bankSettings.AccountNumber5, Text = bankSettings.NameBank5 });
 
             return model;
+        }
+
+        public static string GetBanKName(this BankSettings bankSettings, string accountNumber)
+        {
+            var list = PrepareBanks(bankSettings);
+            var item = list.FirstOrDefault(x => x.Value == accountNumber);
+            return item != null ? item.Text : "";
         }
     }
 }

@@ -759,7 +759,8 @@ namespace Ks.Services.Installation
                 Amount2 = 0M,
                 Amount3 = 0M,
                 //MaximumCharge = (decimal) (70)
-                MaximumCharge = (decimal)(34.85 * 2)
+                MaximumChargeCaja = (decimal)(34.85 * 2),
+                MaximumChargeCopere = (decimal)(35.4 * 2)
             });
 
             settingService.SaveSetting(new LoanSettings

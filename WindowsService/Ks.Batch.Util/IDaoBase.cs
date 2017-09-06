@@ -2,8 +2,7 @@
 {
     public interface IDaoBase
     {
-
-        void Connect();
+       void Connect();
 
         void Close();
     }

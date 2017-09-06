@@ -86,6 +86,44 @@ namespace Ks.Services.Messages
             return query.FirstOrDefault();
         }
 
+        public virtual WorkFlow GetWorkFlowByEntityId(int entityId=0, string systemRoleApproval="")
+        {
+            if (entityId == 0)
+                return null;
+
+            var query = from wf in _workFlowRepository.Table
+                        where wf.EntityId == entityId
+                        select wf;
+
+            if (!string.IsNullOrEmpty(systemRoleApproval))
+            {
+                query = from wf in query
+                        where wf.SystemRoleApproval == systemRoleApproval
+                        select wf;
+            }
+
+            return query.FirstOrDefault();
+        }
+
+        public virtual List<WorkFlow> GetWorkFlowsByEntityId(int entityId = 0, string systemRoleApproval = "")
+        {
+            if (entityId == 0)
+                return null;
+
+            var query = from wf in _workFlowRepository.Table
+                        where wf.EntityId == entityId
+                        select wf;
+
+            if (!string.IsNullOrEmpty(systemRoleApproval))
+            {
+                query = from wf in query
+                        where wf.SystemRoleApproval == systemRoleApproval
+                        select wf;
+            }
+
+            return query.ToList();
+        }
+
         public virtual void UpdateWorkFlow(WorkFlow workFlow)
         {
             if (workFlow == null)

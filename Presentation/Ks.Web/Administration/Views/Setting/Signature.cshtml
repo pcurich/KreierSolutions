@@ -44,19 +44,28 @@
 
     @helper TabSignatureSettings()
 {
-    
 
+        <table class="adminContent">
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.DefaultName):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.DefaultName)
+                    @Html.ValidationMessageFor(model => model.DefaultName)
+                </td>
+            </tr>
+        </table>
+    
     <table class="adminContent">
         <tr>
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.DefaultName):
+            <td class="adminTitle" style="width: 10%">
+                @Html.KsLabelFor(model => model.ShowBenefitLeft):
             </td>
             <td class="adminData">
-                @Html.EditorFor(model => model.DefaultName)
-                @Html.ValidationMessageFor(model => model.DefaultName)
+                @Html.EditorFor(model => model.ShowBenefitLeft)
+                @Html.ValidationMessageFor(model => model.ShowBenefitLeft)
             </td>
-        </tr>
-        <tr>
             <td class="adminTitle">
                 @Html.KsLabelFor(model => model.BenefitLeftPosition):
             </td>
@@ -74,6 +83,13 @@
         </tr>
         <tr>
             <td class="adminTitle">
+                @Html.KsLabelFor(model => model.ShowBenefitCenter):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.ShowBenefitCenter)
+                @Html.ValidationMessageFor(model => model.ShowBenefitCenter)
+            </td>
+            <td class="adminTitle">
                 @Html.KsLabelFor(model => model.BenefitCenterPosition):
             </td>
             <td class="adminData">
@@ -89,6 +105,13 @@
             </td>
         </tr>
         <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.ShowBenefitRigh):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.ShowBenefitRigh)
+                @Html.ValidationMessageFor(model => model.ShowBenefitRigh)
+            </td>
             <td class="adminTitle">
                 @Html.KsLabelFor(model => model.BenefitRightPosition):
             </td>
@@ -106,6 +129,13 @@
         </tr>
         <tr>
             <td class="adminTitle">
+                @Html.KsLabelFor(model => model.ShowLoanLeft):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.ShowLoanLeft)
+                @Html.ValidationMessageFor(model => model.ShowLoanLeft)
+            </td>
+            <td class="adminTitle">
                 @Html.KsLabelFor(model => model.LoanLeftPosition):
             </td>
             <td class="adminData">
@@ -121,6 +151,13 @@
             </td>
         </tr>
         <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.ShowLoanRight):
+            </td>
+            <td>
+                @Html.EditorFor(model => model.ShowLoanRight)
+                @Html.ValidationMessageFor(model => model.ShowLoanRight)
+            </td>
             <td class="adminTitle">
                 @Html.KsLabelFor(model => model.LoanRightPosition):
             </td>

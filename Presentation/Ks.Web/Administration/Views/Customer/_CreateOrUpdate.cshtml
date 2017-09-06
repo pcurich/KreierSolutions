@@ -473,7 +473,7 @@
         foreach (var customerRole in Model.AvailableCustomerRoles)
         {
             <div>
-                <input type="checkbox" name="SelectedCustomerRoleIds" value="@customerRole.Id" checked="@(Model.SelectedCustomerRoleIds != null && Model.SelectedCustomerRoleIds.Contains(customerRole.Id))" />@customerRole.Name
+                <input type="checkbox" name="SelectedCustomerRoleIds" value="@customerRole.Id" disabled="@(Model.IsSystemAccount?"disabled":"")" checked="@(Model.SelectedCustomerRoleIds != null && Model.SelectedCustomerRoleIds.Contains(customerRole.Id))" />@customerRole.Name
             </div>
         }
     }

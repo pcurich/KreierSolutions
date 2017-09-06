@@ -14,6 +14,8 @@ namespace Ks.Services.Messages
         IPagedList<WorkFlow> GetWorkFlowByCustomer(int customerId, int pageIndex = 0, int pageSize = Int32.MaxValue);
 
         WorkFlow GetWorkFlowById(int workFlowId);
+        WorkFlow GetWorkFlowByEntityId(int entityId=0, string systemRoleApproval="");
+        List<WorkFlow> GetWorkFlowsByEntityId(int entityId = 0, string systemRoleApproval = "");
         void UpdateWorkFlow(WorkFlow workFlow);
         void InsertWorkFlow(WorkFlow workFlow);
         void CloseWorkFlow(int entityId, string entityName, string systemRole);

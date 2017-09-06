@@ -27,6 +27,8 @@ namespace Ks.Admin.Models.Messages
         public List<SelectListItem> Types { get; set; }
 
         [KsResourceDisplayName("Admin.Home.WorkFlowList.List.Entity")]
+        public int EntityNumber { get; set; }
+
         public int EntityId { get; set; }
 
         [KsResourceDisplayName("Admin.Home.WorkFlowList.List.State")]

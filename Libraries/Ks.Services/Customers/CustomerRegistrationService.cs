@@ -54,7 +54,7 @@ namespace Ks.Services.Customers
             if (!customer.Active)
                 return CustomerLoginResults.NotActive;
             //only registered can login
-            if (!customer.IsRegistered())
+            if (!(customer.IsRegistered()))
                 return CustomerLoginResults.NotRegistered;
 
             string pwd;

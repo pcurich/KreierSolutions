@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
+using System.Web.Script.Serialization;
 using Ks.Admin.Extensions;
 using Ks.Admin.Models.Common;
 using Ks.Admin.Models.Contract;
@@ -16,6 +18,7 @@ using Ks.Core.Domain.Contract;
 using Ks.Core.Domain.Customers;
 using Ks.Core.Domain.Directory;
 using Ks.Core.Domain.Messages;
+using Ks.Core.Domain.Reports;
 using Ks.Services.Common;
 using Ks.Services.Customers;
 using Ks.Services.Directory;
@@ -31,7 +34,9 @@ using Ks.Web.Framework.Kendoui;
 using Ks.Web.Framework.Mvc;
 using Ks.Services.Configuration;
 using Ks.Services.Contract;
+using Ks.Services.Reports;
 using Ks.Web.Framework;
+using Microsoft.Data.Edm.Library;
 
 namespace Ks.Admin.Controllers
 {
@@ -48,7 +53,7 @@ namespace Ks.Admin.Controllers
         private readonly ILocalizationService _localizationService;
         private readonly IWorkFlowService _workFlowService;
         //private readonly TaxSettings _taxSettings;
-        //private readonly RewardPointsSettings _rewardPointsSettings;
+        private readonly IReportService _reportService;
         private readonly ICountryService _countryService;
         private readonly IStateProvinceService _stateProvinceService;
         private readonly ICityService _cityService;
@@ -104,6 +109,7 @@ namespace Ks.Admin.Controllers
             IAddressService addressService,
             CustomerSettings customerSettings,
             IWorkContext workContext,
+            IReportService reportService,
             IExportManager exportManager,
             ICustomerActivityService customerActivityService,
             IContributionService contributionService,
@@ -133,7 +139,7 @@ namespace Ks.Admin.Controllers
             this._dateTimeHelper = dateTimeHelper;
             this._localizationService = localizationService;
             this._workFlowService = workFlowService;
-            //this._taxSettings = taxSettings;
+            this._reportService = reportService;
             //this._rewardPointsSettings = rewardPointsSettings;
             this._countryService = countryService;
             this._stateProvinceService = stateProvinceService;
@@ -311,6 +317,139 @@ namespace Ks.Admin.Controllers
             }
         }
 
+        [NonAction]
+        protected virtual void PrepareCustomerModel2Report(CustomerModel model, Customer customer, bool excludeProperties)
+        {
+            if (customer != null)
+            {
+                model.Id = customer.Id;
+
+                model.Email = customer.Email;
+                model.Username = customer.Username;
+                model.AdminComment = customer.AdminComment;
+                model.Active = customer.Active;
+
+                model.CreatedOn = _dateTimeHelper.ConvertToUserTime(customer.CreatedOnUtc, DateTimeKind.Utc);
+                model.LastActivityDate = _dateTimeHelper.ConvertToUserTime(customer.LastActivityDateUtc, DateTimeKind.Utc);
+                model.LastIpAddress = customer.LastIpAddress;
+                model.LastVisitedPage = customer.GetAttribute<string>(SystemCustomerAttributeNames.LastVisitedPage);
+                model.SelectedCustomerRoleIds = customer.CustomerRoles.Select(cr => cr.Id).ToArray();
+
+                //form fields
+                model.FirstName = customer.GetAttribute<string>(SystemCustomerAttributeNames.FirstName);
+                model.LastName = customer.GetAttribute<string>(SystemCustomerAttributeNames.LastName);
+                model.AdmCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode);
+                model.Dni = customer.GetAttribute<string>(SystemCustomerAttributeNames.Dni);
+                model.MilitarySituationId = customer.GetAttribute<int>(SystemCustomerAttributeNames.MilitarySituationId);
+                model.DeclaratoryLetter = customer.GetAttribute<int>(SystemCustomerAttributeNames.DeclaratoryLetter);
+                model.DateOfAdmission = customer.GetAttribute<DateTime?>(SystemCustomerAttributeNames.DateOfAdmission);
+                model.Gender = customer.GetAttribute<string>(SystemCustomerAttributeNames.Gender);
+                model.DateOfBirth = customer.GetAttribute<DateTime?>(SystemCustomerAttributeNames.DateOfBirth);
+                model.StreetAddress = customer.GetAttribute<string>(SystemCustomerAttributeNames.StreetAddress);
+                model.StreetAddress2 = customer.GetAttribute<string>(SystemCustomerAttributeNames.StreetAddress2);
+                model.CountryId = customer.GetAttribute<int>(SystemCustomerAttributeNames.CountryId);
+                model.StateProvinceId = customer.GetAttribute<int>(SystemCustomerAttributeNames.StateProvinceId);
+                model.CityId = customer.GetAttribute<int>(SystemCustomerAttributeNames.CityId);
+                model.Phone = customer.GetAttribute<string>(SystemCustomerAttributeNames.Phone);
+                model.Fax = customer.GetAttribute<string>(SystemCustomerAttributeNames.Fax);
+                model.UsernamesEnabled = _customerSettings.UsernamesEnabled;
+                model.AllowUsersToChangeUsernames = _customerSettings.AllowUsersToChangeUsernames;
+
+                PrepareCustomerAttributeModel(model, customer);
+
+                model.GenderEnabled = _customerSettings.GenderEnabled;
+                model.GenderRequired = _customerSettings.GenderRequired;
+                model.DateOfBirthEnabled = _customerSettings.DateOfBirthEnabled;
+                model.DateOfBirthRequired = _customerSettings.DateOfBirthRequired;
+                model.StreetAddressEnabled = _customerSettings.StreetAddressEnabled;
+                model.StreetAddress2Enabled = _customerSettings.StreetAddress2Enabled;
+                model.CityEnabled = _customerSettings.CityEnabled;
+                model.CountryEnabled = _customerSettings.CountryEnabled;
+                model.StateProvinceEnabled = _customerSettings.StateProvinceEnabled;
+                model.PhoneEnabled = _customerSettings.PhoneEnabled;
+                model.FaxEnabled = _customerSettings.FaxEnabled;
+
+                model.AvailableMilitarySituations = Ks.Web.Framework.Extensions.GetDescriptions(typeof(CustomerMilitarySituation));
+                model.AvailableMilitarySituations.Insert(0, new SelectListItem { Value = "0", Text = "-------------" });
+                //countries and states
+                if (_customerSettings.CountryEnabled)
+                {
+                    model.AvailableCountries.Add(new SelectListItem { Text = _localizationService.GetResource("Admin.Address.SelectCountry"), Value = "0" });
+                    foreach (var c in _countryService.GetAllCountries(showHidden: true))
+                    {
+                        model.AvailableCountries.Add(new SelectListItem
+                        {
+                            Text = c.Name,
+                            Value = c.Id.ToString(),
+                            Selected = c.Id == model.CountryId
+                        });
+                    }
+
+                    if (_customerSettings.StateProvinceEnabled)
+                    {
+                        //states
+                        var states = _stateProvinceService.GetStateProvincesByCountryId(model.CountryId).ToList();
+                        if (states.Count > 0)
+                        {
+                            model.AvailableStates.Add(new SelectListItem { Text = _localizationService.GetResource("Admin.Address.SelectState"), Value = "0" });
+
+                            foreach (var s in states)
+                            {
+                                model.AvailableStates.Add(new SelectListItem { Text = s.Name, Value = s.Id.ToString(), Selected = (s.Id == model.StateProvinceId) });
+                            }
+                        }
+                        else
+                        {
+                            bool anyCountrySelected = model.AvailableCountries.Any(x => x.Selected);
+
+                            model.AvailableStates.Add(new SelectListItem
+                            {
+                                Text = _localizationService.GetResource(anyCountrySelected ? "Admin.Address.Other" : "Admin.Address.SelectState"),
+                                Value = "0"
+                            });
+                        }
+
+                        //districts
+                        var cities = _cityService.GetCitiesByStateProvinceId(model.StateProvinceId).ToList();
+                        if (cities.Count > 0)
+                        {
+                            model.AvailableCities.Add(new SelectListItem { Text = _localizationService.GetResource("Admin.Address.SelectCity"), Value = "0" });
+
+                            foreach (var s in cities)
+                            {
+                                model.AvailableCities.Add(new SelectListItem { Text = s.Name, Value = s.Id.ToString(), Selected = (s.Id == model.CityId) });
+                            }
+                        }
+                        else
+                        {
+                            bool anyStateSelected = model.AvailableCountries.Any(x => x.Selected);
+
+                            model.AvailableCities.Add(new SelectListItem
+                            {
+                                Text = _localizationService.GetResource(anyStateSelected ? "Admin.Address.Other" : "Admin.Address.SelectCity"),
+                                Value = "0"
+                            });
+                        }
+                    }
+                }
+
+                //customer roles
+                model.AvailableCustomerRoles = _customerService
+                    .GetAllCustomerRoles(true)
+                    .Select(cr => cr.ToModel())
+                    .ToList();
+            }
+
+
+
+
+
+
+
+
+
+
+        }
 
         [NonAction]
         protected virtual void PrepareCustomerModel(CustomerModel model, Customer customer, bool excludeProperties)
@@ -655,6 +794,57 @@ namespace Ks.Admin.Controllers
 
             return attributesXml;
         }
+
+        [NonAction]
+        protected void ConvertToReportCustomer(List<CustomerModel> customers, List<ReportCustomer> model)
+        {
+            foreach (var c in customers)
+            {
+                var r = new ReportCustomer
+                {
+                    CustomerId = c.Id,
+                    Email = c.Email,
+                    Gender = c.Gender,
+                    FirstName = c.FirstName,
+                    AdmCode = c.AdmCode,
+                    Dni = c.Dni,
+                    MilitarySituationId = c.MilitarySituationId,
+                    MilitarySituationName = c.AvailableMilitarySituations.FirstOrDefault(x => x.Value == c.MilitarySituationId.ToString()).Text,
+                    DeclaratoryLetter = c.DeclaratoryLetter,
+                    DateOfAdmission = c.DateOfAdmission,
+                    LastName = c.LastName,
+                    FullName = c.FullName,
+                    DateOfBirth = c.DateOfBirth,
+                    StreetAddress = c.StreetAddress,
+                    StreetAddress2 = c.StreetAddress2,
+                    CountryName = c.AvailableCountries.FirstOrDefault(x => x.Value == c.CountryId.ToString()).Text,
+                    StateProvinceName = c.AvailableStates.FirstOrDefault(x => x.Value == c.StateProvinceId.ToString()).Text,
+                    CityName = c.AvailableCities.FirstOrDefault(x => x.Value == c.CityId.ToString()).Text,
+                    Phone = c.Phone,
+                    Active = c.Active,
+                    CustomerRoleNames = c.CustomerRoleNames,
+                    //Contribution = c.Contribution.ToEntity()
+                };
+
+                foreach (var cc in c.CustomerAttributes)
+                {
+                    var ca = new CustomerAttribute
+                    {
+                        Name = cc.Name
+                    };
+                    foreach (var cav in cc.Values)
+                    {
+                        ca.CustomerAttributeValues.Add(new CustomerAttributeValue
+                        {
+                            Name = cav.Name,IsPreSelected = cav.IsPreSelected
+                        });
+                    }
+                    r.CustomerAttributes.Add(ca);
+                } 
+                model.Add(r);
+            }
+        }
+
         #endregion
 
         #region Customers
@@ -745,8 +935,23 @@ namespace Ks.Admin.Controllers
             {
                 var cust2 = _customerService.GetCustomerByEmail(model.Email);
                 if (cust2 != null)
-                    ModelState.AddModelError("", "Email is already registered");
+                    ModelState.AddModelError("", "El correo ya se encuentra registrado");
             }
+
+            if (!String.IsNullOrWhiteSpace(model.AdmCode))
+            {
+                var customer = _customerService.GetCustomerByAdmCode(model.AdmCode);
+                if (customer != null)
+                    ModelState.AddModelError("", "El Asociado con N° Administrativo " + model.AdmCode + " ya se encuentra registrado");
+            }
+
+            if (!String.IsNullOrWhiteSpace(model.Dni))
+            {
+                var customer = _customerService.GetCustomerByDni(model.Dni);
+                if (customer != null)
+                    ModelState.AddModelError("", "El Asociado con DNI " + model.Dni + " ya se encuentra registrado");
+            }
+
             if (!String.IsNullOrWhiteSpace(model.Username) & _customerSettings.UsernamesEnabled)
             {
                 var cust2 = _customerService.GetCustomerByUsername(model.Username);
@@ -757,17 +962,34 @@ namespace Ks.Admin.Controllers
             //validate customer roles
             var allCustomerRoles = _customerService.GetAllCustomerRoles(true);
             var newCustomerRoles = new List<CustomerRole>();
-            foreach (var customerRole in allCustomerRoles)
-                if (model.SelectedCustomerRoleIds != null && model.SelectedCustomerRoleIds.Contains(customerRole.Id))
-                    newCustomerRoles.Add(customerRole);
-
-            if (newCustomerRoles.Count == 0)
-                newCustomerRoles.Add(allCustomerRoles.FirstOrDefault(x => x.SystemName == SystemCustomerRoleNames.Associated));
-            var customerRolesError = ValidateCustomerRoles(newCustomerRoles);
-            if (!String.IsNullOrEmpty(customerRolesError))
+            var isSystemAcount = false;
+            if (model.MilitarySituationId == ((int)CustomerMilitarySituation.Interno))
             {
-                ModelState.AddModelError("", customerRolesError);
-                ErrorNotification(customerRolesError, false);
+                isSystemAcount = true;
+                if (newCustomerRoles.Count == 0)
+                    newCustomerRoles.Add(allCustomerRoles.FirstOrDefault(x => x.SystemName == SystemCustomerRoleNames.Employee));
+
+                var customerRolesError = ValidateCustomerRoles(newCustomerRoles);
+                if (!String.IsNullOrEmpty(customerRolesError))
+                {
+                    ModelState.AddModelError("", customerRolesError);
+                    ErrorNotification(customerRolesError, false);
+                }
+            }
+            else
+            {
+                foreach (var customerRole in allCustomerRoles)
+                    if (model.SelectedCustomerRoleIds != null && model.SelectedCustomerRoleIds.Contains(customerRole.Id))
+                        newCustomerRoles.Add(customerRole);
+
+                if (newCustomerRoles.Count == 0)
+                    newCustomerRoles.Add(allCustomerRoles.FirstOrDefault(x => x.SystemName == SystemCustomerRoleNames.Associated));
+                var customerRolesError = ValidateCustomerRoles(newCustomerRoles);
+                if (!String.IsNullOrEmpty(customerRolesError))
+                {
+                    ModelState.AddModelError("", customerRolesError);
+                    ErrorNotification(customerRolesError, false);
+                }
             }
 
             if (ModelState.IsValid)
@@ -788,6 +1010,7 @@ namespace Ks.Admin.Controllers
                     PasswordFormatId = (int)PasswordFormat.Hashed,
                     Password = _encryptionService.CreatePasswordHash(model.Dni, saltKey, _customerSettings.HashedPasswordFormat),
                     PasswordSalt = saltKey,
+                    IsSystemAccount = isSystemAcount
                 };
                 _customerService.InsertCustomer(customer);
 
@@ -895,12 +1118,15 @@ namespace Ks.Admin.Controllers
                 //No customer found with the specified id
                 return RedirectToAction("List");
 
+            model.SelectedCustomerRoleIds = customer.CustomerRoles.Select(x => x.Id).ToArray();
+
             //validate customer roles
             var allCustomerRoles = _customerService.GetAllCustomerRoles(true);
             var newCustomerRoles = new List<CustomerRole>();
             foreach (var customerRole in allCustomerRoles)
                 if (model.SelectedCustomerRoleIds != null && model.SelectedCustomerRoleIds.Contains(customerRole.Id))
                     newCustomerRoles.Add(customerRole);
+
             var customerRolesError = ValidateCustomerRoles(newCustomerRoles);
             if (!String.IsNullOrEmpty(customerRolesError))
             {
@@ -937,8 +1163,6 @@ namespace Ks.Admin.Controllers
                             customer.Username = model.Username;
                         }
                     }
-
-
 
                     //form fields
                     if (_customerSettings.GenderEnabled)
@@ -1005,13 +1229,25 @@ namespace Ks.Admin.Controllers
                         var payments = _contributionService.GetAllPayments(contribution.FirstOrDefault().Id, stateId: (int)ContributionState.Pendiente);
                         foreach (var payment in payments)
                         {
-                            payment.Amount1 = payment.Amount2 = payment.Amount3 = 0;
+                            //payment.Amount1 = payment.Amount2 = payment.Amount3 = 0;
                             if (_contributionSettings.Amount1Source == 0 || _contributionSettings.Amount1Source == 1)
+                            {
                                 payment.Amount1 = _contributionSettings.Amount1;
+                            }
+                            else
+                            {
+                                payment.Amount1 = 0;
+                            }
                             if (_contributionSettings.Amount2Source == 0 || _contributionSettings.Amount2Source == 1)
+                            {
                                 payment.Amount2 = _contributionSettings.Amount2;
-                            if (_contributionSettings.Amount3Source == 0 || _contributionSettings.Amount3Source == 1)
-                                payment.Amount3 = _contributionSettings.Amount3;
+                            }
+                            else
+                            {
+                                payment.Amount2 = 0;
+                            }
+                            //if (_contributionSettings.Amount3Source == 0 || _contributionSettings.Amount3Source == 1)
+                            //    payment.Amount3 = _contributionSettings.Amount3;
                             payment.AmountTotal = payment.Amount1 + payment.Amount2 + payment.Amount3;
                             _contributionService.UpdateContributionPayment(payment);
                         }
@@ -1023,13 +1259,25 @@ namespace Ks.Admin.Controllers
                         var payments = _contributionService.GetAllPayments(contribution.FirstOrDefault().Id, stateId: (int)ContributionState.Pendiente);
                         foreach (var payment in payments)
                         {
-                            payment.Amount1 = payment.Amount2 = payment.Amount3 = 0;
+                            //payment.Amount1 = payment.Amount2 = payment.Amount3 = 0;
                             if (_contributionSettings.Amount1Source == 0 || _contributionSettings.Amount1Source == 2)
+                            {
                                 payment.Amount1 = _contributionSettings.Amount1;
+                            }
+                            else
+                            {
+                                payment.Amount1 = 0;
+                            }
                             if (_contributionSettings.Amount2Source == 0 || _contributionSettings.Amount2Source == 2)
+                            {
                                 payment.Amount2 = _contributionSettings.Amount2;
-                            if (_contributionSettings.Amount3Source == 0 || _contributionSettings.Amount3Source == 2)
-                                payment.Amount3 = _contributionSettings.Amount3;
+                            }
+                            else
+                            {
+                                payment.Amount2 = 0;
+                            }
+                            //if (_contributionSettings.Amount3Source == 0 || _contributionSettings.Amount3Source == 2)
+                            //    payment.Amount3 = _contributionSettings.Amount3;
                             payment.AmountTotal = payment.Amount1 + payment.Amount2 + payment.Amount3;
                             _contributionService.UpdateContributionPayment(payment);
                         }
@@ -1061,33 +1309,6 @@ namespace Ks.Admin.Controllers
             return View(model);
         }
 
-        [HttpPost, ActionName("Edit")]
-        [FormValueRequired("changepassword")]
-        public ActionResult ChangePassword(CustomerModel model)
-        {
-            if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
-                return AccessDeniedView();
-
-            var customer = _customerService.GetCustomerById(model.Id);
-            if (customer == null)
-                //No customer found with the specified id
-                return RedirectToAction("List");
-
-            if (ModelState.IsValid)
-            {
-                var changePassRequest = new ChangePasswordRequest(model.Email,
-                    false, _customerSettings.DefaultPasswordFormat, model.Password);
-                var changePassResult = _customerRegistrationService.ChangePassword(changePassRequest);
-                if (changePassResult.Success)
-                    SuccessNotification(_localizationService.GetResource("Admin.Customers.Customers.PasswordChanged"));
-                else
-                    foreach (var error in changePassResult.Errors)
-                        ErrorNotification(error);
-            }
-
-            return RedirectToAction("Edit", new { id = customer.Id });
-        }
-
         [HttpPost]
         public ActionResult Delete(int id)
         {
@@ -1117,6 +1338,7 @@ namespace Ks.Admin.Controllers
                     }
 
                     //no necesito hacer nada con los beneficios ya que se amarran al estado de la aportacion 
+                    var result = customer.Active ? "Desactivado" : "Activado";
 
                     customer.Active = !customer.Active;
                     _customerService.UpdateCustomer(customer);
@@ -1133,10 +1355,9 @@ namespace Ks.Admin.Controllers
                         _settingService.ClearCache();
                     }
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.MilitarySituationId, 0);
-                    //_customerService.DeleteCustomer(customer);
 
                     //activity log
-                    _customerActivityService.InsertActivity(DefaultActivityLogType.ActivityLogEditCustomer.Name, _localizationService.GetResource("ActivityLog.DeleteMilitaryPerson"), customer.Id, customer.Username ?? customer.Email);
+                    _customerActivityService.InsertActivity("DeleteMilitaryPerson", _localizationService.GetResource("ActivityLog.DeleteMilitaryPerson"), result, customer.Id, customer.Username ?? customer.Email);
 
                     SuccessNotification(_localizationService.GetResource("Admin.Customers.Customers.Deleted"));
                 }
@@ -1526,7 +1747,7 @@ namespace Ks.Admin.Controllers
                 _settingService.ClearCache();
 
                 //activity log
-                _customerActivityService.InsertActivity("AddContribution", string.Format(_localizationService.GetResource("ActivityLog.AddContribution"), model.CustomerCompleteName, model.CustomerId));
+                _customerActivityService.InsertActivity("AddContribution", string.Format(_localizationService.GetResource("ActivityLog.AddContribution"), model.Id, model.CustomerAdmCode, model.AuthorizeDiscount));
                 SuccessNotification(_localizationService.GetResource("Admin.Contract.Contribution.Updated"));
 
                 SaveSelectedTabIndex(4);
@@ -1561,9 +1782,10 @@ namespace Ks.Admin.Controllers
             if (model == null || !model.IsPostBack)
             {
                 var military = customer.GetAttribute<int>(SystemCustomerAttributeNames.MilitarySituationId);
-                var dayOfPaymentLoan = military == 1
-                    ? _loanSettings.DayOfPaymentLoanCopere
-                    : military == 2 ? _loanSettings.DayOfPaymentLoanCaja : 0;
+                var dayOfPaymentLoan = military == 1 ?
+                    _loanSettings.DayOfPaymentLoanCopere :
+                        military == 2 ? _loanSettings.DayOfPaymentLoanCaja :
+                        military == 3 ? _loanSettings.DayOfPaymentLoanCustom : 1;
                 var result = new LoanModel
                 {
                     CustomerId = customer.Id,
@@ -1597,7 +1819,18 @@ namespace Ks.Admin.Controllers
 
             var customer = _customerService.GetCustomerById(model.CustomerId);
             var military = customer.GetAttribute<int>(SystemCustomerAttributeNames.MilitarySituationId);
-            var dayOfPaymentLoan = military == 1 ? _loanSettings.DayOfPaymentLoanCopere : military == 2 ? _loanSettings.DayOfPaymentLoanCaja : 1;
+
+            if (military > 3)
+            {
+                ErrorNotification("El asociado no se encuentra en el estado de Actividad o en Retiro");
+                return RedirectToAction("LoanCreate", new { customerId = customer.Id });
+            }
+
+
+            var dayOfPaymentLoan = military == 1 ?
+                    _loanSettings.DayOfPaymentLoanCopere :
+                        military == 2 ? _loanSettings.DayOfPaymentLoanCaja :
+                        military == 3 ? _loanSettings.DayOfPaymentLoanCustom : 1;
 
             if (!ModelState.IsValid)
             {
@@ -1653,9 +1886,10 @@ namespace Ks.Admin.Controllers
 
             var customer = _customerService.GetCustomerById(model.CustomerId);
             var military = customer.GetAttribute<int>(SystemCustomerAttributeNames.MilitarySituationId);
-            var dayOfPaymentLoan = military == 1
-                ? _loanSettings.DayOfPaymentLoanCopere
-                : military == 2 ? _loanSettings.DayOfPaymentLoanCaja : 0;
+            var dayOfPaymentLoan = military == 1 ?
+                    _loanSettings.DayOfPaymentLoanCopere :
+                        military == 2 ? _loanSettings.DayOfPaymentLoanCaja :
+                        military == 3 ? _loanSettings.DayOfPaymentLoanCustom : 1;
 
             var estimated = new DateTime(model.YearId, model.MonthId, dayOfPaymentLoan);
             if (estimated.Ticks < DateTime.Now.Ticks)
@@ -1688,7 +1922,7 @@ namespace Ks.Admin.Controllers
                     TotalToPay = model.PreCashFlow.TotalToPay,
                     IsAuthorized = false,
                     IsDelay = false,
-                    Active = true,
+                    Active = false,
                     CreatedOnUtc = DateTime.UtcNow,
                     UpdatedOnUtc = null
                 };
@@ -1725,7 +1959,7 @@ namespace Ks.Admin.Controllers
                 _workFlowService.InsertWorkFlow(new WorkFlow
                 {
                     CustomerCreatedId = _workContext.CurrentCustomer.Id,
-                    EntityId = loan.LoanNumber,
+                    EntityId = loan.Id,
                     EntityName = CommonHelper.GetKsCustomTypeConverter(typeof(Loan)).ConvertToInvariantString(loan),
                     RequireCustomer = false,
                     RequireSystemRole = true,
@@ -1734,8 +1968,9 @@ namespace Ks.Admin.Controllers
                     UpdatedOnUtc = DateTime.UtcNow,
                     Active = true,
                     Title = "Aprobar Apoyo Social Económico",
-                    Description = "Se ha realizado la aprobacion del Apoyo Social Economico" +
-                    " para el asociado " + _customerService.GetCustomerById(loan.CustomerId).GetFullName(),
+                    Description = "Se ha realizado el registro del Apoyo Social economico con N° " + loan.LoanNumber +
+                    " para el asociado " + _customerService.GetCustomerById(loan.CustomerId).GetFullName() + " por el monto de " + loan.LoanAmount.ToString("c") +
+                    " con un periodo de " + loan.Period + " meses",
                     GoTo = "Admin/Loans/Approval/" + loan.Id
                 });
                 #endregion
@@ -2105,5 +2340,45 @@ namespace Ks.Admin.Controllers
 
         #endregion
 
+        #region Report
+
+        [HttpPost, ActionName("List")]
+        [FormValueRequired("exportexcel")]
+        public ActionResult ExportExcel()
+        {
+            var customer = _customerService.GetAllCustomers();
+            var customers = new List<CustomerModel>();
+
+            foreach (var x in customer)
+            {
+                var model = new CustomerModel();
+                PrepareCustomerModel2Report(model, x, false);
+                customers.Add(model);
+            }
+            try
+            {
+                byte[] bytes;
+                using (var stream = new MemoryStream())
+                {
+                    var model = new List<ReportCustomer>();
+                    ConvertToReportCustomer(customers, model);
+                    _exportManager.ExportReportCustomerToXlsx(stream, model);
+                    bytes = stream.ToArray();
+                }
+                //Response.ContentType = "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                //Response.AddHeader("content-disposition", "attachment; filename=Aportaciones.xlsx");
+                return File(bytes, "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Asociados.xlsx");
+            }
+            catch (Exception exc)
+            {
+                ErrorNotification(exc);
+                return RedirectToAction("List");
+            }
+
+        }
+
+
+
+        #endregion
     }
 }

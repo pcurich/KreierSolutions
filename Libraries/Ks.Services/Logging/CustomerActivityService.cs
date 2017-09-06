@@ -213,7 +213,7 @@ namespace Ks.Services.Logging
             var activityTypes = GetAllActivityTypesCached();
             var activityType = activityTypes.ToList().Find(at => at.SystemKeyword == systemKeyword);
             if (activityType == null || !activityType.Enabled)
-                return null;
+                 return null;
 
             comment = CommonHelper.EnsureNotNull(comment);
             comment = string.Format(comment, commentParams);

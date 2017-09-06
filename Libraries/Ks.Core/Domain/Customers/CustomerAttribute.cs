@@ -54,7 +54,7 @@ namespace Ks.Core.Domain.Customers
         public virtual ICollection<CustomerAttributeValue> CustomerAttributeValues
         {
             get { return _customerAttributeValues ?? (_customerAttributeValues = new List<CustomerAttributeValue>()); }
-            protected set { _customerAttributeValues = value; }
+            set { _customerAttributeValues = value; }
         }
     }
 }

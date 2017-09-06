@@ -8,6 +8,6 @@
         Pagado = 4,
         SinLiquidez = 5,
         Devolucion = 6,
-        PagoPersonal = 7
+        PagoPersonal = 7 
     }
 }

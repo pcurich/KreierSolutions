@@ -31,6 +31,10 @@ namespace Ks.Admin.Models.Contract
         public string CustomerDni { get; set; }
         [KsResourceDisplayName("Admin.Contract.ContributionPayments.Fields.CustomerFrom")]
         public DateTime? CustomerFrom { get; set; }
+        [KsResourceDisplayName("Admin.Contract.ContributionPayments.Fields.AuthorizeDiscount")]
+        public int AuthorizeDiscount { get; set; }
+        [KsResourceDisplayName("Admin.Contract.ContributionPayments.Fields.MilitarySituation")]
+        public string MilitarySituationId { get; set; }
 
         public List<SelectListItem> States { get; set; }
         public List<SelectListItem> Types { get; set; }

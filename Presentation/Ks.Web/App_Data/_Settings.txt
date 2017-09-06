@@ -1,2 +1,0 @@
-DataProvider: sqlserver
-DataConnectionString: Data Source=IDEA-PC\SQLEXPRESS2008;Initial Catalog=ACMR;Integrated Security=True;Persist Security Info=False

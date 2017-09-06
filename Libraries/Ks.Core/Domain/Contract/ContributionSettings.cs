@@ -20,7 +20,8 @@ namespace Ks.Core.Domain.Contract
         /// <summary>
         /// Gets or sets the maximum charge.
         /// </summary>
-        public decimal MaximumCharge { get; set; }
+        public decimal MaximumChargeCaja { get; set; }
+        public decimal MaximumChargeCopere { get; set; }
         /// <summary>
         /// Gets or sets the name amount1.
         /// </summary>

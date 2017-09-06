@@ -171,8 +171,10 @@
     <Compile Include="Configuration\SettingExtensions.cs" />
     <Compile Include="Configuration\SettingService.cs" />
     <Compile Include="Contract\BenefitService.cs" />
+    <Compile Include="Contract\CheckService.cs" />
     <Compile Include="Contract\ContributionService.cs" />
     <Compile Include="Contract\IBenefitService.cs" />
+    <Compile Include="Contract\ICheckService.cs" />
     <Compile Include="Contract\ILoanService.cs" />
     <Compile Include="Contract\IReturnPaymentService.cs" />
     <Compile Include="Contract\ITabService.cs" />

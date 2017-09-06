@@ -110,6 +110,15 @@ namespace Ks.Services.Contract
         IList<ReportContributionPayment> GetReportContributionPayment(int contributionId, int pageIndex = 0, int pageSize = Int32.MaxValue);
 
         /// <summary>
+        /// Gets the report contribution payment future.
+        /// </summary>
+        /// <param name="contributionId">The contribution identifier.</param>
+        /// <param name="pageIndex">Index of the page.</param>
+        /// <param name="pageSize">Size of the page.</param>
+        /// <returns></returns>
+        IList<ReportContributionPayment> GetReportContributionPaymentFuture(int contributionId, int pageIndex = 0, int pageSize = Int32.MaxValue);
+
+        /// <summary>
         /// Determines whether [is payment valid] [the specified account number].
         /// </summary>
         /// <param name="accountNumber">The account number.</param>

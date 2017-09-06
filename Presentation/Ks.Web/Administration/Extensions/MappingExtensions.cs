@@ -301,6 +301,25 @@ namespace Ks.Admin.Extensions
 
         #endregion
 
+        #region Check
+
+        public static CheckModel ToModel(this Check entity)
+        {
+            return entity.MapTo<Check, CheckModel>();
+        }
+
+        public static Check ToEntity(this CheckModel model)
+        {
+            return model.MapTo<CheckModel, Check>();
+        }
+
+        public static Check ToEntity(this CheckModel model, Check destination)
+        {
+            return model.MapTo(destination);
+        }
+
+        #endregion
+
         #region Loan
 
         public static LoanModel ToModel(this Loan entity)

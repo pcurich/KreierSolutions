@@ -196,7 +196,6 @@ namespace Ks.Batch.Copere.Out
                 if (customerIds2.Count > 0 && Batch.UpdateData)
                     UpdateDataContribution(customerIds2);
 
-
             }
             catch (Exception ex)
             {
@@ -426,7 +425,9 @@ namespace Ks.Batch.Copere.Out
 
                 Sql = " SELECT EntityId, Attribute =[Key], Value FROM GenericAttribute " +
                       " WHERE KeyGroup='Customer' and  [Key] in ('Dni','AdmCode') AND " +
-                      " EntityId IN ( SELECT EntityId FROM GenericAttribute WHERE [Key]='MilitarySituationId' AND Value=1 AND EntityId IN  (SELECT Id FROM CUSTOMER WHERE ACTIVE=1  ) ) " +
+                      " EntityId IN ( SELECT EntityId FROM GenericAttribute " +
+                      " WHERE [Key]='MilitarySituationId' AND Value=1 AND EntityId IN " +
+                      " (SELECT Id FROM CUSTOMER WHERE ACTIVE=1  ) ) " +
                       " ORDER BY 1 ";
 
                 Command = new SqlCommand(Sql, Connection);

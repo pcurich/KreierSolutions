@@ -12,6 +12,8 @@
         public int IsAutomatic { get; set; }
         public string BankName { get; set; }
         public int StateId { get; set; }
+        public string ScheduledDate { get; set; }
+        public string ProcessedDate { get; set; }
 
     }
 }

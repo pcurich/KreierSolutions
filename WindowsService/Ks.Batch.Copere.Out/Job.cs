@@ -73,7 +73,10 @@ namespace Ks.Batch.Copere.Out
 
         protected void ExistFile()
         {
-            var nameFile = string.Format("8001_{0}00.txt", Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00"));
+            var nameFile = string.Format(
+                            "8001_{0}00.txt", 
+                            Batch.PeriodYear.ToString("0000") + 
+                            Batch.PeriodMonth.ToString("00"));
             try
             {
                 Log.InfoFormat("Action: {0}", "Job.ExistFile()");

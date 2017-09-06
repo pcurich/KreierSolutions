@@ -1,8 +1,11 @@
 ﻿@using System.Globalization
+@using Ks.Core.Domain.Contract
 @model ReturnPaymentModel
 
 @Html.ValidationSummary(false)
 @Html.HiddenFor(model => model.Id)
+@Html.HiddenFor(model => model.CustomerId)
+
 
 <script>
     $(document).ready(function () {
@@ -79,7 +82,7 @@
             </td>
             <td class="adminData">
                 @Model.ReturnPaymentTypeName
-                @Html.HiddenFor(model=>model.ReturnPaymentTypeId)
+                @Html.HiddenFor(model => model.ReturnPaymentTypeId)
             </td>
         </tr>
         <tr>
@@ -105,12 +108,25 @@
                 @Html.KsLabelFor(model => model.StateName):
             </td>
             <td class="adminData">
-                @Html.DropDownListFor(model => model.StateId, Model.States)
-                <script>
-                    $(document).ready(function () {
-                        $('#@Html.FieldIdFor(model => model.StateId)').width(250).kendoDropDownList();
-                    });
-                </script>
+                @{
+                    if (Model.StateId == (int)ReturnPaymentState.PorAprobar ||
+                        Model.StateId == (int)ReturnPaymentState.Aprobado)
+                    {
+
+                        @Html.DropDownListFor(model => model.StateId, Model.States)
+                        <script>
+                            $(document).ready(function () {
+                                $('#@Html.FieldIdFor(model => model.StateId)').width(250).kendoDropDownList();
+                            });
+                        </script>
+                    }
+                    else
+                    {
+                        @Model.StateName
+                        @Html.HiddenFor(model => model.StateId)
+                    }
+                }
+
             </td>
         </tr>
         <tr>
@@ -136,6 +152,7 @@
                     if (Model.BankName != null)
                     {
                         @Model.BankName
+                        @Html.HiddenFor(model => model.BankName)
                     }
                     else
                     {

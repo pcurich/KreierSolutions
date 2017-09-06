@@ -69,6 +69,10 @@
       <HintPath>..\..\..\packages\itextsharp.xmlworker.5.5.9\lib\itextsharp.xmlworker.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Data.Edm, Version=5.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Microsoft.Data.Edm.5.7.0\lib\net40\Microsoft.Data.Edm.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\..\..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
@@ -1351,6 +1355,9 @@
     <Content Include="Views\Report\List.cshtml" />
     <Content Include="Views\Loans\Approval.cshtml" />
     <Content Include="Views\Loans\AddCheck.cshtml" />
+    <Content Include="Views\Check\List.cshtml" />
+    <Content Include="Views\Check\Edit.cshtml" />
+    <Content Include="Views\Check\_CreateOrUpdate.cshtml" />
     <None Include="Views\Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1373,6 +1380,7 @@
     <Compile Include="Controllers\AddressAttributeController.cs" />
     <Compile Include="Controllers\BaseAdminController.cs" />
     <Compile Include="Controllers\BenefitController.cs" />
+    <Compile Include="Controllers\CheckController.cs" />
     <Compile Include="Controllers\CommonController.cs" />
     <Compile Include="Controllers\ContributionsController.cs" />
     <Compile Include="Controllers\CountryController.cs" />
@@ -1402,6 +1410,7 @@
     <Compile Include="Extensions\HtmlExtensions.cs" />
     <Compile Include="Extensions\MappingExtensions.cs" />
     <Compile Include="Extensions\PdfExtensions.cs" />
+    <Compile Include="Extensions\StringHelper.cs" />
     <Compile Include="Infrastructure\AutoMapperStartupTask.cs" />
     <Compile Include="Infrastructure\Cache\ModelCacheEventConsumer.cs" />
     <Compile Include="Infrastructure\DependencyRegistrar.cs" />
@@ -1418,6 +1427,9 @@
     <Compile Include="Models\Common\UrlRecordListModel.cs" />
     <Compile Include="Models\Common\UrlRecordModel.cs" />
     <Compile Include="Models\Contract\BenefitModel.cs" />
+    <Compile Include="Models\Contract\CheckCompareModel.cs" />
+    <Compile Include="Models\Contract\CheckListModel.cs" />
+    <Compile Include="Models\Contract\CheckModel.cs" />
     <Compile Include="Models\Contract\ContributionBenefitBankModel.cs" />
     <Compile Include="Models\Contract\ContributionPaymentListModel.cs" />
     <Compile Include="Models\Contract\ContributionListModel.cs" />
@@ -1480,6 +1492,7 @@
     <Compile Include="Validators\Common\AddressAttributeValidator.cs" />
     <Compile Include="Validators\Common\AddressAttributeValueValidator.cs" />
     <Compile Include="Validators\Common\AddressValidator.cs" />
+    <Compile Include="Validators\Contract\CheckValidator.cs" />
     <Compile Include="Validators\Contract\ContributionPaymentValidator.cs" />
     <Compile Include="Validators\Contract\ContributionValidator.cs" />
     <Compile Include="Validators\Contract\LoanPaymentValidator.cs" />

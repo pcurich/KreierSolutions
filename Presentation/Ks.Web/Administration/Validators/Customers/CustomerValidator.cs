@@ -84,6 +84,10 @@ namespace Ks.Admin.Validators.Customers
 
             Custom(x =>
             {
+                if (string.IsNullOrEmpty(x.Email))
+                    return new ValidationFailure("Email",
+                        localizationService.GetResource("Ingrese su correo"));
+
                 if (x.AdmCode == null || x.AdmCode.Length != 9)
                     return new ValidationFailure("AdmCode",
                         localizationService.GetResource("Admin.Customers.Customers.Fields.AdmCode.Length"));

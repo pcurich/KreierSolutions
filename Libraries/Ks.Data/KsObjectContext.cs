@@ -125,8 +125,16 @@ namespace Ks.Data
                     }
                 }
             }
+            var result =new List<TEntity>();
 
-            var result = Database.SqlQuery<TEntity>(commandText, parameters).ToList();
+            try
+            {
+                  result = Database.SqlQuery<TEntity>(commandText, parameters).ToList();
+            }
+            catch (Exception e)
+            {
+                var msg = e.Message;
+            }
 
             //performance hack applied as described here - http://www.Kscommerce.com/boards/t/25483/fix-very-important-speed-improvement.aspx
             var acd = Configuration.AutoDetectChangesEnabled;

@@ -70,18 +70,6 @@ namespace Ks.Admin.Controllers
             }
         }
 
-        [NonAction]
-        protected virtual void UpdateAttributeLocales(KsSystem store, KsSystemModel model)
-        {
-            foreach (var localized in model.Locales)
-            {
-                _localizedEntityService.SaveLocalizedValue(store,
-                    x => x.Name,
-                    localized.Name,
-                    localized.LanguageId);
-            }
-        }
-
         #endregion
 
         #region Methods
@@ -121,8 +109,6 @@ namespace Ks.Admin.Controllers
             var model = new KsSystemModel();
             //languages
             PrepareLanguagesModel(model);
-            //locales
-            AddLocales(_languageService, model.Locales);
             return View(model);
         }
 
@@ -139,8 +125,6 @@ namespace Ks.Admin.Controllers
                 if (!store.Url.EndsWith("/"))
                     store.Url += "/";
                 _ksSystemService.InsertKsSystem(store);
-                //locales
-                UpdateAttributeLocales(store, model);
 
                 SuccessNotification(_localizationService.GetResource("Admin.Configuration.KsSystems.Added"));
                 return continueEditing ? RedirectToAction("Edit", new {id = store.Id}) : RedirectToAction("List");
@@ -166,9 +150,7 @@ namespace Ks.Admin.Controllers
             var model = system.ToModel();
             //languages
             PrepareLanguagesModel(model);
-            //locales
-            AddLocales(_languageService, model.Locales,
-                (locale, languageId) => { locale.Name = system.GetLocalized(x => x.Name, languageId, false, false); });
+
             return View(model);
         }
 
@@ -191,9 +173,7 @@ namespace Ks.Admin.Controllers
                 if (!system.Url.EndsWith("/"))
                     system.Url += "/";
                 _ksSystemService.UpdateKsSystem(system);
-                //locales
-                UpdateAttributeLocales(system, model);
-
+               
                 SuccessNotification(_localizationService.GetResource("Admin.Configuration.KsSystems.Updated"));
                 return continueEditing ? RedirectToAction("Edit", new {id = system.Id}) : RedirectToAction("List");
             }

@@ -13,7 +13,9 @@
         </div>
         <div class="options">
             <input type="button" id="createcustompayment" class="k-button" value="@T("Admin.Contract.LoanPayments.CustomPayment")" />
-            <input type="submit" name="exportexcel-all" class="k-button" value="@T("Admin.Common.ExportToExcel.All")"/>
+            <input type="submit" name="exportexcel-all" class="k-button" value="Expotar Pagos" />
+            <input type="submit" name="exportexcel" class="k-button" value="Expotar Pagos Futuros" />
+            <input type="submit" name="exportpdf" class="k-button" value="@T("Admin.Common.ExportToPdf")" />
             <script type="text/javascript">
                 $('#createcustompayment').click(function() {
                     window.location.replace('@Url.Action("CreateCustomPayment", "Contributions", new {id = Model.ContributionId})');

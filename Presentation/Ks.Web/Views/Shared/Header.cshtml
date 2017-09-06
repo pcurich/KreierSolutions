@@ -11,27 +11,11 @@
     var storeName = EngineContext.Current.Resolve<IKsSystemContext>().CurrentSystem.GetLocalized(x => x.Name);
 }
 <div class="header">
-    <div class="header-upper">
-        <div class="header-selectors-wrapper">
-
-            @Html.Action("CurrencySelector", "Common")
-
-            @Html.Action("LanguageSelector", "Common")
-
-        </div>
-        <div class="header-links-wrapper">
-            @Html.Action("HeaderLinks", "Common")
-            @*@Html.Action("FlyoutShoppingCart", "ShoppingCart")*@
-        </div>
-    </div>
     <div class="header-lower">
         <div class="header-logo">
             <a href="@Url.RouteUrl("HomePage")">
                 <img title="" alt="@storeName" src="@Url.Content(logoPath)">
             </a>
-        </div>
-        <div class="search-box store-search-box">
-            @*@Html.Action("SearchBox", "Catalog")*@
         </div>
     </div>
 </div>

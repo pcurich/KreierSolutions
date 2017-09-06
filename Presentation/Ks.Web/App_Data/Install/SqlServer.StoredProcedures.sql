@@ -501,7 +501,7 @@ CREATE PROCEDURE FixQuotaCopere
 AS
 BEGIN 
 	
-	Declare @MaxToPay decimal(6,2)= (select value from Setting where Name  =  'contributionsettings.maximumcharge')
+	Declare @MaxToPay decimal(6,2)= (select value from Setting where Name  =  'contributionsettings.maximumchargecopere')
 	DECLARE @ContributionPaymentId INT
 	DECLARE @NextId INT 
 	DECLARE @OffSet decimal(12,2) 
@@ -530,7 +530,8 @@ BEGIN
 			IF(@OffSet>0)
 				BEGIN
 					UPDATE ContributionPayment 
-					SET AmountTotal=@MaxToPay, [DESCRIPTION]=ISNULL([DESCRIPTION],'')  + '|' + 'El valor de la couta a alcanzado el valor máximo, el saldo se va a prorratear en la siguiente couta pendiente de envio (S/ ' + CAST(@OffSet AS NVARCHAR(50)) + ')'  
+					SET AmountTotal=@MaxToPay, 
+					[DESCRIPTION]=ISNULL([DESCRIPTION],'')  + '|' + 'El valor de la couta a alcanzado el valor máximo, el saldo se va a prorratear en la siguiente couta pendiente de envio (S/ ' + CAST(@OffSet AS NVARCHAR(50)) + ')'  
 					WHERE  Id=@ContributionPaymentId+@ValueIndex  
 					
 					UPDATE ContributionPayment 
@@ -589,7 +590,7 @@ AS
 BEGIN
  
 	
-	Declare @MaxToPay decimal(6,2)= (select value from Setting where Name  =  'contributionsettings.maximumcharge')
+	Declare @MaxToPay decimal(6,2)= (select value from Setting where Name  =  'contributionsettings.maximumchargecaja')
 	DECLARE @ContributionPaymentId INT
 	DECLARE @NextId INT 
 	DECLARE @OffSet decimal(12,2) 
@@ -1282,7 +1283,7 @@ WHERE T.LoanId=Loan.Id
 END
 GO
 
-CREATE PROCEDURE [dbo].[ReportGlobal]
+CREATE alter PROCEDURE [dbo].[ReportGlobal]
 (
 	@Year int,
 	@Month int,
@@ -1311,10 +1312,12 @@ BEGIN
 		Payed=LP.MonthlyPayed,
 		LP.IsAutomatic,
 		Lp.BankName,
-		lP.StateId
+		lP.StateId,
+		CONVERT(VARCHAR(10), LP.ScheduledDateOnUtc, 103)  AS ScheduledDate,
+		CONVERT(VARCHAR(10), LP.ProcessedDateOnUtc, 103)  AS ProcessedDate
 		FROM LoanPayment LP
 		INNER JOIN Loan L ON L.Id=LP.LoanId
-		WHERE YEAR(LP.ProcessedDateOnUtc)=@Year AND MONTH(LP.ProcessedDateOnUtc)=@Month 
+		WHERE YEAR(LP.ScheduledDateOnUtc)=@Year AND MONTH(LP.ScheduledDateOnUtc)=@Month 
 		
 		UNION
 
@@ -1328,10 +1331,12 @@ BEGIN
 		Payed=LP.AmountPayed,
 		LP.IsAutomatic,
 		Lp.BankName,
-		lP.StateId
+		lP.StateId,
+		CONVERT(VARCHAR(10), LP.ScheduledDateOnUtc, 103)  AS ScheduledDate,
+		CONVERT(VARCHAR(10), LP.ProcessedDateOnUtc, 103)  AS ProcessedDate
 		FROM ContributionPayment LP
 		INNER JOIN Contribution L ON L.Id=LP.ContributionId
-		WHERE YEAR(LP.ProcessedDateOnUtc)=@Year AND MONTH(LP.ProcessedDateOnUtc)=@Month
+		WHERE YEAR(LP.ScheduledDateOnUtc)=@Year AND MONTH(LP.ScheduledDateOnUtc)=@Month
 		) AS T
 
 	Update Type1 set AdmCode=Value
@@ -1373,11 +1378,13 @@ BEGIN
 	Payed=LP.AmountPayed,
 	LP.IsAutomatic,
 	Lp.BankName,
-	lP.StateId 
+	lP.StateId ,
+	CONVERT(VARCHAR(10), LP.ScheduledDateOnUtc, 103)  AS ScheduledDate,
+	CONVERT(VARCHAR(10), LP.ProcessedDateOnUtc, 103)  AS ProcessedDate
 	INTO Type2
 	FROM ContributionPayment LP
 	INNER JOIN Contribution L ON L.Id=LP.ContributionId
-	WHERE YEAR(LP.ProcessedDateOnUtc)=@Year AND MONTH(LP.ProcessedDateOnUtc)=@Month  
+	WHERE YEAR(LP.ScheduledDateOnUtc)=@Year AND MONTH(LP.ScheduledDateOnUtc)=@Month  
 
 	Update Type2 set AdmCode=Value
 	FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=Type2.CustomerId AND [Key]='AdmCode'
@@ -1417,11 +1424,13 @@ BEGIN
 	Payed=LP.MonthlyPayed,
 	LP.IsAutomatic,
 	Lp.BankName,
-	lP.StateId
+	lP.StateId,
+	CONVERT(VARCHAR(10), LP.ScheduledDateOnUtc, 103)  AS ScheduledDate,
+	CONVERT(VARCHAR(10), LP.ProcessedDateOnUtc, 103)  AS ProcessedDate
 	INTO Type3
 	FROM LoanPayment LP
 	INNER JOIN Loan L ON L.Id=LP.LoanId
-	WHERE YEAR(LP.ProcessedDateOnUtc)=@Year AND MONTH(LP.ProcessedDateOnUtc)=@Month  
+	WHERE YEAR(LP.ScheduledDateOnUtc)=@Year AND MONTH(LP.ScheduledDateOnUtc)=@Month  
 
 	Update Type3 set AdmCode=Value
 	FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=Type3.CustomerId AND [Key]='AdmCode'
@@ -1495,7 +1504,7 @@ END
 END
 GO
 
-CREATE PROCEDURE [dbo].[ReportLoanDetails]
+CREATE  PROCEDURE [dbo].[ReportLoanDetails]
 (
 	@FromYear int,
 	@FromMonth int,
@@ -1503,8 +1512,7 @@ CREATE PROCEDURE [dbo].[ReportLoanDetails]
 	@ToYear int,
 	@ToMonth int,
 	@ToDay int,
-	@Type int, -- 2 TODOS, 1 COPERE  , CAJA
-	@State int,-- 2 TODOS, 1 VIGENTES, 0 CANCELADO
+	@Type int, -- 0 TODOS, 1 COPERE  , 2 CAJA 3 PERSONAL
 	@NameReport nvarchar(255),
 	@ReportState int,
 	@Source nvarchar(250),
@@ -1513,84 +1521,104 @@ CREATE PROCEDURE [dbo].[ReportLoanDetails]
 AS
 BEGIN
 
-SELECT 
-CAST(cast(ApprovalOnUtc as DATE)  AS NVARCHAR(15)) AS ApprovalDate,
-CAST(LoanNumber AS NVARCHAR(15)) as LoanNumber,
-CASE WHEN Active=1 THEN 'Vigente' ELSE 'Cancelado' End  AS LoanState,
-ISNULL(CheckNumber,'') AS CheckNumber,
-Source='                                              ',
-CustomerId,
+
+SELECT DISTINCT LoanId 
+INTO #LoanIds 
+FROM LoanPayment 
+WHERE 
+Year(ScheduledDateOnUtc)*10000+Month(ScheduledDateOnUtc)*100+day(ScheduledDateOnUtc)>=(@FromYear*10000+@FromMonth*100+@FromDay) AND  
+Year(ScheduledDateOnUtc)*10000+Month(ScheduledDateOnUtc)*100+day(ScheduledDateOnUtc)<=(@ToYear*10000+@ToMonth*100+@ToDay)
+
+SELECT * INTO #Loan2 FROM Loan  WHERE Id not in (SELECT LoanId FROM #LoanIds )
+
+SELECT  * INTO #Temp 
+FROM 
+(
+select 
+Ln.CustomerId,
 FirstName='                                                               ', 
 LastName='                                                                ',
 AdmCode='                          ',
-CustomerState='                                                          ',
-LoanAmount, 
-TotalSafe,
-TotalToPay,
-TotalFeed,
-TotalAmount,
-TotalPayed,
-CAST(ROUND(TotalPayed/(1+PERIOD*Tea/1200),2) AS DECIMAL) AS PayedCapital,
-CAST(ROUND(totalPayed-(TotalPayed/(1+PERIOD*Tea/1200)),2) AS DECIMAL) AS PayedTax,
-TotalAmount- Totalpayed as Debit ,
-Period,
-MonthlyQuota,
-CAST(ROUND(MonthlyQuota/(1+PERIOD*Tea/1200),2) AS decimal)  AS QoutaCapital,
-CAST(MonthlyQuota-ROUND(MonthlyQuota/(1+PERIOD*Tea/1200),2) AS decimal)  AS QoutaTax,
-CAST(cast(UpdatedOnUtc  as DATE)  AS NVARCHAR(15)) AS LastDate
-INTO  #Temp_Loan
-FROM Loan 
-WHERE Year(ApprovalOnUtc)*10000+Month(ApprovalOnUtc)*100+day(ApprovalOnUtc)>=(@FromYear*10000+@FromMonth*100+@FromDay) AND  
-	  Year(ApprovalOnUtc)*10000+Month(ApprovalOnUtc)*100+day(ApprovalOnUtc)<=(@ToYear*10000+@ToMonth*100+@ToDay) 
+MilitarySituation='                                    ',   
+ln.ApprovalOnUtc as ApprovalOn,
+ln.LoanNumber as LoanNumber, 
+ln.LoanAmount as LoanAmount,
+ln.TotalToPay as TotalToPay,
+ln.Period as Period,
+sum(lp.MonthlyPayed) as MonthlyPayed, 
+lp.LoanId, 
+ln.TotalAmount as TotalAmount, 
+ln.TotalAmount-sum(lp.MonthlyPayed) as Debit
+from LoanPayment lp 
+INNER JOIN Loan ln ON lp.LoanId=ln.Id
+where Year(ln.ApprovalOnUtc)*10000+Month(ln.ApprovalOnUtc)*100+day(ln.ApprovalOnUtc)<(@FromYear*10000+@FromMonth*100+@FromDay)
+and Year(Lp.ScheduledDateOnUtc)*10000+Month(LP.ScheduledDateOnUtc)*100+day(LP.ScheduledDateOnUtc)>=(@FromYear*10000+@FromMonth*100+@FromDay) AND  
+	  Year(Lp.ScheduledDateOnUtc)*10000+Month(LP.ScheduledDateOnUtc)*100+day(LP.ScheduledDateOnUtc)<=(@ToYear*10000+@ToMonth*100+@ToDay)
+group by 
+Ln.CustomerId,ln.ApprovalOnUtc,lp.LoanId , ln.LoanNumber,ln.LoanAmount,
+ln.TotalToPay,ln.Period , ln.TotalAmount
+
+union 
+
+select 
+
+Ln.CustomerId,
+FirstName='                                                               ', 
+LastName='                                                                ',
+AdmCode='                          ',
+MilitarySituation='                                    ',   
+ln.ApprovalOnUtc as ApprovalOn,
+ln.LoanNumber as LoanNumber, 
+ln.LoanAmount as LoanAmount,
+ln.TotalToPay as TotalToPay,
+ln.Period as Period,
+sum(lp.MonthlyPayed) as MonthlyPayed, 
+lp.LoanId, 
+ln.TotalAmount as TotalAmount, 
+ln.TotalAmount-sum(lp.MonthlyPayed) as Debit
+from LoanPayment lp 
+INNER JOIN  #Loan2 ln ON ln.Id = lp.loanId
+where 
+Year(ln.ApprovalOnUtc)*10000+Month(ln.ApprovalOnUtc)*100+day(ln.ApprovalOnUtc)<(@FromYear*10000+@FromMonth*100+@FromDay)
+group by  Ln.CustomerId,
+ln.ApprovalOnUtc, lp.LoanId, ln.LoanNumber,ln.LoanAmount,
+ln.TotalToPay,
+ln.Period ,ln.TotalAmount
+) AS XX
+
+Update #TEMP set AdmCode=Value FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#TEMP.CustomerId AND [Key]='AdmCode'
+Update #TEMP set FirstName=Value FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#TEMP.CustomerId AND [Key]='FirstName'
+Update #TEMP set LastName=Value FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#TEMP.CustomerId AND [Key]='LastName'
+
+UPDATE #Temp SET MilitarySituation='COPERE'  WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=1) --COPERE
+UPDATE #Temp SET MilitarySituation='CPMP'  WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=2) --CAJA
+UPDATE #Temp SET MilitarySituation='PERSONAL'  WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=3) --PERSONAL
 
 
-Update #Temp_Loan set CustomerState=case when Customer.Active=1 then 'Activo' else 'Inactivo' end 
-FROM Customer where Id=#Temp_Loan.CustomerId 
-
-Update #Temp_Loan set AdmCode=Value
-FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#Temp_Loan.CustomerId AND [Key]='AdmCode'
-
-Update #Temp_Loan set FirstName=Value
-FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#Temp_Loan.CustomerId AND [Key]='FirstName'
-
-Update #Temp_Loan set LastName=Value
-FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#Temp_Loan.CustomerId AND [Key]='LastName'
-
-UPDATE #Temp_Loan SET SOURCE='CPMP'  WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=2) --CAJA
-
-UPDATE #Temp_Loan SET SOURCE='COPERE'  WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=1) --COPERE
-	  
---	@Type int, -- 2 TODOS, 1 COPERE  , CAJA
-if(@Type=1)-- SOLO COPERE 
+IF(@Type=1) --COPERE
 BEGIN
-	DELETE FROM #Temp_Loan WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=2) --BORRO CAJA
+	DELETE FROM #Temp WHERE MilitarySituation='PERSONAL'
+	DELETE FROM #Temp WHERE MilitarySituation='CPMP'
 END
-
-if(@Type=2)-- SOLO CAJA 
+IF(@Type=2) --CAJA
 BEGIN
-	DELETE FROM #Temp_Loan WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=1) --BORRO COPERE
+	DELETE FROM #Temp WHERE MilitarySituation='PERSONAL'
+	DELETE FROM #Temp WHERE MilitarySituation='COPERE'
 END
-
---	@State int,-- 2 TODOS, 1 VIGENTES, 0 CANCELADO
--- 1 'Vigente' 2 'Cancelado'
-
-if(@State=1)-- SOLO VIGENTES 
+IF(@Type=3) --PERSONAL
 BEGIN
-	DELETE FROM #Temp_Loan WHERE LoanState ='Cancelado'
+	DELETE FROM #Temp WHERE MilitarySituation='COPERE'
+	DELETE FROM #Temp WHERE MilitarySituation='CPMP'
 END
+	
+	
+	DECLARE @newId uniqueidentifier =NEWID();
+	DECLARE @value XML=(SELECT * FROM  #Temp order by 1 desc FOR XML PATH ('ReportLoanDetail'), root ('ArrayOfReportLoanDetail'))
 
-if(@State=0)-- SOLO CANCELADOS 
-BEGIN
-	DELETE FROM #Temp_Loan WHERE LoanState ='Vigente'
-END
-
-DECLARE @newId uniqueidentifier =NEWID();
-DECLARE @value XML=(SELECT * FROM  #Temp_Loan order by 1 desc FOR XML PATH ('ReportLoanDetail'), root ('ArrayOfReportLoanDetail'))
-
-DELETE FROM Report WHERE source=@Source
-INSERT INTO Report VALUES (@newId,@NameReport,@value,'',@ReportState,'',@Source,@newId,GETUTCDATE())
-SELECT @TotalRecords = COUNT(1) FROM #Temp_Loan
-SELECT * FROM Report WHERE [key]=@newId
+	DELETE FROM Report WHERE source=@Source
+	INSERT INTO Report VALUES (@newId,@NameReport,@value,'',@ReportState,'',@Source,@newId,GETUTCDATE())
+	SELECT @TotalRecords = COUNT(1) FROM #Temp
+	SELECT * FROM Report WHERE [key]=@newId
 
 END
 GO
@@ -1598,7 +1626,9 @@ GO
 CREATE PROCEDURE [dbo].[SummaryReportContribution]
 (
 	@FromYear int,
+	@FromMonth int,
 	@ToYear int,
+	@ToMonth int,	
 	@TypeSource int, --1 COPERE 2 CAJA 0 TODOS
 	@NameReport nvarchar(255),
 	@ReportState int,
@@ -1810,7 +1840,7 @@ SELECT * FROM Report WHERE [key]=@newId
 END
 GO
 
-CREATE PROCEDURE [dbo].[ReportSummaryBankPayment]
+CREATE  PROCEDURE [dbo].[ReportSummaryBankPayment]
 (
 	@FromYear int,
 	@FromMonth int,
@@ -1818,7 +1848,7 @@ CREATE PROCEDURE [dbo].[ReportSummaryBankPayment]
 	@ToYear int,
 	@ToMonth int,
 	@ToDay int,
-	@Type int, -- 0 TODOS, 1 COPERE  , 2 CAJA
+	@Type int, -- 0 TODOS, 1 COPERE,2 CAJA, 3 PERSONAL
 	@Data int, -- 0 TODOS,1 CONTRIBUTION, 2 LOAN
 	@NameReport nvarchar(255),
 	@ReportState int,
@@ -1828,51 +1858,473 @@ CREATE PROCEDURE [dbo].[ReportSummaryBankPayment]
 AS
 BEGIN
 
-SELECT 
-l.CustomerId as CustomerId,
+IF (@Data=2 OR @Data=0)
+BEGIN
+	SELECT 
+	l.CustomerId as CustomerId,
+	FirstName='                                                               ', 
+	LastName='                                                                ',
+	AdmCode='                          ',
+	Dni='                                                          ',
+	MilitarySituation='                                                          ',
+	'Apoyo Social Económico' as Data,
+	lp.TransactionNumber,
+	lp.ProcessedDateOnUtc,
+	lp.Reference,
+	lp.BankName,
+	sum(lp.MonthlyPayed) as AmountPayed
+	INTO  #Temp_Loan
+	FROM Loan l 
+	inner join LoanPayment lp on lp.loanId =l.id
+	WHERE  lp.StateId=7 and 
+	Year(lp.ProcessedDateOnUtc)*10000+Month(lp.ProcessedDateOnUtc)*100+day(lp.ProcessedDateOnUtc)>=(@FromYear*10000+@FromMonth*100+@FromDay)  AND  
+		  Year(lp.ProcessedDateOnUtc)*10000+Month(lp.ProcessedDateOnUtc)*100+day(lp.ProcessedDateOnUtc)<=(@ToYear*10000+@ToMonth*100+@ToDay) 
+
+	GROUP BY l.CustomerId,lp.TransactionNumber,lp.ProcessedDateOnUtc,lp.Reference,lp.BankName
+END
+
+IF (@Data=1 OR @Data=0)
+BEGIN
+	SELECT 
+	c.CustomerId as CustomerId,
+	FirstName='                                                               ', 
+	LastName='                                                                ',
+	AdmCode='                          ',
+	Dni='                                                          ',
+	MilitarySituation='                                                          ',
+	'Aportacion' as Data,
+	cp.TransactionNumber,
+	cp.ProcessedDateOnUtc,
+	cp.Reference,
+	cp.BankName,
+	sum(cp.AmountPayed) as AmountPayed
+	INTO  #Temp_Contribution
+	FROM Contribution  c 
+	inner join ContributionPayment cp on cp.ContributionId =c.id
+	WHERE  cp.StateId=7 and 
+	Year(cp.ProcessedDateOnUtc)*10000+Month(cp.ProcessedDateOnUtc)*100+day(cp.ProcessedDateOnUtc)>=(@FromYear*10000+@FromMonth*100+@FromDay)  AND  
+		  Year(cp.ProcessedDateOnUtc)*10000+Month(cp.ProcessedDateOnUtc)*100+day(cp.ProcessedDateOnUtc)<=(@ToYear*10000+@ToMonth*100+@ToDay) 
+
+	GROUP BY c.CustomerId,cp.TransactionNumber,cp.ProcessedDateOnUtc,cp.Reference,cp.BankName
+END
+
+declare @SQL NVARCHAR(MAX)
+ 
+IF OBJECT_ID('dbo.#Temp_Loan', 'U') IS NULL
+BEGIN
+	set @SQL = N'SELECT TOP(0) *  INTO #Temp_Loan  FROM #Temp_Contribution '
+	EXECUTE sp_executesql @SQL
+END
+
+
+IF OBJECT_ID('dbo.#Temp_Contribution', 'U') IS NULL
+BEGIN
+	set @SQL = N'SELECT TOP(0) *  INTO #Temp_Contribution  FROM #Temp_Loan'
+	EXECUTE sp_executesql @SQL
+END
+
+SELECT * INTO #Temp FROM
+(
+	SELECT * FROM  #Temp_Loan
+	UNION 
+	SELECT * FROM  #Temp_Contribution
+) AS XX
+
+Update #Temp set Dni=Value
+FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#Temp.CustomerId AND [Key]='Dni'
+
+Update #Temp set AdmCode=Value
+FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#Temp.CustomerId AND [Key]='AdmCode'
+
+Update #Temp set FirstName=Value
+FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#Temp.CustomerId AND [Key]='FirstName'
+
+Update #Temp set LastName=Value
+FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#Temp.CustomerId AND [Key]='LastName'
+
+UPDATE #Temp SET MilitarySituation='Personal'  WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=3) --PERSONAL
+
+UPDATE #Temp SET MilitarySituation='CPMP'  WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=2) --CAJA
+
+UPDATE #Temp SET MilitarySituation='COPERE'  WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=1) --COPERE
+
+IF(@Type=1)
+BEGIN
+	DELETE FROM #Temp WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=3) --PERSONAL
+	DELETE FROM #Temp WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=2) --CAJA
+END 
+
+IF(@Type=2)
+BEGIN
+	DELETE FROM #Temp WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=3) --PERSONAL
+	DELETE FROM #Temp WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=1) --COPERE
+END 
+
+IF(@Type=3)
+BEGIN
+	DELETE FROM #Temp WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=2) --CAJA
+	DELETE FROM #Temp WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=1) --COPERE
+END 
+
+DECLARE @newId uniqueidentifier =NEWID();
+DECLARE @value XML=(SELECT * FROM  #Temp order by 1 desc FOR XML PATH ('ReportBankPayment'), root ('ArrayOfReportBankPayment'))
+
+DELETE FROM Report WHERE source=@Source
+INSERT INTO Report VALUES (@newId,@NameReport,@value,'',@ReportState,'',@Source,@newId,GETUTCDATE())
+SELECT @TotalRecords = COUNT(1) FROM #Temp
+SELECT * FROM Report WHERE [key]=@newId
+
+END
+GO
+
+CREATE  PROCEDURE [dbo].[ReportInterfaceContribution]
+(
+	@Year int,
+	@Month int,
+	@Type int, -- 0 TODOS, 1 COPERE,2 CAJA, 3 PERSONAL
+	@State int, -- 0 false, 1 true
+	@NameReport nvarchar(255),
+	@ReportState int,
+	@Source nvarchar(250),
+	@TotalRecords int = null OUTPUT
+)
+AS
+BEGIN
+
+SELECT distinct
+c.customerId,
 FirstName='                                                               ', 
 LastName='                                                                ',
 AdmCode='                          ',
 Dni='                                                          ',
 MilitarySituation='                                                          ',
-lp.TransactionNumber,
-lp.ProcessedDateOnUtc,
-lp.Reference,
-lp.BankName,
-sum(lp.MonthlyPayed) as AmountPayed
-INTO  #Temp_Loan
-FROM Loan l 
-inner join LoanPayment lp on lp.loanId =l.id
-WHERE  lp.StateId=7 and 
-Year(lp.ProcessedDateOnUtc)*10000+Month(lp.ProcessedDateOnUtc)*100+day(lp.ProcessedDateOnUtc)>=(2016*10000+01*100+01) AND  
-	  Year(lp.ProcessedDateOnUtc)*10000+Month(lp.ProcessedDateOnUtc)*100+day(lp.ProcessedDateOnUtc)<=(2017*10000+03*100+01) 
+Active= case when c.Active=1 then 'Activo' else 'Inactivo' end,
+CP.Number,
+CP.ScheduledDateOnUtc,
+CP.Amount1, 
+CP.Amount2,
+CP.AmountOld, 
+CP.AmountTotal,
+CP.AmountPayed,
+CASE WHEN StateId=1 THEN 'Pendiente' ELSE 
+CASE WHEN StateId=2 THEN 'EnProceso' ELSE
+CASE WHEN StateId=3 THEN 'PagoParcial' ELSE
+CASE WHEN StateId=4 THEN 'Pagado' ELSE
+CASE WHEN StateId=5 THEN 'SinLiquidez' ELSE
+CASE WHEN StateId=6 THEN 'Devolucion' ELSE
+CASE WHEN StateId=7 THEN 'PagoPersonal' ELSE '' END END END END END END END   as State
+into #Temp
+FROM 
+Contribution C 
+INNER JOIN ContributionPayment CP ON CP.ContributionId=c.Id 
+INNER JOIN Customer cc on cc.Id=c.CUSTOMERID and cc.Active=@State
+WHERE c.CUSTOMERID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=@Type) --CAJA
+AND YEAR(CP.ScheduledDateOnUtc)=@Year  AND MONTH(CP.ScheduledDateOnUtc)=@Month
+and c.Active=@State
 
-GROUP BY l.CustomerId,lp.TransactionNumber,lp.ProcessedDateOnUtc,lp.Reference,lp.BankName
 
-Update #Temp_Loan set Dni=Value
-FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#Temp_Loan.CustomerId AND [Key]='Dni'
+	Update #Temp set Dni=Value
+	FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#Temp.CustomerId AND [Key]='Dni'
 
-Update #Temp_Loan set AdmCode=Value
-FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#Temp_Loan.CustomerId AND [Key]='AdmCode'
+	Update #Temp set AdmCode=Value
+	FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#Temp.CustomerId AND [Key]='AdmCode'
 
-Update #Temp_Loan set FirstName=Value
-FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#Temp_Loan.CustomerId AND [Key]='FirstName'
+	Update #Temp set FirstName=Value
+	FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#Temp.CustomerId AND [Key]='FirstName'
 
-Update #Temp_Loan set LastName=Value
-FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#Temp_Loan.CustomerId AND [Key]='LastName'
+	Update #Temp set LastName=Value
+	FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#Temp.CustomerId AND [Key]='LastName'
 
-UPDATE #Temp_Loan SET MilitarySituation='CPMP'  WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=2) --CAJA
+	UPDATE #Temp SET MilitarySituation='Personal'  WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=3) --PERSONAL
 
-UPDATE #Temp_Loan SET MilitarySituation='COPERE'  WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=1) --COPERE
+	UPDATE #Temp SET MilitarySituation='CPMP'  WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=2) --CAJA
 
-select * from #Temp_Loan
+	UPDATE #Temp SET MilitarySituation='COPERE'  WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=1) --COPERE
+
+	IF(@Type=1)
+	BEGIN
+		DELETE FROM #Temp WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=3) --PERSONAL
+		DELETE FROM #Temp WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=2) --CAJA
+	END 
+
+	IF(@Type=2)
+	BEGIN
+		DELETE FROM #Temp WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=3) --PERSONAL
+		DELETE FROM #Temp WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=1) --COPERE
+	END 
+
+	IF(@Type=3)
+	BEGIN
+		DELETE FROM #Temp WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=2) --CAJA
+		DELETE FROM #Temp WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=1) --COPERE
+	END 
+
 DECLARE @newId uniqueidentifier =NEWID();
-DECLARE @value XML=(SELECT * FROM  #Temp_Loan order by 1 desc FOR XML PATH ('ReportBankPayment'), root ('ArrayOfReportBankPayment'))
+DECLARE @value XML=(SELECT * FROM  #Temp order by 1 desc FOR XML PATH ('ReportInterfaceContribution'), root ('ArrayOfReportInterfaceContribution'))
 
 DELETE FROM Report WHERE source=@Source
 INSERT INTO Report VALUES (@newId,@NameReport,@value,'',@ReportState,'',@Source,@newId,GETUTCDATE())
-SELECT @TotalRecords = COUNT(1) FROM #Temp_Loan
+SELECT @TotalRecords = COUNT(1) FROM #Temp
 SELECT * FROM Report WHERE [key]=@newId
+
+END
+GO
+
+CREATE  PROCEDURE [dbo].[ReportInterfaceLoan]
+(
+	@Year int,
+	@Month int,
+	@Type int, -- 0 TODOS, 1 COPERE,2 CAJA, 3 PERSONAL
+	@State int, --1 true, 0 false
+	@NameReport nvarchar(255),
+	@ReportState int,
+	@Source nvarchar(250),
+	@TotalRecords int = null OUTPUT
+)
+AS
+BEGIN
+
+SELECT distinct 
+l.customerId,
+FirstName='                                                               ', 
+LastName='                                                                ',
+AdmCode='                          ',
+Dni='                                                          ',
+MilitarySituation='                                                          ',
+Active= case when c.Active=1 then 'Activo' else 'Inactivo' end,
+L.LoanAmount,
+LP.Quota,
+LP.ScheduledDateOnUtc,
+l.LoanNumber,
+LP.MonthlyCapital, 
+LP.MonthlyFee, 
+LP.MonthlyQuota,
+LP.MonthlyPayed,
+CASE WHEN StateId=1 THEN 'Pendiente' ELSE 
+CASE WHEN StateId=2 THEN 'EnProceso' ELSE
+CASE WHEN StateId=3 THEN 'PagoParcial' ELSE
+CASE WHEN StateId=4 THEN 'Pagado' ELSE
+CASE WHEN StateId=5 THEN 'SinLiquidez' ELSE
+CASE WHEN StateId=6 THEN 'Devolucion' ELSE
+CASE WHEN StateId=7 THEN 'PagoPersonal' ELSE '' END END END END END END END    as State
+into #Temp
+FROM 
+Loan L 
+INNER JOIN LoanPayment LP ON LP.LoanId=L.Id 
+inner join Customer C on C.id=L.CUSTOMERID and C.Active=@State
+WHERE L.CUSTOMERID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=@Type)
+AND YEAR(LP.ScheduledDateOnUtc)=@Year  AND MONTH(LP.ScheduledDateOnUtc)=@Month
+and l.Active=@State and lp.IsAutomatic=1
+
+	Update #Temp set Dni=Value
+	FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#Temp.CustomerId AND [Key]='Dni'
+
+	Update #Temp set AdmCode=Value
+	FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#Temp.CustomerId AND [Key]='AdmCode'
+
+	Update #Temp set FirstName=Value
+	FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#Temp.CustomerId AND [Key]='FirstName'
+
+	Update #Temp set LastName=Value
+	FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#Temp.CustomerId AND [Key]='LastName'
+
+	UPDATE #Temp SET MilitarySituation='Personal'  WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=3) --PERSONAL
+
+	UPDATE #Temp SET MilitarySituation='CPMP'  WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=2) --CAJA
+
+	UPDATE #Temp SET MilitarySituation='COPERE'  WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=1) --COPERE
+
+	IF(@Type=1)
+	BEGIN
+		DELETE FROM #Temp WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=3) --PERSONAL
+		DELETE FROM #Temp WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=2) --CAJA
+	END 
+
+	IF(@Type=2)
+	BEGIN
+		DELETE FROM #Temp WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=3) --PERSONAL
+		DELETE FROM #Temp WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=1) --COPERE
+	END 
+
+	IF(@Type=3)
+	BEGIN
+		DELETE FROM #Temp WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=2) --CAJA
+		DELETE FROM #Temp WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=1) --COPERE
+	END 
+
+DECLARE @newId uniqueidentifier =NEWID();
+DECLARE @value XML=(SELECT * FROM  #Temp order by 1 desc FOR XML PATH ('ReportInterfaceLoan'), root ('ArrayOfReportInterfaceLoan'))
+
+DELETE FROM Report WHERE source=@Source
+INSERT INTO Report VALUES (@newId,@NameReport,@value,'',@ReportState,'',@Source,@newId,GETUTCDATE())
+SELECT @TotalRecords = COUNT(1) FROM #Temp
+SELECT * FROM Report WHERE [key]=@newId
+
+END
+GO
+
+CREATE   PROCEDURE [dbo].[ReportChecks]
+(
+	@FromYear int,
+	@FromMonth int,
+	@FromDay int,
+	@ToYear int,
+	@ToMonth int,
+	@ToDay int,
+	@Type int, -- 0 TODOS, 1 LOAN  , 2 RETURNPAYMENT  3 BENEFIT
+	@NameReport nvarchar(255),
+	@ReportState int,
+	@Source nvarchar(250),
+	@TotalRecords int = null OUTPUT
+)
+AS
+BEGIN
+
+IF(@Type=0 OR @Type=1)
+BEGIN
+	SELECT  
+	CustomerId = L.CustomerId,
+	FirstName =  '                                                                                                       ',
+	LastName =  '                                                                                                       ',
+	AdmCode = '                                                                                                       ',
+	Dni='                    ',
+	MilitarySituation ='                    ',
+	Source='Apoyo Social Economico                     ',
+	L.TotalToPay AS Amount,
+	L.AccountNumber,
+	L.BankName,
+	L.CheckNumber,
+	State= CASE WHEN L.IsAuthorized=1 THEN 'Autorizado           ' ELSE 'No Autorizado         ' END,
+	CONVERT(VARCHAR(10), L.ApprovalOnUtc, 103)  as Date	
+	INTO #Temp1
+	FROM  Loan L 
+	WHERE
+	Year(L.ApprovalOnUtc)*10000+Month(L.ApprovalOnUtc)*100+day(L.ApprovalOnUtc)>=(@FromYear*10000+@FromMonth*100+@FromDay) AND  
+		  Year(L.ApprovalOnUtc)*10000+Month(L.ApprovalOnUtc)*100+day(L.ApprovalOnUtc)<=(@ToYear*10000+@ToMonth*100+@ToDay)
+END
+
+IF(@Type=0 OR @Type=2) --RETURNPAYMENT
+BEGIN
+
+SELECT 
+	CustomerId = CustomerId,
+	FirstName =  '                                                                                                       ',
+	LastName =  '                                                                                                       ',
+	AdmCode = '                                                                                                       ',
+	Dni='                    ',
+	MilitarySituation ='                    ',
+	Source='Devoluciones                       ',
+	AmountToPay AS Amount,  
+	AccountNumber,
+	BankName,
+	CheckNumber,
+	State= case when stateid=1 THEN 'Creado                            ' 
+				WHEN stateid=2 THEN 'Por Aprobar                       '
+				WHEN StateId=3 THEN 'Aprobado                          '
+				WHEN StateId=4 THEN 'Denegado                          ' 
+				WHEN StateId=5 THEN 'Entregado                         '
+				WHEN StateId=6 THEN 'Cerrado                           ' ELSE
+									'                                  ' END,
+	CONVERT(VARCHAR(10), UpdatedOnUtc, 103)  as Date
+	INTO #Temp2
+FROM ReturnPayment
+WHERE  
+Year(UpdatedOnUtc)*10000+Month(UpdatedOnUtc)*100+day(UpdatedOnUtc)>=(@FromYear*10000+@FromMonth*100+@FromDay) AND  
+Year(UpdatedOnUtc)*10000+Month(UpdatedOnUtc)*100+day(UpdatedOnUtc)<=(@ToYear*10000+@ToMonth*100+@ToDay)
+
+END
+
+IF(@Type=0 OR @Type=3) -- BENEFIT
+BEGIN
+
+SELECT 
+	CustomerId =0,
+	FirstName =  CompleteName ,
+	LastName =  '                                                                                                       ',
+	AdmCode = '                                                                                                       ',
+	Dni=Dni,
+	MilitarySituation ='                    ',
+	Source='Beneficios                           ',
+	AmountToPay AS Amount,  
+	AccountNumber,
+	BankName,
+	CheckNumber,
+	State= case when Approved=1 then 'Activo' else 'No Activo' end ,
+	CONVERT(VARCHAR(10), ApprovedOnUtc, 103)  as Date
+	INTO #Temp3
+FROM ContributionBenefitBank
+WHERE 
+Year(ApprovedOnUtc)*10000+Month(ApprovedOnUtc)*100+day(ApprovedOnUtc)>=(@FromYear*10000+@FromMonth*100+@FromDay) AND  
+Year(ApprovedOnUtc)*10000+Month(ApprovedOnUtc)*100+day(ApprovedOnUtc)<=(@ToYear*10000+@ToMonth*100+@ToDay)
+
+END
+
+declare @SQL NVARCHAR(MAX)
+
+IF (OBJECT_ID('dbo.#Temp1', 'U') IS NULL) and (OBJECT_ID('dbo.#Temp2', 'U') IS NOT NULL)
+BEGIN
+	set @SQL = N'SELECT TOP(0) *  INTO #Temp1  FROM #Temp2'
+	EXECUTE sp_executesql @SQL
+END
+
+IF (OBJECT_ID('dbo.#Temp1', 'U') IS NULL) and (OBJECT_ID('dbo.#Temp3', 'U') IS NOT NULL)
+BEGIN
+	set @SQL = N'SELECT TOP(0) *  INTO #Temp1  FROM #Temp3'
+	EXECUTE sp_executesql @SQL
+END
+
+IF (OBJECT_ID('dbo.#Temp2', 'U') IS NULL) and (OBJECT_ID('dbo.#Temp1', 'U') IS NOT NULL)
+BEGIN
+	set @SQL = N'SELECT TOP(0) *  INTO #Temp2  FROM #Temp1'
+	EXECUTE sp_executesql @SQL
+END
+
+IF (OBJECT_ID('dbo.#Temp2', 'U') IS NULL) and (OBJECT_ID('dbo.#Temp3', 'U') IS NOT NULL)
+BEGIN
+	set @SQL = N'SELECT TOP(0) *  INTO #Temp2  FROM #Temp3'
+	EXECUTE sp_executesql @SQL
+END
+
+IF (OBJECT_ID('dbo.#Temp3', 'U') IS NULL) and (OBJECT_ID('dbo.#Temp2', 'U') IS NOT NULL)
+BEGIN
+	set @SQL = N'SELECT TOP(0) *  INTO #Temp3  FROM #Temp2'
+	EXECUTE sp_executesql @SQL
+END
+
+IF (OBJECT_ID('dbo.#Temp3', 'U') IS NULL) and (OBJECT_ID('dbo.#Temp1', 'U') IS NOT NULL)
+BEGIN
+	set @SQL = N'SELECT TOP(0) *  INTO #Temp3  FROM #Temp1'
+	EXECUTE sp_executesql @SQL
+END
+
+SELECT * INTO #Temp FROM (
+				SELECT * FROM  #Temp3
+				UNION
+				SELECT * FROM  #Temp2
+				UNION
+				SELECT * FROM  #Temp1
+) AS XX
+
+Update #Temp set AdmCode=Value FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#Temp.CustomerId AND [Key]='AdmCode'
+Update #Temp set FirstName=Value FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#Temp.CustomerId AND [Key]='FirstName'
+Update #Temp set LastName=Value FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#Temp.CustomerId AND [Key]='LastName'
+Update #Temp set Dni=Value FROM GenericAttribute WHERE KeyGroup='Customer' AND EntityId=#Temp.CustomerId AND [Key]='Dni'
+
+UPDATE #Temp SET MilitarySituation='COPERE'  WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=1) --COPERE
+UPDATE #Temp SET MilitarySituation='CPMP'  WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=2) --CAJA
+UPDATE #Temp SET MilitarySituation='PERSONAL'  WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=3) --PERSONAL
+UPDATE #Temp SET MilitarySituation='INFOCORP'  WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=4) --InfoCorp
+UPDATE #Temp SET MilitarySituation='GOCE DE BENEFICION'  WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=5) --Goce de Beneficio
+UPDATE #Temp SET MilitarySituation='PERSONAL INTERNO'  WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=6) --PERSONAL INTERNO
+UPDATE #Temp SET MilitarySituation='RENUNCIA'  WHERE CustomerID IN (SELECT EntityId from GenericAttribute G WHERE G.KeyGroup='Customer' AND  G.[KEY]='MilitarySituationId' AND G.VALUE=7) --Renuncia
+
+	DECLARE @newId uniqueidentifier =NEWID();
+	DECLARE @value XML=(SELECT * FROM  #Temp order by 1 desc FOR XML PATH ('ReportChecks'), root ('ArrayOfReportChecks'))
+
+	DELETE FROM Report WHERE source=@Source
+	INSERT INTO Report VALUES (@newId,@NameReport,@value,'',@ReportState,'',@Source,@newId,GETUTCDATE())
+	SELECT @TotalRecords = COUNT(1) FROM #Temp
+	SELECT * FROM Report WHERE [key]=@newId
 
 END
 GO

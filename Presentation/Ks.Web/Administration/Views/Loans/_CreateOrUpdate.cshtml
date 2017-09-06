@@ -21,6 +21,12 @@
         <td class="adminData">
             @Model.CustomerName
         </td>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.LoanNumber):
+        </td>
+        <td class="adminData">
+            @Model.LoanNumber
+        </td>
     </tr>
     <tr>
         <td class="adminTitle">
@@ -41,6 +47,12 @@
         <td class="adminData">
             @Model.CustomerDni
         </td>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.LoanAmount):
+        </td>
+        <td class="adminData">
+            @Model.LoanAmount.ToString("C")
+        </td>
     </tr>
     <tr>
         <td class="adminTitle">
@@ -59,6 +71,12 @@
         </td>
         <td class="adminData">
             @Model.CustomerAdminCode
+        </td>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.MonthlyQuota):
+        </td>
+        <td class="adminData">
+            @Model.MonthlyQuota.ToString("C")
         </td>
     </tr>
     <tr>
@@ -79,6 +97,12 @@
         </td>
         <td class="adminData">
             @Model.CustomerFrom
+        </td>
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.TotalAmount):
+        </td>
+        <td class="adminData">
+            @Model.TotalAmount.ToString("C")
         </td>
     </tr>
     <tr>
@@ -115,13 +139,16 @@
 
     </tr>
     <tr>
-        <td></td><td></td>
+        <td></td>
+        <td></td>
         <td class="adminTitle">
             @Html.KsLabelFor(model => model.CheckNumber)
         </td>
         <td class="adminData">
             @Model.CheckNumber
         </td>
+
+
 <tr>
         <td colspan="2">
             <input type="button" id="search-payment" class="k-button" value="@T("Admin.Common.Search")" />
@@ -248,6 +275,7 @@
                         Type: $('#@Html.FieldIdFor(model => model.Type)').val(),
                         LoanId: $('#@Html.FieldIdFor(model => model.LoanId)').val()
                     };
+                    console.log(data);
                     addAntiForgeryToken(data);
                     return data;
                 }
@@ -264,7 +292,7 @@
         //search button
         $('#search-payment').click(function() {
             //search
-            var grid = $('#contributions-grid').data('kendoGrid');
+            var grid = $('#loanpayment-grid').data('kendoGrid');
             grid.dataSource.page(1); //new search. Set page size to 1
             //grid.dataSource.read(); we already loaded the grid above using "page" function
             return false;

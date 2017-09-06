@@ -47,10 +47,10 @@
         </tr>
         <tr>
             <td class="adminTitle">
-                @Html.KsLabelFor(model => model.EntityId):
+                @Html.KsLabelFor(model => model.EntityNumber):
             </td>
             <td class="adminData">
-                @Html.EditorFor(model => model.EntityId)
+                @Html.EditorFor(model => model.EntityNumber)
             </td>
         </tr>
         <tr>
@@ -141,12 +141,12 @@
                                 }, {
                                     field: "Description",
                                     title: "@T("Admin.Home.WorkFlow.Field.Description")"
-                                }, {
-                                    field: "EntityId",
+                                },@* {
+                                    field: "EntityNumber",
                                     title: "@T("Admin.Home.WorkFlow.Field.EntityId")",
                                     width: 100
                                 },
-                                @*{
+                                {
                 field: "EntityName",
                 title: "@T("Admin.Home.WorkFlow.Field.EntityName")",
                 width: 100
@@ -173,7 +173,7 @@
                                 {
                                     field: "Id",
                                     title: "Atender",
-                                    template: '<a href="@Url.Content("~/Admin/Home/Attend/")#=Id#" class="k-button run-now">Atendido</a>'
+                                    template: '<a href="@Url.Content("~/Admin/Home/Attend/")#=Id#" class="k-button run-now">Quitar</a>'
                                 }
                             ]
                         });
@@ -183,7 +183,7 @@
                         var data = {
                             SearchStartDate: $('#@Html.FieldIdFor(model => model.SearchStartDate)').val(),
                             SearchEndDate: $('#@Html.FieldIdFor(model => model.SearchEndDate)').val(),
-                            EntityId: $('#@Html.FieldIdFor(model => model.EntityId)').val(),
+                            EntityNumber: $('#@Html.FieldIdFor(model => model.EntityNumber)').val(),
                             TypeId: $('#@Html.FieldIdFor(model => model.TypeId)').val(),
                             StateId: $('#@Html.FieldIdFor(model => model.StateId)').val()
                         };

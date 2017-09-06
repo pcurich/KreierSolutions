@@ -23,7 +23,7 @@ namespace Ks.Web.Framework
             return current.Skip((command.Page - 1) * command.PageSize).Take(command.PageSize);
         }
 
-        public static SelectList ToSelectList<TEnum>(this TEnum enumObj,bool markCurrentAsSelected = true, int[] valuesToExclude = null) where TEnum : struct
+        public static SelectList ToSelectList<TEnum>(this TEnum enumObj, bool markCurrentAsSelected = true, int[] valuesToExclude = null) where TEnum : struct
         {
             if (!typeof(TEnum).IsEnum) throw new ArgumentException("An Enumeration type is required.", "enumObj");
 
@@ -39,18 +39,26 @@ namespace Ks.Web.Framework
             return new SelectList(values, "ID", "Name", selectedValue);
         }
 
-        public static List<SelectListItem>  GetDescriptions(Type type)
+        public static string GetDescription(Type type, string value)
+        {
+            var descriptions = GetDescriptions(type);
+            foreach (var x in descriptions)
+                if (x.Value == value)
+                    return x.Text;
+            return "";
+        }
+        public static List<SelectListItem> GetDescriptions(Type type)
         {
             var descs = new List<SelectListItem>();
             var names = Enum.GetNames(type);
-            for (var i=0;i<names.Count();i++)
+            for (var i = 0; i < names.Count(); i++)
             {
                 var field = type.GetField(names[i]);
                 var ifd = Convert.ToInt32(Enum.GetValues(type).GetValue(i));
                 var fds = field.GetCustomAttributes(typeof(DescriptionAttribute), true);
                 foreach (DescriptionAttribute fd in fds)
                 {
-                    descs.Add(new SelectListItem{Value = ifd.ToString(),Text = fd.Description});
+                    descs.Add(new SelectListItem { Value = ifd.ToString(), Text = fd.Description });
                 }
             }
             return descs;

@@ -3,17 +3,15 @@ using System.Web.Mvc;
 using FluentValidation.Attributes;
 using Ks.Admin.Validators.Systems;
 using Ks.Web.Framework;
-using Ks.Web.Framework.Localization;
 using Ks.Web.Framework.Mvc;
 
 namespace Ks.Admin.Models.Systems
 {
     [Validator(typeof(KsSystemValidator))]
-    public partial class KsSystemModel : BaseKsEntityModel, ILocalizedModel<StoreLocalizedModel>
+    public partial class KsSystemModel : BaseKsEntityModel
     {
         public KsSystemModel()
         {
-            Locales = new List<StoreLocalizedModel>();
             AvailableLanguages = new List<SelectListItem>();
         }
 
@@ -56,21 +54,6 @@ namespace Ks.Admin.Models.Systems
         [KsResourceDisplayName("Admin.Configuration.Stores.Fields.CompanyPhoneNumber")]
         [AllowHtml]
         public string CompanyPhoneNumber { get; set; }
-
-        [KsResourceDisplayName("Admin.Configuration.Stores.Fields.CompanyVat")]
-        [AllowHtml]
-        public string CompanyVat { get; set; }
-
-
-        public IList<StoreLocalizedModel> Locales { get; set; }
     }
 
-    public partial class StoreLocalizedModel : ILocalizedModelLocal
-    {
-        public int LanguageId { get; set; }
-
-        [KsResourceDisplayName("Admin.Configuration.Stores.Fields.Name")]
-        [AllowHtml]
-        public string Name { get; set; }
-    }
 }

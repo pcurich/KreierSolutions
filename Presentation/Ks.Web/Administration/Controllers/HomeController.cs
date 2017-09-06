@@ -71,6 +71,7 @@ namespace Ks.Admin.Controllers
                 toModel.CreatedOn = _dateTimeHelper.ConvertToUserTime(x.CreatedOnUtc, DateTimeKind.Utc);
                 toModel.UpdatedOn = _dateTimeHelper.ConvertToUserTime(x.UpdatedOnUtc, DateTimeKind.Utc);
                 toModel.CustomerCreatedName = _customerService.GetCustomerById(x.CustomerCreatedId).GetFullName();
+
                 return toModel;
 
             });

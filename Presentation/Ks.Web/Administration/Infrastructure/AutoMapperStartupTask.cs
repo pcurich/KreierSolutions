@@ -322,6 +322,14 @@ namespace Ks.Admin.Infrastructure
                 .ForMember(dest => dest.ProcessedDateOnUtc, mo => mo.Ignore());
             #endregion
 
+            #region check
+            Mapper.CreateMap<Check, CheckModel>()
+                .ForMember(dest => dest.CreatedOn, mo => mo.Ignore())
+                .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
+            Mapper.CreateMap<CheckModel, Check>()
+                .ForMember(dest => dest.CreatedOnUtc, mo => mo.Ignore());
+            #endregion
+
             #region loan
             Mapper.CreateMap<Loan, LoanModel>()
                 .ForMember(dest => dest.CreatedOn, mo => mo.Ignore())
@@ -419,7 +427,6 @@ namespace Ks.Admin.Infrastructure
 
             Mapper.CreateMap<KsSystem, KsSystemModel>()
                 .ForMember(dest => dest.AvailableLanguages, mo => mo.Ignore())
-                .ForMember(dest => dest.Locales, mo => mo.Ignore())
                 .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
             Mapper.CreateMap<KsSystemModel, KsSystem>();
 

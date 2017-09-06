@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
+using Ks.Core.Domain.Reports;
 using Ks.Web.Framework;
 using Org.BouncyCastle.Asn1.Mozilla;
 
@@ -17,6 +18,7 @@ namespace Ks.Admin.Models.Report
         public ReportMilitarySituation ReportMilitarySituation { get; set; }
         public SumaryBankPayment SumaryBankPayment  { get; set; }
 
+        public ReportCheck ReportCheck { get; set; }
     }
 
     #region Inner Class
@@ -57,12 +59,7 @@ namespace Ks.Admin.Models.Report
         public ReportLoan()
         {
             Types = new List<SelectListItem>();
-            States = new List<SelectListItem>();
         }
-
-        [KsResourceDisplayName("Admin.Catalog.ReportLoan.Fields.State")]
-        public int StatesId { get; set; }
-        public List<SelectListItem> States { get; set; }
 
         [KsResourceDisplayName("Admin.Catalog.ReportLoan.Fields.From")]
         [UIHint("DateNullable")]
@@ -93,6 +90,14 @@ namespace Ks.Admin.Models.Report
         public List<SelectListItem> Types { get; set; }
         public List<SelectListItem> To { get; set; }
         public List<SelectListItem> From { get; set; }
+
+        [KsResourceDisplayName("Admin.Catalog.ReportContribution.Fields.From")]
+        [UIHint("DateNullable")]
+        public DateTime? FromDate { get; set; }
+
+        [KsResourceDisplayName("Admin.Catalog.ReportContribution.Fields.To")]
+        [UIHint("DateNullable")]
+        public DateTime? ToDate { get; set; }
     }
 
     public class ReportBenefit
@@ -158,6 +163,24 @@ namespace Ks.Admin.Models.Report
         public int TypeId { get; set; }
         [KsResourceDisplayName("Admin.Catalog.SumaryBankPayment.Fields.Source")]
         public int SourceId { get; set; }
+    }
+
+    public class ReportCheck
+    {
+        public ReportCheck()
+        {
+            Types = new List<SelectListItem>();
+        }
+
+        [KsResourceDisplayName("Admin.Catalog.ReportLoan.Fields.From")]
+        [UIHint("DateNullable")]
+        public DateTime? From { get; set; }
+        [KsResourceDisplayName("Admin.Catalog.ReportLoan.Fields.To")]
+        [UIHint("DateNullable")]
+        public DateTime? To { get; set; }
+        [KsResourceDisplayName("Admin.Catalog.ReportLoan.Fields.Type")]
+        public int TypeId { get; set; }
+        public List<SelectListItem> Types { get; set; }
     }
 
     #endregion

@@ -34,6 +34,8 @@ namespace Ks.Admin.Models.Customers
         public bool AllowUsersToChangeUsernames { get; set; }
         public bool UsernamesEnabled { get; set; }
 
+        public bool IsSystemAccount { get; set; }
+
         [KsResourceDisplayName("Admin.Customers.Customers.Fields.Username")]
         [AllowHtml]
         public string Username { get; set; }

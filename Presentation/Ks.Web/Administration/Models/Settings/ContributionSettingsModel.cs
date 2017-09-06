@@ -28,8 +28,10 @@ namespace Ks.Admin.Models.Settings
         [KsResourceDisplayName("Admin.Configuration.Settings.ContributionSettings.AmountMeta")]
         public decimal AmountMeta { get; set; }
 
-        [KsResourceDisplayName("Admin.Configuration.Settings.ContributionSettings.MaximumCharge")]
-        public decimal MaximumCharge { get; set; }
+        [KsResourceDisplayName("Admin.Configuration.Settings.ContributionSettings.MaximumChargeCaja")]
+        public decimal MaximumChargeCaja { get; set; }
+        [KsResourceDisplayName("Admin.Configuration.Settings.ContributionSettings.MaximumChargeCopere")]
+        public decimal MaximumChargeCopere { get; set; }
 
         [KsResourceDisplayName("Admin.Configuration.Settings.ContributionSettings.NameAmount1")]
         public string NameAmount1 { get; set; }

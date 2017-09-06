@@ -29,10 +29,14 @@ namespace Ks.Services.ExportImport
         void ExportGlobalReportToXlsx(MemoryStream stream, int year, int month, IList<ReportGlobal> globalReport);
         void ExportDetailLoanToXlsx(MemoryStream stream, DateTime from, DateTime to, string source, IList<ReportLoanDetail> reportLoan);
         void ExportSummaryContributionToXlsx(MemoryStream stream, int fromId, int toId, int typeId, IList<ReportSummaryContribution> summaryContribution);
+        void ExportSummaryContributionToXlsx(MemoryStream stream,  DateTime from, DateTime to, int typeId, IList<ReportSummaryContribution> summaryContribution);
         void ExportBenefitToXlsx(MemoryStream stream, Benefit getBenefitById, IList<ReportBenefit> benefit);
         void ExportMilitarSituationToXlsx(MemoryStream stream, string militarySituation, IList<ReportMilitarSituation> militarSituations);
         string ExportScheduleTxt(ScheduleBatch schedule);
         void ExportReportInfoToXlsx(MemoryStream stream, string source, List<Info> period);
         void ExportBankPaymentToXlsx(MemoryStream stream, DateTime from, DateTime to, IList<ReportBankPayment> summaryBankPayment);
+        void ExportinterfaceToXlsx(MemoryStream stream, int yearId, int monthId, IList<ReportInterfaceLoan> interfaceLoan, IList<ReportInterfaceContribution> interfaceContribution);
+        void ExportChecksToXlsx(MemoryStream stream, DateTime from, DateTime to, IList<ReportChecks> checks);
+        void ExportReportCustomerToXlsx(MemoryStream stream, IList<ReportCustomer> customer);
     }
 }

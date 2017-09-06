@@ -17,7 +17,8 @@ namespace Ks.Admin.Models.Batchs
             AvailableFrecuencies = new List<SelectListItem>();
             AvailableMonths = new List<SelectListItem>();
             AvailableYears = new List<SelectListItem>();
-            ReportInfo =  new ReportInfo();
+            ReportInfo = new ReportInfo();
+            ReportInterface =  new ReportInterface();
         }
 
         [KsResourceDisplayName("Admin.System.ScheduleBatchs.Fields.Name")]
@@ -77,14 +78,15 @@ namespace Ks.Admin.Models.Batchs
         public List<SelectListItem> AvailableFrecuencies { get; set; }
 
         public ReportInfo ReportInfo { get; set; }
+        public ReportInterface ReportInterface { get; set; }
     }
 
     public class ReportInfo
     {
         public ReportInfo()
         {
-            Types= new List<SelectListItem>();
-            SubTypes= new List<SelectListItem>();
+            Types = new List<SelectListItem>();
+            SubTypes = new List<SelectListItem>();
         }
 
         [KsResourceDisplayName("Admin.System.ScheduleBatchs.Fields.ReportInfo.Year")]
@@ -102,6 +104,29 @@ namespace Ks.Admin.Models.Batchs
         public List<SelectListItem> Types { get; set; }
         public List<SelectListItem> SubTypes { get; set; }
 
-        
+
+    }
+
+    public class ReportInterface
+    {
+        public ReportInterface()
+        {
+            Types = new List<SelectListItem>();
+            States = new List<SelectListItem>();
+        }
+
+        [KsResourceDisplayName("Admin.System.ScheduleBatchs.Fields.ReportInfo.Year")]
+        public int YearId { get; set; }
+        [KsResourceDisplayName("Admin.System.ScheduleBatchs.Fields.ReportInfo.Month")]
+        public int MonthId { get; set; }
+        [KsResourceDisplayName("Admin.System.ScheduleBatchs.Fields.ReportInfo.Type")]
+        public int TypeId { get; set; }
+        [KsResourceDisplayName("Admin.System.ScheduleBatchs.Fields.ReportInfo.State")]
+        public int StateId { get; set; }
+
+        public List<SelectListItem> AvailableMonths { get; set; }
+        public List<SelectListItem> AvailableYears { get; set; }
+        public List<SelectListItem> Types { get; set; }
+        public List<SelectListItem> States { get; set; }
     }
 }
