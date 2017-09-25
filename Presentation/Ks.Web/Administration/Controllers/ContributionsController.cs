@@ -181,9 +181,9 @@ namespace Ks.Admin.Controllers
                 CustomerName = customer.GetFullName(),
                 CustomerAdminCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode),
                 CustomerDni = customer.GetAttribute<string>(SystemCustomerAttributeNames.Dni),
-                CustomerFrom = _dateTimeHelper.ConvertToUserTime(contribution.CreatedOnUtc,DateTimeKind.Utc),
-                AuthorizeDiscount=contribution.AuthorizeDiscount,
-                MilitarySituationId = military == 1 ? "COPERE" : military==2 ?"CPMP":"OTROS",
+                CustomerFrom = _dateTimeHelper.ConvertToUserTime(contribution.CreatedOnUtc, DateTimeKind.Utc),
+                AuthorizeDiscount = contribution.AuthorizeDiscount,
+                MilitarySituationId = military == 1 ? "COPERE" : military == 2 ? "CPMP" : "OTROS",
                 Types = new List<SelectListItem>
                 {
                     new SelectListItem { Value = "0", Text = "--------------", Selected = true},
@@ -200,7 +200,7 @@ namespace Ks.Admin.Controllers
             model.NameAmount2 = _contributionSettings.NameAmount2;
             model.IsActiveAmount3 = _contributionSettings.IsActiveAmount3;
             model.NameAmount3 = _contributionSettings.NameAmount3;
-            
+
             return View(model);
         }
 
@@ -307,11 +307,11 @@ namespace Ks.Admin.Controllers
             {
                 contribution.Active = false;
                 _contributionService.UpdateContribution(contribution);
-                
+
                 var benefit = _benefitService.GetAllBenefits().Where(x => x.CloseContributions).FirstOrDefault();
                 var contributionBenefit = contribution.CreateBenefit(benefit, _benefitValueSetting.AmountBaseOfBenefit,
                     _sequenceIdsSettings.NumberOfLiquidation, _contributionSettings.TotalCycle / 12);
-                
+
                 _benefitService.InsertContributionBenefit(contributionBenefit);
             }
 
@@ -392,7 +392,23 @@ namespace Ks.Admin.Controllers
         [FormValueRequired("exportpdf")]
         public ActionResult ExportPdf(ContributionPaymentListModel model)
         {
-            return null;
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributions))
+                return AccessDeniedView();
+
+            var customer = _customerService.GetCustomerById(model.CustomerId);
+            var contribution = _contributionService.GetContributionById(model.ContributionId);
+            var reportContributionPayment = _contributionService.GetReportContributionPayment(model.ContributionId);
+            try
+            {
+                var html = _exportManager.ExportReportContributionPaymentToPdf(customer, contribution, reportContributionPayment);
+                var stream = new MemoryStream((html.ConvertHtmlToPdf()));
+                return new PdfDownloadResult(stream, "Aportaciones.pdf");
+            }
+            catch (Exception exc)
+            {
+                ErrorNotification(exc);
+                return RedirectToAction("List");
+            }
         }
 
         #endregion
@@ -468,7 +484,7 @@ namespace Ks.Admin.Controllers
                     contribution.UpdatedOnUtc = DateTime.UtcNow;
                     contribution.AmountPayed += payment.AmountPayed;
                     contribution.IsDelay = false;
-                    
+
                     //if (contribution.AmountPayed == payment.AmountPayed)
                     //    contribution.Active = false;
                     //Si lo cancelo ya no podre ver los beneficios
@@ -660,7 +676,7 @@ namespace Ks.Admin.Controllers
         protected virtual ContributionPaymentsModel PrepareContributionPayment(ContributionPayment contributionPayment)
         {
             var model = contributionPayment.ToModel();
-            model.Banks = _bankSettings.PrepareBanks(); 
+            model.Banks = _bankSettings.PrepareBanks();
             model.ScheduledDateOn = _dateTimeHelper.ConvertToUserTime(contributionPayment.ScheduledDateOnUtc, DateTimeKind.Utc);
             if (contributionPayment.ProcessedDateOnUtc.HasValue)
                 model.ProcessedDateOn = _dateTimeHelper.ConvertToUserTime(contributionPayment.ProcessedDateOnUtc.Value, DateTimeKind.Utc);
