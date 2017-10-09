@@ -8,7 +8,7 @@ namespace Ks.Admin.Extensions
 {
     public static class DateHelper
     {
-        public static List<SelectListItem> GetMonthsList(this DateTime date,ILocalizationService localizationService)
+        public static List<SelectListItem> GetMonthsList(this DateTime date, ILocalizationService localizationService)
         {
             var listOfMonth = (from i in Enumerable.Range(0, 12)
                                let now = DateTime.UtcNow.AddMonths(i)
@@ -37,7 +37,7 @@ namespace Ks.Admin.Extensions
             return listOfYear;
         }
 
-        public static List<SelectListItem> GetYearsList(this DateTime date, ILocalizationService localizationService,int yearMin=0, int yearMax = 10)
+        public static List<SelectListItem> GetYearsList(this DateTime date, ILocalizationService localizationService, int yearMin = 0, int yearMax = 10)
         {
             var listOfYear = (from i in Enumerable.Range(yearMin, yearMax)
                               let now = DateTime.UtcNow.AddYears(i)
@@ -50,5 +50,7 @@ namespace Ks.Admin.Extensions
             listOfYear.Insert(0, new SelectListItem { Value = "0", Text = localizationService.GetResource("Common.Year") });
             return listOfYear;
         }
+
+       
     }
 }

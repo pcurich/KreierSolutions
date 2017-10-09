@@ -504,40 +504,36 @@ namespace Ks.Services.ExportImport
 
             foreach (var p in reportContributionPayment)
             {
-                if (lastYear == p.Year)
-                {
-                    acumula(p, ref ene, ref feb, ref mar,
-                        ref abr, ref may, ref jun,
-                        ref jul, ref ago, ref sep,
-                        ref oct, ref nov, ref dic);
-                }
-                else
-                {
-                    var suma = ene + feb + mar + abr + may + jun + jul + ago + sep + oct + nov + dic;
 
-                    if (suma > 0)
-                    {
-                        body += "<tr>" +
-                            "<td>" + p.Year + "</td>" +
-                            "<td>" + (ene == 0 ? "-" : ene.ToString("c", new CultureInfo("es-PE"))) + "</td>" +
-                            "<td>" + (feb == 0 ? "-" : feb.ToString("c", new CultureInfo("es-PE"))) + "</td>" +
-                            "<td>" + (mar == 0 ? "-" : mar.ToString("c", new CultureInfo("es-PE"))) + "</td>" +
-                            "<td>" + (abr == 0 ? "-" : abr.ToString("c", new CultureInfo("es-PE"))) + "</td>" +
-                            "<td>" + (may == 0 ? "-" : may.ToString("c", new CultureInfo("es-PE"))) + "</td>" +
-                            "<td>" + (jun == 0 ? "-" : jun.ToString("c", new CultureInfo("es-PE"))) + "</td>" +
-                            "<td>" + (jul == 0 ? "-" : jul.ToString("c", new CultureInfo("es-PE"))) + "</td>" +
-                            "<td>" + (ago == 0 ? "-" : ago.ToString("c", new CultureInfo("es-PE"))) + "</td>" +
-                            "<td>" + (sep == 0 ? "-" : sep.ToString("c", new CultureInfo("es-PE"))) + "</td>" +
-                            "<td>" + (oct == 0 ? "-" : oct.ToString("c", new CultureInfo("es-PE"))) + "</td>" +
-                            "<td>" + (nov == 0 ? "-" : nov.ToString("c", new CultureInfo("es-PE"))) + "</td>" +
-                            "<td>" + (dic == 0 ? "-" : dic.ToString("c", new CultureInfo("es-PE"))) + "</td>" +
-                            "<td>" + (suma == 0 ? "-" : suma.ToString("c", new CultureInfo("es-PE"))) + "</td>" +
-                            "</tr>";
-                        ene = 0; feb = 0; mar = 0; abr = 0; may = 0;
-                        jun = 0; jul = 0; ago = 0; sep = 0; oct = 0; nov = 0; dic = 0;
-                    }
+                acumula(p, ref ene, ref feb, ref mar,
+                    ref abr, ref may, ref jun,
+                    ref jul, ref ago, ref sep,
+                    ref oct, ref nov, ref dic);
+
+                var suma = ene + feb + mar + abr + may + jun + jul + ago + sep + oct + nov + dic;
+
+                if (suma > 0)
+                {
+                    body += "<tr>" +
+                        "<td>" + p.Year + "</td>" +
+                        "<td>" + (ene == 0 ? "-" : ene.ToString("c", new CultureInfo("es-PE"))) + "</td>" +
+                        "<td>" + (feb == 0 ? "-" : feb.ToString("c", new CultureInfo("es-PE"))) + "</td>" +
+                        "<td>" + (mar == 0 ? "-" : mar.ToString("c", new CultureInfo("es-PE"))) + "</td>" +
+                        "<td>" + (abr == 0 ? "-" : abr.ToString("c", new CultureInfo("es-PE"))) + "</td>" +
+                        "<td>" + (may == 0 ? "-" : may.ToString("c", new CultureInfo("es-PE"))) + "</td>" +
+                        "<td>" + (jun == 0 ? "-" : jun.ToString("c", new CultureInfo("es-PE"))) + "</td>" +
+                        "<td>" + (jul == 0 ? "-" : jul.ToString("c", new CultureInfo("es-PE"))) + "</td>" +
+                        "<td>" + (ago == 0 ? "-" : ago.ToString("c", new CultureInfo("es-PE"))) + "</td>" +
+                        "<td>" + (sep == 0 ? "-" : sep.ToString("c", new CultureInfo("es-PE"))) + "</td>" +
+                        "<td>" + (oct == 0 ? "-" : oct.ToString("c", new CultureInfo("es-PE"))) + "</td>" +
+                        "<td>" + (nov == 0 ? "-" : nov.ToString("c", new CultureInfo("es-PE"))) + "</td>" +
+                        "<td>" + (dic == 0 ? "-" : dic.ToString("c", new CultureInfo("es-PE"))) + "</td>" +
+                        "<td>" + (suma == 0 ? "-" : suma.ToString("c", new CultureInfo("es-PE"))) + "</td>" +
+                        "</tr>";
+                    ene = 0; feb = 0; mar = 0; abr = 0; may = 0;
+                    jun = 0; jul = 0; ago = 0; sep = 0; oct = 0; nov = 0; dic = 0;
                 }
-                lastYear = p.Year;
+
             }
 
             body += "</table>";
@@ -547,9 +543,9 @@ namespace Ks.Services.ExportImport
         }
 
         private void acumula(ReportContributionPayment p,
-             ref  decimal ene, ref  decimal feb, ref  decimal mar, ref decimal abr,
-             ref  decimal may, ref  decimal jun, ref decimal jul, ref decimal ago,
-             ref  decimal sep, ref  decimal oct, ref decimal nov, ref decimal dic)
+             ref decimal ene, ref decimal feb, ref decimal mar, ref decimal abr,
+             ref decimal may, ref decimal jun, ref decimal jul, ref decimal ago,
+             ref decimal sep, ref decimal oct, ref decimal nov, ref decimal dic)
         {
             ene += p.Ene; feb += p.Feb; mar += p.Mar; abr += p.Abr;
             may += p.May; jun += p.Jun; jul += p.Jul; ago += p.Ago;
@@ -1566,7 +1562,7 @@ namespace Ks.Services.ExportImport
                         "APORTACION","AUTORIZACION DESCUENTO","MONTO POR APORTAR","MONTO ABONADO (A LA FECHA)","MONTO APORTACION PENDIENTE",
                         "Estado Apoyo","N° ORDEN DE PRESTAMO","MONTO SOLICITADO", "MONTO DEL APOYO", "MONTO Apoyo Pendiente",
                         "MONTO PAGADO (A LA FECHA)","PERIODO"
-                        
+
                     };
                 for (var i = 0; i < properties.Length; i++)
                 {
@@ -1836,7 +1832,7 @@ namespace Ks.Services.ExportImport
                     worksheet.Column(i).AutoFit();
                 }
 
-            #endregion
+                #endregion
 
                 #region Contribution
 
@@ -1924,7 +1920,7 @@ namespace Ks.Services.ExportImport
                 xlPackage.Save();
             }
 
-                #endregion
+            #endregion
         }
 
         public virtual void ExportReportInfoToXlsx(MemoryStream stream, string source, List<Info> info)
@@ -1944,7 +1940,7 @@ namespace Ks.Services.ExportImport
                         "ES AUTOMATICO","BANCO","CUENTA","TRANSACCION","REFERENCIA", "DESCRIPCION",
                         "COUTA APOYO","COUTA MENSUAL","INTERES","CAPITAL","MONTO PAGADO","ESTADOAPOYOID","ES AUTOMATICO","BANCO",
                         "CUENTA","TRANSACCION","REFERENCIA", "DESCRIPCION"
-                        
+
                     };
                 for (var i = 0; i < properties.Length; i++)
                 {
@@ -2176,8 +2172,8 @@ namespace Ks.Services.ExportImport
                 //Create Headers and format them 
                 var properties = new List<string>
                 {
-                    "ID","GENERO","APELLIDOS Y NOMBRE", "N° ADMINISTRATIVO", "DNI", 
-                    "SITUACION MILITAR ID","SITUACION MILITAR", 
+                    "ID","GENERO","APELLIDOS Y NOMBRE", "N° ADMINISTRATIVO", "DNI",
+                    "SITUACION MILITAR ID","SITUACION MILITAR",
                     "N° CARTA DECLARATORIA","FECHA DE INGRESO","FECHA NACIMIENTO",
                     "PAIS","PROVINCIA","DEPARTAMENTO","DIRECCION1","DIRECCION2","TELEFONO","EMAIL",
                      "ESTADO ASOCIADO","ROLES"
@@ -2222,9 +2218,9 @@ namespace Ks.Services.ExportImport
                     col++;
                     worksheet.Cells[row, col].Value = p.DeclaratoryLetter;
                     col++;
-                    worksheet.Cells[row, col].Value = p.DateOfAdmission;
+                    worksheet.Cells[row, col].Value = p.DateOfAdmission.ToString("dd-MM-yyyy");
                     col++;
-                    worksheet.Cells[row, col].Value = p.DateOfBirth;
+                    worksheet.Cells[row, col].Value = p.DateOfBirth.ToString("dd-MM-yyyy");
                     col++;
                     worksheet.Cells[row, col].Value = p.CountryName;
                     col++;
@@ -2266,8 +2262,8 @@ namespace Ks.Services.ExportImport
                             value = string.Join(",", ca.CustomerAttributeValues.Where(x => x.IsPreSelected).Select(x => x.Name).ToList());
                             worksheet.Cells[row, map[ca.Name]].Value = value;
                         }
-                        else
-                            worksheet.Cells[row, map[ca.Name]].Value = value;
+                        //else
+                        //    worksheet.Cells[row, map[ca.Name]].Value = value;
 
                     }
                     row++;

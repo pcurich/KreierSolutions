@@ -301,7 +301,17 @@ namespace Ks.Admin.Controllers
                                 {
                                     var enteredText = _customerAttributeParser.ParseValues(selectedCustomerAttributes, attribute.Id);
                                     if (enteredText.Count > 0)
-                                        attributeModel.DefaultValue = enteredText[0];
+                                    {
+                                        DateTime customDate;
+                                        if (DateTime.TryParse(enteredText[0], out customDate))
+                                        {
+                                            attributeModel.DefaultValue = customDate.ToString("dd-MM-yyyy");
+                                        }
+                                        else
+                                        {
+                                            attributeModel.DefaultValue = enteredText[0];
+                                        }
+                                    }
                                 }
                             }
                             break;
@@ -438,17 +448,7 @@ namespace Ks.Admin.Controllers
                     .GetAllCustomerRoles(true)
                     .Select(cr => cr.ToModel())
                     .ToList();
-            }
-
-
-
-
-
-
-
-
-
-
+            } 
         }
 
         [NonAction]
@@ -832,11 +832,24 @@ namespace Ks.Admin.Controllers
                     {
                         Name = cc.Name
                     };
-                    foreach (var cav in cc.Values)
+
+                    if (cc.Values.Count>0)
+                    {
+                        foreach (var cav in cc.Values)
+                        {
+                            ca.CustomerAttributeValues.Add(new CustomerAttributeValue
+                            {
+                                Name = cav.Name,
+                                IsPreSelected = cav.IsPreSelected
+                            });
+                        }
+                    }
+                    else
                     {
                         ca.CustomerAttributeValues.Add(new CustomerAttributeValue
                         {
-                            Name = cav.Name,IsPreSelected = cav.IsPreSelected
+                            Name = cc.DefaultValue,
+                            IsPreSelected = true
                         });
                     }
                     r.CustomerAttributes.Add(ca);
@@ -920,6 +933,7 @@ namespace Ks.Admin.Controllers
             PrepareCustomerModel(model, null, false);
             //default value
             model.Active = true;
+            model.Email = DateTime.Now.ToLongTimeString().Replace(":", "").Replace(" ","").Replace(".", "") + "@test.com";
             return View(model);
         }
 
@@ -1102,6 +1116,8 @@ namespace Ks.Admin.Controllers
             var model = new CustomerModel();
             PrepareCustomerModel(model, customer, false);
             PrepareSettingPaymentAmount(model);
+            if(model.Email==null || model.Email == "")
+                model.Email= DateTime.Now.ToLongTimeString().Replace(":", "").Replace(" ", "").Replace(".", "") + "@test.com";
             return View(model);
         }
 
@@ -2346,7 +2362,10 @@ namespace Ks.Admin.Controllers
         [FormValueRequired("exportexcel")]
         public ActionResult ExportExcel()
         {
-            var customer = _customerService.GetAllCustomers();
+             var customer = _customerService.GetAllCustomers();
+            //var customer = new List<Customer>( );
+            //customer.Add(_customerService.GetCustomerById(1154));
+
             var customers = new List<CustomerModel>();
 
             foreach (var x in customer)
