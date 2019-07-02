@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -77,8 +76,6 @@ namespace Ks.Admin.Controllers
             return model;
         }
 
-
-
         #endregion
 
         #region Methods
@@ -123,9 +120,7 @@ namespace Ks.Admin.Controllers
 
             return View(model);
         }
-
-
-
+         
         [HttpPost]
         public ActionResult ListBatchs(DataSourceRequest command)
         {
@@ -203,6 +198,42 @@ namespace Ks.Admin.Controllers
             }
 
             return View(model);
+        }
+
+        public ActionResult Revert(int id)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageScheduleBatchs))
+                return AccessDeniedView();
+
+            var schedule = _scheduleBatchService.GetBatchById(id);
+            if (schedule == null)
+                //No  scheduleBatch  found with the specified id
+                return RedirectToAction("List");
+ 
+            try
+            {
+                var path = @"C:\inetpub\wwwroot\Acmr\App_Data\Service\Ks.Batch.Reverse";
+                path = System.IO.Path.Combine(path, schedule.SystemName);
+                if (System.IO.File.Exists(path))
+                {
+                    System.IO.File.Delete(path);
+                }
+
+                using (var myFile = System.IO.File.Create(path))
+                {
+                    TextWriter tw = new StreamWriter(myFile);
+                    tw.WriteLine("revert - "+id+ "-" + schedule.SystemName);
+                    tw.Close();
+                }
+
+                SuccessNotification(_localizationService.GetResource("Admin.Configuration.ScheduleBatch.Reverted"));
+                return RedirectToAction("List");
+            }
+            catch (Exception exc)
+            {
+                ErrorNotification(exc);
+                return RedirectToAction("List");
+            }
         }
 
         [HttpPost]
@@ -287,15 +318,23 @@ namespace Ks.Admin.Controllers
 
                 _scheduleBatchService.UpdateBatch(schedule);
 
-                Thread.Sleep(30*1000);
-
-                var txt = _exportManager.ExportScheduleTxt(schedule);
                 string name = string.Empty;
                 if (schedule.SystemName.Trim().ToUpper() == ("KS.BATCH.CAJA.OUT"))
                     name = string.Format("6008_{0}00", schedule.PeriodYear.ToString("0000") + schedule.PeriodMonth.ToString("00"));
                 else
                     name = string.Format("8001_{0}00", schedule.PeriodYear.ToString("0000") + schedule.PeriodMonth.ToString("00"));
                 name += "-previo.txt";
+
+                int max = 4;
+                while (!System.IO.File.Exists(Path.Combine(schedule.PathBase, name))){
+                    if (max == 0)
+                        break;
+                    max--;
+                    Thread.Sleep(30 * 1000);
+                }
+
+                var txt = _exportManager.ExportScheduleTxt(schedule);
+                
                 return new TxtDownloadResult(txt, name);
             }
             catch (Exception exc)
@@ -321,15 +360,23 @@ namespace Ks.Admin.Controllers
                 schedule.UpdateData = true;
                 _scheduleBatchService.UpdateBatch(schedule);
 
-                Thread.Sleep(30 * 1000);
-
-                var txt = _exportManager.ExportScheduleTxt(schedule);
                 string name = string.Empty;
                 if (schedule.SystemName == ("Ks.Batch.Caja.Out"))
                     name = string.Format("6008_{0}00", schedule.PeriodYear.ToString("0000") + schedule.PeriodMonth.ToString("00"));
                 else
                     name = string.Format("8001_{0}00", schedule.PeriodYear.ToString("0000") + schedule.PeriodMonth.ToString("00"));
                 name += ".txt";
+
+                int max = 4;
+                while (!System.IO.File.Exists(Path.Combine(schedule.PathBase, name))){
+                    if (max == 0)
+                        break;
+                    max--;
+                    Thread.Sleep(30 * 1000);
+                }
+
+                var txt = _exportManager.ExportScheduleTxt(schedule);
+                
                 return new TxtDownloadResult(txt, name);
             }
             catch (Exception exc)
@@ -340,8 +387,9 @@ namespace Ks.Admin.Controllers
 
         }
 
+
         [HttpPost]
-        public ActionResult List(ScheduleBatchModel model)
+        public ActionResult DownloadData(ScheduleBatchModel model)
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageScheduleBatchs))
                 return AccessDeniedView();
@@ -351,14 +399,14 @@ namespace Ks.Admin.Controllers
                 source = "Ks.Batch.Copere.Out";
             if (model.ReportInfo.TypeId == 1 && model.ReportInfo.SubTypeId == 2) //Copere Recepcion
                 source = "Ks.Batch.Copere.In";
-            if (model.ReportInfo.TypeId == 1 && model.ReportInfo.SubTypeId == 3)
+            if (model.ReportInfo.TypeId == 1 && model.ReportInfo.SubTypeId == 3) //Copere Resultado
                 source = "Ks.Batch.Copere.In,Ks.Batch.Copere.Out";
 
             if (model.ReportInfo.TypeId == 2 && model.ReportInfo.SubTypeId == 1) //Caja Envio
                 source = "Ks.Batch.Caja.Out";
             if (model.ReportInfo.TypeId == 2 && model.ReportInfo.SubTypeId == 2) //Caja Recepcion
                 source = "Ks.Batch.Caja.In";
-            if (model.ReportInfo.TypeId == 2 && model.ReportInfo.SubTypeId == 3)
+            if (model.ReportInfo.TypeId == 2 && model.ReportInfo.SubTypeId == 3) //Caja Resultado
                 source = "Ks.Batch.Caja.Out,Ks.Batch.Caja.In";
 
             if (source == "")
@@ -426,10 +474,58 @@ namespace Ks.Admin.Controllers
                 catch (Exception exc)
                 {
                     ErrorNotification(exc);
-                    return RedirectToAction("List");
                 }
             
             return RedirectToAction("List");
+        }
+
+        public ActionResult PreMerge(int id)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageScheduleBatchs))
+                return AccessDeniedView();
+
+            var schedule = _scheduleBatchService.GetBatchById(id);
+            if (schedule == null)
+                //No  scheduleBatch  found with the specified id
+                return RedirectToAction("List");
+
+            //set page timeout to 5 minutes
+            this.Server.ScriptTimeout = 300;
+
+            try {
+
+                if (schedule.SystemName == ("Ks.Batch.Caja.Out") || schedule.SystemName == ("Ks.Batch.Caja.In"))
+                {
+                    var path = @"C:\inetpub\wwwroot\Acmr\App_Data\Service\Ks.Batch.Merge\Read";
+                    path = System.IO.Path.Combine(path, "PreCajaWakeUp.txt");
+                    using (var myFile = System.IO.File.Create(path))
+                    {
+                        TextWriter tw = new StreamWriter(myFile);
+                        tw.WriteLine("PreCajaWakeUp");
+                        tw.Close();
+                    }
+                }
+                else
+                {
+                    var path = @"C:\inetpub\wwwroot\Acmr\App_Data\Service\Ks.Batch.Merge\Read";
+                    path = System.IO.Path.Combine(path, "PreCopereWakeUp.txt");
+                    using (var myFile = System.IO.File.Create(path))
+                    {
+                        TextWriter tw = new StreamWriter(myFile);
+                        tw.WriteLine("PreCopereWakeUp");
+                        tw.Close();
+                    }
+                }
+
+
+                SuccessNotification(_localizationService.GetResource("Admin.Configuration.ScheduleBatch.Imported"));
+                return RedirectToAction("Edit", new { id = schedule.Id });
+            }
+            catch (Exception exc)
+            {
+                ErrorNotification(exc);
+                return RedirectToAction("Edit", new { id = schedule.Id });
+            }
         }
 
         public ActionResult CreateMerge(int id)

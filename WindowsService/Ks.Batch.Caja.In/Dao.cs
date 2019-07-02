@@ -35,7 +35,7 @@ namespace Ks.Batch.Caja.In
                     Command.Parameters.AddWithValue("@Name", string.Format("Archivo leido de la caja en el periodo - {0}", Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00")));
                     Command.Parameters.AddWithValue("@Value", XmlHelper.Serialize2String(new List<Info>(infos)));
                     Command.Parameters.AddWithValue("@PathBase", Batch.PathBase);
-                    Command.Parameters.AddWithValue("@StateId", 2);
+                    Command.Parameters.AddWithValue("@StateId", ReportState.InProcess);
                     Command.Parameters.AddWithValue("@Source", Batch.SystemName);
                     Command.Parameters.AddWithValue("@DateUtc", DateTime.UtcNow);
 

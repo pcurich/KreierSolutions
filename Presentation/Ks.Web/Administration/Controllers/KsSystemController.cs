@@ -185,50 +185,50 @@ namespace Ks.Admin.Controllers
             return View(model);
         }
 
-        [HttpPost]
-        public ActionResult Delete(int id)
-        {
-            if (!_permissionService.Authorize(StandardPermissionProvider.ManageKsSystem))
-                return AccessDeniedView();
+        //[HttpPost]
+        //public ActionResult Delete(int id)
+        //{
+        //    if (!_permissionService.Authorize(StandardPermissionProvider.ManageKsSystem))
+        //        return AccessDeniedView();
 
-            var system = _ksSystemService.GetKsSystemById(id);
-            if (system == null)
-                //No store found with the specified id
-                return RedirectToAction("List");
+        //    var system = _ksSystemService.GetKsSystemById(id);
+        //    if (system == null)
+        //        //No store found with the specified id
+        //        return RedirectToAction("List");
 
-            try
-            {
-                _ksSystemService.DeleteKsSystem(system);
+        //    try
+        //    {
+        //        _ksSystemService.DeleteKsSystem(system);
 
-                //when we delete a store we should also ensure that all "per store" settings will also be deleted
-                var settingsToDelete = _settingService
-                    .GetAllSettings()
-                    .Where(s => s.KsSystemId == id)
-                    .ToList();
-                foreach (var setting in settingsToDelete)
-                    _settingService.DeleteSetting(setting);
-                //when we had two KsSystems and now have only one store, we also should delete all "per store" settings
-                var allKsSystems = _ksSystemService.GetAllKsSystems();
-                if (allKsSystems.Count == 1)
-                {
-                    settingsToDelete = _settingService
-                        .GetAllSettings()
-                        .Where(s => s.KsSystemId == allKsSystems[0].Id)
-                        .ToList();
-                    foreach (var setting in settingsToDelete)
-                        _settingService.DeleteSetting(setting);
-                }
+        //        //when we delete a store we should also ensure that all "per store" settings will also be deleted
+        //        var settingsToDelete = _settingService
+        //            .GetAllSettings()
+        //            .Where(s => s.Id == id)
+        //            .ToList();
+        //        foreach (var setting in settingsToDelete)
+        //            _settingService.DeleteSetting(setting);
+        //        //when we had two KsSystems and now have only one store, we also should delete all "per store" settings
+        //        var allKsSystems = _ksSystemService.GetAllKsSystems();
+        //        if (allKsSystems.Count == 1)
+        //        {
+        //            settingsToDelete = _settingService
+        //                .GetAllSettings()
+        //                .Where(s => s.KsSystemId == allKsSystems[0].Id)
+        //                .ToList();
+        //            foreach (var setting in settingsToDelete)
+        //                _settingService.DeleteSetting(setting);
+        //        }
 
 
-                SuccessNotification(_localizationService.GetResource("Admin.Configuration.KsSystems.Deleted"));
-                return RedirectToAction("List");
-            }
-            catch (Exception exc)
-            {
-                ErrorNotification(exc);
-                return RedirectToAction("Edit", new {id = system.Id});
-            }
-        }
+        //        SuccessNotification(_localizationService.GetResource("Admin.Configuration.KsSystems.Deleted"));
+        //        return RedirectToAction("List");
+        //    }
+        //    catch (Exception exc)
+        //    {
+        //        ErrorNotification(exc);
+        //        return RedirectToAction("Edit", new {id = system.Id});
+        //    }
+        //}
 
         #endregion
     }

@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
-using System.Web.Script.Serialization;
 using Ks.Admin.Extensions;
 using Ks.Admin.Models.Common;
 using Ks.Admin.Models.Contract;
@@ -35,8 +34,6 @@ using Ks.Web.Framework.Mvc;
 using Ks.Services.Configuration;
 using Ks.Services.Contract;
 using Ks.Services.Reports;
-using Ks.Web.Framework;
-using Microsoft.Data.Edm.Library;
 
 namespace Ks.Admin.Controllers
 {
@@ -52,28 +49,20 @@ namespace Ks.Admin.Controllers
         private readonly IDateTimeHelper _dateTimeHelper;
         private readonly ILocalizationService _localizationService;
         private readonly IWorkFlowService _workFlowService;
-        //private readonly TaxSettings _taxSettings;
         private readonly IReportService _reportService;
         private readonly ICountryService _countryService;
         private readonly IStateProvinceService _stateProvinceService;
         private readonly ICityService _cityService;
         private readonly IAddressService _addressService;
         private readonly CustomerSettings _customerSettings;
-        //private readonly ITaxService _taxService;
         private readonly IWorkContext _workContext;
-        //private readonly IVendorService _vendorService;
         private readonly IKsSystemContext _ksSystemContext;
-        //private readonly IPriceFormatter _priceFormatter;
-        //private readonly IOrderService _orderService;
         private readonly IExportManager _exportManager;
         private readonly ICustomerActivityService _customerActivityService;
         private readonly IContributionService _contributionService;
         private readonly ILoanService _loanService;
         private readonly IBenefitService _benefitService;
         private readonly ITabService _tabService;
-        //private readonly IBackInStockSubscriptionService _backInStockSubscriptionService;
-        //private readonly IPriceCalculationService _priceCalculationService;
-        //private readonly IProductAttributeFormatter _productAttributeFormatter;
         private readonly IPermissionService _permissionService;
         private readonly IQueuedEmailService _queuedEmailService;
         private readonly EmailAccountSettings _emailAccountSettings;
@@ -187,7 +176,6 @@ namespace Ks.Admin.Controllers
         #endregion
 
         #region Utilities
-
         [NonAction]
         protected virtual void PrepareSettingPaymentAmount(CustomerModel model)
         {
@@ -198,6 +186,7 @@ namespace Ks.Admin.Controllers
             model.IsActiveAmount3 = _contributionSettings.IsActiveAmount3;
             model.NameAmount3 = _contributionSettings.NameAmount3;
         }
+
         [NonAction]
         protected virtual string GetCustomerRolesNames(IList<CustomerRole> customerRoles, string separator = ",")
         {
@@ -1055,8 +1044,7 @@ namespace Ks.Admin.Controllers
                 if (_customerSettings.FaxEnabled)
                     _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.Fax, model.Fax);
 
-                var storeScope = GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
-                var sequenceIdsSettings = _settingService.LoadSetting<SequenceIdsSettings>(storeScope);
+                var sequenceIdsSettings = _settingService.LoadSetting<SequenceIdsSettings>();
 
                 sequenceIdsSettings.DeclaratoryLetter += 1;
                 _settingService.SaveSetting(sequenceIdsSettings);
@@ -1362,8 +1350,7 @@ namespace Ks.Admin.Controllers
                     {
                         _genericAttributeService.SaveAttribute(customer, SystemCustomerAttributeNames.DeclaratoryLetter,
                             _sequenceIdsSettings.DeclaratoryLetter);
-                        var storeScope = GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
-                        var sequenceIdsSettings = _settingService.LoadSetting<SequenceIdsSettings>(storeScope);
+                        var sequenceIdsSettings = _settingService.LoadSetting<SequenceIdsSettings>();
 
                         sequenceIdsSettings.DeclaratoryLetter += 1;
                         _settingService.SaveSetting(sequenceIdsSettings);
@@ -1754,8 +1741,7 @@ namespace Ks.Admin.Controllers
 
                 #endregion
 
-                var storeScope = GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
-                var sequenceIdsSettings = _settingService.LoadSetting<SequenceIdsSettings>(storeScope);
+                var sequenceIdsSettings = _settingService.LoadSetting<SequenceIdsSettings>( );
 
                 sequenceIdsSettings.AuthorizeDiscount += 1;
                 _settingService.SaveSetting(sequenceIdsSettings);
@@ -1961,8 +1947,7 @@ namespace Ks.Admin.Controllers
                 }
                 _loanService.InsertLoan(loan);
 
-                var storeScope = GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
-                var sequenceIdsSettings = _settingService.LoadSetting<SequenceIdsSettings>(storeScope);
+                var sequenceIdsSettings = _settingService.LoadSetting<SequenceIdsSettings>( );
 
                 sequenceIdsSettings.AuthorizeLoan += 1;
                 _settingService.SaveSetting(sequenceIdsSettings);

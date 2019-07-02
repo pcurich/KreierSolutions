@@ -53,21 +53,25 @@
   <ItemGroup>
     <Compile Include="DaoBase.cs" />
     <Compile Include="DateTimeHelper.cs" />
+    <Compile Include="FileHelper.cs" />
     <Compile Include="IBatchContainer.cs" />
     <Compile Include="IDaoBase.cs" />
+    <Compile Include="LogMessages.cs" />
     <Compile Include="Model\ContributionState.cs" />
+    <Compile Include="Model\CustomerMilitarySituation.cs" />
     <Compile Include="Model\Info.cs" />
     <Compile Include="Model\InfoContribution.cs" />
     <Compile Include="Model\InfoLoan.cs" />
+    <Compile Include="Model\LoanState.cs" />
     <Compile Include="Model\Report.cs" />
     <Compile Include="Model\ReportState.cs" />
+    <Compile Include="Model\State.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScheduleBatch.cs" />
     <Compile Include="XmlHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -84,7 +84,7 @@ namespace Ks.Services.Configuration
                 //we use no tracking here for performance optimization
                 //anyway records are loaded only for read-only operations
                 var query = from s in _settingRepository.TableNoTracking
-                            orderby s.Name, s.KsSystemId
+                            orderby s.Name, s.Value
                             select s;
                 var settings = query.ToList();
                 var dictionary = new Dictionary<string, IList<SettingForCaching>>();
@@ -95,8 +95,7 @@ namespace Ks.Services.Configuration
                             {
                                 Id = s.Id,
                                 Name = s.Name,
-                                Value = s.Value,
-                                KsSystemId = s.KsSystemId
+                                Value = s.Value
                             };
                     if (!dictionary.ContainsKey(resourceName))
                     {
@@ -196,10 +195,8 @@ namespace Ks.Services.Configuration
         /// Get setting by key
         /// </summary>
         /// <param name="key">Key</param>
-        /// <param name="ksSystemId">Store identifier</param>
-        /// <param name="loadSharedValueIfNotFound">A value indicating whether a shared (for all stores) value should be loaded if a value specific for a certain is not found</param>
         /// <returns>Setting</returns>
-        public virtual Setting GetSetting(string key, int ksSystemId = 0, bool loadSharedValueIfNotFound = false)
+        public virtual Setting GetSetting(string key)
         {
             if (String.IsNullOrEmpty(key))
                 return null;
@@ -208,12 +205,7 @@ namespace Ks.Services.Configuration
             key = key.Trim().ToLowerInvariant();
             if (settings.ContainsKey(key))
             {
-                var settingsByKey = settings[key];
-                var setting = settingsByKey.FirstOrDefault(x => x.KsSystemId == ksSystemId);
-
-                //load shared value?
-                if (setting == null && ksSystemId > 0 && loadSharedValueIfNotFound)
-                    setting = settingsByKey.FirstOrDefault(x => x.KsSystemId == 0);
+                var setting = settings[key].FirstOrDefault();
 
                 if (setting != null)
                     return GetSettingById(setting.Id);
@@ -228,11 +220,9 @@ namespace Ks.Services.Configuration
         /// <typeparam name="T">Type</typeparam>
         /// <param name="key">Key</param>
         /// <param name="defaultValue">Default value</param>
-        /// <param name="ksSystemId">Store identifier</param>
         /// <param name="loadSharedValueIfNotFound">A value indicating whether a shared (for all stores) value should be loaded if a value specific for a certain is not found</param>
         /// <returns>Setting value</returns>
-        public virtual T GetSettingByKey<T>(string key, T defaultValue = default(T), 
-            int ksSystemId = 0, bool loadSharedValueIfNotFound = false)
+        public virtual T GetSettingByKey<T>(string key, T defaultValue = default(T))
         {
             if (String.IsNullOrEmpty(key))
                 return defaultValue;
@@ -241,13 +231,7 @@ namespace Ks.Services.Configuration
             key = key.Trim().ToLowerInvariant();
             if (settings.ContainsKey(key))
             {
-                var settingsByKey = settings[key];
-                var setting = settingsByKey.FirstOrDefault(x => x.KsSystemId == ksSystemId);
-
-                //load shared value?
-                if (setting == null && ksSystemId > 0 && loadSharedValueIfNotFound)
-                    setting = settingsByKey.FirstOrDefault(x => x.KsSystemId == 0);
-
+                var setting = settings[key].FirstOrDefault();
                 if (setting != null)
                     return CommonHelper.To<T>(setting.Value);
             }
@@ -261,9 +245,8 @@ namespace Ks.Services.Configuration
         /// <typeparam name="T">Type</typeparam>
         /// <param name="key">Key</param>
         /// <param name="value">Value</param>
-        /// <param name="ksSystemId">Store identifier</param>
         /// <param name="clearCache">A value indicating whether to clear cache after setting update</param>
-        public virtual void SetSetting<T>(string key, T value, int ksSystemId = 0, bool clearCache = true)
+        public virtual void SetSetting<T>(string key, T value,   bool clearCache = true)
         {
             if (key == null)
                 throw new ArgumentNullException("key");
@@ -272,7 +255,7 @@ namespace Ks.Services.Configuration
 
             var allSettings = GetAllSettingsCached();
             var settingForCaching = allSettings.ContainsKey(key) ? 
-                allSettings[key].FirstOrDefault(x => x.KsSystemId == ksSystemId) : null;
+                allSettings[key].FirstOrDefault(x => x.Name == key) : null;
             if (settingForCaching != null)
             {
                 //update
@@ -286,8 +269,7 @@ namespace Ks.Services.Configuration
                 var setting = new Setting
                 {
                     Name = key,
-                    Value = valueStr,
-                    KsSystemId = ksSystemId
+                    Value = valueStr 
                 };
                 InsertSetting(setting, clearCache);
             }
@@ -300,7 +282,7 @@ namespace Ks.Services.Configuration
         public virtual IList<Setting> GetAllSettings()
         {
             var query = from s in _settingRepository.Table
-                        orderby s.Name, s.KsSystemId
+                        orderby s.Name, s.Value
                         select s;
             var settings = query.ToList();
             return settings;
@@ -313,15 +295,11 @@ namespace Ks.Services.Configuration
         /// <typeparam name="TPropType">Property type</typeparam>
         /// <param name="settings">Entity</param>
         /// <param name="keySelector">Key selector</param>
-        /// <param name="ksSystemId">Store identifier</param>
-        /// <returns>true -setting exists; false - does not exist</returns>
-        public virtual bool SettingExists<T, TPropType>(T settings, 
-            Expression<Func<T, TPropType>> keySelector, int ksSystemId = 0) 
-            where T : ISettings, new()
+                /// <returns>true -setting exists; false - does not exist</returns>
+        public virtual bool SettingExists<T, TPropType>(T settings, Expression<Func<T, TPropType>> keySelector) where T : ISettings, new()
         {
             string key = settings.GetSettingKey(keySelector);
-
-            var setting = GetSettingByKey<string>(key, ksSystemId: ksSystemId);
+            var setting = GetSettingByKey<string>(key);
             return setting != null;
         }
 
@@ -329,8 +307,7 @@ namespace Ks.Services.Configuration
         /// Load settings
         /// </summary>
         /// <typeparam name="T">Type</typeparam>
-        /// <param name="ksSystemId">Store identifier for which settigns should be loaded</param>
-        public virtual T LoadSetting<T>(int ksSystemId = 0) where T : ISettings, new()
+        public virtual T LoadSetting<T>() where T : ISettings, new()
         {
             var settings = Activator.CreateInstance<T>();
 
@@ -342,7 +319,7 @@ namespace Ks.Services.Configuration
 
                 var key = typeof(T).Name + "." + prop.Name;
                 //load by store
-                var setting = GetSettingByKey<string>(key, ksSystemId: ksSystemId, loadSharedValueIfNotFound: true);
+                var setting = GetSettingByKey<string>(key);
                 if (setting == null)
                     continue;
 
@@ -367,7 +344,7 @@ namespace Ks.Services.Configuration
         /// <typeparam name="T">Type</typeparam>
         /// <param name="ksSystemId">Store identifier</param>
         /// <param name="settings">Setting instance</param>
-        public virtual void SaveSetting<T>(T settings, int ksSystemId = 0) where T : ISettings, new()
+        public virtual void SaveSetting<T>(T settings) where T : ISettings, new()
         {
             /* We do not clear cache after each setting update.
              * This behavior can increase performance because cached settings will not be cleared 
@@ -385,9 +362,9 @@ namespace Ks.Services.Configuration
                 //Duck typing is not supported in C#. That's why we're using dynamic type
                 dynamic value = prop.GetValue(settings, null);
                 if (value != null)
-                    SetSetting(key, value, ksSystemId, false);
+                    SetSetting(key, value, false);
                 else
-                    SetSetting(key, "", ksSystemId, false);
+                    SetSetting(key, "", false);
             }
 
             //and now clear cache
@@ -401,35 +378,28 @@ namespace Ks.Services.Configuration
         /// <typeparam name="TPropType">Property type</typeparam>
         /// <param name="settings">Settings</param>
         /// <param name="keySelector">Key selector</param>
-        /// <param name="ksSystemId">Store ID</param>
         /// <param name="clearCache">A value indicating whether to clear cache after setting update</param>
-        public virtual void SaveSetting<T, TPropType>(T settings,
-            Expression<Func<T, TPropType>> keySelector,
-            int ksSystemId = 0, bool clearCache = true) where T : ISettings, new()
+        public virtual void SaveSetting<T, TPropType>(T settings, Expression<Func<T, TPropType>> keySelector, bool clearCache = true) where T : ISettings, new()
         {
             var member = keySelector.Body as MemberExpression;
             if (member == null)
             {
-                throw new ArgumentException(string.Format(
-                    "Expression '{0}' refers to a method, not a property.",
-                    keySelector));
+                throw new ArgumentException(string.Format("Expression '{0}' refers to a method, not a property.",keySelector));
             }
 
             var propInfo = member.Member as PropertyInfo;
             if (propInfo == null)
             {
-                throw new ArgumentException(string.Format(
-                       "Expression '{0}' refers to a field, not a property.",
-                       keySelector));
+                throw new ArgumentException(string.Format("Expression '{0}' refers to a field, not a property.",keySelector));
             }
 
             string key = settings.GetSettingKey(keySelector);
             //Duck typing is not supported in C#. That's why we're using dynamic type
             dynamic value = propInfo.GetValue(settings, null);
             if (value != null)
-                SetSetting(key, value, ksSystemId, clearCache);
+                SetSetting(key, value,  clearCache);
             else
-                SetSetting(key, "", ksSystemId, clearCache);
+                SetSetting(key, "", clearCache);
         }
 
         /// <summary>
@@ -457,16 +427,14 @@ namespace Ks.Services.Configuration
         /// <typeparam name="TPropType">Property type</typeparam>
         /// <param name="settings">Settings</param>
         /// <param name="keySelector">Key selector</param>
-        /// <param name="ksSystemId">Store ID</param>
-        public virtual void DeleteSetting<T, TPropType>(T settings,
-            Expression<Func<T, TPropType>> keySelector, int ksSystemId = 0) where T : ISettings, new()
+        public virtual void DeleteSetting<T, TPropType>(T settings,Expression<Func<T, TPropType>> keySelector) where T : ISettings, new()
         {
             string key = settings.GetSettingKey(keySelector);
             key = key.Trim().ToLowerInvariant();
 
             var allSettings = GetAllSettingsCached();
             var settingForCaching = allSettings.ContainsKey(key) ?
-                allSettings[key].FirstOrDefault(x => x.KsSystemId== ksSystemId) : null;
+                allSettings[key].FirstOrDefault(x => x.Name == key) : null;
             if (settingForCaching != null)
             {
                 //update

@@ -15,18 +15,23 @@
             @{
                 if (Model.SystemName.Contains("In"))
                 {
-                    <input type="button" id="importtxt" class="k-button" value="@T("Importar")"/>
+                    <input type="button" id="importtxt" class="k-button" value="@T("Importar")" />
                 }
                 if (Model.SystemName.Contains("Out"))
                 {
                     <a href="@Url.Action("ExportTxtPre", new { id = Model.Id })" class="k-button">@T("Pre-Exportar")</a>
                     <a href="@Url.Action("ExportTxt", new { id = Model.Id })" class="k-button">@T("Exportar")</a>
                 }
+                if (Model.SystemName.Contains("Merge"))
+                {
+                    <a href="@Url.Action("CreateMerge", new { id = Model.Id })" class="k-button">@T("Pre - Sincronizar")</a>
+                    <a href="@Url.Action("PreMerge", new { id = Model.Id })" class="k-button">@T("Sincronizar")</a>
                 }
-           
-            <a href="@Url.Action("CreateMerge", new { id = Model.Id })" class="k-button">@T("Sincronizar")</a> 
+            }
+
+
             @*<input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")" />
-            <input type="submit" name="save-continue" class="k-button" value="@T("Admin.Common.SaveContinue")" />*@
+        <input type="submit" name="save-continue" class="k-button" value="@T("Admin.Common.SaveContinue")" />*@
         </div>
     </div>
     @Html.Partial("_CreateOrUpdate", Model)

@@ -9,11 +9,10 @@ namespace Ks.Core.Domain.Configuration
     {
         public Setting() { }
 
-        public Setting(string name, string value, int ksSystemId = 0)
+        public Setting(string name, string value)
         {
             this.Name = name;
             this.Value = value;
-            this.KsSystemId = ksSystemId;
         }
 
         /// <summary>
@@ -25,11 +24,6 @@ namespace Ks.Core.Domain.Configuration
         /// Gets or sets the value
         /// </summary>
         public string Value { get; set; }
-
-        /// <summary>
-        /// Gets or sets the KsSystem for which this setting is valid. 0 is set when the setting is for all KsSystem
-        /// </summary>
-        public int KsSystemId { get; set; }
 
         public override string ToString()
         {

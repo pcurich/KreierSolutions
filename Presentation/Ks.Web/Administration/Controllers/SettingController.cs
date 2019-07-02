@@ -103,11 +103,10 @@ namespace Ks.Admin.Controllers
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings))
                 return AccessDeniedView();
 
-            var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
-            var customerSettings = _settingService.LoadSetting<CustomerSettings>(storeScope);
-            var addressSettings = _settingService.LoadSetting<AddressSettings>(storeScope);
-            var dateTimeSettings = _settingService.LoadSetting<DateTimeSettings>(storeScope);
-            var externalAuthenticationSettings = _settingService.LoadSetting<ExternalAuthenticationSettings>(storeScope);
+            var customerSettings = _settingService.LoadSetting<CustomerSettings>();
+            var addressSettings = _settingService.LoadSetting<AddressSettings>();
+            var dateTimeSettings = _settingService.LoadSetting<DateTimeSettings>();
+            var externalAuthenticationSettings = _settingService.LoadSetting<ExternalAuthenticationSettings>();
 
             //merge settings
             var model = new CustomerUserSettingsModel
@@ -141,12 +140,10 @@ namespace Ks.Admin.Controllers
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings))
                 return AccessDeniedView();
 
-
-            var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
-            var customerSettings = _settingService.LoadSetting<CustomerSettings>(storeScope);
-            var addressSettings = _settingService.LoadSetting<AddressSettings>(storeScope);
-            var dateTimeSettings = _settingService.LoadSetting<DateTimeSettings>(storeScope);
-            var externalAuthenticationSettings = _settingService.LoadSetting<ExternalAuthenticationSettings>(storeScope);
+            var customerSettings = _settingService.LoadSetting<CustomerSettings>( );
+            var addressSettings = _settingService.LoadSetting<AddressSettings>( );
+            var dateTimeSettings = _settingService.LoadSetting<DateTimeSettings>( );
+            var externalAuthenticationSettings = _settingService.LoadSetting<ExternalAuthenticationSettings>( );
 
             customerSettings = model.CustomerSettings.ToEntity(customerSettings);
             _settingService.SaveSetting(customerSettings);
@@ -181,8 +178,7 @@ namespace Ks.Admin.Controllers
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings))
                 return AccessDeniedView();
 
-            var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
-            var bankSettings = _settingService.LoadSetting<BankSettings>(storeScope);
+            var bankSettings = _settingService.LoadSetting<BankSettings>( );
 
             var model = bankSettings.ToModel();
             return View(model);
@@ -197,8 +193,7 @@ namespace Ks.Admin.Controllers
             if(!ModelState.IsValid)
                 return View(model);
 
-            var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
-            var bankSettings = _settingService.LoadSetting<BankSettings>(storeScope);
+            var bankSettings = _settingService.LoadSetting<BankSettings>( );
 
             bankSettings = model.ToEntity(bankSettings);
             
@@ -233,8 +228,7 @@ namespace Ks.Admin.Controllers
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings))
                 return AccessDeniedView();
 
-            var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
-            var letterSettings = _settingService.LoadSetting<SequenceIdsSettings>(storeScope);
+            var letterSettings = _settingService.LoadSetting<SequenceIdsSettings>( );
 
             var model = letterSettings.ToModel();
             return View(model);
@@ -243,8 +237,7 @@ namespace Ks.Admin.Controllers
         [HttpPost]
         public ActionResult SequenceIds(SequenceIdsSettingsModel model)
         {
-            var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
-            var letterSettings = _settingService.LoadSetting<SequenceIdsSettings>(storeScope);
+            var letterSettings = _settingService.LoadSetting<SequenceIdsSettings>( );
 
             letterSettings = model.ToEntity(letterSettings);
             _settingService.SaveSetting(letterSettings);
@@ -272,8 +265,7 @@ namespace Ks.Admin.Controllers
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings))
                 return AccessDeniedView();
 
-            var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
-            var paymentSettings = _settingService.LoadSetting<ContributionSettings>(storeScope);
+            var paymentSettings = _settingService.LoadSetting<ContributionSettings>( );
 
             var model = paymentSettings.ToModel();
             model.Amount1Sources= new List<SelectListItem>
@@ -301,8 +293,7 @@ namespace Ks.Admin.Controllers
         [FormValueRequired("save")]
         public ActionResult Contributions(ContributionSettingsModel model)
         {
-            var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
-            var paymentSettings = _settingService.LoadSetting<ContributionSettings>(storeScope);
+            var paymentSettings = _settingService.LoadSetting<ContributionSettings>();
 
             if (ModelState.IsValid)
             {
@@ -376,8 +367,7 @@ namespace Ks.Admin.Controllers
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings))
                 return AccessDeniedView();
 
-            var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
-            var stateActivitySettings = _settingService.LoadSetting<LoanSettings>(storeScope);
+            var stateActivitySettings = _settingService.LoadSetting<LoanSettings>( );
 
             var model = stateActivitySettings.ToModel();
             return View(model);
@@ -386,8 +376,7 @@ namespace Ks.Admin.Controllers
         [HttpPost]
         public ActionResult Loans(LoanSettingsModel model)
         {
-            var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
-            var letterSettings = _settingService.LoadSetting<LoanSettings>(storeScope);
+            var letterSettings = _settingService.LoadSetting<LoanSettings>( );
 
             model.CashFlow = letterSettings.CashFlow;
             letterSettings = model.ToEntity(letterSettings);
@@ -413,8 +402,8 @@ namespace Ks.Admin.Controllers
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings))
                 return AccessDeniedView();
 
-            var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
-            var stateActivitySettings = _settingService.LoadSetting<LoanSettings>(storeScope);
+            
+            var stateActivitySettings = _settingService.LoadSetting<LoanSettings>();
  
             var model = new List<CashFlowModel>();
 
@@ -448,8 +437,8 @@ namespace Ks.Admin.Controllers
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings))
                 return AccessDeniedView();
 
-            var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
-            var stateActivitySettings = _settingService.LoadSetting<LoanSettings>(storeScope);
+            
+            var stateActivitySettings = _settingService.LoadSetting<LoanSettings>();
 
             List<CashFlowModel> _model = new List<CashFlowModel>();
 
@@ -480,8 +469,8 @@ namespace Ks.Admin.Controllers
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings))
                 return AccessDeniedView();
 
-            var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
-            var stateActivitySettings = _settingService.LoadSetting<LoanSettings>(storeScope);
+            
+            var stateActivitySettings = _settingService.LoadSetting<LoanSettings>();
 
             List<CashFlowModel> model = null;
             var newModel = new List<CashFlowModel>();
@@ -512,8 +501,8 @@ namespace Ks.Admin.Controllers
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings))
                 return AccessDeniedView();
 
-            var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
-            var stateActivitySettings = _settingService.LoadSetting<ScheduleBatchsSetting>(storeScope);
+            
+            var stateActivitySettings = _settingService.LoadSetting<ScheduleBatchsSetting>();
 
             var model = stateActivitySettings.ToModel();
             return  View(model);
@@ -522,8 +511,8 @@ namespace Ks.Admin.Controllers
         [HttpPost]
         public ActionResult ScheduleBatch(ScheduleBatchSettingsModel model)
         {
-            var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
-            var batchsSetting = _settingService.LoadSetting<ScheduleBatchsSetting>(storeScope);
+            
+            var batchsSetting = _settingService.LoadSetting<ScheduleBatchsSetting>();
 
             batchsSetting = model.ToEntity(batchsSetting);
             _settingService.SaveSetting(batchsSetting);
@@ -552,8 +541,8 @@ namespace Ks.Admin.Controllers
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings))
                 return AccessDeniedView();
 
-            var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
-            var stateActivitySettings = _settingService.LoadSetting<SignatureSettings>(storeScope);
+            
+            var stateActivitySettings = _settingService.LoadSetting<SignatureSettings>();
 
             var model = stateActivitySettings.ToModel();
             return View(model);
@@ -562,8 +551,8 @@ namespace Ks.Admin.Controllers
         [HttpPost]
         public ActionResult Signature(SignatureSettingsModel model)
         {
-            var storeScope = this.GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
-            var batchsSetting = _settingService.LoadSetting<SignatureSettings>(storeScope);
+            
+            var batchsSetting = _settingService.LoadSetting<SignatureSettings>();
 
             batchsSetting = model.ToEntity(batchsSetting);
             _settingService.SaveSetting(batchsSetting);
@@ -583,6 +572,10 @@ namespace Ks.Admin.Controllers
         }
 
         #endregion
+
+        #region Services of Pre
+
+        #endregion  
 
         #region All Setting
 
@@ -607,24 +600,12 @@ namespace Ks.Admin.Controllers
             var settings = _settingService
                 .GetAllSettings()
                 .Select(x =>
-                {
-                    string ksSystemName;
-                    if (x.KsSystemId == 0)
-                    {
-                        ksSystemName = _localizationService.GetResource("Admin.Configuration.Settings.AllSettings.Fields.StoreName.AllStores");
-                    }
-                    else
-                    {
-                        var ksSystem = _ksSystemService.GetKsSystemById(x.KsSystemId);
-                        ksSystemName = ksSystem != null ? ksSystem.Name : "Unknown";
-                    }
+                {  
                     var settingModel = new SettingModel
                     {
                         Id = x.Id,
                         Name = x.Name,
-                        Value = x.Value,
-                        KsSystem = ksSystemName,
-                        KsSystemId = x.KsSystemId
+                        Value = x.Value
                     };
                     return settingModel;
                 })
@@ -660,16 +641,13 @@ namespace Ks.Admin.Controllers
             if (setting == null)
                 return Content("No setting could be loaded with the specified ID");
 
-            var ksSystemId = model.KsSystemId;
-
-            if (!setting.Name.Equals(model.Name, StringComparison.InvariantCultureIgnoreCase) ||
-                setting.KsSystemId != ksSystemId)
+            if (!setting.Name.Equals(model.Name, StringComparison.InvariantCultureIgnoreCase))
             {
                 //setting name or store has been changed
                 _settingService.DeleteSetting(setting);
             }
 
-            _settingService.SetSetting(model.Name, model.Value, ksSystemId);
+            _settingService.SetSetting(model.Name, model.Value);
 
             //activity log
             _customerActivityService.InsertActivity("EditSettings", _localizationService.GetResource("ActivityLog.EditSettings"));
@@ -691,8 +669,7 @@ namespace Ks.Admin.Controllers
             {
                 return Json(new DataSourceResult { Errors = ModelState.SerializeErrors() });
             }
-            var ksSystemId = model.KsSystemId;
-            _settingService.SetSetting(model.Name, model.Value, ksSystemId);
+            _settingService.SetSetting(model.Name, model.Value);
 
             //activity log
             _customerActivityService.InsertActivity("AddNewSetting", _localizationService.GetResource("ActivityLog.AddNewSetting"), model.Name);

@@ -18,7 +18,7 @@ namespace Ks.Batch.Caja.In
         public bool Start()
         {
             Read();
-            //Install();
+            Install();
             Log.InfoFormat("Time: {0}; Action: {1}; ", DateTime.Now, "BatchContainer.Start()");
             //Enabled();
             return true;
@@ -46,11 +46,15 @@ namespace Ks.Batch.Caja.In
         }
 
         public void CustomCommand(int commandNumber)
-        {
-            //128-255
+        { 
             Log.InfoFormat("Starting Convertion of '{0}' ", commandNumber);
         }
 
+        #region DAO - standar
+
+        /// <summary>
+        /// Registra el servicio en la base de datos en caso de que no este instalado
+        /// </summary>
         private void Install()
         {
             var dao = new Dao(Connection);
@@ -66,7 +70,7 @@ namespace Ks.Batch.Caja.In
             dao.UnInstall(Batch.SystemName);
             dao.Close();
         }
-
+        
         private void Enabled()
         {
             var dao = new Dao(Connection);
@@ -83,6 +87,11 @@ namespace Ks.Batch.Caja.In
             dao.Close();
         }
 
+        #endregion
+
+        /// <summary>
+        /// Lee del app.config la definicion del servicio a ser cargado en el sistema
+        /// </summary>
         private void Read()
         {
             Connection = ConfigurationManager.ConnectionStrings["ACMR"].ConnectionString;

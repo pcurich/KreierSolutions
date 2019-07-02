@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Quartz;
-using Topshelf;
-using Topshelf.Quartz;
+﻿using Topshelf;
 
 namespace Ks.Batch.Merge
 {
@@ -25,8 +18,6 @@ namespace Ks.Batch.Merge
                     serviceInstance.WhenContinued(execute => execute.Continue());
                     serviceInstance.WhenCustomCommandReceived(
                         (execute, hostControl, commandNumber) => execute.CustomCommand(commandNumber));
-
-                    
                 });
 
                 serviceConfig.EnableServiceRecovery(recoveryOption =>

@@ -37,45 +37,153 @@
             <li @Html.RenderSelectedTabIndex(0, GetSelectedTabIndex())>
                 @T("Admin.Configuration.Settings.ScheduleBatchSettings.Header")
             </li>
+            <li @Html.RenderSelectedTabIndex(1, GetSelectedTabIndex())>
+                @T("Admin.Configuration.Settings.ScheduleBatchSettings.Header2")
+            </li>
         </ul>
         <div>
-            @TabScheduleBatchSettings()
+            @TabScheduleBatchSettingsFrecuendy()
+        </div>
+        <div>
+            @TabScheduleBatchSettingsSources()
         </div>
     </div>
 
-    @helper TabScheduleBatchSettings()
-{
-    <table class="adminContent">
-        <tr>
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.ServiceName1):
-            </td>
-            <td class="adminData">
-                @Model.ServiceName1
-                @Html.HiddenFor(model => model.ServiceName1)
-            </td>
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.DayOfProcess1):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.DayOfProcess1)
-            </td>
-        </tr>
-        <tr>
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.ServiceName2):
-            </td>
-            <td class="adminData">
-                @Model.ServiceName2
-                @Html.HiddenFor(model => model.ServiceName2)
-            </td>
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.DayOfProcess2):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.DayOfProcess2)
-            </td>
-        </tr>
-    </table>
-}
+    @helper TabScheduleBatchSettingsFrecuendy()
+    {
+        <table class="adminContent">
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ServiceName1):
+                </td>
+                <td class="adminData">
+                    @Model.ServiceName1
+                    @Html.HiddenFor(model => model.ServiceName1)
+                </td>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.DayOfProcess1):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.DayOfProcess1)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ServiceName2):
+                </td>
+                <td class="adminData">
+                    @Model.ServiceName2
+                    @Html.HiddenFor(model => model.ServiceName2)
+                </td>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.DayOfProcess2):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.DayOfProcess2)
+                </td>
+            </tr>
+        </table>
+    }
+
+    @helper TabScheduleBatchSettingsSources()
+    {
+        <table class="adminContent">
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ServicePreContributionNameNoCash):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.ServicePreContributionNameNoCash)
+                </td>
+
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ServicePreContributionSourceNoCash):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.ServicePreContributionSourceNoCash)
+                </td>
+            </tr>
+
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ServicePreContributionNamePayedComplete):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.ServicePreContributionNamePayedComplete)
+                </td>
+
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ServicePreContributionSourcePayedComplete):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.ServicePreContributionSourcePayedComplete)
+                </td>
+            </tr>
+
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ServicePreContributionNameIncomplete):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.ServicePreContributionNameIncomplete)
+                </td>
+
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ServicePreContributionSourceIncomplete):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.ServicePreContributionSourceIncomplete)
+                </td>
+            </tr>
+
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ServicePreLoanNameNoCash):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.ServicePreLoanNameNoCash)
+                </td>
+
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ServicePreLoanSourceNoCash):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.ServicePreLoanSourceNoCash)
+                </td>
+            </tr>
+
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ServicePreLoanNamePayedComplete):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.ServicePreLoanNamePayedComplete)
+                </td>
+
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ServicePreLoanSourcePayedComplete):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.ServicePreLoanSourcePayedComplete)
+                </td>
+            </tr>
+
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ServicePreLoanNameIncomplete):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.ServicePreLoanNameIncomplete)
+                </td>
+
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ServicePreLoanSourceIncomplete):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.ServicePreLoanSourceIncomplete)
+                </td>
+            </tr>
+
+        </table>
+    }
 }

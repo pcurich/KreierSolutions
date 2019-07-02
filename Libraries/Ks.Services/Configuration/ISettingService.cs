@@ -28,22 +28,17 @@ namespace Ks.Services.Configuration
         /// Get setting by key
         /// </summary>
         /// <param name="key">Key</param>
-        /// <param name="ksSystemId">ksSystem identifier</param>
-        /// <param name="loadSharedValueIfNotFound">A value indicating whether a shared (for all ksSystem) value should be loaded if a value specific for a certain is not found</param>
         /// <returns>Setting</returns>
-        Setting GetSetting(string key, int ksSystemId = 0, bool loadSharedValueIfNotFound = false);
+        Setting GetSetting(string key);
 
         /// <summary>
         /// Get setting value by key
         /// </summary>
         /// <typeparam name="T">Type</typeparam>
         /// <param name="key">Key</param>
-        /// <param name="ksSystemId">ksSystem identifier</param>
         /// <param name="defaultValue">Default value</param>
-        /// <param name="loadSharedValueIfNotFound">A value indicating whether a shared (for all stores) value should be loaded if a value specific for a certain is not found</param>
         /// <returns>Setting value</returns>
-        T GetSettingByKey<T>(string key, T defaultValue = default(T),
-            int ksSystemId = 0, bool loadSharedValueIfNotFound = false);
+        T GetSettingByKey<T>(string key, T defaultValue = default(T));
 
         /// <summary>
         /// Set setting value
@@ -51,9 +46,8 @@ namespace Ks.Services.Configuration
         /// <typeparam name="T">Type</typeparam>
         /// <param name="key">Key</param>
         /// <param name="value">Value</param>
-        /// <param name="ksSystemId">ksSystem identifier</param>
         /// <param name="clearCache">A value indicating whether to clear cache after setting update</param>
-        void SetSetting<T>(string key, T value, int ksSystemId = 0, bool clearCache = true);
+        void SetSetting<T>(string key, T value, bool clearCache = true);
 
         /// <summary>
         /// Gets all settings
@@ -68,26 +62,21 @@ namespace Ks.Services.Configuration
         /// <typeparam name="TPropType">Property type</typeparam>
         /// <param name="settings">Settings</param>
         /// <param name="keySelector">Key selector</param>
-        /// <param name="ksSystemId">ksSystem identifier</param>
         /// <returns>true -setting exists; false - does not exist</returns>
-        bool SettingExists<T, TPropType>(T settings,
-            Expression<Func<T, TPropType>> keySelector, int ksSystemId = 0)
-            where T : ISettings, new();
+        bool SettingExists<T, TPropType>(T settings, Expression<Func<T, TPropType>> keySelector) where T : ISettings, new();
 
         /// <summary>
         /// Load settings
         /// </summary>
         /// <typeparam name="T">Type</typeparam>
-        /// <param name="ksSystemId">ksSystem identifier for which settigns should be loaded</param>
-        T LoadSetting<T>(int ksSystemId = 0) where T : ISettings, new();
+        T LoadSetting<T>() where T : ISettings, new();
 
         /// <summary>
         /// Save settings object
         /// </summary>
         /// <typeparam name="T">Type</typeparam>
-        /// <param name="ksSystemId">ksSystem identifier</param>
         /// <param name="settings">Setting instance</param>
-        void SaveSetting<T>(T settings, int ksSystemId = 0) where T : ISettings, new();
+        void SaveSetting<T>(T settings) where T : ISettings, new();
 
         /// <summary>
         /// Save settings object
@@ -96,11 +85,8 @@ namespace Ks.Services.Configuration
         /// <typeparam name="TPropType">Property type</typeparam>
         /// <param name="settings">Settings</param>
         /// <param name="keySelector">Key selector</param>
-        /// <param name="ksSystemId">ksSystem Identifier</param>
         /// <param name="clearCache">A value indicating whether to clear cache after setting update</param>
-        void SaveSetting<T, TPropType>(T settings,
-            Expression<Func<T, TPropType>> keySelector,
-            int ksSystemId = 0, bool clearCache = true) where T : ISettings, new();
+        void SaveSetting<T, TPropType>(T settings, Expression<Func<T, TPropType>> keySelector, bool clearCache = true) where T : ISettings, new();
 
         /// <summary>
         /// Delete all settings
@@ -115,9 +101,7 @@ namespace Ks.Services.Configuration
         /// <typeparam name="TPropType">Property type</typeparam>
         /// <param name="settings">Settings</param>
         /// <param name="keySelector">Key selector</param>
-        /// <param name="ksSystemId">ksSystem ID</param>
-        void DeleteSetting<T, TPropType>(T settings,
-            Expression<Func<T, TPropType>> keySelector, int ksSystemId = 0) where T : ISettings, new();
+        void DeleteSetting<T, TPropType>(T settings, Expression<Func<T, TPropType>> keySelector) where T : ISettings, new();
 
         /// <summary>
         /// Clear cache

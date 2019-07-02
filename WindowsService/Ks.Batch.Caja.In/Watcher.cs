@@ -16,6 +16,7 @@ namespace Ks.Batch.Caja.In
         private static string Path { get; set; }
         private static string SysName { get; set; }
         private static string Connection { get; set; }
+
         public static void FileCreated(object sender, FileSystemEventArgs e)
         {
             Thread.Sleep(1000 * 3); //10 Sec because is not atomic

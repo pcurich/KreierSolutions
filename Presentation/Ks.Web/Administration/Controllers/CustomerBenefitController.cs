@@ -211,8 +211,7 @@ namespace Ks.Admin.Controllers
 
                 _benefitService.InsertContributionBenefit(entity);
 
-                var storeScope = GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
-                var sequenceIdsSettings = _settingService.LoadSetting<SequenceIdsSettings>(storeScope);
+                var sequenceIdsSettings = _settingService.LoadSetting<SequenceIdsSettings>();
 
                 sequenceIdsSettings.NumberOfLiquidation += 1;
                 _settingService.SaveSetting(sequenceIdsSettings);

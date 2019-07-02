@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Ks.Batch.Util.Model;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -29,10 +30,11 @@ namespace Ks.Batch.Util
             {
                 try
                 {
-                    Log.InfoFormat("Action: {0}", "DaoBase.Connect()");
+                    Log.InfoFormat("Action: Iniciando la conexion a la base de datos");
                     Connection = new SqlConnection(ConnetionString);
                     Connection.Open();
                     IsConnected = true;
+                    Log.InfoFormat("Action: Conexion a la base de datos establecida correctamente");
                 }
                 catch (Exception ex)
                 {
@@ -50,9 +52,10 @@ namespace Ks.Batch.Util
                 IsConnected = false;
                 try
                 {
-                    Log.InfoFormat("Action: {0}", "DaoBase.Close()");
+                    Log.InfoFormat("Action: Iniciando el cierre de la conexion a la base de datos");
                     Command.Dispose();
                     Connection.Close();
+                    Log.InfoFormat("Action: Conexion a la base de datos cerrada correctamente");
                 }
                 catch (Exception ex)
                 {
@@ -63,73 +66,27 @@ namespace Ks.Batch.Util
 
         public void Enabled(string systemName)
         {
+            Log.InfoFormat("Action: Activando el servicio {0} ...", systemName);
+
             if (IsConnected)
                 Exec(systemName, 1);
         }
 
         public void Disabled(string systemName)
         {
+            Log.InfoFormat("Action: Desabilitando el servicio {0} ...", systemName);
+
             if (IsConnected)
                 Exec(systemName, 0);
+
         }
-
-        public Dictionary<int, string> GetUserNames(List<int> customerIds)
-        {
-            var result = new Dictionary<int, string>();
-
-            try
-            {
-                Log.InfoFormat("Action: {0}", "DaoBase.GetUserNames(" + string.Join(",", customerIds.ToArray()) + ")");
-
-                Sql = "SELECT EntityId, Attribute =[Key], Value FROM GenericAttribute WHERE " +
-                  " [Key] in ('FirstName','LastName') AND " +
-                  " KeyGroup='Customer' AND EntityId IN (" + string.Join(",", customerIds.ToArray()) + ") " +
-                  " ORDER BY EntityId ";
-
-                Command = new SqlCommand(Sql, Connection);
-                var sqlReader = Command.ExecuteReader();
-
-                var count = 0;
-                var firstName = "";
-                var lastName = "";
-                var entityId = 0;
-                var repeatEntityId = 0;
-
-                while (sqlReader.Read())
-                {
-                    if (sqlReader.GetString(1).Equals("FirstName"))
-                    {
-                        count++;
-                        firstName = sqlReader.GetString(2);
-                        entityId = sqlReader.GetInt32(0);
-                    }
-                    if (sqlReader.GetString(1).Equals("LastName"))
-                    {
-                        count++;
-                        lastName = sqlReader.GetString(2);
-                        repeatEntityId = sqlReader.GetInt32(0);
-                    }
-                    if (count == 2 && entityId == repeatEntityId)
-                    {
-                        result.Add(entityId, firstName + " " + lastName);
-                        entityId = repeatEntityId = count = 0;
-                    }
-                }
-                sqlReader.Close();
-            }
-            catch (Exception ex)
-            {
-                Log.FatalFormat("Action: {0} Error: {1}", "DaoBase.GetUserNames(" + string.Join(",", customerIds.ToArray()) + ")", ex.Message);
-            }
-
-            return result;
-        }
-
+         
         public void Install(ScheduleBatch batch)
         {
             try
             {
-                Log.InfoFormat("Action: {0}", "DaoBase.Install(" + batch.SystemName + ")");
+                Log.InfoFormat("Action: Instalando el servicio {0} ...", batch.SystemName);
+
                 if (!IsInstalled(batch.SystemName))
                 {
                     Sql = "INSERT INTO ScheduleBatch " +
@@ -164,6 +121,8 @@ namespace Ks.Batch.Util
                     Command.Parameters.Add(pEnabled);
 
                     Command.ExecuteNonQuery();
+
+                    Log.InfoFormat("Action: El servicio {0} ha sido instalado satisfactoriamente", batch.SystemName);
                 }
             }
             catch (Exception ex)
@@ -176,7 +135,7 @@ namespace Ks.Batch.Util
         {
             try
             {
-                Log.InfoFormat("Action: {0}", "DaoBase.UnInstall(" + systemName + ")");
+                Log.InfoFormat("Action: Desinstalando el servicio {0} ...", systemName);
 
                 if (!IsInstalled(systemName))
                 {
@@ -193,6 +152,12 @@ namespace Ks.Batch.Util
                     Command = new SqlCommand(Sql, Connection);
                     Command.Parameters.Add(pSystemName);
                     Command.ExecuteNonQuery();
+
+                    Log.InfoFormat("Action: El servicio {0} ha sido desistelado satisfactoriamente", systemName);
+                }
+                else
+                {
+                    Log.InfoFormat("Action: El servicio {0} no esta instalado en el sistema", systemName);
                 }
             }
             catch (Exception ex)
@@ -205,7 +170,7 @@ namespace Ks.Batch.Util
         {
             try
             {
-                Log.InfoFormat("Action: {0}", "DaoBase.UpdateScheduleBatch(" + batch.SystemName + ")");
+                Log.InfoFormat("Action: Actualizando del systema {0}",  batch.SystemName );
 
                 if (IsInstalled(batch.SystemName))
                 {
@@ -237,6 +202,8 @@ namespace Ks.Batch.Util
                     Command.Parameters.Add(pUpdateData);
 
                     Command.ExecuteNonQuery();
+
+                    Log.InfoFormat("Result: Actualizacion del servicio {0} realizada correctamente", batch.SystemName);
                 }
             }
             catch (Exception ex)
@@ -249,7 +216,7 @@ namespace Ks.Batch.Util
         {
             try
             {
-                Log.InfoFormat("Action: {0}", "DaoBase.DeleteReport()");
+                Log.InfoFormat("Action: Borrar Reporte del periodo {0}", period);
 
                 Sql = " DELETE Report WHERE Period=@Period AND [Source]=@Source";
 
@@ -258,18 +225,20 @@ namespace Ks.Batch.Util
                 Command.Parameters.AddWithValue("@Source", source);
                 Command.ExecuteNonQuery();
 
+                Log.InfoFormat("Action: Borrado del periodo {0} realizado satisfactoriamente", period);
             }
             catch (Exception ex)
             {
                 Log.FatalFormat("Action: {0} Error: {1}", "DaoBase.DeleteReport()", ex.Message);
             }
         }
+
         public Guid CreateReportIn(ScheduleBatch batch, string value)
         {
             var guid = Guid.NewGuid();
             try
             {
-                Log.InfoFormat("Action: {0}", "DaoBase.CreateReportIn()");
+                Log.InfoFormat("Action: Crear registro de Reporte de entrada con guid={0}", guid);
 
                 Sql = " INSERT INTO Report " +
                       " ([Key],Name,Value,PathBase,StateId,Period,Source, ParentKey,DateUtc)" +
@@ -296,11 +265,12 @@ namespace Ks.Batch.Util
             }
             return guid;
         }
+
         public void CreateReportOut(Guid guid, string period, string source)
         {
             try
             {
-                Log.InfoFormat("Action: {0}", "DaoBase.CreateReportOut(" + guid + ")");
+                Log.InfoFormat("Action: Crear registro de Reporte de salida con guid={0}", guid);
 
                 Sql = " INSERT INTO Report " +
                       " ([Key],Name,Value,PathBase,StateId,Period,Source, ParentKey,DateUtc)" +
@@ -326,6 +296,38 @@ namespace Ks.Batch.Util
                 Log.FatalFormat("Action: {0} Error: {1}", "DaoBase.CreateReportOut(" + guid + ")", ex.Message);
             }
         }
+         
+        public void CreateReportPre(Report report, string source, string value)
+        {
+            try
+            {
+                var name = NameOfService(source);
+                Log.InfoFormat("Action: Crear registro de Reporte Pre para el servicio={0}", source);
+
+                Sql = " INSERT INTO Report " +
+                      " ([Key],Name,Value,PathBase,StateId,Period,Source, ParentKey,DateUtc)" +
+                      " VALUES " +
+                      " (@Key,@Name,@Value,@PathBase,@StateId,@Period,@Source,@ParentKey,@DateUtc)";
+
+
+                Command = new SqlCommand(Sql, Connection);
+                Command.Parameters.AddWithValue("@Key", Guid.NewGuid());
+                Command.Parameters.AddWithValue("@Name", name);
+                Command.Parameters.AddWithValue("@Value", value);
+                Command.Parameters.AddWithValue("@PathBase", "");
+                Command.Parameters.AddWithValue("@StateId", ReportState.Completed);
+                Command.Parameters.AddWithValue("@Period", report.Period);
+                Command.Parameters.AddWithValue("@Source", source);
+                Command.Parameters.AddWithValue("@ParentKey", report.ParentKey);
+                Command.Parameters.AddWithValue("@DateUtc", DateTime.UtcNow);
+
+                Command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Log.FatalFormat("Action: {0} Error: {1}", "DaoBase.CreateReportIn()", ex.Message);
+            }
+        }
 
         public ScheduleBatch GetScheduleBatch(string sysName)
         {
@@ -334,10 +336,12 @@ namespace Ks.Batch.Util
                 ScheduleBatch result = null;
                 try
                 {
-                    Log.InfoFormat("Time: {0}: Action: {1}", DateTime.Now, "Start to Select");
+                    Log.InfoFormat("Action: Buscando el servicio {0} ..", sysName);
+
                     Sql = "Select * from ScheduleBatch where SystemName='" + sysName + "'";
                     Command = new SqlCommand(Sql, Connection);
                     var sqlReader = Command.ExecuteReader();
+
                     while (sqlReader.Read())
                     {
                         result = new ScheduleBatch
@@ -362,21 +366,66 @@ namespace Ks.Batch.Util
                             result.NextExecutionOnUtc = sqlReader.GetDateTime(12);
                         if (!sqlReader.IsDBNull(13))
                             result.LastExecutionOnUtc = sqlReader.GetDateTime(13);
+
+                        Log.InfoFormat("Action: Servicio {0} encontrado con los valores: Año={1}, Mes={2}, Estado={3}, Ultima Ejecucion={4} ", sysName, result.PeriodYear,result.PeriodMonth, result.Enabled, result.LastExecutionOnUtc);
                     }
 
                     sqlReader.Close();
+                    
+                    if(result == null)
+                        Log.InfoFormat("Action: Servicio {0} No encontrado", sysName);
+                    
                     return result;
                 }
                 catch (Exception ex)
                 {
-                    Log.FatalFormat("Time: {0} Error: {1}", DateTime.Now, ex.Message);
+                    Log.FatalFormat("Result: {0} Error: {1}", "DaoBase.GetScheduleBatch(" + sysName + ")", ex.Message);
                     return null;
                 }
             }
+
+            Log.FatalFormat("Result: Base de datos no disponible");
             return null;
         }
 
         #region Utilities
+
+        private string NameOfService(string source)
+        {
+            if (IsConnected)
+            {
+                string result = null;
+                try
+                {
+                    Log.InfoFormat("Action: Buscando el nombre del servicio {0} ..", source);
+
+                    Sql = "select * from Setting where value ='" + source + "'";
+                    Command = new SqlCommand(Sql, Connection);
+                    var sqlReader = Command.ExecuteReader();
+
+                    while (sqlReader.Read())
+                    {
+                        result = sqlReader.GetString(1);
+                        Log.InfoFormat("Result: El nombre del servicio {0} es {1}",source,result);
+                    }
+
+                    sqlReader.Close();
+
+                    if (result == null)
+                        Log.InfoFormat("Result: El nombre del Servicio {0} No se ha encontrado", source);
+
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    Log.FatalFormat("Result: {0} Error: {1}", "DaoBase.NameOfService(" + source + ")", ex.Message);
+                    return null;
+                }
+            }
+
+            Log.FatalFormat("Result: Base de datos no disponible");
+            return null;
+        }
 
         private bool IsInstalled(string systemName)
         {
@@ -402,12 +451,69 @@ namespace Ks.Batch.Util
                     result = true;
 
                 sqlReader.Close();
-
+                Log.InfoFormat("Result: El servicio {0} {1} instalado en la base de datos", systemName, result ? "se encuentra" : "no se encuentra");
             }
             catch (Exception ex)
             {
-                Log.FatalFormat("Action: {0} Error: {1}", "DaoBase.IsInstalled(" + systemName + ")", ex.Message);
+                Log.FatalFormat("Result: {0} Error: {1}", "DaoBase.IsInstalled(" + systemName + ")", ex.Message);
+            } 
+
+            return result;
+        }
+
+        public Dictionary<int, string> GetUserNames(List<int> customerIds)
+        {
+            var result = new Dictionary<int, string>();
+
+            try
+            {
+                Log.InfoFormat("Action: Obtener los nombres de {0} registros", customerIds.ToArray().Length);
+
+                Sql = "SELECT EntityId, Attribute =[Key], Value FROM GenericAttribute WHERE " +
+                  " [Key] in ('FirstName','LastName') AND " +
+                  " KeyGroup='Customer' AND EntityId IN (" + string.Join(",", customerIds.ToArray()) + ") " +
+                  " ORDER BY EntityId ";
+
+                Command = new SqlCommand(Sql, Connection);
+                var sqlReader = Command.ExecuteReader();
+
+                var count = 0;
+                var firstName = "";
+                var lastName = "";
+                var entityId = 0;
+                var repeatEntityId = 0;
+
+                while (sqlReader.Read())
+                {
+                    if (sqlReader.GetString(1).Equals("FirstName"))
+                    {
+                        count++;
+                        firstName = sqlReader.GetString(2);
+                        entityId = sqlReader.GetInt32(0);
+                    }
+                    if (sqlReader.GetString(1).Equals("LastName"))
+                    {
+                        count++;
+                        lastName = sqlReader.GetString(2);
+                        repeatEntityId = sqlReader.GetInt32(0);
+                    }
+
+                    //esto es por la arquitectura de datos en la tabla generic
+                    if (count == 2 && entityId == repeatEntityId)
+                    {
+                        result.Add(entityId, firstName + " " + lastName);
+                        entityId = repeatEntityId = count = 0;
+                    }
+                }
+                sqlReader.Close();
+
+                Log.InfoFormat("Result: Nombres obtenidos correctamente, cantidad de {0} datos", result.Count);
             }
+            catch (Exception ex)
+            {
+                Log.FatalFormat("Action: {0} Error: {1}", "DaoBase.GetUserNames(" + string.Join(",", customerIds.ToArray()) + ")", ex.Message);
+            }
+
             return result;
         }
 
@@ -428,14 +534,99 @@ namespace Ks.Batch.Util
                 };
                 Command.Parameters.Add(pSystemName);
                 Command.ExecuteNonQuery();
+
+                Log.InfoFormat("Result: Se actualizo el servicio {0} con el estado {1} satisfactoriamente", systemName , option);
             }
             catch (Exception ex)
             {
-                Log.FatalFormat("Action: {0} Error: {1}", "DaoBase.Exec(" + option + ")", ex.Message);
+                Log.FatalFormat("Result: {0} Error: {1}", "DaoBase.Exec(" + option + ")", ex.Message);
             }
         }
 
+        #endregion 
 
+        #region Batch.Out
+
+        public void UpdateDataContribution(List<int> customerIds, int periodYear,int periodMonth, int stateId = (int)ContributionState.EnProceso)
+        {
+            try
+            {
+
+                Sql = "UPDATE ContributionPayment SET StateId = "+ stateId + " WHERE ID IN ( " +
+                  " SELECT  cp.Id " +
+                  " FROM ContributionPayment cp " +
+                  " INNER JOIN  Contribution c on c.Id=cp.ContributionId " +
+                  " WHERE c.CustomerId IN (" + string.Join(",", customerIds.ToArray()) + ") AND  " +
+                  " YEAR(cp.ScheduledDateOnUtc)=@Year AND  " +
+                  " MONTH(cp.ScheduledDateOnUtc)=@Month  ) ";
+
+                Command = new SqlCommand(Sql, Connection);
+
+                var pYear = new SqlParameter
+                {
+                    ParameterName = "@Year",
+                    SqlDbType = SqlDbType.Int,
+                    Direction = ParameterDirection.Input,
+                    Value = periodYear
+                };
+                var pMonth = new SqlParameter
+                {
+                    ParameterName = "@Month",
+                    SqlDbType = SqlDbType.Int,
+                    Direction = ParameterDirection.Input,
+                    Value = periodMonth
+                };
+
+                Command.Parameters.Add(pYear);
+                Command.Parameters.Add(pMonth);
+                Command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Log.FatalFormat("Action: {0} Error: {1}", "Dao.UpdateDataContribution(" + string.Join(",", customerIds.ToArray()) + ")", ex.Message);
+            }
+        }
+
+        public void UpdateDataLoan(List<int> customerIds, int periodYear, int periodMonth, int stateId = (int)LoanState.EnProceso)
+        {
+            try
+            {
+                Log.InfoFormat("Action: {0}", "Dao.UpdateDataLoan(" + string.Join(",", customerIds.ToArray()) + ")");
+
+                Sql = "UPDATE LoanPayment SET StateId ="+ stateId + " WHERE ID IN ( " +
+                  " SELECT  cp.Id " +
+                  " FROM LoanPayment cp " +
+                  " INNER JOIN  Loan c on c.Id=cp.LoanId " +
+                  " WHERE c.CustomerId IN (" + string.Join(",", customerIds.ToArray()) + ") AND  " +
+                  " YEAR(cp.ScheduledDateOnUtc)=@Year AND  " +
+                  " MONTH(cp.ScheduledDateOnUtc)=@Month  ) ";
+
+                Command = new SqlCommand(Sql, Connection);
+
+                var pYear = new SqlParameter
+                {
+                    ParameterName = "@Year",
+                    SqlDbType = SqlDbType.Int,
+                    Direction = ParameterDirection.Input,
+                    Value = periodYear
+                };
+                var pMonth = new SqlParameter
+                {
+                    ParameterName = "@Month",
+                    SqlDbType = SqlDbType.Int,
+                    Direction = ParameterDirection.Input,
+                    Value = periodMonth
+                };
+
+                Command.Parameters.Add(pYear);
+                Command.Parameters.Add(pMonth);
+                Command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Log.FatalFormat("Action: {0} Error: {1}", "Dao.UpdateDataLoan(" + string.Join(",", customerIds.ToArray()) + ")", ex.Message);
+            }
+        }
 
         #endregion
     }

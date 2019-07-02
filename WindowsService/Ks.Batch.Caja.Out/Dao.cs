@@ -64,12 +64,83 @@ namespace Ks.Batch.Caja.Out
 
         #region Util
 
+        /// <summary>
+        /// 1)
+        ///     Busco los Dnis y los AdmCode de aquellos militares en situacion militar en estado CustomerMilitarySituation.Retiro
+        /// </summary>
+        /// <param name="customerIds">Retorna los Ids encontrados para este servicio</param>
+        private void GetCustomer(out List<int> customerIds)
+        {
+            customerIds = new List<int>();
+            try
+            {
+                Log.InfoFormat("Action: {0}", "Buscando a los miliatares activos en estado de retirados (code = 2)");
+
+                Sql = " SELECT EntityId, Attribute =[Key], Value FROM GenericAttribute " +
+                    " WHERE KeyGroup='Customer' and  [Key] in ('Dni','AdmCode') AND " +
+                    " EntityId IN ( SELECT EntityId FROM GenericAttribute " +
+                    " WHERE [Key]='MilitarySituationId' AND Value=" + (int)CustomerMilitarySituation.Retiro + " AND EntityId IN " +
+                    " (SELECT Id FROM CUSTOMER WHERE ACTIVE=" + (int)State.Active + "  ) ) " +
+                    " ORDER BY 1 ";
+
+                Command = new SqlCommand(Sql, Connection);
+                var sqlReader = Command.ExecuteReader();
+
+                var count = 0;
+                var admCode = "";
+                var dni = "";
+
+                var entityId = 0;
+                var repeatEntityId = 0;
+
+                while (sqlReader.Read())
+                {
+                    if (sqlReader.GetString(1).Equals("AdmCode"))
+                    {
+                        count++;
+                        admCode = sqlReader.GetString(2);
+                        entityId = sqlReader.GetInt32(0);
+                    }
+                    if (sqlReader.GetString(1).Equals("Dni"))
+                    {
+                        count++;
+                        dni = sqlReader.GetString(2);
+                        repeatEntityId = sqlReader.GetInt32(0);
+                    }
+                    if (count == 2 && entityId == repeatEntityId)
+                    {
+                        if (ReportOut == null)
+                            ReportOut = new Dictionary<int, Info>();
+
+                        if (FileOut == null)
+                            FileOut = new Dictionary<int, string>();
+
+                        FileOut.Add(entityId, string.Format("0029600820{0}01LE{1}", admCode, dni));
+                        customerIds.Add(entityId);
+                        ReportOut.Add(entityId, new Info { CustomerId = entityId, AdminCode = admCode, HasAdminCode = true, Dni = dni, HasDni = true });
+                        entityId = repeatEntityId = count = 0;
+                    }
+                }
+                sqlReader.Close();
+                Log.InfoFormat("Action: {0} {1}", "Cantidad de Militares activos en estado de retiro  = ", customerIds.Count);
+            }
+            catch (Exception ex)
+            {
+                Log.FatalFormat("Action: {0} Error: {1}", "Dao.GetCustomer(" + string.Join(",", customerIds.ToArray()) + ")", ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// 2)
+        ///     Busco las Contribuciones en estado ContributionState.Pendiente
+        ///     Las cuotas son conseguidas del valor que posee el Batch
+        /// </summary>
+        /// <param name="customerIds">lista de Ids a ser consultados</param>
         private void GetContributionPayments(List<int> customerIds)
         {
             try
             {
-                Log.InfoFormat("Action: {0}",
-                    "Dao.GetContributionPayments(" + string.Join(",", customerIds.ToArray()) + ")");
+                Log.InfoFormat("Action: 2) {0} {1} {2}", "Buscamos las contribuciones pendientes de los ", customerIds.Count, " aportantes");
 
                 Sql = "SELECT  " +
                       "c.CustomerId as CustomerId,  " +
@@ -94,9 +165,9 @@ namespace Ks.Batch.Caja.Out
                       "INNER JOIN  Contribution c on c.Id=cp.ContributionId " +
                       "WHERE c.CustomerId IN (" + string.Join(",", customerIds.ToArray()) + ") AND " +
                       "cp.StateId=@StateId AND " +
-                      "c.active=1 AND " +
+                      "c.active="+State.Active+" AND " +
                       "YEAR(cp.ScheduledDateOnUtc)=@Year AND " +
-                      "MONTH(cp.ScheduledDateOnUtc)=@Month  ";
+                      "MONTH(cp.ScheduledDateOnUtc)=@Month";
 
                 Command = new SqlCommand(Sql, Connection);
 
@@ -126,15 +197,11 @@ namespace Ks.Batch.Caja.Out
                 Command.Parameters.Add(pStateId);
 
                 var sqlReader = Command.ExecuteReader();
-
-                var reportOut2 = new Dictionary<int, Info>();
                 var customerIds2 = new List<int>();
 
                 while (sqlReader.Read())
                 {
-                    
-                    Info info;
-                    ReportOut.TryGetValue(sqlReader.GetInt32(sqlReader.GetOrdinal("CustomerId")), out info);
+                    ReportOut.TryGetValue(sqlReader.GetInt32(sqlReader.GetOrdinal("CustomerId")), out Info info);
 
                     if (info != null)
                     {
@@ -165,35 +232,17 @@ namespace Ks.Batch.Caja.Out
                         info.TotalContribution = sqlReader.GetDecimal(sqlReader.GetOrdinal("AmountTotal"));
                     }
                     ReportOut[sqlReader.GetInt32(0)] = info;
-                    //ReportOut.Remove(sqlReader.GetInt32(0));
-                    //reportOut2.Add(sqlReader.GetInt32(0), info);
                 }
 
                 sqlReader.Close();
-                //ReportOut.Clear();
 
                 foreach (var pk in ReportOut)
                 {
                     if (pk.Value.InfoContribution != null)
-                    {
                         customerIds2.Add(pk.Key);
-                        //ReportOut.Add(pk.Key, pk.Value);
-                    }
                 }
 
-                //var fileOutTem = new Dictionary<int, string>();
-                //foreach (var customerId in customerIds2)
-                //{
-                //    string data;
-                //    FileOut.TryGetValue(customerId, out data);
-                //    if (data != null)
-                //        fileOutTem.Add(customerId, data);
-                //}
-
-                //FileOut.Clear();
-
-                //foreach (var customerId in customerIds2)
-                //    FileOut.Add(customerId, fileOutTem[customerId]);
+                Log.InfoFormat("Action: 2) {0} {1} {2}","Se encontraron",customerIds2.Count,"Aportantantes con aportaciones pendientes");
 
                 if (customerIds2.Count > 0 && Batch.UpdateData)
                     UpdateDataContribution(customerIds2);
@@ -203,13 +252,30 @@ namespace Ks.Batch.Caja.Out
                 Log.FatalFormat("Action: {0} Error: {1}",
                     "Dao.GetContributionPayments(" + string.Join(",", customerIds.ToArray()) + ")", ex.Message);
             }
+        } 
+
+        /// <summary>
+        /// 3) 
+        ///     Actualizo las aportaciones al estado en proceso
+        /// </summary>
+        /// <param name="customerIds">Ids a quienes van a tener que afectar el cambio</param>
+        private void UpdateDataContribution(List<int> customerIds)
+        {
+            Log.InfoFormat("Action: 3) {0} {1} {2}", "actualizamos los", customerIds.Count, "aportantes al estado en proceso (ContributionState.EnProceso=2)");
+            UpdateDataContribution(customerIds, Batch.PeriodYear, Batch.PeriodMonth);
         }
 
+        /// <summary>
+        /// 4)
+        ///     Busco los apoyos en estado LoanState.Pendiente
+        ///     Las cuotas son conseguidas del valor que posee el Batch
+        /// </summary>
+        /// <param name="customerIds"></param>
         private void GetLoanPayment(List<int> customerIds)
         {
             try
             {
-                Log.InfoFormat("Action: {0}", "Dao.GetLoanPayments(" + string.Join(",", customerIds.ToArray()) + ")");
+                Log.InfoFormat("Action: 4) {0} {1} {2}", "Buscamos los apoyos pendientes de los ", customerIds.Count, " aportantes");
 
                 Sql = " SELECT " +
                       " L.CustomerId as CustomerId, " +
@@ -230,7 +296,7 @@ namespace Ks.Batch.Caja.Out
                       " FROM LoanPayment LP INNER JOIN Loan L on L.Id=lp.LoanId " +
                       " WHERE " +
                       " L.CustomerId IN (" + string.Join(",", customerIds.ToArray()) + ") and " +
-                      " L.Active=1 AND" + //Just Active 
+                      " L.Active="+ (int)State.Active + " AND" + 
                       " LP.StateId=@StateId and " +
                       " YEAR(lp.ScheduledDateOnUtc)=@Year and " +
                       " MONTH(lp.ScheduledDateOnUtc)=@Month " +
@@ -257,7 +323,7 @@ namespace Ks.Batch.Caja.Out
                     ParameterName = "@StateId",
                     SqlDbType = SqlDbType.Int,
                     Direction = ParameterDirection.Input,
-                    Value = (int)ContributionState.Pendiente
+                    Value = (int)LoanState.Pendiente
                 };
                 Command.Parameters.Add(pYear);
                 Command.Parameters.Add(pMonth);
@@ -320,6 +386,17 @@ namespace Ks.Batch.Caja.Out
             {
                 Log.FatalFormat("Action: {0} Error: {1}", "Dao.GetLoanPayments(" + string.Join(",", customerIds.ToArray()) + ")", ex.Message);
             }
+        }
+
+        /// <summary>
+        /// 5) 
+        ///     Actualizo los apoyos al estado en proceso
+        /// </summary>
+        /// <param name="customerIds">Ids a quienes van a tener que afectar el cambio</param>
+        private void UpdateDataLoan(List<int> customerIds)
+        {
+            Log.InfoFormat("Action: 5) {0} {1} {2}", "actualizamos los", customerIds.Count, "aportantes al estado en proceso (ContributionState.EnProceso=2)");
+            UpdateDataLoan(customerIds, Batch.PeriodYear, Batch.PeriodMonth);
         }
 
         private void MergeData(IEnumerable<int> customerIds)
@@ -386,156 +463,15 @@ namespace Ks.Batch.Caja.Out
                 Reference = sqlReader.GetString(sqlReader.GetOrdinal("Reference")),
                 Description = sqlReader.GetString(sqlReader.GetOrdinal("Description"))
             };
-        }
-
-        private void GetCustomer(out List<int> customerIds)
-        {
-            customerIds = new List<int>();
-            try
-            {
-                Log.InfoFormat("Action: {0}", "Dao.GetCustomer(" + string.Join(",", customerIds.ToArray()) + ")");
-
-                Sql = "SELECT EntityId, Attribute =[Key], Value FROM GenericAttribute " +
-                  " WHERE KeyGroup='Customer' and  [Key] in ('Dni','AdmCode') AND " +
-                  " EntityId IN ( SELECT EntityId FROM GenericAttribute WHERE [Key]='MilitarySituationId' AND Value=2 AND EntityId IN  (SELECT Id FROM CUSTOMER WHERE ACTIVE=1  ) ) " +
-                      " ORDER BY 1";
-
-                Command = new SqlCommand(Sql, Connection);
-                var sqlReader = Command.ExecuteReader();
-
-                var count = 0;
-                var admCode = "";
-                var dni = "";
-
-                var entityId = 0;
-                var repeatEntityId = 0;
-
-                while (sqlReader.Read())
-                {
-                    if (sqlReader.GetString(1).Equals("AdmCode"))
-                    {
-                        count++;
-                        admCode = sqlReader.GetString(2);
-                        entityId = sqlReader.GetInt32(0);
-                    }
-                    if (sqlReader.GetString(1).Equals("Dni"))
-                    {
-                        count++;
-                        dni = sqlReader.GetString(2);
-                        repeatEntityId = sqlReader.GetInt32(0);
-                    }
-                    if (count == 2 && entityId == repeatEntityId)
-                    {
-                        if (ReportOut == null)
-                            ReportOut = new Dictionary<int, Info>();
-
-                        if (FileOut == null)
-                            FileOut = new Dictionary<int, string>();
-
-                        FileOut.Add(entityId, string.Format("0029600820{0}01LE{1}", admCode, dni));
-                        customerIds.Add(entityId);
-                        ReportOut.Add(entityId, new Info { CustomerId = entityId, AdminCode = admCode, HasAdminCode = true, Dni = dni, HasDni = true });
-                        entityId = repeatEntityId = count = 0;
-                    }
-                }
-                sqlReader.Close();
-            }
-            catch (Exception ex)
-            {
-                Log.FatalFormat("Action: {0} Error: {1}", "Dao.GetCustomer(" + string.Join(",", customerIds.ToArray()) + ")", ex.Message);
-            }
-        }
-
-        private void UpdateDataContribution(List<int> customerIds)
-        {
-            try
-            {
-                Log.InfoFormat("Action: {0}", "Dao.UpdateDataContribution(" + string.Join(",", customerIds.ToArray()) + ")");
-
-                Sql = "UPDATE ContributionPayment SET StateId =2 WHERE ID IN ( " +
-                  " SELECT  cp.Id " +
-                  " FROM ContributionPayment cp " +
-                  " INNER JOIN  Contribution c on c.Id=cp.ContributionId " +
-                  " WHERE c.CustomerId IN (" + string.Join(",", customerIds.ToArray()) + ") AND  " +
-                  " YEAR(cp.ScheduledDateOnUtc)=@Year AND  " +
-                  " MONTH(cp.ScheduledDateOnUtc)=@Month  ) ";
-
-                Command = new SqlCommand(Sql, Connection);
-
-                var pYear = new SqlParameter
-                {
-                    ParameterName = "@Year",
-                    SqlDbType = SqlDbType.Int,
-                    Direction = ParameterDirection.Input,
-                    Value = Batch.PeriodYear
-                };
-                var pMonth = new SqlParameter
-                {
-                    ParameterName = "@Month",
-                    SqlDbType = SqlDbType.Int,
-                    Direction = ParameterDirection.Input,
-                    Value = Batch.PeriodMonth
-                };
-
-                Command.Parameters.Add(pYear);
-                Command.Parameters.Add(pMonth);
-                Command.ExecuteNonQuery();
-            }
-            catch (Exception ex)
-            {
-                Log.FatalFormat("Action: {0} Error: {1}", "Dao.UpdateDataContribution(" + string.Join(",", customerIds.ToArray()) + ")", ex.Message);
-            }
-        }
-
-        private void UpdateDataLoan(List<int> customerIds)
-        {
-            try
-            {
-                Log.InfoFormat("Action: {0}", "Dao.UpdateDataLoan(" + string.Join(",", customerIds.ToArray()) + ")");
-
-                Sql = "UPDATE LoanPayment SET StateId =2 WHERE ID IN ( " +
-                  " SELECT  cp.Id " +
-                  " FROM LoanPayment cp " +
-                  " INNER JOIN  Loan c on c.Id=cp.LoanId " +
-                  " WHERE c.CustomerId IN (" + string.Join(",", customerIds.ToArray()) + ") AND  " +
-                  " YEAR(cp.ScheduledDateOnUtc)=@Year AND  " +
-                  " MONTH(cp.ScheduledDateOnUtc)=@Month  ) ";
-
-                Command = new SqlCommand(Sql, Connection);
-
-                var pYear = new SqlParameter
-                {
-                    ParameterName = "@Year",
-                    SqlDbType = SqlDbType.Int,
-                    Direction = ParameterDirection.Input,
-                    Value = Batch.PeriodYear
-                };
-                var pMonth = new SqlParameter
-                {
-                    ParameterName = "@Month",
-                    SqlDbType = SqlDbType.Int,
-                    Direction = ParameterDirection.Input,
-                    Value = Batch.PeriodMonth
-                };
-
-                Command.Parameters.Add(pYear);
-                Command.Parameters.Add(pMonth);
-                Command.ExecuteNonQuery();
-            }
-            catch (Exception ex)
-            {
-                Log.FatalFormat("Action: {0} Error: {1}", "Dao.UpdateDataLoan(" + string.Join(",", customerIds.ToArray()) + ")", ex.Message);
-            }
-        }
-
+        } 
+          
         private void CompleteCustomerName()
         {
             var result = GetUserNames(FileOut.Keys.ToList());
 
             foreach (var pair in result)
             {
-                Info info;
-                ReportOut.TryGetValue(pair.Key, out info);
+                ReportOut.TryGetValue(pair.Key, out Info info);
                 if (info == null)
                     continue;
 

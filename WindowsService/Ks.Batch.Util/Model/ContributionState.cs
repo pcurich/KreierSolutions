@@ -6,6 +6,8 @@
         EnProceso = 2,
         PagoParcial = 3,
         Pagado = 4,
-        SinLiquidez=5
+        SinLiquidez=5,
+        Devolucion = 6,
+        PagoPersonal = 7
     }
 }

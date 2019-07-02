@@ -32,7 +32,8 @@ namespace Ks.Batch.Caja.In
                             Year = Convert.ToInt32(line.Substring(33, 4)),
                             Month = Convert.ToInt32(line.Substring(37, 2)),
                             AdminCode = line.Substring(10, 9),
-                            HasAdminCode = true,HasDni = true,
+                            HasAdminCode = true,
+                            HasDni = true,
                             Dni = line.Substring(23, 8),
                             TotalPayed = Convert.ToDecimal(line.Substring(39, 10))
                         });

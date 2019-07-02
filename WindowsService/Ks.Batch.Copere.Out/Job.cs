@@ -20,7 +20,6 @@ namespace Ks.Batch.Copere.Out
         {
             Path = ConfigurationManager.AppSettings["Path"];
             Connection = ConfigurationManager.ConnectionStrings["ACMR"].ConnectionString;
-
             SysName = ConfigurationManager.AppSettings["SysName"];
 
             var dao = new Dao(Connection);
@@ -28,23 +27,34 @@ namespace Ks.Batch.Copere.Out
             Batch = dao.GetScheduleBatch(SysName);
             dao.Close();
 
+            if (!FileHelper.IsBusy(Batch.PathBase)){
 
-            if (Batch.Enabled)
-            {
-                ExistFile();
+                Log.InfoFormat("Action: {0} {1}", SysName, "Iniciado");
+                FileHelper.CreateBusyFile(Batch.PathBase);
 
-                var records = DataBase();
-                if (records.Count != 0)
+                if (Batch.Enabled)
                 {
-                    SyncFiles(records);
-                    UpdateScheduleBatch();
+                    Log.InfoFormat("Action: {0} {1}", Batch.SystemName, "Activo");
+                    ExistFile();
+
+                    var records = DataBase();
+                    if (records.Count != 0)
+                    {
+                        SyncFiles(records);
+                        UpdateScheduleBatch();
+                    }
+                    else
+                    {
+                        UpdateScheduleBatch(false);
+                    }
                 }
                 else
                 {
-                    UpdateScheduleBatch(false);
+                    Log.InfoFormat("Action: {0} {1}", Batch.SystemName, "No Activo");
+                    FileHelper.DeleteBusyFile(Batch.PathBase);
                 }
             }
-
+            FileHelper.PurgeFile(Batch.PathBase);
         }
 
         #region Util
@@ -53,6 +63,7 @@ namespace Ks.Batch.Copere.Out
         {
             var dao = new Dao(Connection);
             dao.Connect();
+            Log.InfoFormat("Action: {0}", "Inicia Proceso de extraccion");
             var scheduleBatchs = dao.Process(Batch);
             dao.Close();
             return scheduleBatchs;
@@ -63,6 +74,7 @@ namespace Ks.Batch.Copere.Out
             try
             {
                 var nameFile = string.Format("8001_{0}00.txt", Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00"));
+                Log.InfoFormat("Action: Escribiendo en el archivo {0} la cantidad de {1} lineas", nameFile, result.Count);
                 File.WriteAllLines(System.IO.Path.Combine(System.IO.Path.Combine(Path, Batch.FolderMoveToDone), nameFile), result);
             }
             catch (Exception ex)
@@ -79,7 +91,7 @@ namespace Ks.Batch.Copere.Out
                             Batch.PeriodMonth.ToString("00"));
             try
             {
-                Log.InfoFormat("Action: {0}", "Job.ExistFile()");
+                Log.InfoFormat("Action: {0} {1}", "Buscando Archivo",nameFile);
                 if (File.Exists(System.IO.Path.Combine(System.IO.Path.Combine(Path, Batch.FolderMoveToDone), nameFile)))
                     File.Delete(System.IO.Path.Combine(System.IO.Path.Combine(Path, Batch.FolderMoveToDone), nameFile));
 
@@ -92,9 +104,12 @@ namespace Ks.Batch.Copere.Out
 
         protected void UpdateScheduleBatch(bool executed = true)
         {
+            Log.InfoFormat("Action: ScheduleBatch valor inicial = {0}", Batch.ToString());
+            Log.InfoFormat("Action: executed = {0}", executed);
+
             var dao = new Dao(Connection);
             dao.Connect();
-            Log.InfoFormat("Action: Start{0}", "Job.UpdateScheduleBatch(executed=" + executed + " ,Batch=" + Batch.ToString() + ")");
+            
             if (executed && Batch.UpdateData)
             {
                 if (Batch.NextExecutionOnUtc != null)
@@ -112,8 +127,9 @@ namespace Ks.Batch.Copere.Out
             Batch.LastExecutionOnUtc = DateTime.UtcNow;
             Batch.Enabled = false;
             Batch.UpdateData = false;
+
+            Log.InfoFormat("Action: ScheduleBatch valor final = {0}", Batch.ToString());
             dao.UpdateScheduleBatch(Batch);
-            Log.InfoFormat("Action: End{0}", "Job.UpdateScheduleBatch(executed=" + executed + " ,Batch=" + Batch.ToString() + ")");
             dao.Close();
         }
 

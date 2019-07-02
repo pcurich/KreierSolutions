@@ -327,7 +327,7 @@ namespace Ks.Web.Framework
 
                     //although it's better to connect to your database and execute the following SQL:
                     //DELETE FROM [Setting] WHERE [StoreId] > 0
-                    return c.Resolve<ISettingService>().LoadSetting<TSettings>(currentStoreId);
+                    return c.Resolve<ISettingService>().LoadSetting<TSettings>();
                 })
                 .InstancePerLifetimeScope()
                 .CreateRegistration();

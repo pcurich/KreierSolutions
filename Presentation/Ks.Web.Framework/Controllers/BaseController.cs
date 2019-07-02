@@ -71,27 +71,7 @@ namespace Ks.Web.Framework.Controllers
                 return sw.GetStringBuilder().ToString();
             }
         }
-
-
-        /// <summary>
-        /// Get active store scope (for multi-store configuration mode)
-        /// </summary>
-        /// <param name="ksSystemService">KsSystem service</param>
-        /// <param name="workContext">Work context</param>
-        /// <returns>Store ID; 0 if we are in a shared mode</returns>
-        public virtual int GetActiveStoreScopeConfiguration(IKsSystemService ksSystemService, IWorkContext workContext)
-        {
-            //ensure that we have 2 (or more) stores
-            if (ksSystemService.GetAllKsSystems().Count < 2)
-                return 0;
-
-
-            var systemId = workContext.CurrentCustomer.GetAttribute<int>(SystemCustomerAttributeNames.AdminAreaSystemScopeConfiguration);
-            var store = ksSystemService.GetKsSystemById(systemId);
-            return store != null ? store.Id : 0;
-        }
-
-
+         
         /// <summary>
         /// Log exception
         /// </summary>

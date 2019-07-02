@@ -613,8 +613,7 @@ namespace Ks.Admin.Controllers
             sb.Append("</br>");
             sb.Append("</br>");
 
-            var storeScope = GetActiveStoreScopeConfiguration(_ksSystemService, _workContext);
-            var setting = _settingService.LoadSetting<SignatureSettings>(storeScope);
+            var setting = _settingService.LoadSetting<SignatureSettings>();
             var str = "<table style='border:0px solid black; font-size:10px;'>" +
                       "<tr style='color:white;'><td>.</td><td>.</td></tr>" +
                       "<tr style='color:white;' ><td>.</td><td>.</td></tr>" +

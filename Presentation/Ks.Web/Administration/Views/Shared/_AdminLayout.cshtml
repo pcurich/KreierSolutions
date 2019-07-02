@@ -26,8 +26,7 @@
     {
         Html.AppendCssFileParts("~/Administration/Content/styles.css");
     }
-    Html.AppendScriptParts(string.Format("~/Scripts/kendo/{0}/cultures/kendo.culture.es-PE.min.js", kendoVersion));
-    Html.AppendScriptParts(string.Format("~/Scripts/kendo/{0}/messages/kendo.messages.es-PE.js", kendoVersion));
+
     Html.AppendScriptParts(string.Format("~/Scripts/kendo/{0}/kendo.web.min.js", kendoVersion));
     Html.AppendScriptParts("~/Scripts/admin.common.js");
     Html.AppendScriptParts("~/Scripts/jquery-migrate-1.2.1.min.js");
@@ -35,6 +34,9 @@
     Html.AppendScriptParts("~/Scripts/jquery.validate.unobtrusive.min.js");
     Html.AppendScriptParts("~/Scripts/jquery.validate.min.js");
     Html.AppendScriptParts("~/Scripts/jquery-1.10.2.min.js");
+
+    //Html.AppendScriptParts(string.Format("~/Scripts/kendo/{0}/messages/kendo.messages.es-PE.js", kendoVersion));
+    Html.AppendScriptParts(string.Format("~/Scripts/kendo/{0}/cultures/kendo.culture.es-PE.min.js", kendoVersion));
 
 
     //page title
@@ -64,7 +66,7 @@
 <html @(supportRtl ? Html.Raw("dir=\"rtl\"") : null)>
     <head>
         <title>@adminPageTitle</title>
-        <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+        <meta http-equiv="Content-type" content="text/html;charset=UTF-16" />
         @Html.KsHeadCustom()
         @Html.KsCssFiles(this.Url, ResourceLocation.Head)
         @Html.KsScripts(this.Url, ResourceLocation.Head)

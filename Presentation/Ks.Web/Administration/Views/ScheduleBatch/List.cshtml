@@ -143,7 +143,7 @@
                                 }, {
                                     field: "Id",
                                     title: "@T("Admin.Common.Edit")",
-                                    template: '<a href="Edit/#=Id#">@T("Admin.Common.Edit")</a>'
+                                    template: '<a href="Edit/#=Id#">@T("Admin.Common.Edit")</a> | <a href="Revert/#=Id#">@T("Admin.Common.Revert")</a>'
                                 }
                             ]
                         });
@@ -156,7 +156,7 @@
 
 @helper TabDownload()
 {
-    using (Html.BeginForm("List", "ScheduleBatch", FormMethod.Post))
+    using (Html.BeginForm("DownloadData", "ScheduleBatch", FormMethod.Post))
     {
         @Html.AntiForgeryToken()
         <table width="100%">

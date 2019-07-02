@@ -5,6 +5,7 @@
 
     //page title
     ViewBag.Title = T("Admin.Configuration.Settings.AllSettings").Text;
+
 }
 @Html.AntiForgeryToken()
 <div class="section-header">
@@ -73,8 +74,6 @@
                                     fields: {
                                         Name: { editable: true, type: "string" },
                                         Value: { editable: true, type: "string" },
-                                        Store: { editable: true, type: "string" },
-                                        StoreId: { editable: true, type: "number" },
                                         Id: { editable: false, type: "number" }
                                     }
                                 }
@@ -127,14 +126,6 @@
                             width: 300,
                             filterable: true,
                             sortable: true
-                        }, {
-                            field: "KsSystemId",
-                            title: "@T("Admin.Configuration.Settings.AllSettings.Fields.KsSystemName")",
-                            width: 150,
-                            editor: storeDropDownEditor,
-                            template: "#:KsSystem#",
-                            filterable: false,
-                            sortable: false
                         }, {
                             command: [{
                                 name: "edit",
