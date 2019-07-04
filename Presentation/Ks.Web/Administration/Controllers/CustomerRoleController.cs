@@ -229,7 +229,41 @@ namespace Ks.Admin.Controllers
 
         }
 
+        [HttpPost]
+        public ActionResult CustomerRoleList(DataSourceRequest command, CustomerListModel model )
+        {
+            //we use own own binder for searchCustomerRoleIds property 
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
+                return AccessDeniedView();
 
+            var searchDayOfBirth = 0;
+            int searchMonthOfBirth = 0;
+            if (!String.IsNullOrWhiteSpace(model.SearchDayOfBirth))
+                searchDayOfBirth = Convert.ToInt32(model.SearchDayOfBirth);
+            if (!String.IsNullOrWhiteSpace(model.SearchMonthOfBirth))
+                searchMonthOfBirth = Convert.ToInt32(model.SearchMonthOfBirth);
+
+            var customers = _customerService.GetAllCustomers(
+                customerRoleIds: searchCustomerRoleIds,
+                email: model.SearchEmail,
+                username: model.SearchUsername,
+                firstName: model.SearchFirstName,
+                lastName: model.SearchLastName,
+                dayOfBirth: searchDayOfBirth,
+                monthOfBirth: searchMonthOfBirth,
+                admCode: model.SearchAdmCode,
+                dni: model.SearchDni,
+                phone: model.SearchPhone,
+                pageIndex: command.Page - 1,
+                pageSize: command.PageSize);
+            var gridModel = new DataSourceResult
+            {
+                Data = customers.Select(PrepareCustomerModelForList),
+                Total = customers.TotalCount
+            };
+
+            return Json(gridModel);
+        }
 
         //public ActionResult AssociateProductToCustomerRolePopup()
         //{

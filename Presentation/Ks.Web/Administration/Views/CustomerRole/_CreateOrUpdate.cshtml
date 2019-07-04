@@ -3,43 +3,93 @@
 @Html.ValidationSummary(true)
 @Html.HiddenFor(model => model.Id)
 
- 
-<table class="adminContent">
-    <tr>
-        <td class="adminTitle">
-            @Html.KsLabelFor(model => model.Name)
-        </td>
-        <td class="adminData">
-            @Html.EditorFor(model => model.Name)
-            @Html.ValidationMessageFor(model => model.Name)
-        </td>
-    </tr>
-    <tr>
-        <td class="adminTitle">
-            @Html.KsLabelFor(model => model.SystemName)
-        </td>
-        <td class="adminData">
-            @Html.EditorFor(model => model.SystemName)
-            @Html.ValidationMessageFor(model => model.SystemName)
-        </td>
-    </tr>
-    <tr>
-        <td class="adminTitle">
-            @Html.KsLabelFor(model => model.Active):
-        </td>
-        <td class="adminData">
-            @Html.EditorFor(model => model.Active)
-            @Html.ValidationMessageFor(model => model.Active)
-        </td>
-    </tr>
-    <tr>
-        <td class="adminTitle">
-            @Html.KsLabelFor(model => model.IsSystemRole):
-        </td>
-        <td class="adminData">
-            @Model.IsSystemRole.ToString()
-            @Html.HiddenFor(model => model.IsSystemRole)
-            @Html.ValidationMessageFor(model => model.IsSystemRole)
-        </td>
-    </tr>
-</table>
+<script>
+    $(document).ready(function () {
+        $("#customer-role-edit").kendoTabStrip({
+            animation: {
+                open: {
+                    effects: "fadeIn"
+                }
+            },
+            select: tabstrip_on_tab_select
+        });
+    });
+</script>
+
+<div id="customer-role-edit">
+
+    <ul>
+        <li @Html.RenderSelectedTabIndex(0, GetSelectedTabIndex())>
+            @T("Admin.Customers.CustomerRoles.Info")
+        </li>
+        <li @Html.RenderSelectedTabIndex(1, GetSelectedTabIndex())>
+            @T("Admin.Customers.CustomerRoles.InRole")
+        </li>
+    </ul>
+    <div>
+        @TabInfo()
+    </div>
+    <div>
+        @TabInRole()
+    </div>
+
+</div>
+
+@{
+    //custom tabs
+    var eventMessage = new AdminTabStripCreated(this.Html, "customer-edit");
+    EngineContext.Current.Resolve<IEventPublisher>().Publish(eventMessage);
+    foreach (var eventBlock in eventMessage.BlocksToRender)
+    {
+        @eventBlock
+    }
+}
+
+@*save selected tab index*@
+<input type="hidden" id="selected-tab-index" name="selected-tab-index" value="@(GetSelectedTabIndex())">
+
+
+@helper TabInfo() { 
+    <table class="adminContent">
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.Name)
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.Name)
+                @Html.ValidationMessageFor(model => model.Name)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.SystemName)
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.SystemName)
+                @Html.ValidationMessageFor(model => model.SystemName)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.Active):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.Active)
+                @Html.ValidationMessageFor(model => model.Active)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.IsSystemRole):
+            </td>
+            <td class="adminData">
+                @Model.IsSystemRole.ToString()
+                @Html.HiddenFor(model => model.IsSystemRole)
+                @Html.ValidationMessageFor(model => model.IsSystemRole)
+            </td>
+        </tr>
+    </table>
+}
+
+@helper TabInRole() { 
+}
