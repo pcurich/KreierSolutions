@@ -660,6 +660,24 @@ namespace Ks.Services.Customers
             });
         }
 
+
+        public IPagedList<Customer> GetCustomerByCustomerRole(int customerRoleId, int pageIndex = 0, int pageSize = 2147483647)
+        {
+            if (customerRoleId == 0)
+                return null;
+
+            string key = string.Format(CUSTOMERROLES_BY_SYSTEMNAME_KEY, customerRoleId);
+            return _cacheManager.Get(key, () =>
+            {
+                var query = from c in _customerRepository.Table
+                            orderby c.Id
+                            where c.CustomerRoles.Any(x=>x.Id == customerRoleId) && c.Active == true
+                            select c;
+                var customes = new PagedList<Customer>(query, pageIndex, pageSize);
+                return customes;
+            }); 
+        }
+
         /// <summary>
         /// Gets all customer roles
         /// </summary>

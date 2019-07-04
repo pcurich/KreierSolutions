@@ -148,6 +148,15 @@ namespace Ks.Services.Customers
         CustomerRole GetCustomerRoleBySystemName(string systemName);
 
         /// <summary>
+        /// Get Cusotmer in Role
+        /// </summary>
+        /// <param name="customerRoleId">CustomerRoleId to search</param>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        IPagedList<Customer> GetCustomerByCustomerRole(int customerRoleId,int pageIndex = 0, int pageSize = 2147483647);
+        
+        /// <summary>
         /// Gets all customer roles
         /// </summary>
         /// <param name="showHidden">A value indicating whether to show hidden records</param>

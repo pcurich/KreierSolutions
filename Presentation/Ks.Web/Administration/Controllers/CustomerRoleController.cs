@@ -74,6 +74,22 @@ namespace Ks.Admin.Controllers
             return model;
         }
 
+        [NonAction]
+        protected virtual CustomerModel PrepareCustomerModelForList(Customer customer)
+        {
+            return new CustomerModel
+            {
+                Id = customer.Id,
+                Email = customer.Email,
+                Username = customer.Username,
+                FullName = customer.GetFullName(),
+                AdmCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode),
+                Dni = customer.GetAttribute<string>(SystemCustomerAttributeNames.Dni),
+                Active = customer.Active,
+                CreatedOn = _dateTimeHelper.ConvertToUserTime(customer.CreatedOnUtc, DateTimeKind.Utc),
+                LastActivityDate = _dateTimeHelper.ConvertToUserTime(customer.LastActivityDateUtc, DateTimeKind.Utc),
+            };
+        }
         #endregion
 
         #region Customer roles
@@ -230,30 +246,14 @@ namespace Ks.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult CustomerRoleList(DataSourceRequest command, CustomerListModel model )
+        public ActionResult CustomerRoleList(DataSourceRequest command, int customerRoleId )
         {
             //we use own own binder for searchCustomerRoleIds property 
-            if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomerRoles))
                 return AccessDeniedView();
 
-            var searchDayOfBirth = 0;
-            int searchMonthOfBirth = 0;
-            if (!String.IsNullOrWhiteSpace(model.SearchDayOfBirth))
-                searchDayOfBirth = Convert.ToInt32(model.SearchDayOfBirth);
-            if (!String.IsNullOrWhiteSpace(model.SearchMonthOfBirth))
-                searchMonthOfBirth = Convert.ToInt32(model.SearchMonthOfBirth);
 
-            var customers = _customerService.GetAllCustomers(
-                customerRoleIds: searchCustomerRoleIds,
-                email: model.SearchEmail,
-                username: model.SearchUsername,
-                firstName: model.SearchFirstName,
-                lastName: model.SearchLastName,
-                dayOfBirth: searchDayOfBirth,
-                monthOfBirth: searchMonthOfBirth,
-                admCode: model.SearchAdmCode,
-                dni: model.SearchDni,
-                phone: model.SearchPhone,
+            var customers = _customerService.GetCustomerByCustomerRole(customerRoleId,
                 pageIndex: command.Page - 1,
                 pageSize: command.PageSize);
             var gridModel = new DataSourceResult

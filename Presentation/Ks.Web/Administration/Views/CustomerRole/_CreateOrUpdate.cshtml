@@ -49,7 +49,8 @@
 <input type="hidden" id="selected-tab-index" name="selected-tab-index" value="@(GetSelectedTabIndex())">
 
 
-@helper TabInfo() { 
+@helper TabInfo()
+{
     <table class="adminContent">
         <tr>
             <td class="adminTitle">
@@ -91,5 +92,87 @@
     </table>
 }
 
-@helper TabInRole() { 
+@helper TabInRole()
+{
+
+    <table class="adminContent">
+        <tr>
+            <td> 
+                <div id="customerroles-grid"></div>
+
+                <script>
+                $(document).ready(function () {
+                    $("#customerroles-grid").kendoGrid({
+                        dataSource: {
+                            type: "json",
+                            transport: {
+                                read: {
+                                    url: "@Html.Raw(Url.Action("CustomerRoleList", "CustomerRole"))",
+                                    type: "POST",
+                                    dataType: "json",
+                                    data: addAntiForgeryToken
+                                }
+                            },
+                            schema: {
+                                data: "Data",
+                                total: "Total",
+                                errors: "Errors"
+                            },
+                            error: function(e) {
+                                display_kendoui_grid_error(e);
+                                // Cancel the changes
+                                this.cancelChanges();
+                            },
+                            serverPaging: true,
+                            serverFiltering: true,
+                            serverSorting: true
+                        },
+                        pageable: {
+                            refresh: true,
+                            numeric: false,
+                            previousNext: false,
+                            info: false
+                        },
+                        editable: {
+                            confirmation: false,
+                            mode: "inline"
+                        },
+                        scrollable: false,
+                        columns: [{
+                            field: "AdmCode",
+                            title: "@T("Admin.Customers.CustomerRoles.Fields.Name")",
+                            width: 300
+                        },{
+                            field: "Dni",
+                            title: "@T("Admin.Customers.CustomerRoles.Fields.Dni")",
+                            width: 300
+                        },{
+                            field: "Username",
+                            title: "@T("Admin.Customers.CustomerRoles.Fields.Username")",
+                            width: 300
+                        },{
+                            field: "FullName",
+                            title: "@T("Admin.Customers.CustomerRoles.Fields.FullName")",
+                            width: 300
+                        },{
+                            field: "Active",
+                            title: "@T("Admin.Customers.CustomerRoles.Fields.Active")",
+                            width: 100,
+                            headerAttributes: { style: "text-align:center" },
+                            attributes: { style: "text-align:center" },
+                            template: '<img src="@Url.Content("~/Administration/Content/images/")active-#=Active#.gif" />'
+                        },{
+                            field: "Id",
+                            title: "@T("Admin.Common.Edit")",
+                            width: 100,
+                            template: '<a href="Edit/#=Id#">@T("Admin.Common.Edit")</a>'
+                        }]
+                    });
+                });
+                </script>
+            </td>
+        </tr>
+    </table>
+
+
 }

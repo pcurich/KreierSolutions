@@ -25,6 +25,8 @@ namespace Ks.Services.Security
 
 
         public static readonly PermissionRecord ManageCustomers = new PermissionRecord { Name = "Admin area. Manage Customers", SystemName = "ManageCustomers", Category = "Customers" };
+        public static readonly PermissionRecord ManageCustomerRoles = new PermissionRecord { Name = "Admin area. Manage Customer Role", SystemName = "ManageCustomerRole", Category = "Customers" };
+
         public static readonly PermissionRecord ManageContributionBenefit = new PermissionRecord { Name = "Admin area. Manage Contribution Benefit", SystemName = "ManageContributionBenefit", Category = "Customers" };
         public static readonly PermissionRecord ManageContributions = new PermissionRecord { Name = "Admin area. Manage Contributions", SystemName = "ManageContributions", Category = "Customers" };
         public static readonly PermissionRecord ManageLoans = new PermissionRecord { Name = "Admin area. Manage Loans", SystemName = "ManageLoans", Category = "Customers" };
