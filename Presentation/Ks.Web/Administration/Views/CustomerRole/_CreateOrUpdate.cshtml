@@ -95,83 +95,157 @@
 @helper TabInRole()
 {
 
-    <table class="adminContent">
+    <table width="100%">
         <tr>
-            <td> 
-                <div id="customerroles-grid"></div>
-
-                <script>
-                $(document).ready(function () {
-                    $("#customerroles-grid").kendoGrid({
-                        dataSource: {
-                            type: "json",
-                            transport: {
-                                read: {
-                                    url: "@Html.Raw(Url.Action("CustomerRoleList", "CustomerRole"))",
-                                    type: "POST",
-                                    dataType: "json",
-                                    data: addAntiForgeryToken
-                                }
-                            },
-                            schema: {
-                                data: "Data",
-                                total: "Total",
-                                errors: "Errors"
-                            },
-                            error: function(e) {
-                                display_kendoui_grid_error(e);
-                                // Cancel the changes
-                                this.cancelChanges();
-                            },
-                            serverPaging: true,
-                            serverFiltering: true,
-                            serverSorting: true
-                        },
-                        pageable: {
-                            refresh: true,
-                            numeric: false,
-                            previousNext: false,
-                            info: false
-                        },
-                        editable: {
-                            confirmation: false,
-                            mode: "inline"
-                        },
-                        scrollable: false,
-                        columns: [{
-                            field: "AdmCode",
-                            title: "@T("Admin.Customers.CustomerRoles.Fields.Name")",
-                            width: 300
-                        },{
-                            field: "Dni",
-                            title: "@T("Admin.Customers.CustomerRoles.Fields.Dni")",
-                            width: 300
-                        },{
-                            field: "Username",
-                            title: "@T("Admin.Customers.CustomerRoles.Fields.Username")",
-                            width: 300
-                        },{
-                            field: "FullName",
-                            title: "@T("Admin.Customers.CustomerRoles.Fields.FullName")",
-                            width: 300
-                        },{
-                            field: "Active",
-                            title: "@T("Admin.Customers.CustomerRoles.Fields.Active")",
-                            width: 100,
-                            headerAttributes: { style: "text-align:center" },
-                            attributes: { style: "text-align:center" },
-                            template: '<img src="@Url.Content("~/Administration/Content/images/")active-#=Active#.gif" />'
-                        },{
-                            field: "Id",
-                            title: "@T("Admin.Common.Edit")",
-                            width: 100,
-                            template: '<a href="Edit/#=Id#">@T("Admin.Common.Edit")</a>'
-                        }]
-                    });
-                });
-                </script>
+            <td class="adminTitle">
+                @Html.KsLabel("Admin.Customers.Customers.Fields.Dni"):
+            </td>
+            <td class="adminData">
+                @Html.Editor("DNI")
             </td>
         </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabel("Admin.Customers.Customers.Fields.AdmCode"):
+            </td>
+            <td class="adminData">
+                @Html.Editor("ADMCODE")
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td colspan="2">
+                <input type="hidden" id="hack" value="" />
+                <input type="button" id="search" class="k-button" value="@T("Admin.Common.Search")" />
+                <input type="button" id="addnew" class="k-button" value="@T("Admin.Common.AddNewRecord")" />
+            </td>
+        </tr>
+    </table>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('#addnew').click(function () {
+                $("#hack").val('1');
+                var grid = $('#customerroles-grid').data('kendoGrid');
+                grid.dataSource.page(1); //new search. Set page size to 1
+                return false;
+            });
+
+            $('#search').click(function () {
+                $("#hack").val('0');
+                var grid = $('#customerroles-grid').data('kendoGrid');
+                grid.dataSource.page(1); //new search. Set page size to 1
+                return false;
+            });
+
+
+            $("#ADMCODE").keydown(function (event) {
+                if (event.keyCode == 13) {
+                    $("#search").click();
+                    return false;
+                } else {
+                    $("#DNI").val('');
+                }
+            });
+
+            $("#DNI").keydown(function (event) {
+                if (event.keyCode == 13) {
+                    $("#search").click();
+                    return false;
+                } else {
+                    $("#ADMCODE").val('');
+                }
+            });
+        });
+   </script>
+
+    <BR />
+        <table class="adminContent">
+            <tr>
+                <td>
+                    <div id="customerroles-grid"></div>
+
+                    <script>
+                    $(document).ready(function () {
+                        $("#customerroles-grid").kendoGrid({
+                            dataSource: {
+                                type: "json",
+                                transport: {
+                                    read: {
+                                        url: "@Html.Raw(Url.Action("CustomerRoleList", "CustomerRole"))",
+                                        type: "POST",
+                                        dataType: "json",
+                                        data: additionalData
+                                    }
+                                },
+                                schema: {
+                                    data: "Data",
+                                    total: "Total",
+                                    errors: "Errors"
+                                },
+                                error: function(e) {
+                                    display_kendoui_grid_error(e);
+                                    // Cancel the changes
+                                    this.cancelChanges();
+                                },
+                                serverPaging: true,
+                                serverFiltering: true,
+                                serverSorting: true
+                            },
+                            pageable: {
+                                refresh: true,
+                                numeric: false,
+                                previousNext: false,
+                                info: false
+                            },
+                            editable: {
+                                confirmation: false,
+                                mode: "inline"
+                            },
+                            scrollable: false,
+                            columns: [{
+                                field: "AdmCode",
+                                title: "@T("Admin.Customers.Customers.Fields.AdmCode")",
+                                width: 100
+                            },{
+                                field: "Dni",
+                                title: "@T("Admin.Customers.Customers.Fields.Dni")",
+                                width: 100
+                            }, {
+                                field: "FullName",
+                                title: "@T("Admin.Customers.Customers.Fields.FullName")",
+                                width: 500
+                            },{
+                                field: "Active",
+                                title: "@T("Admin.Customers.CustomerRoles.Fields.Active")",
+                                width: 100,
+                                headerAttributes: { style: "text-align:center" },
+                                attributes: { style: "text-align:center" },
+                                template: '<img src="@Url.Content("~/Administration/Content/images/")active-#=Active#.gif" />'
+                            },{
+                                field: "Id",
+                                title: "@T("Admin.Common.Delete")",
+                                width: 100,
+                                template: "<a href='../DeleteCustomerRole?customerId=#=Id#&customerRoleId=#=@Model.Id#'>@T("Admin.Common.Delete")</a>"
+                            }]
+                        });
+                    });
+
+                function additionalData() {
+                    var data = {
+                        CustomerRoleId: @(Model.Id),
+                        CustomerDni: $("#DNI").val(),
+                        CustomerAdminCode: $("#ADMCODE").val(),
+                        IsNew: $("#hack").val() === "1"
+                    }; 
+                    $("#hack").val("");
+                    addAntiForgeryToken(data);
+                    return data;
+                }
+    </script>
+    </td>
+    </tr>
     </table>
 
 

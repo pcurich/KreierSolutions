@@ -6,7 +6,9 @@ using Ks.Admin.Extensions;
 using Ks.Admin.Models.Customers;
 using Ks.Core;
 using Ks.Core.Domain.Customers;
+using Ks.Services.Common;
 using Ks.Services.Customers;
+using Ks.Services.Helpers;
 using Ks.Services.KsSystems;
 using Ks.Services.Localization;
 using Ks.Services.Logging;
@@ -24,11 +26,8 @@ namespace Ks.Admin.Controllers
         private readonly ILocalizationService _localizationService;
         private readonly ICustomerActivityService _customerActivityService;
         private readonly IPermissionService _permissionService;
-        //private readonly IProductService _productService;
-        //private readonly ICategoryService _categoryService;
-        //private readonly IManufacturerService _manufacturerService;
         private readonly IKsSystemService _ksSystemService;
-        //private readonly IVendorService _vendorService;
+        private readonly IDateTimeHelper _dateTimeHelper;
         private readonly IWorkContext _workContext;
 
         #endregion
@@ -39,22 +38,16 @@ namespace Ks.Admin.Controllers
             ILocalizationService localizationService,
             ICustomerActivityService customerActivityService,
             IPermissionService permissionService,
-            //IProductService productService,
-            //ICategoryService categoryService,
-            //IManufacturerService manufacturerService,
+            IDateTimeHelper dateTimeHelper, 
             IKsSystemService ksSystemService,
-            //IVendorService vendorService,
             IWorkContext workContext)
         {
             this._customerService = customerService;
             this._localizationService = localizationService;
             this._customerActivityService = customerActivityService;
             this._permissionService = permissionService;
-            //this._productService = productService;
-            //this._categoryService = categoryService;
-            //this._manufacturerService = manufacturerService;
+            this._dateTimeHelper = dateTimeHelper;
             this._ksSystemService =  ksSystemService;
-            //this._vendorService = vendorService;
             this._workContext = workContext;
         }
 
@@ -246,16 +239,39 @@ namespace Ks.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult CustomerRoleList(DataSourceRequest command, int customerRoleId )
+        public ActionResult CustomerRoleList(DataSourceRequest command, CustomerRoleListModel model)
         {
             //we use own own binder for searchCustomerRoleIds property 
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomerRoles))
                 return AccessDeniedView();
 
-
-            var customers = _customerService.GetCustomerByCustomerRole(customerRoleId,
+            var customers = _customerService.GetCustomerByCustomerRole(model.CustomerRoleId, model.CustomerDni, model.CustomerAdminCode,
                 pageIndex: command.Page - 1,
                 pageSize: command.PageSize);
+
+            if (model.IsNew && customers.Count == 0 )
+            {
+                Customer customer = null;
+                if(model.CustomerDni != null && model.CustomerDni.Length > 0)
+                {
+                    customer = _customerService.GetCustomerByDni(model.CustomerDni);
+                }
+
+                if (model.CustomerAdminCode!= null && model.CustomerAdminCode.Length > 0)
+                {
+                    customer = _customerService.GetCustomerByAdmCode(model.CustomerAdminCode);
+                }
+
+                if(customer != null)
+                {
+                    customer.CustomerRoles.Add(_customerService.GetCustomerRoleById(model.CustomerRoleId)); 
+                    _customerService.UpdateCustomer(customer);
+                }
+
+                customers.Add(customer);
+            }
+
+            
             var gridModel = new DataSourceResult
             {
                 Data = customers.Select(PrepareCustomerModelForList),
@@ -265,100 +281,33 @@ namespace Ks.Admin.Controllers
             return Json(gridModel);
         }
 
-        //public ActionResult AssociateProductToCustomerRolePopup()
-        //{
-        //    if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
-        //        return AccessDeniedView();
+ 
+        public ActionResult DeleteCustomerRole(int customerId, int customerRoleId)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
+                return AccessDeniedView();
 
-        //    var model = new CustomerRoleModel.AssociateProductToCustomerRoleModel();
-        //    //a vendor should have access only to his products
-        //    model.IsLoggedInAsVendor = _workContext.CurrentVendor != null;
+            if (customerId == 0 || customerRoleId == 0)
+                //No customer role found with the specified id
+                return RedirectToAction("List");
 
-        //    //categories
-        //    model.AvailableCategories.Add(new SelectListItem { Text = _localizationService.GetResource("Admin.Common.All"), Value = "0" });
-        //    var categories = _categoryService.GetAllCategories(showHidden: true);
-        //    foreach (var c in categories)
-        //        model.AvailableCategories.Add(new SelectListItem { Text = c.GetFormattedBreadCrumb(categories), Value = c.Id.ToString() });
+            try
+            {
+                var customer = _customerService.GetCustomerById(customerId);
+                _customerService.DeleteCustomerInRole(customerId, customerRoleId);
 
-        //    //manufacturers
-        //    model.AvailableManufacturers.Add(new SelectListItem { Text = _localizationService.GetResource("Admin.Common.All"), Value = "0" });
-        //    foreach (var m in _manufacturerService.GetAllManufacturers(showHidden: true))
-        //        model.AvailableManufacturers.Add(new SelectListItem { Text = m.Name, Value = m.Id.ToString() });
+                //activity log
+                _customerActivityService.InsertActivity("DeleteCustomerRole", _localizationService.GetResource("ActivityLog.DeleteCustomerRole"), customer.GetFullName());
 
-        //    //stores
-        //    model.AvailableStores.Add(new SelectListItem { Text = _localizationService.GetResource("Admin.Common.All"), Value = "0" });
-        //    foreach (var s in _storeService.GetAllStores())
-        //        model.AvailableStores.Add(new SelectListItem { Text = s.Name, Value = s.Id.ToString() });
-
-        //    //vendors
-        //    model.AvailableVendors.Add(new SelectListItem { Text = _localizationService.GetResource("Admin.Common.All"), Value = "0" });
-        //    foreach (var v in _vendorService.GetAllVendors(showHidden: true))
-        //        model.AvailableVendors.Add(new SelectListItem { Text = v.Name, Value = v.Id.ToString() });
-
-        //    //product types
-        //    model.AvailableProductTypes = ProductType.SimpleProduct.ToSelectList(false).ToList();
-        //    model.AvailableProductTypes.Insert(0, new SelectListItem { Text = _localizationService.GetResource("Admin.Common.All"), Value = "0" });
-
-        //    return View(model);
-        //}
-
-        //[HttpPost]
-        //public ActionResult AssociateProductToCustomerRolePopupList(DataSourceRequest command,
-        //    CustomerRoleModel.AssociateProductToCustomerRoleModel model)
-        //{
-        //    if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
-        //        return AccessDeniedView();
-
-        //    //a vendor should have access only to his products
-        //    if (_workContext.CurrentVendor != null)
-        //    {
-        //        model.SearchVendorId = _workContext.CurrentVendor.Id;
-        //    }
-
-        //    var products = _productService.SearchProducts(
-        //        categoryIds: new List<int> { model.SearchCategoryId },
-        //        manufacturerId: model.SearchManufacturerId,
-        //        storeId: model.SearchStoreId,
-        //        vendorId: model.SearchVendorId,
-        //        productType: model.SearchProductTypeId > 0 ? (ProductType?)model.SearchProductTypeId : null,
-        //        keywords: model.SearchProductName,
-        //        pageIndex: command.Page - 1,
-        //        pageSize: command.PageSize,
-        //        showHidden: true
-        //        );
-        //    var gridModel = new DataSourceResult();
-        //    gridModel.Data = products.Select(x => x.ToModel());
-        //    gridModel.Total = products.TotalCount;
-
-        //    return Json(gridModel);
-        //}
-
-        //[HttpPost]
-        //[FormValueRequired("save")]
-        //public ActionResult AssociateProductToCustomerRolePopup(string btnId, string productIdInput,
-        //    string productNameInput, CustomerRoleModel.AssociateProductToCustomerRoleModel model)
-        //{
-        //    if (!_permissionService.Authorize(StandardPermissionProvider.ManageCustomers))
-        //        return AccessDeniedView();
-
-        //    var associatedProduct = _productService.GetProductById(model.AssociatedToProductId);
-        //    if (associatedProduct == null)
-        //        return Content("Cannot load a product");
-
-        //    //a vendor should have access only to his products
-        //    if (_workContext.CurrentVendor != null && associatedProduct.VendorId != _workContext.CurrentVendor.Id)
-        //        return Content("This is not your product");
-
-        //    //a vendor should have access only to his products
-        //    model.IsLoggedInAsVendor = _workContext.CurrentVendor != null;
-        //    ViewBag.RefreshPage = true;
-        //    ViewBag.productIdInput = productIdInput;
-        //    ViewBag.productNameInput = productNameInput;
-        //    ViewBag.btnId = btnId;
-        //    ViewBag.productId = associatedProduct.Id;
-        //    ViewBag.productName = associatedProduct.Name;
-        //    return View(model);
-        //}
+                SuccessNotification(_localizationService.GetResource("Admin.Customers.CustomerRoles.Deleted"));
+            }
+            catch (Exception exc)
+            {
+                ErrorNotification(exc.Message);
+                
+            }
+            return RedirectToAction("Edit", new { id = customerRoleId });
+        }
 
         #endregion
     }

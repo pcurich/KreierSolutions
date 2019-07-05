@@ -1452,6 +1452,7 @@
     <Compile Include="Models\Customers\ContributionBenefitModel.cs" />
     <Compile Include="Models\Customers\CustomerListModel.cs" />
     <Compile Include="Models\Customers\CustomerModel.cs" />
+    <Compile Include="Models\Customers\CustomerRoleListModel.cs" />
     <Compile Include="Models\Customers\CustomerRoleModel.cs" />
     <Compile Include="Models\Contract\LoanPaymentsModel.cs" />
     <Compile Include="Models\Customers\OnlineCustomerModel.cs" />

@@ -661,7 +661,9 @@ namespace Ks.Services.Customers
         }
 
 
-        public IPagedList<Customer> GetCustomerByCustomerRole(int customerRoleId, int pageIndex = 0, int pageSize = 2147483647)
+        public IPagedList<Customer> GetCustomerByCustomerRole(int customerRoleId, 
+            string CustomerDni, string CustomerAdminCode,
+            int pageIndex = 0, int pageSize = 2147483647)
         {
             if (customerRoleId == 0)
                 return null;
@@ -670,9 +672,30 @@ namespace Ks.Services.Customers
             return _cacheManager.Get(key, () =>
             {
                 var query = from c in _customerRepository.Table
-                            orderby c.Id
                             where c.CustomerRoles.Any(x=>x.Id == customerRoleId) && c.Active == true
                             select c;
+
+                if(CustomerAdminCode != null && CustomerAdminCode.Length > 0)
+                {
+                    query = query
+                    .Join(_gaRepository.Table, x => x.Id, y => y.EntityId, (x, y) => new { Customer = x, Attribute = y })
+                    .Where((z => z.Attribute.KeyGroup == "Customer" &&
+                        z.Attribute.Key == SystemCustomerAttributeNames.AdmCode &&
+                        z.Attribute.Value.Contains(CustomerAdminCode)))
+                    .Select(z => z.Customer);
+                }
+
+                if (CustomerDni != null && CustomerDni.Length > 0)
+                {
+                    query = query
+                    .Join(_gaRepository.Table, x => x.Id, y => y.EntityId, (x, y) => new { Customer = x, Attribute = y })
+                    .Where((z => z.Attribute.KeyGroup == "Customer" &&
+                        z.Attribute.Key == SystemCustomerAttributeNames.Dni &&
+                        z.Attribute.Value.Contains(CustomerDni)))
+                    .Select(z => z.Customer);
+                }
+                query = query.OrderByDescending(c => c.CreatedOnUtc);
+
                 var customes = new PagedList<Customer>(query, pageIndex, pageSize);
                 return customes;
             }); 
@@ -729,6 +752,22 @@ namespace Ks.Services.Customers
 
             //event notification
             _eventPublisher.EntityUpdated(customerRole);
+        }
+
+        public void DeleteCustomerInRole(int customerId, int customerRoleId)
+        {
+            var customer = (from c in _customerRepository.Table
+                        where c.Id == customerId 
+                        select c).FirstOrDefault();
+
+            var role = (from c in _customerRoleRepository.Table
+                        where c.Id == customerRoleId
+                        select c).FirstOrDefault();
+
+            customer.CustomerRoles.Remove(role);
+            _customerRepository.Update(customer);
+
+            _cacheManager.RemoveByPattern(CUSTOMERROLES_PATTERN_KEY); 
         }
 
         #endregion

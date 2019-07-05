@@ -151,10 +151,12 @@ namespace Ks.Services.Customers
         /// Get Cusotmer in Role
         /// </summary>
         /// <param name="customerRoleId">CustomerRoleId to search</param>
+        /// <param name="CustomerDni"></param>
+        /// <param name="CustomerAdminCode"></param>
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        IPagedList<Customer> GetCustomerByCustomerRole(int customerRoleId,int pageIndex = 0, int pageSize = 2147483647);
+        IPagedList<Customer> GetCustomerByCustomerRole(int customerRoleId, string CustomerDni, string CustomerAdminCode, int pageIndex = 0, int pageSize = 2147483647);
         
         /// <summary>
         /// Gets all customer roles
@@ -174,6 +176,8 @@ namespace Ks.Services.Customers
         /// </summary>
         /// <param name="customerRole">Customer role</param>
         void UpdateCustomerRole(CustomerRole customerRole);
+
+        void DeleteCustomerInRole(int customerId, int customerRoleId);
 
         #endregion
     }
