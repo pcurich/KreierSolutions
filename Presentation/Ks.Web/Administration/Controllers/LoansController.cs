@@ -234,19 +234,28 @@ namespace Ks.Admin.Controllers
         public ActionResult Delete(int id)
         {
             var loan = _loanService.GetLoanById(id);
-            var loanPayments = _loanService.GetAllPayments(loan.Id, stateId: (int) LoanState.Pendiente);
-            foreach (var payment in loanPayments)
-            {
-                payment.StateId = (int) LoanState.Cancelado;
-                payment.Description = "Apoyo economico cancelado por el usuario " +
-                                      _workContext.CurrentCustomer.GetFullName();
-                payment.ProcessedDateOnUtc = DateTime.UtcNow;
-                _loanService.UpdateLoanPayment(payment);
+
+            if (!loan.IsAuthorized) {
+                _loanService.DeleteLoan(loan,false);
+                SuccessNotification("El apoyo social ha sido eliminado del sistema correctamente");
             }
-            loan.Active = false;
-            loan.UpdatedOnUtc = DateTime.UtcNow;
-            _loanService.UpdateLoan(loan);
-            SuccessNotification("El apoyo social ha sido cancelado correctamente");
+            else
+            {
+                var loanPayments = _loanService.GetAllPayments(loan.Id, stateId: (int)LoanState.Pendiente);
+                foreach (var payment in loanPayments)
+                {
+                    payment.StateId = (int)LoanState.Cancelado;
+                    payment.Description = "Apoyo economico cancelado por el usuario " +
+                                          _workContext.CurrentCustomer.GetFullName();
+                    payment.ProcessedDateOnUtc = DateTime.UtcNow;
+                    _loanService.UpdateLoanPayment(payment);
+                }
+                loan.Active = false;
+                loan.UpdatedOnUtc = DateTime.UtcNow;
+                _loanService.UpdateLoan(loan);
+                SuccessNotification("El apoyo social ha sido cancelado correctamente");
+            }
+            
             return RedirectToAction("List");
         }
 

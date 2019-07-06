@@ -60,13 +60,28 @@ namespace Ks.Services.Contract
 
         #region Methods
 
-        public virtual void DeleteLoan(Loan loan)
+
+        public virtual void DeleteLoan(Loan loan, bool deleteLogic = true)
         {
             if (loan == null)
                 throw new ArgumentNullException("loan");
 
-            loan.Active = false;
-            UpdateLoan(loan);
+            if (deleteLogic)
+            {
+                loan.Active = false;
+                UpdateLoan(loan);
+            }
+            else
+            {
+                _loanRepository.Delete(loan);
+                
+                //cache
+                _cacheManager.RemoveByPattern(LOANS_PATTERN_KEY);
+
+                //event notification
+                _eventPublisher.EntityUpdated(loan);
+            }
+
         }
 
         public virtual IPagedList<Loan> SearchLoanByCustomerId(int customerId, int stateId = -1, int pageIndex = 0, int pageSize = Int32.MaxValue)

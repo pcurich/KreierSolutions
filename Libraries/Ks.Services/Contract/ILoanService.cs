@@ -12,7 +12,7 @@ namespace Ks.Services.Contract
         /// Deletes the loan.
         /// </summary>
         /// <param name="loan">The loan.</param>
-        void DeleteLoan(Loan loan);
+        void DeleteLoan(Loan loan, bool deleteLogic = true);
         /// <summary>
         /// Searches the loan by customer identifier.
         /// </summary>
