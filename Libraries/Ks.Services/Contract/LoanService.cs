@@ -10,6 +10,7 @@ using Ks.Core.Domain.Reports;
 using Ks.Services.Events;
 using System.Data;
 using Ks.Data;
+using Ks.Core.Domain.Messages;
 
 namespace Ks.Services.Contract
 {
@@ -36,6 +37,7 @@ namespace Ks.Services.Contract
         #region Fields
 
         private readonly IRepository<LoanPayment> _loanPaymentRepository;
+        private readonly IRepository<WorkFlow> _workFlowRepository;
         private readonly IRepository<Loan> _loanRepository;
         private readonly ICacheManager _cacheManager;
         private readonly IEventPublisher _eventPublisher;
@@ -46,9 +48,12 @@ namespace Ks.Services.Contract
 
         #region Constructor
 
-        public LoanService(IRepository<LoanPayment> loanPaymentRepository, IRepository<Loan> loanRepository, ICacheManager cacheManager, IEventPublisher eventPublisher, IDataProvider dataProvider, IDbContext dbContext)
+        public LoanService(IRepository<LoanPayment> loanPaymentRepository,
+            IRepository<WorkFlow> workFlowRepository,
+            IRepository<Loan> loanRepository, ICacheManager cacheManager, IEventPublisher eventPublisher, IDataProvider dataProvider, IDbContext dbContext)
         {
             _loanPaymentRepository = loanPaymentRepository;
+            _workFlowRepository = workFlowRepository;
             _loanRepository = loanRepository;
             _cacheManager = cacheManager;
             _eventPublisher = eventPublisher;
@@ -74,7 +79,10 @@ namespace Ks.Services.Contract
             else
             {
                 _loanRepository.Delete(loan);
-                
+                var query = (from wf in _workFlowRepository.Table
+                             where wf.EntityId == loan.Id
+                             select wf).FirstOrDefault();
+
                 //cache
                 _cacheManager.RemoveByPattern(LOANS_PATTERN_KEY);
 
