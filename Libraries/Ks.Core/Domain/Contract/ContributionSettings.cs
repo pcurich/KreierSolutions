@@ -22,16 +22,19 @@ namespace Ks.Core.Domain.Contract
         /// </summary>
         public decimal MaximumChargeCaja { get; set; }
         public decimal MaximumChargeCopere { get; set; }
+
         /// <summary>
         /// Gets or sets the name amount1.
         /// </summary>
         public string NameAmount1 { get; set; }
-
         /// <summary>
         /// Gets or sets a value indicating whether this instance is active amount2.
         /// </summary>
         public bool IsActiveAmount1 { set; get; }
-
+        /// <summary>
+        /// Gets or sets a value indicating whether this value show in report
+        /// </summary>
+        public bool Is1OnReport { get; set; }
         /// <summary>
         /// Gets or sets the amount of discount.
         /// </summary>
@@ -41,12 +44,14 @@ namespace Ks.Core.Domain.Contract
         /// Gets or sets the name amount2.
         /// </summary>
         public string NameAmount2 { get; set; }
-
         /// <summary>
         /// Gets or sets a value indicating whether this instance is active amount2.
         /// </summary>
         public bool IsActiveAmount2 { set; get; }
-
+        /// <summary>
+        /// Gets or sets a value indicating whether this value show in report
+        /// </summary>
+        public bool Is2OnReport { get; set; }
         /// <summary>
         /// Gets or sets the amount of discount.
         /// </summary>
@@ -56,12 +61,14 @@ namespace Ks.Core.Domain.Contract
         /// Gets or sets the name amount3.
         /// </summary>
         public string NameAmount3 { get; set; }
-
         /// <summary>
         /// Gets or sets a value indicating whether this instance is active amount3.
         /// </summary>
         public bool IsActiveAmount3 { set; get; }
-
+        /// <summary>
+        /// Gets or sets a value indicating whether this value show in report
+        /// </summary>
+        public bool Is3OnReport { get; set; }
         /// <summary>
         /// Gets or sets the amount of discount.
         /// </summary>

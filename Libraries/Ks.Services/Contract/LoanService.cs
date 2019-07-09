@@ -5,7 +5,6 @@ using Ks.Core;
 using Ks.Core.Caching;
 using Ks.Core.Data;
 using Ks.Core.Domain.Contract;
-using Ks.Core.Domain.Customers;
 using Ks.Core.Domain.Reports;
 using Ks.Services.Events;
 using System.Data;
@@ -83,6 +82,7 @@ namespace Ks.Services.Contract
                              where wf.EntityId == loan.Id
                              select wf).FirstOrDefault();
 
+                _workFlowRepository.Delete(query);
                 //cache
                 _cacheManager.RemoveByPattern(LOANS_PATTERN_KEY);
 

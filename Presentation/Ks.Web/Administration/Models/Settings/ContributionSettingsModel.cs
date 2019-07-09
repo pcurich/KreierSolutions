@@ -37,18 +37,24 @@ namespace Ks.Admin.Models.Settings
         public string NameAmount1 { get; set; }
         [KsResourceDisplayName("Admin.Configuration.Settings.ContributionSettings.IsActiveAmount1")]
         public bool IsActiveAmount1 { set; get; }
+        [KsResourceDisplayName("Admin.Configuration.Settings.ContributionSettings.Is1OnReport")]
+        public bool Is1OnReport { set; get; }
         [KsResourceDisplayName("Admin.Configuration.Settings.ContributionSettings.Amount1")]
         public decimal Amount1 { get; set; }
         [KsResourceDisplayName("Admin.Configuration.Settings.ContributionSettings.NameAmount2")]
         public string NameAmount2 { get; set; }
         [KsResourceDisplayName("Admin.Configuration.Settings.ContributionSettings.IsActiveAmount2")]
         public bool IsActiveAmount2 { set; get; }
+        [KsResourceDisplayName("Admin.Configuration.Settings.ContributionSettings.Is2OnReport")]
+        public bool Is2OnReport { set; get; }
         [KsResourceDisplayName("Admin.Configuration.Settings.ContributionSettings.Amount2")]
         public decimal Amount2 { get; set; }
         [KsResourceDisplayName("Admin.Configuration.Settings.ContributionSettings.NameAmount3")]
         public string NameAmount3{ get; set; }
         [KsResourceDisplayName("Admin.Configuration.Settings.ContributionSettings.IsActiveAmount3")]
         public bool IsActiveAmount3 { set; get; }
+        [KsResourceDisplayName("Admin.Configuration.Settings.ContributionSettings.Is3OnReport")]
+        public bool Is3OnReport { set; get; }
         [KsResourceDisplayName("Admin.Configuration.Settings.ContributionSettings.Amount3")]
         public decimal Amount3 { get; set; }
 

@@ -62,9 +62,11 @@
             if ($('#@Html.FieldIdFor(model => model.IsActiveAmount1)').is(':checked')) {
                 $('#pnlActiveAmount1Enabled').show();
                 $('#pnlActiveNameAmount1Enabled').show();
+                $('#pnlActiveReportAmount1Enabled').show();
             } else {
                 $('#pnlActiveAmount1Enabled').hide();
                 $('#pnlActiveNameAmount1Enabled').hide();
+                $('#pnlActiveReportAmount1Enabled').hide();
             }
         }
 
@@ -72,9 +74,11 @@
             if ($('#@Html.FieldIdFor(model => model.IsActiveAmount2)').is(':checked')) {
                 $('#pnlActiveAmount2Enabled').show();
                 $('#pnlActiveNameAmount2Enabled').show();
+                $('#pnlActiveReportAmount2Enabled').show();
             } else {
                 $('#pnlActiveAmount2Enabled').hide();
                 $('#pnlActiveNameAmount2Enabled').hide();
+                $('#pnlActiveReportAmount2Enabled').hide();
             }
         }
 
@@ -82,9 +86,11 @@
             if ($('#@Html.FieldIdFor(model => model.IsActiveAmount3)').is(':checked')) {
                 $('#pnlActiveAmount3Enabled').show();
                 $('#pnlActiveNameAmount3Enabled').show();
+                $('#pnlActiveReportAmount3Enabled').show();
             } else {
                 $('#pnlActiveAmount3Enabled').hide();
                 $('#pnlActiveNameAmount3Enabled').hide();
+                $('#pnlActiveReportAmount3Enabled').hide();
             }
         }
 
@@ -160,14 +166,14 @@
                                 <td>Cantidad</td>
                             </tr>
                             @{
-                    foreach (var toChange in Model.CustumerToChange)
-                    {
-                        <tr>
+                                foreach (var toChange in Model.CustumerToChange)
+                                {
+                                    <tr>
 
-                            <td>@toChange.Delay</td>
-                            <td>@toChange.Size</td>
-                        </tr>
-                    }
+                                        <td>@toChange.Delay</td>
+                                        <td>@toChange.Size</td>
+                                    </tr>
+                                }
                             }
 
                         </table>
@@ -176,8 +182,8 @@
                 }
 
             }
-
         </tr>
+        <tr><td><hr /></td><td><hr /></td><td><hr /></td></tr>
         <tr>
             <td class="adminTitle">
                 @Html.KsLabelFor(model => model.IsActiveAmount1):
@@ -195,6 +201,15 @@
                 @Html.ValidationMessageFor(model => model.NameAmount1)
             </td>
         </tr>
+        <tr id="pnlActiveReportAmount1Enabled">
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.Is1OnReport):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.Is1OnReport)
+                @Html.ValidationMessageFor(model => model.Is1OnReport)
+            </td>
+        </tr>
         <tr id="pnlActiveAmount1Enabled">
             <td class="adminTitle">
                 @Html.KsLabelFor(model => model.Amount1):
@@ -210,6 +225,9 @@
                 </script>
             </td>
         </tr>
+
+        <tr><td><hr /></td><td><hr /></td><td><hr /></td></tr>
+
         <tr>
             <td class="adminTitle">
                 @Html.KsLabelFor(model => model.IsActiveAmount2):
@@ -227,6 +245,15 @@
                 @Html.ValidationMessageFor(model => model.NameAmount2)
             </td>
         </tr>
+        <tr id="pnlActiveReportAmount2Enabled">
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.Is2OnReport):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.Is2OnReport)
+                @Html.ValidationMessageFor(model => model.Is2OnReport)
+            </td>
+        </tr>
         <tr id="pnlActiveAmount2Enabled">
             <td class="adminTitle">
                 @Html.KsLabelFor(model => model.Amount2):
@@ -242,6 +269,9 @@
                 </script>
             </td>
         </tr>
+
+        <tr><td><hr /></td><td><hr /></td><td><hr /></td></tr>
+
         <tr>
             <td class="adminTitle">
                 @Html.KsLabelFor(model => model.IsActiveAmount3):
@@ -259,6 +289,15 @@
                 @Html.ValidationMessageFor(model => model.NameAmount3)
             </td>
         </tr>
+        <tr id="pnlActiveReportAmount3Enabled">
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.Is3OnReport):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.Is3OnReport)
+                @Html.ValidationMessageFor(model => model.Is3OnReport)
+            </td>
+        </tr>
         <tr id="pnlActiveAmount3Enabled">
             <td class="adminTitle">
                 @Html.KsLabelFor(model => model.Amount3):
@@ -266,16 +305,17 @@
             <td class="adminData">
                 @Html.EditorFor(model => model.Amount3)
                 @Html.ValidationMessageFor(model => model.Amount3)
-             @Html.DropDownListFor(model => model.Amount3Source, Model.Amount3Sources)
-            <script>
+                @Html.DropDownListFor(model => model.Amount3Source, Model.Amount3Sources)
+                <script>
                 $(document).ready(function () {
                     $('#@Html.FieldIdFor(model => model.Amount3Source)').width(250).kendoDropDownList();
                 });
-            </script>
-                
+                </script>
+
             </td>
 
         </tr>
+
     </table>
 }
 }

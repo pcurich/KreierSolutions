@@ -295,6 +295,14 @@ namespace Ks.Admin.Controllers
         {
             var paymentSettings = _settingService.LoadSetting<ContributionSettings>();
 
+            if (model.NameAmount1 == null)
+                model.NameAmount1 = "";
+            if (model.NameAmount2 == null)
+                model.NameAmount2 = "";
+            if (model.NameAmount3 == null)
+                model.NameAmount3 = "";
+
+
             if (ModelState.IsValid)
             {
                 paymentSettings = model.ToEntity(paymentSettings);
@@ -314,6 +322,24 @@ namespace Ks.Admin.Controllers
                 return RedirectToAction("Contributions");
             }
 
+            model.Amount1Sources = new List<SelectListItem>
+            {
+                new SelectListItem{Value = "0", Text = "Todos" },
+                new SelectListItem{Value = "1", Text = "Copere" },
+                new SelectListItem{Value = "2", Text = "Caja" },
+            };
+            model.Amount2Sources = new List<SelectListItem>
+            {
+                new SelectListItem{Value = "0", Text = "Todos" },
+                new SelectListItem{Value = "1", Text = "Copere" },
+                new SelectListItem{Value = "2", Text = "Caja" },
+            };
+            model.Amount3Sources = new List<SelectListItem>
+            {
+                new SelectListItem{Value = "0", Text = "Todos" },
+                new SelectListItem{Value = "1", Text = "Copere" },
+                new SelectListItem{Value = "2", Text = "Caja" },
+            };
             return View(model);
 
         }
