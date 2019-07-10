@@ -173,6 +173,7 @@ namespace Ks.Admin.Controllers
                 LoanNumber = loan.LoanNumber,
                 MonthlyQuota = loan.MonthlyQuota,
                 TotalAmount = loan.TotalAmount,
+                TotalPayed = loan.TotalPayed,
                 LoanAmount = loan.LoanAmount,
                 States = LoanState.EnProceso.ToSelectList(false).ToList(),
                 Banks = _bankSettings.PrepareBanks(),
@@ -822,11 +823,21 @@ namespace Ks.Admin.Controllers
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageLoans))
                 return AccessDeniedView();
 
-            if (!ModelState.IsValid)
-                return View(model);
-
             var loan = _loanService.GetLoanById(model.LoanId);
-            var allPayment = _loanService.GetAllPayments(model.LoanId, stateId: (int) LoanState.Pendiente);
+            var allPayment = _loanService.GetAllPayments(model.LoanId, stateId: (int)LoanState.Pendiente);
+
+            if (!ModelState.IsValid)
+            {
+                var amountToCancel = allPayment.Sum(x => x.MonthlyQuota);
+                model = new LoanPaymentsModel
+                {
+                    Banks = _bankSettings.PrepareBanks(),
+                    LoanId = loan.Id,
+                    CustomerId = loan.CustomerId,
+                    AmountToCancel = amountToCancel
+                };
+                return View(model);
+            } 
 
             #region Payed more then One Quota
 
@@ -856,7 +867,7 @@ namespace Ks.Admin.Controllers
                     loan.UpdatedOnUtc = DateTime.UtcNow;
                     loan.TotalPayed += loan.MonthlyQuota;
                     loan.IsDelay = false;
-                    if (loan.TotalAmount == loan.TotalPayed)
+                    if (loan.TotalAmount <= loan.TotalPayed)
                         loan.Active = false;
 
                     _loanService.UpdateLoan(loan);
@@ -1008,6 +1019,103 @@ namespace Ks.Admin.Controllers
                 return RedirectToAction("CreateCustomPayment", new {id = model.LoanId});
             }
             return RedirectToAction("Edit", new {id = model.LoanId});
+        }
+
+        #endregion
+
+        #region CreateEndPayment
+
+        public ActionResult CreateEndPayment(int id)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageLoans))
+                return AccessDeniedView();
+
+            var loan = _loanService.GetLoanById(id);
+
+            if (!loan.IsAuthorized)
+            {
+                ErrorNotification(
+                    "No se puede realizar pagos debido a que el Apoyo Social Económico no se encuentra aprobado");
+                return RedirectToAction("Edit", new { id });
+            }
+
+            var allPayment = _loanService.GetAllPayments(id, stateId: (int)LoanState.Pendiente);
+            var amountToCancel = allPayment.Sum(x => x.MonthlyCapital);
+            var loanPaymentModel = new LoanPaymentsModel
+            {
+                Banks = _bankSettings.PrepareBanks(),
+                LoanId = id,
+                CustomerId = loan.CustomerId,
+                AmountToCancel = amountToCancel
+            };
+
+            return View(loanPaymentModel);
+        }
+
+        [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
+        public ActionResult CreateEndPayment(LoanPaymentsModel model, bool continueEditing)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageLoans))
+                return AccessDeniedView();
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var loan = _loanService.GetLoanById(model.LoanId);
+            var allPaymentPendient = _loanService.GetAllPayments(model.LoanId, stateId: (int)LoanState.Pendiente);
+
+            var amountToCancel = allPaymentPendient.Sum(x => x.MonthlyCapital);
+
+            if (amountToCancel == model.MonthlyPayed)
+            {
+                foreach (var payment in allPaymentPendient)
+                {
+                    payment.MonthlyFee = 0;
+                    payment.IsAutomatic = false;
+                    payment.MonthlyPayed = payment.MonthlyCapital; 
+
+                    payment.StateId = (int)LoanState.PagoPersonal;
+                    payment.BankName = GetBank(model.BankName);
+                    payment.AccountNumber = model.AccountNumber;
+                    payment.TransactionNumber = model.TransactionNumber;
+                    payment.Reference = model.Reference;
+                    payment.Description = "Couta liquidada por Pago Anticipado";
+                    payment.ProcessedDateOnUtc = DateTime.UtcNow;
+
+                    _loanService.UpdateLoanPayment(payment);
+                }
+
+                var allPayments = loan.LoanPayments;
+                loan.UpdatedOnUtc = DateTime.UtcNow;
+                loan.TotalPayed = allPayments.Sum(x => x.MonthlyPayed);
+                loan.TotalFeed = allPayments.Sum(x => x.MonthlyFee);
+                loan.IsDelay = false;
+                loan.Active = false;
+
+                _loanService.UpdateLoan(loan);
+            }
+            else
+            {
+                ErrorNotification("El monto ingresado no corresponde al valor pendiente de pago");
+
+                var id = model.Id;  
+                model = new LoanPaymentsModel
+                {
+                    Banks = _bankSettings.PrepareBanks(),
+                    LoanId = id,
+                    CustomerId = loan.CustomerId,
+                    AmountToCancel = amountToCancel
+                };
+                return View(model);
+            } 
+
+            SuccessNotification(_localizationService.GetResource("Admin.Customers.Customers.Loans.Updated"));
+
+            if (continueEditing)
+            {
+                return RedirectToAction("CreateCustomPayment", new { id = model.LoanId });
+            }
+            return RedirectToAction("Edit", new { id = model.LoanId });
         }
 
         #endregion

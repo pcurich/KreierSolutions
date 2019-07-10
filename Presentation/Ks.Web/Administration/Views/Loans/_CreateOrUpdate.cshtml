@@ -1,4 +1,5 @@
 ﻿@model  LoanPaymentListModel
+@using System.Globalization
 @Html.HiddenFor(model => model.Id)
 @Html.HiddenFor(model => model.LoanId)
 @Html.HiddenFor(model => model.CustomerId)
@@ -51,7 +52,7 @@
             @Html.KsLabelFor(model => model.LoanAmount):
         </td>
         <td class="adminData">
-            @Model.LoanAmount.ToString("C")
+            @Model.LoanAmount.ToString("c", new CultureInfo("es-PE"))
         </td>
     </tr>
     <tr>
@@ -76,7 +77,7 @@
             @Html.KsLabelFor(model => model.MonthlyQuota):
         </td>
         <td class="adminData">
-            @Model.MonthlyQuota.ToString("C")
+            @Model.MonthlyQuota.ToString("c", new CultureInfo("es-PE"))
         </td>
     </tr>
     <tr>
@@ -102,12 +103,12 @@
             @Html.KsLabelFor(model => model.TotalAmount):
         </td>
         <td class="adminData">
-            @Model.TotalAmount.ToString("C")
+            @Model.TotalAmount.ToString("c", new CultureInfo("es-PE"))
         </td>
     </tr>
     <tr>
         <td class="adminTitle">
-            @Html.KsLabelFor(model=>model.IsAuthorized)
+            @Html.KsLabelFor(model => model.IsAuthorized)
         </td>
         <td class="adminData">
             @{
@@ -128,15 +129,20 @@
             @{
                 if (Model.Active)
                 {
-                    <img src="@Url.Content("~/Administration/Content/images/active-true.gif")" alt=""/>
+                    <img src="@Url.Content("~/Administration/Content/images/active-true.gif")" alt="" />
                 }
                 else
                 {
-                    <img src="@Url.Content("~/Administration/Content/images/active-false.gif")" alt=""/>
+                    <img src="@Url.Content("~/Administration/Content/images/active-false.gif")" alt="" />
                 }
             }
         </td>
-
+        <td class="adminTitle">
+            @Html.KsLabelFor(model => model.TotalPayed)
+        </td>
+        <td class="adminData">
+            @Model.TotalPayed.ToString("c", new CultureInfo("es-PE"))
+        </td>
     </tr>
     <tr>
         <td></td>
@@ -149,7 +155,7 @@
         </td>
 
 
-<tr>
+    <tr>
         <td colspan="2">
             <input type="button" id="search-payment" class="k-button" value="@T("Admin.Common.Search")" />
         </td>

@@ -43,6 +43,7 @@ namespace Ks.Admin.Models.Contract
 
         [KsResourceDisplayName("Admin.Contract.Loan.Fields.IsAuthorized")]
         public bool IsAuthorized { get; set; }
+        [KsResourceDisplayName("Admin.Contract.Loan.Fields.TotalPayed")]
         public decimal TotalPayed { get; set; }
         [KsResourceDisplayName("Admin.Contract.ReturnPayment.CheckNumber")]
         public string CheckNumber { get; set; }

@@ -1363,6 +1363,7 @@
     <Content Include="Views\Check\List.cshtml" />
     <Content Include="Views\Check\Edit.cshtml" />
     <Content Include="Views\Check\_CreateOrUpdate.cshtml" />
+    <Content Include="Views\Loans\CreateEndPayment.cshtml" />
     <None Include="Views\Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
