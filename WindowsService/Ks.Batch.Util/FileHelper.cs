@@ -15,7 +15,7 @@ namespace Ks.Batch.Util
                 using (var myFile = File.Create(newPath))
                 {
                     TextWriter tw = new StreamWriter(myFile);
-                    tw.WriteLine(string.Format("{0}-{1}-{2}-{3}-{4}-{5}", date.Year, date.Month, date.Day, date.Hour, date.Minute, date.Second));
+                    tw.WriteLine(GetDateFormat(date));
                     tw.Close();
                 }
             }
@@ -67,6 +67,21 @@ namespace Ks.Batch.Util
                 //Log.Info("Archivo Purgado (60) : "+ timeDiff.TotalSeconds );
                 DeleteBusyFile(pathBase);
             }            
+        }
+
+        public static string GetDateFormat(DateTime date)
+        {
+            return string.Format("{0}-{1}-{2}-{3}-{4}-{5}", date.Year, date.Month.ToString("D2"), date.Day.ToString("D2"), date.Hour.ToString("D2"), date.Minute.ToString("D2"), date.Second.ToString("D2"));
+        }
+
+        public static string GetDate(DateTime date)
+        {
+            return string.Format("{0}{1}{2}", date.Year, date.Month.ToString("D2"), date.Day.ToString("D2"));
+        }
+
+        public static string GetTime(DateTime date)
+        {
+            return string.Format("{0}{1}{2}", date.Hour.ToString("D2"), date.Minute.ToString("D2"), date.Second.ToString("D2"));
         }
     }
 }

@@ -2043,6 +2043,136 @@ namespace Ks.Services.ExportImport
             }
         }
 
+        public void ExportReportInfoMergeToXlsx(MemoryStream stream, string source, List<Info> send, List<Info> recive)
+        {
+            if (stream == null)
+                throw new ArgumentNullException("stream");
+
+            using (var xlPackage = new ExcelPackage(stream))
+            {
+                // get handle to the existing worksheet
+                var worksheet = xlPackage.Workbook.Worksheets.Add(source.Replace(".", " ").Replace("Ks", "").Replace("Batch", "").Replace(","," ").Trim());
+
+                var properties = new[]
+                    {
+                        "AÑO","MES","AsociadoId","APELLIDOS Y NOMBRE","N° ADMINISTRATIVO","DNI","TOTAL APORTACION","TOTAL PAGADO","TOTAL APOYO",
+                        "COUTA APORTACION","MONTO 1", "MONTO 2", "MONTO 3","MONTO ANTERIOR","MONTO TOTAL","MONTO APORTADO","ESTADOAPORTACIONID",
+                        "ES AUTOMATICO","BANCO","CUENTA","TRANSACCION","REFERENCIA", "DESCRIPCION",
+                        "COUTA APOYO","COUTA MENSUAL","INTERES","CAPITAL","MONTO PAGADO","ESTADOAPOYOID","ES AUTOMATICO","BANCO",
+                        "CUENTA","TRANSACCION","REFERENCIA", "DESCRIPCION"
+
+                    };
+                for (var i = 0; i < properties.Length; i++)
+                {
+                    worksheet.Cells[1, i + 1].Value = properties[i];
+                    worksheet.Cells[1, i + 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    worksheet.Cells[1, i + 1].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(128, 235, 142));
+                    worksheet.Cells[1, i + 1].Style.Fill.BackgroundColor.Tint = 0.599993896298105M;
+                    worksheet.Cells[1, i + 1].Style.Font.Bold = true;
+                }
+
+                var row = 2;
+
+                foreach (var p in send)
+                {
+                    var col = 1;
+                    var totalPayed=recive.Where(X => X.AdminCode == p.AdminCode).Sum(X => X.TotalPayed);
+                    var color = totalPayed ==0 ? 
+                                               Color.FromArgb(255, 100, 100) : 
+                                               (p.TotalContribution + p.TotalLoan) == totalPayed ?
+                                                                                                  Color.FromArgb(51, 255, 51) : 
+                                                                                                  Color.FromArgb(255, 255, 0);
+                    worksheet.Cells[row, col].Value = p.Year;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.Month.ToString("D2");
+                    col++;
+                    worksheet.Cells[row, col].Value = p.CustomerId;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.CompleteName;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.AdminCode;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.Dni;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.TotalContribution;
+                    col++;
+                    worksheet.Cells[row, col].Value = totalPayed;
+                    worksheet.Cells[row, col].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    worksheet.Cells[row, col].Style.Fill.BackgroundColor.SetColor(color);
+                    worksheet.Cells[row, col].Style.Fill.BackgroundColor.Tint = 0.599993896298105M;
+                    worksheet.Cells[row, col].Style.Font.Bold = true;
+
+                    col++;
+                    worksheet.Cells[row, col].Value = p.TotalLoan;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.InfoContribution != null ? p.InfoContribution.Number.ToString() : "";
+                    col++;
+                    worksheet.Cells[row, col].Value = p.InfoContribution != null ? p.InfoContribution.Amount1.ToString() : "";
+                    col++;
+                    worksheet.Cells[row, col].Value = p.InfoContribution != null ? p.InfoContribution.Amount2.ToString() : "";
+                    col++;
+                    worksheet.Cells[row, col].Value = p.InfoContribution != null ? p.InfoContribution.Amount3.ToString() : "";
+                    col++;
+                    worksheet.Cells[row, col].Value = p.InfoContribution != null ? p.InfoContribution.AmountOld.ToString() : "";
+                    col++;
+                    worksheet.Cells[row, col].Value = p.InfoContribution != null ? p.InfoContribution.AmountTotal.ToString() : "";
+                    col++;
+                    worksheet.Cells[row, col].Value = p.InfoContribution != null ? p.InfoContribution.AmountPayed.ToString() : "";
+                    col++;
+                    worksheet.Cells[row, col].Value = p.InfoContribution != null ? p.InfoContribution.StateId.ToString() : "";
+                    col++;
+                    worksheet.Cells[row, col].Value = p.InfoContribution != null ? p.InfoContribution.IsAutomatic.ToString() : "";
+                    col++;
+                    worksheet.Cells[row, col].Value = p.InfoContribution != null ? p.InfoContribution.BankName.ToString() : "";
+                    col++;
+                    worksheet.Cells[row, col].Value = p.InfoContribution != null ? p.InfoContribution.AccountNumber.ToString() : "";
+                    col++;
+                    worksheet.Cells[row, col].Value = p.InfoContribution != null ? p.InfoContribution.TransactionNumber.ToString() : "";
+                    col++;
+                    worksheet.Cells[row, col].Value = p.InfoContribution != null ? p.InfoContribution.Reference.ToString() : "";
+                    col++;
+                    worksheet.Cells[row, col].Value = p.InfoContribution != null ? p.InfoContribution.Description.ToString() : "";
+                    col++;
+
+                    foreach (var infoLoan in p.InfoLoans)
+                    {
+                        worksheet.Cells[row, col].Value = infoLoan.Quota;
+                        col++;
+                        worksheet.Cells[row, col].Value = infoLoan.MonthlyQuota;
+                        col++;
+                        worksheet.Cells[row, col].Value = infoLoan.MonthlyFee;
+                        col++;
+                        worksheet.Cells[row, col].Value = infoLoan.MonthlyCapital;
+                        col++;
+                        worksheet.Cells[row, col].Value = infoLoan.MonthlyPayed;
+                        col++;
+                        worksheet.Cells[row, col].Value = infoLoan.StateId;
+                        col++;
+                        worksheet.Cells[row, col].Value = infoLoan.IsAutomatic;
+                        col++;
+                        worksheet.Cells[row, col].Value = infoLoan.BankName;
+                        col++;
+                        worksheet.Cells[row, col].Value = infoLoan.AccountNumber;
+                        col++;
+                        worksheet.Cells[row, col].Value = infoLoan.TransactionNumber;
+                        col++;
+                        worksheet.Cells[row, col].Value = infoLoan.Reference;
+                        col++;
+                        worksheet.Cells[row, col].Value = infoLoan.Description;
+                        col++;
+                        row++;
+                        col = col - 12;
+                    } 
+                }
+
+                for (var i = 1; i <= worksheet.Dimension.Columns; i++)
+                {
+                    worksheet.Column(i).AutoFit();
+                }
+                xlPackage.Save();
+            }
+        }
+
         public virtual void ExportChecksToXlsx(MemoryStream stream, DateTime from, DateTime to, IList<ReportChecks> checks)
         {
             if (stream == null)

@@ -64,7 +64,7 @@ namespace Ks.Batch.Copere.Out
             var dao = new Dao(Connection);
             dao.Connect();
             Log.InfoFormat("Action: {0}", "Inicia Proceso de extraccion");
-            var scheduleBatchs = dao.Process(Batch);
+            var scheduleBatchs = dao.Process(Path, Batch);
             dao.Close();
             return scheduleBatchs;
         }

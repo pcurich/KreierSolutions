@@ -17,8 +17,7 @@ namespace Ks.Admin.Models.Report
         public ReportContribution ReportContribution { get; set; }
         public ReportMilitarySituation ReportMilitarySituation { get; set; }
         public SumaryBankPayment SumaryBankPayment  { get; set; }
-
-        public ReportCheck ReportCheck { get; set; }
+        public ReportCheck ReportCheck { get; set; } 
     }
 
     #region Inner Class
@@ -182,6 +181,7 @@ namespace Ks.Admin.Models.Report
         public int TypeId { get; set; }
         public List<SelectListItem> Types { get; set; }
     }
+ 
 
     #endregion
 }

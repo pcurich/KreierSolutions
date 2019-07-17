@@ -92,7 +92,7 @@ namespace Ks.Batch.Merge
             var infoLoanIncomplete = new List<InfoLoan>(); // los puchos
 
 
-            #region SplitList
+            #region Split-List
 
             Info response;
             //Para cada registro enviado hacia el copere

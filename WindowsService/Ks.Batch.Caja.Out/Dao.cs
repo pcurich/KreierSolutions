@@ -292,7 +292,9 @@ namespace Ks.Batch.Caja.Out
                       " ISNULL(LP.AccountNumber,'') as AccountNumber, " +
                       " ISNULL(LP.TransactionNumber,'') as TransactionNumber, " +
                       " ISNULL(LP.Reference,'') as Reference, " +
-                      " ISNULL(LP.Description,'') as Description " +
+                      " ISNULL(LP.Description,'') as Description, " +
+                      " L.Period as Period, " +
+                      " L.LoanAmount as LoanAmount " +
                       " FROM LoanPayment LP INNER JOIN Loan L on L.Id=lp.LoanId " +
                       " WHERE " +
                       " L.CustomerId IN (" + string.Join(",", customerIds.ToArray()) + ") and " +
@@ -461,7 +463,9 @@ namespace Ks.Batch.Caja.Out
                 AccountNumber = sqlReader.GetString(sqlReader.GetOrdinal("AccountNumber")),
                 TransactionNumber = sqlReader.GetString(sqlReader.GetOrdinal("TransactionNumber")),
                 Reference = sqlReader.GetString(sqlReader.GetOrdinal("Reference")),
-                Description = sqlReader.GetString(sqlReader.GetOrdinal("Description"))
+                Description = sqlReader.GetString(sqlReader.GetOrdinal("Description")),
+                Period = sqlReader.GetInt32(sqlReader.GetOrdinal("Period")),
+                LoanAmount = sqlReader.GetDecimal(sqlReader.GetOrdinal("MonthlyFee")),
             };
         } 
           

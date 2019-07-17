@@ -266,9 +266,8 @@ namespace Ks.Admin.Controllers
                 {
                     customer.CustomerRoles.Add(_customerService.GetCustomerRoleById(model.CustomerRoleId)); 
                     _customerService.UpdateCustomer(customer);
-                }
-
-                customers.Add(customer);
+                    customers.Add(customer);
+                } 
             }
 
             

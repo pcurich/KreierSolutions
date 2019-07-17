@@ -7,6 +7,7 @@ using Ks.Admin.Extensions;
 using Ks.Admin.Models.Report;
 using Ks.Core.Domain.Contract;
 using Ks.Core.Domain.Customers;
+using Ks.Services.Batchs;
 using Ks.Services.Common;
 using Ks.Services.Contract;
 using Ks.Services.Customers;
@@ -25,6 +26,7 @@ namespace Ks.Admin.Controllers
         #region Fields
 
         private readonly IPermissionService _permissionService;
+        private readonly IScheduleBatchService _scheduleBatchService;
         private readonly IContributionService _contributionService;
         private readonly ICustomerService _customerService;
         private readonly IGenericAttributeService _genericAttributeService;
@@ -49,6 +51,7 @@ namespace Ks.Admin.Controllers
 
         public ReportController(
             IPermissionService permissionService,
+            IScheduleBatchService scheduleBatchService,
             IContributionService contributionService,
             ICustomerService customerService,
             IGenericAttributeService genericAttributeService,
@@ -66,6 +69,7 @@ namespace Ks.Admin.Controllers
             BenefitValueSetting benefitValueSetting)
         {
             _permissionService = permissionService;
+            _scheduleBatchService = scheduleBatchService;
             _contributionService = contributionService;
             _customerService = customerService;
             _genericAttributeService = genericAttributeService;
@@ -96,6 +100,17 @@ namespace Ks.Admin.Controllers
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageReports))
                 return AccessDeniedView();
+
+            var batchsServices = _scheduleBatchService.GetAllBatchs(true);
+            var listOfServices = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "0", Text = "-----------------" }
+            };
+
+            foreach (var b in batchsServices)
+            {
+                listOfServices.Add(new SelectListItem { Value = b.SystemName, Text = b.Name });
+            }
 
             var model = new ReportListModel
             {
@@ -187,7 +202,7 @@ namespace Ks.Admin.Controllers
                         new SelectListItem {Value = "3", Text = "Devoluciones"},
                         new SelectListItem {Value = "4", Text = "Beneficios"},
                     }
-                }
+                }, 
             };
 
             model.ReportMilitarySituation.MilitarySituations.Insert(0, new SelectListItem { Value = "0", Text = "-------------" });
@@ -597,6 +612,7 @@ namespace Ks.Admin.Controllers
             ErrorNotification(errorMessage);
             return RedirectToAction("List");
         }
+
         #endregion
     }
 }

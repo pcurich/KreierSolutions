@@ -1090,7 +1090,9 @@ namespace Ks.Admin.Controllers
                 loan.TotalPayed = allPayments.Sum(x => x.MonthlyPayed);
                 loan.TotalFeed = allPayments.Sum(x => x.MonthlyFee);
                 loan.IsDelay = false;
-                loan.Active = false;
+                var allPaymentInProcess = _loanService.GetAllPayments(model.LoanId, stateId: (int)LoanState.EnProceso);
+                if(allPaymentInProcess.Count == 0)
+                    loan.Active = false;
 
                 _loanService.UpdateLoan(loan);
             }

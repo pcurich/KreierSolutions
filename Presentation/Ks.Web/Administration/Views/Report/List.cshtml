@@ -45,7 +45,7 @@
         </li>
         <li @Html.RenderSelectedTabIndex(5, GetSelectedTabIndex())>
             @T("Admin.Catalog.Report.SumaryBankPayment")
-        </li>
+        </li> 
     </ul>
     <div>
         @TabGlobal()
@@ -57,8 +57,8 @@
         @TabLoanGeneral()
     </div>
     @*<div>
-        @TabBenefit()
-    </div>*@
+            @TabBenefit()
+        </div>*@
     <div>
         @TabCheck()
     </div>
@@ -163,31 +163,31 @@
         @Html.AntiForgeryToken()
         <table width="100%">
             @*<tr>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.ReportContribution.FromId):
-                </td>
-                <td class="adminData">
-                    @Html.DropDownListFor(model => model.ReportContribution.FromId, Model.ReportContribution.From)
-                    @Html.ValidationMessageFor(model => model.ReportContribution.FromId)
-                    <script>
-                        $(document).ready(function() {
-                            $('#@Html.FieldIdFor(model => model.ReportContribution.FromId)').width(250).kendoDropDownList();
-                        });
-                    </script>
-                </td>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.ReportContribution.ToId):
-                </td>
-                <td class="adminData">
-                    @Html.DropDownListFor(model => model.ReportContribution.ToId, Model.ReportContribution.To)
-                    @Html.ValidationMessageFor(model => model.ReportContribution.ToId)
-                    <script>
-                        $(document).ready(function() {
-                            $('#@Html.FieldIdFor(model => model.ReportContribution.ToId)').width(250).kendoDropDownList();
-                        });
-                    </script>
-                </td>
-            </tr>*@
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.ReportContribution.FromId):
+                    </td>
+                    <td class="adminData">
+                        @Html.DropDownListFor(model => model.ReportContribution.FromId, Model.ReportContribution.From)
+                        @Html.ValidationMessageFor(model => model.ReportContribution.FromId)
+                        <script>
+                            $(document).ready(function() {
+                                $('#@Html.FieldIdFor(model => model.ReportContribution.FromId)').width(250).kendoDropDownList();
+                            });
+                        </script>
+                    </td>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.ReportContribution.ToId):
+                    </td>
+                    <td class="adminData">
+                        @Html.DropDownListFor(model => model.ReportContribution.ToId, Model.ReportContribution.To)
+                        @Html.ValidationMessageFor(model => model.ReportContribution.ToId)
+                        <script>
+                            $(document).ready(function() {
+                                $('#@Html.FieldIdFor(model => model.ReportContribution.ToId)').width(250).kendoDropDownList();
+                            });
+                        </script>
+                    </td>
+                </tr>*@
             <tr>
                 <td class="adminTitle">
                     @Html.KsLabelFor(model => model.ReportContribution.FromDate):
@@ -211,7 +211,7 @@
                 <td class="adminData">
                     @Html.DropDownListFor(model => model.ReportContribution.TypeId, Model.ReportContribution.Types)
                     @Html.ValidationMessageFor(model => model.ReportContribution.TypeId)
-                     <script>
+                    <script>
                         $(document).ready(function () {
                             $('#@Html.FieldIdFor(model => model.ReportContribution.TypeId)').width(250).kendoDropDownList();
                         });
@@ -252,7 +252,7 @@
                     @Html.EditorFor(model => model.ReportLoan.To)
                     @Html.ValidationMessageFor(model => model.ReportLoan.To)
                 </td>
- 
+
                 <td class="adminTitle">
                     @Html.KsLabelFor(model => model.ReportLoan.TypeId):
                 </td>
@@ -265,19 +265,12 @@
                         });
                     </script>
                 </td>
-                <td class="adminTitle">
-                    @*@Html.KsLabelFor(model => model.ReportLoan.StatesId):*@
+                <td class="adminTitle"> 
                 </td>
                 <td class="adminData">
-                    @*@Html.DropDownListFor(model => model.ReportLoan.StatesId, Model.ReportLoan.States)
-    @Html.ValidationMessageFor(model => model.ReportLoan.StatesId)
-    <script>
-        $(document).ready(function () {
-            $('#@Html.FieldIdFor(model => model.ReportLoan.StatesId)').width(250).kendoDropDownList();
-        });
-    </script>*@
+     
                 </td>
-      
+
                 <td></td>
                 <td></td>
                 <td></td>
@@ -370,7 +363,8 @@
                         });
                     </script>
                 </td>
-                <td class="adminTitle"></td><td class="adminTitle"></td>
+                <td class="adminTitle"></td>
+                <td class="adminTitle"></td>
             </tr>
             <tr>
                 <td class="adminTitle">
@@ -390,7 +384,7 @@
             </tr>
             <tr>
                 <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.ReportMilitarySituation.LoanStateId ):
+                    @Html.KsLabelFor(model => model.ReportMilitarySituation.LoanStateId):
                 </td>
                 <td class="adminData">
                     @Html.DropDownListFor(model => model.ReportMilitarySituation.LoanStateId, Model.ReportMilitarySituation.LoanStates)
@@ -499,7 +493,8 @@
                     @Html.EditorFor(model => model.ReportCheck.To)
                     @Html.ValidationMessageFor(model => model.ReportCheck.To)
                 </td>
-
+            </tr>
+            <tr>
                 <td class="adminTitle">
                     @Html.KsLabelFor(model => model.ReportCheck.TypeId):
                 </td>
@@ -536,3 +531,4 @@
         </table>
     }
 }
+ 

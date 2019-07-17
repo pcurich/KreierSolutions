@@ -5,10 +5,12 @@
         public int LoanPaymentId { get; set; }
         public int LoanId { get; set; }
         public int Quota { get; set; }
+        public int Period { get; set; }
         public decimal MonthlyQuota { get; set; }
         public decimal MonthlyFee { get; set; }
         public decimal MonthlyCapital { get; set; }
         public decimal MonthlyPayed { get; set; }
+        public decimal NoPayedYet { get; set; }
         public int StateId { get; set; }
         public bool IsAutomatic { get; set; }
         public string BankName { get; set; }

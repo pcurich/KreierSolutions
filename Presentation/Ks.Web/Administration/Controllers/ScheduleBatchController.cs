@@ -421,13 +421,11 @@ namespace Ks.Admin.Controllers
                     {
                         var envio = _reportService.GetInfo(source.Split(',')[0],
                             model.ReportInfo.YearId.ToString("0000") + model.ReportInfo.MonthId.ToString("00"));
-                        if (envio != null)
-                            _exportManager.ExportReportInfoToXlsx(stream, source, envio);
-
                         var recepcion = _reportService.GetInfo(source.Split(',')[1],
                             model.ReportInfo.YearId.ToString("0000") + model.ReportInfo.MonthId.ToString("00"));
-                        if (recepcion != null)
-                            _exportManager.ExportReportInfoToXlsx(stream, source, recepcion);
+
+                        if (envio != null && recepcion != null)
+                            _exportManager.ExportReportInfoMergeToXlsx(stream, source,  recepcion, envio);
                     }
                     else
                     {

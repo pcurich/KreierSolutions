@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using Ks.Batch.Util;
 using Ks.Batch.Util.Model;
@@ -26,19 +27,82 @@ namespace Ks.Batch.Copere.Out
         {
         }
 
-        public List<string> Process(ScheduleBatch batch)
+        public List<string> Process(string path, ScheduleBatch batch)
         {
             Batch = batch;
             try
             {
-                Log.InfoFormat("Action: {0} {1}", "Dao.Process(" + batch.SystemName + ")");
+                Log.InfoFormat("Action: {0}", "Dao.Process(" + batch.SystemName + ")");
 
-                List<int> customerIds;
                 ReportOut = new Dictionary<int, Info>();
 
-                GetCustomer(out customerIds);
+                GetCustomer(out List<int> customerIds);
+
                 GetContributionPayments(customerIds);
+
+                #region Write to xml file
+                using (var stream = new MemoryStream())
+                {
+                    var properties = new[] { "MesProc", "CodDes", "NumAdm", "Monto", "FechaDesem", "HoraDesem", "NroCuota", "TotalCuotas", "Saldo" };
+                    var data = new Dictionary<int, Dictionary<int, string>>();
+                    var index = 0;
+                    foreach (var info in ReportOut.Values)
+                    {
+                        var tmp = new Dictionary<int, string>
+                        {
+                            { 0, info.Year.ToString() + info.Month.ToString("D2") },
+                            { 1, "8001" },
+                            { 2, info.AdminCode },
+                            { 3, info.InfoContribution.AmountTotal.ToString() }
+                        };
+                        data.Add(index, tmp);
+                        index++;
+                    }
+                    var fileName = Path.Combine(Path.Combine(path, Batch.FolderMoveToDone), "8001-" + FileHelper.GetDateFormat(DateTime.Now) + ".xls");
+                    if (File.Exists(fileName))
+                        File.Delete(fileName);
+                    ExcelFile.CreateReport("Aportaciones", 1, stream, properties, data, fileName);
+                }
+                #endregion
+
                 GetLoanPayment(customerIds);
+
+                #region Write to xml file
+                using (var stream = new MemoryStream())
+                {
+                    var properties = new[] { "MES_PROCESO", "NRO_ADMINIST", "COD_DESCUENTO", "MTO_DESCUENTO", "NUM_CUOTAS", "TOT_CUOTAS", "FEC_DESEMBOLSO", "HOR_DESEMBOLSO", "MTO_SALDO_PRES" };
+                    var data = new Dictionary<int, Dictionary<int, string>>();
+                    var index = 0;
+                    foreach (var info in ReportOut.Values)
+                    {
+                        if (info.InfoLoans != null)
+                        {
+                            foreach (var loan in info.InfoLoans)
+                            {
+                                var tmp = new Dictionary<int, string>
+                                {
+                                    { 0, info.Year.ToString() + info.Month.ToString("D2") },
+                                    { 1, info.AdminCode },
+                                    { 2, "8033" },
+                                    { 3, loan.MonthlyQuota.ToString()},
+                                    { 4, loan.Quota.ToString() },
+                                    { 5, loan.Period.ToString() },
+                                    { 6, FileHelper.GetDate(DateTime.Now) },
+                                    { 7, FileHelper.GetTime(DateTime.Now) },
+                                    { 8, loan.NoPayedYet.ToString() }
+                                };
+                                data.Add(index, tmp);
+                                index++;
+                            }
+                        }
+                    }
+                    var fileName = Path.Combine(Path.Combine(path, Batch.FolderMoveToDone), "8033-" + FileHelper.GetDateFormat(DateTime.Now) + ".xls");
+                    if (File.Exists(fileName))
+                        File.Delete(fileName);
+                    ExcelFile.CreateReport("Apoyo", 1, stream, properties, data, fileName);
+                }
+                #endregion
+
                 //copere send contribution and loan in separates
                 MergeData(customerIds);
 
@@ -49,6 +113,7 @@ namespace Ks.Batch.Copere.Out
                     CompleteCustomerName();
                     var guid = CreateReportIn(Batch, XmlHelper.Serialize2String(new List<Info>(ReportOut.Values)));
                     CreateReportOut(guid, Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00"), "Ks.Batch.Copere.In");
+                    
                 }
 
             }
@@ -138,7 +203,7 @@ namespace Ks.Batch.Copere.Out
         {
             try
             {
-                Log.InfoFormat("Action: 2) {0} {1} {2}", "Buscamos las contribuciones pendientes de los ", customerIds.Count, " aportantes"  );
+                Log.InfoFormat("Action: 2) {0} {1} {2}", "Buscamos las contribuciones pendientes de los ", customerIds.Count, " aportantes");
 
                 Sql = "SELECT " +
                       "c.CustomerId as CustomerId,  " +
@@ -163,7 +228,7 @@ namespace Ks.Batch.Copere.Out
                       "INNER JOIN  Contribution c on c.Id=cp.ContributionId " +
                       "WHERE c.CustomerId IN (" + string.Join(",", customerIds.ToArray()) + ") AND " +
                       "cp.StateId=@StateId AND " +
-                      "c.active="+(int)State.Active + " AND " +
+                      "c.active=" + (int)State.Active + " AND " +
                       "YEAR(cp.ScheduledDateOnUtc)=@Year AND " +
                       "MONTH(cp.ScheduledDateOnUtc)=@Month  ";
 
@@ -269,7 +334,7 @@ namespace Ks.Batch.Copere.Out
         /// </summary>
         /// <param name="customerIds"></param>
         private void GetLoanPayment(List<int> customerIds)
-        { 
+        {
             try
             {
                 Log.InfoFormat("Action: 4) {0} {1} {2}", "Buscamos los apoyos pendientes de los ", customerIds.Count, " aportantes");
@@ -289,11 +354,21 @@ namespace Ks.Batch.Copere.Out
                       " ISNULL(LP.AccountNumber,'') as AccountNumber, " +
                       " ISNULL(LP.TransactionNumber,'') as TransactionNumber, " +
                       " ISNULL(LP.Reference,'') as Reference, " +
-                      " ISNULL(LP.Description,'') as Description " +
-                      " FROM LoanPayment LP INNER JOIN Loan L on L.Id=lp.LoanId " +
+                      " ISNULL(LP.Description,'') as Description, " +
+                      " L.Period as Period, " +
+                      " ISNULL(X.NoPayedYet,L.TOTALAMOUNT) AS NoPayedYet " +
+                      " FROM LoanPayment LP " +
+                      " INNER JOIN Loan L on L.Id=lp.LoanId " +
+                      " LEFT JOIN (" +
+                      "             SELECT LoanId, SUM(_L.TOTALAMOUNT - ISNULL(MonthlyPayed,0)) as NoPayedYet  " +
+                      "             FROM  LoanPayment _LP INNER JOIN Loan _L on _L.Id = _LP.LoanId " +
+                      "             WHERE _LP.StateId = "+(int)LoanState.Pagado+" AND " +
+                      "                   _L.Active= "+(int)State.Active+" AND " +
+                      "                   _L.CustomerId IN (" + string.Join(",", customerIds.ToArray()) + ") " +
+                      "             GROUP BY _LP.LoanId)X ON X.LoanId = L.Id" +
                       " WHERE " +
                       " L.CustomerId IN (" + string.Join(",", customerIds.ToArray()) + ") and " +
-                      " L.Active="+(int)State.Active+" AND" + 
+                      " L.Active=" + (int)State.Active + " AND" +
                       " LP.StateId=@StateId and " +
                       " YEAR(lp.ScheduledDateOnUtc)=@Year and " +
                       " MONTH(lp.ScheduledDateOnUtc)=@Month " +
@@ -487,10 +562,12 @@ namespace Ks.Batch.Copere.Out
                 AccountNumber = sqlReader.GetString(sqlReader.GetOrdinal("AccountNumber")),
                 TransactionNumber = sqlReader.GetString(sqlReader.GetOrdinal("TransactionNumber")),
                 Reference = sqlReader.GetString(sqlReader.GetOrdinal("Reference")),
-                Description = sqlReader.GetString(sqlReader.GetOrdinal("Description"))
+                Description = sqlReader.GetString(sqlReader.GetOrdinal("Description")),
+                Period = sqlReader.GetInt32(sqlReader.GetOrdinal("Period")),
+                NoPayedYet = sqlReader.GetDecimal(sqlReader.GetOrdinal("NoPayedYet")),
             };
         }
-         
+
         private void CompleteCustomerName()
         {
             var result = GetUserNames(FileOut.Keys.ToList());
