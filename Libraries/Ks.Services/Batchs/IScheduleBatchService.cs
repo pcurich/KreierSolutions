@@ -16,7 +16,7 @@ namespace Ks.Services.Batchs
         /// </summary>
         /// <param name="batchId">Batch identifier</param>
         /// <returns>Batch</returns>
-        ScheduleBatch GetBatchById(int batchId);
+        ScheduleBatch GetBatchById(int batchId); 
 
         /// <summary>
         /// Gets all Batchs

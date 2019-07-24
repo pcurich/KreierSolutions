@@ -32,6 +32,7 @@ namespace Ks.Batch.Merge
                 serviceConfig.EnablePauseAndContinue();
                 serviceConfig.StartAutomatically();
             });
+
         }
     }
 }

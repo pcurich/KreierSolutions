@@ -13,6 +13,7 @@ namespace Ks.Services.Reports
     {
         #region Fields
 
+        private readonly IRepository<Report> _reportRepository;
         private readonly IDataProvider _dataProvider;
         private readonly IDbContext _dbContext;
 
@@ -20,8 +21,9 @@ namespace Ks.Services.Reports
 
         #region Constructor
 
-        public ReportService(IDataProvider dataProvider, IDbContext dbContext)
+        public ReportService(IDataProvider dataProvider, IDbContext dbContext, IRepository<Report> reportRepository)
         {
+            _reportRepository = reportRepository;
             _dataProvider = dataProvider;
             _dbContext = dbContext;
         }
@@ -29,6 +31,17 @@ namespace Ks.Services.Reports
         #endregion
 
         #region Methods
+
+        public virtual bool CanRevertBatch(string period, string source1, int state1, string source2, int state2)
+        {
+            var query = from cr in _reportRepository.Table
+                        orderby cr.Id
+                        where ((cr.Source == source1 && cr.StateId == state1) || (cr.Source == source2 && cr.StateId == state2)) && cr.Period == period  
+                        select cr;
+            var canBeDeleted = query.Count();
+
+            return canBeDeleted == 2;
+        }
 
         public virtual IList<ReportGlobal> GetGlobalReport(int year, int month, int type, string copere, string caja)
         {

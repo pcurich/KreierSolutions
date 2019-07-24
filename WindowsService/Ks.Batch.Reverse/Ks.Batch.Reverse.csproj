@@ -66,7 +66,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BatchContainer.cs" />
-    <Compile Include="Dao.cs" />
+    <Compile Include="DaoReverseContributions.cs" />
+    <Compile Include="DaoReverseLoan.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Watcher.cs" />

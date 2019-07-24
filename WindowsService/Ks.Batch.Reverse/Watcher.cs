@@ -1,4 +1,5 @@
 ﻿using Ks.Batch.Util;
+using Ks.Batch.Util.Model;
 using System;
 using System.Configuration;
 using System.IO;
@@ -18,47 +19,51 @@ namespace Ks.Batch.Reverse
         {
             Thread.Sleep(1000 * 3); //3 Sec because is not atomic
             var connection = ConfigurationManager.ConnectionStrings["ACMR"].ConnectionString;
-            var SysName = ConfigurationManager.AppSettings["SysName"];
+            var SysName = e.Name;
 
-            var dao = new Dao(connection);
+            var dao = new DaoReverseContributions(connection);
             dao.Connect();
 
             var batch = dao.GetScheduleBatch(SysName);
-            var month = batch.PeriodMonth;
-            var year = batch.PeriodYear;
 
-            if(month == 1)
+            if (batch.PeriodMonth == 1)
             {
-                month = 12;
-                year--;
+                batch.PeriodMonth = 12;
+                batch.PeriodYear--;
             }
             else
             {
-                month--;
+                batch.PeriodMonth--;
             }
-            dao.RevertDataContribution(year, month);
-            dao.RevertDataLoan(year, month);
+            var result = dao.StartReverse(getCode(SysName),batch);
 
-            UpdateScheduleBatch(dao, batch, month, year);
+            //LANZAR UN ERROR CRITICO XQ SI UNO DE LOS 2 FALLA, NO TENGO MANERA DE RECREAR TODO OTRA VEZ
+
+            if (result)
+            {
+                var source = batch.SystemName.Replace(".In", "").Replace(".Out", "");
+                var period = batch.PeriodYear.ToString("D4") + batch.PeriodMonth.ToString("D2");
+
+                dao.DeleteReport(period, source + ".In");
+                dao.DeleteReport(period, source + ".Out");
+
+                if (batch.NextExecutionOnUtc != null)
+                    batch.NextExecutionOnUtc = batch.NextExecutionOnUtc.Value.AddSeconds(30);
+                batch.LastExecutionOnUtc = DateTime.UtcNow;
+                dao.UpdateScheduleBatch(batch);
+                FileHelper.DeleteFile(e.FullPath);
+            }
         }
 
-        protected static void UpdateScheduleBatch(Dao dao,ScheduleBatch batch,int month, int year)
+        private static int getCode(string sys)
         {
-            Log.InfoFormat("Action: ScheduleBatch valor inicial = {0}", batch.ToString());
+            if (sys.ToUpper().Contains("CAJA"))
+                return (int)CustomerMilitarySituation.Retiro;
 
-            
-            if (batch.NextExecutionOnUtc != null)
-                batch.NextExecutionOnUtc = batch.NextExecutionOnUtc.Value.AddSeconds(30);
+            if (sys.ToUpper().Contains("COPERE"))
+                return (int)CustomerMilitarySituation.Actividad;
 
-            batch.PeriodMonth = month;
-            batch.PeriodYear = year;
-            
-
-            batch.LastExecutionOnUtc = DateTime.UtcNow;
-
-            Log.InfoFormat("Action: ScheduleBatch valor final = {0}", batch.ToString());
-            dao.UpdateScheduleBatch(batch);
-            dao.Close();
+            return 0;
         }
     }
 }

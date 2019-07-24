@@ -47,6 +47,12 @@ namespace Ks.Batch.Util
             return File.Exists(newPath);
         }
 
+        public static void DeleteFile(string nameFile)
+        { 
+            if (File.Exists(nameFile))
+                File.Delete(nameFile);
+        }
+
         public static void PurgeFile(string pathBase, string nameFile = "busy", string extension = ".txt")
         {
             var newPath = Path.Combine(pathBase, nameFile + extension);

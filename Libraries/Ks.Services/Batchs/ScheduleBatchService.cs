@@ -51,7 +51,7 @@ namespace Ks.Services.Batchs
                 return null;
 
             return _batchRepository.GetById(batchId);
-        }
+        } 
 
         /// <summary>
         /// Gets all Batchs

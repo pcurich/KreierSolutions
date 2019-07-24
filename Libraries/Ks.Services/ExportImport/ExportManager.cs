@@ -2058,6 +2058,7 @@ namespace Ks.Services.ExportImport
                         "AÑO","MES","AsociadoId","APELLIDOS Y NOMBRE","N° ADMINISTRATIVO","DNI","TOTAL APORTACION","TOTAL PAGADO","TOTAL APOYO",
                         "COUTA APORTACION","MONTO 1", "MONTO 2", "MONTO 3","MONTO ANTERIOR","MONTO TOTAL","MONTO APORTADO","ESTADOAPORTACIONID",
                         "ES AUTOMATICO","BANCO","CUENTA","TRANSACCION","REFERENCIA", "DESCRIPCION",
+                        "ASEID","ASEDETALLEID",
                         "COUTA APOYO","COUTA MENSUAL","INTERES","CAPITAL","MONTO PAGADO","ESTADOAPOYOID","ES AUTOMATICO","BANCO",
                         "CUENTA","TRANSACCION","REFERENCIA", "DESCRIPCION"
 
@@ -2136,6 +2137,10 @@ namespace Ks.Services.ExportImport
 
                     foreach (var infoLoan in p.InfoLoans)
                     {
+                        worksheet.Cells[row, col].Value = infoLoan.LoanId;
+                        col++;
+                        worksheet.Cells[row, col].Value = infoLoan.LoanPaymentId;
+                        col++;
                         worksheet.Cells[row, col].Value = infoLoan.Quota;
                         col++;
                         worksheet.Cells[row, col].Value = infoLoan.MonthlyQuota;

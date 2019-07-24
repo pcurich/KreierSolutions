@@ -359,26 +359,45 @@ namespace Ks.Admin.Controllers
                 });
             }
 
-            #region Borrar
-            contributionsDelays = new List<Contribution>
-            {
-                new Contribution{DelayCycles = 1, AmountPayed = 1236},
-                new Contribution{DelayCycles = 2, AmountPayed = 1013},
-                new Contribution{DelayCycles = 3, AmountPayed = 892},
-                new Contribution{DelayCycles = 4, AmountPayed = 400},
-                new Contribution{DelayCycles = 5, AmountPayed = 120},
-                new Contribution{DelayCycles = 6, AmountPayed = 12},
-            };
-            foreach (var contributionsDelay in contributionsDelays)
-            {
-                model.CustumerToChange.Add(new CustumerToChange
-                {
-                    Delay = contributionsDelay.DelayCycles,
-                    Size = Convert.ToInt32(contributionsDelay.AmountPayed)
-                });
-            }
+            //#region Borrar
+            //contributionsDelays = new List<Contribution>
+            //{
+            //    new Contribution{DelayCycles = 1, AmountPayed = 1236},
+            //    new Contribution{DelayCycles = 2, AmountPayed = 1013},
+            //    new Contribution{DelayCycles = 3, AmountPayed = 892},
+            //    new Contribution{DelayCycles = 4, AmountPayed = 400},
+            //    new Contribution{DelayCycles = 5, AmountPayed = 120},
+            //    new Contribution{DelayCycles = 6, AmountPayed = 12},
+            //};
+            //foreach (var contributionsDelay in contributionsDelays)
+            //{
+            //    model.CustumerToChange.Add(new CustumerToChange
+            //    {
+            //        Delay = contributionsDelay.DelayCycles,
+            //        Size = Convert.ToInt32(contributionsDelay.AmountPayed)
+            //    });
+            //}
 
-            #endregion
+            //#endregion
+
+            model.Amount1Sources = new List<SelectListItem>
+            {
+                new SelectListItem{Value = "0", Text = "Todos" },
+                new SelectListItem{Value = "1", Text = "Copere" },
+                new SelectListItem{Value = "2", Text = "Caja" },
+            };
+            model.Amount2Sources = new List<SelectListItem>
+            {
+                new SelectListItem{Value = "0", Text = "Todos" },
+                new SelectListItem{Value = "1", Text = "Copere" },
+                new SelectListItem{Value = "2", Text = "Caja" },
+            };
+            model.Amount3Sources = new List<SelectListItem>
+            {
+                new SelectListItem{Value = "0", Text = "Todos" },
+                new SelectListItem{Value = "1", Text = "Copere" },
+                new SelectListItem{Value = "2", Text = "Caja" },
+            };
 
             return View(model);
 

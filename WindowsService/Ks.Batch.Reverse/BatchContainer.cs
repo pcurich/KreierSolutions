@@ -19,8 +19,7 @@ namespace Ks.Batch.Reverse
         {
             try
             {
-                Read();
-                Install();
+                Read(); 
                 Log.InfoFormat("Result: " + LogMessages.BatchStartOk, Batch.SystemName);
             }catch (Exception e)
             {
@@ -90,11 +89,16 @@ namespace Ks.Batch.Reverse
                     PathValue = ConfigurationManager.AppSettings["Path"];
                     SysName = ConfigurationManager.AppSettings["SysName"];
 
-                    var dao = new Dao(Connection);
+                    var dao = new DaoReverseContributions(Connection);
                     dao.Connect();
-                    Batch = dao.GetScheduleBatch(SysName);
+                    Batch = new ScheduleBatch {
+                        PathBase = PathValue,
+                        SystemName = SysName,
+                        Name = "Reversa"
+                    };
+                        // dao.GetScheduleBatch(SysName);
 
-                    _watcher = new FileSystemWatcher(PathValue, "*.txt");
+                    _watcher = new FileSystemWatcher(PathValue);
 
                     _watcher.Created += Watcher.FileCreated;
                     _watcher.IncludeSubdirectories = false;
@@ -112,7 +116,7 @@ namespace Ks.Batch.Reverse
 
         private void Install()
         {
-            var dao = new Dao(Connection);
+            var dao = new DaoReverseContributions(Connection);
             dao.Connect();
             dao.Install(Batch);
             dao.Close();

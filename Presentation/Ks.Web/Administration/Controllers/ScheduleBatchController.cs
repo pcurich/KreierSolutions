@@ -8,6 +8,7 @@ using Ks.Admin.Extensions;
 using Ks.Admin.Models.Batchs;
 using Ks.Core.Domain.Batchs;
 using Ks.Core.Domain.Customers;
+using Ks.Core.Domain.Reports;
 using Ks.Services.Batchs;
 using Ks.Services.ExportImport;
 using Ks.Services.Helpers;
@@ -34,6 +35,8 @@ namespace Ks.Admin.Controllers
         private readonly ScheduleBatchsSetting _scheduleBatchsSetting;
         private readonly IExportManager _exportManager;
         private readonly IReportService _reportService;
+
+        private const string PATHBASE = @"C:\inetpub\wwwroot\Acmr\App_Data\Service\";
 
         #endregion
 
@@ -198,42 +201,6 @@ namespace Ks.Admin.Controllers
             }
 
             return View(model);
-        }
-
-        public ActionResult Revert(int id)
-        {
-            if (!_permissionService.Authorize(StandardPermissionProvider.ManageScheduleBatchs))
-                return AccessDeniedView();
-
-            var schedule = _scheduleBatchService.GetBatchById(id);
-            if (schedule == null)
-                //No  scheduleBatch  found with the specified id
-                return RedirectToAction("List");
- 
-            try
-            {
-                var path = @"C:\inetpub\wwwroot\Acmr\App_Data\Service\Ks.Batch.Reverse";
-                path = System.IO.Path.Combine(path, schedule.SystemName);
-                if (System.IO.File.Exists(path))
-                {
-                    System.IO.File.Delete(path);
-                }
-
-                using (var myFile = System.IO.File.Create(path))
-                {
-                    TextWriter tw = new StreamWriter(myFile);
-                    tw.WriteLine("revert - "+id+ "-" + schedule.SystemName);
-                    tw.Close();
-                }
-
-                SuccessNotification(_localizationService.GetResource("Admin.Configuration.ScheduleBatch.Reverted"));
-                return RedirectToAction("List");
-            }
-            catch (Exception exc)
-            {
-                ErrorNotification(exc);
-                return RedirectToAction("List");
-            }
         }
 
         [HttpPost]
@@ -494,7 +461,7 @@ namespace Ks.Admin.Controllers
 
                 if (schedule.SystemName == ("Ks.Batch.Caja.Out") || schedule.SystemName == ("Ks.Batch.Caja.In"))
                 {
-                    var path = @"C:\inetpub\wwwroot\Acmr\App_Data\Service\Ks.Batch.Merge\Read";
+                    var path = PATHBASE + @"\Ks.Batch.Merge\Read";
                     path = System.IO.Path.Combine(path, "PreCajaWakeUp.txt");
                     using (var myFile = System.IO.File.Create(path))
                     {
@@ -505,7 +472,7 @@ namespace Ks.Admin.Controllers
                 }
                 else
                 {
-                    var path = @"C:\inetpub\wwwroot\Acmr\App_Data\Service\Ks.Batch.Merge\Read";
+                    var path = PATHBASE + @"Ks.Batch.Merge\Read";
                     path = System.IO.Path.Combine(path, "PreCopereWakeUp.txt");
                     using (var myFile = System.IO.File.Create(path))
                     {
@@ -543,7 +510,7 @@ namespace Ks.Admin.Controllers
             {
                 if (schedule.SystemName == ("Ks.Batch.Caja.Out") || schedule.SystemName == ("Ks.Batch.Caja.In"))
                 {
-                    var path = @"C:\inetpub\wwwroot\Acmr\App_Data\Service\Ks.Batch.Merge\Read";
+                    var path = PATHBASE + @"\Ks.Batch.Merge\Read";
                     path = System.IO.Path.Combine(path, "CajaWakeUp.txt");
                     using (var myFile = System.IO.File.Create(path))
                     {
@@ -554,7 +521,7 @@ namespace Ks.Admin.Controllers
                 }
                 else
                 {
-                    var path = @"C:\inetpub\wwwroot\Acmr\App_Data\Service\Ks.Batch.Merge\Read";
+                    var path = PATHBASE + @"\Ks.Batch.Merge\Read";
                     path = System.IO.Path.Combine(path, "CopereWakeUp.txt");
                     using (var myFile = System.IO.File.Create(path))
                     {
@@ -575,6 +542,70 @@ namespace Ks.Admin.Controllers
             }
 
         }
+
+        public ActionResult Revert(int id)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageScheduleBatchs))
+                return AccessDeniedView();
+
+            var schedule = _scheduleBatchService.GetBatchById(id);
+            if (schedule == null)
+                //No  scheduleBatch  found with the specified id
+                return RedirectToAction("List");
+
+            //Siempre esta adelantado uno 
+            if(schedule.PeriodMonth == 1)
+            {
+                schedule.PeriodMonth = 12;
+                schedule.PeriodYear--;
+            }
+            else
+            {
+                schedule.PeriodMonth--;
+            }
+
+            var period = schedule.PeriodYear.ToString("D4") + schedule.PeriodMonth.ToString("D2");
+            var source = schedule.SystemName.Replace(".In", "").Replace(".Out", "");
+
+            //out esta en Procesado == 2
+            //in esta en Espera ==1            
+            var result = _reportService.CanRevertBatch(period, source + ".Out", (int)ReportState.InProcess, source + ".In", (int)ReportState.Waiting);
+
+            if (result)
+            {
+                try
+                {
+                    var path = PATHBASE + @"\Ks.Batch.Reverse";
+                    path = System.IO.Path.Combine(path, schedule.SystemName);
+                    if (System.IO.File.Exists(path))
+                    {
+                        System.IO.File.Delete(path);
+                    }
+
+                    using (var myFile = System.IO.File.Create(path))
+                    {
+                        TextWriter tw = new StreamWriter(myFile);
+                        tw.WriteLine("revert - " + id + "-" + schedule.SystemName);
+                        tw.Close();
+                    }
+
+                    SuccessNotification(_localizationService.GetResource("Admin.Configuration.ScheduleBatch.Reverted"));
+                    return RedirectToAction("List");
+                }
+                catch (Exception exc)
+                {
+                    ErrorNotification(exc);
+                    return RedirectToAction("List");
+                }
+            }
+            else
+            {
+               ErrorNotification("Por el momento esta combinacion no esta disponible");
+                return RedirectToAction("List");
+            }
+            
+        }
+
 
         [HttpPost]
         public ActionResult ImportTxt(int id, FormCollection form)

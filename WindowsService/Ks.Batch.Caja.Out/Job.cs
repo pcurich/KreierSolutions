@@ -33,7 +33,7 @@ namespace Ks.Batch.Caja.Out
                 Log.InfoFormat("Action: {0} {1}", SysName, "Iniciado");
                 FileHelper.CreateBusyFile(Batch.PathBase);
 
-                if (Batch.Enabled)
+                if (1==1)//Batch.Enabled
                 {
                     Log.InfoFormat("Action: {0} {1}", Batch.SystemName, "Activo");
                     ExistFile();
@@ -65,7 +65,7 @@ namespace Ks.Batch.Caja.Out
             var dao = new Dao(Connection);
             dao.Connect();
             Log.InfoFormat("Action: {0}", "Inicia Proceso de extraccion");
-            var scheduleBatchs = dao.Process(Batch);
+            var scheduleBatchs = dao.Process(Path,Batch);
             dao.Close();
             return scheduleBatchs;
         }

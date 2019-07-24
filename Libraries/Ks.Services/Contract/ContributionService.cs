@@ -78,9 +78,10 @@ namespace Ks.Services.Contract
             var query = from c in _contributionRepository.Table
                         where c.IsDelay
                         group c by new { c.DelayCycles } into temp
+                        orderby temp.Key descending
                         select new
                         {
-                            CycleOfDelay = temp.Key,
+                            CycleOfDelay = temp.Key.DelayCycles,
                             AmountPayed = temp.Count()
                         };
 

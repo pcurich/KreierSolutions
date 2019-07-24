@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using Topshelf.Logging;
 
 namespace Ks.Batch.Util
@@ -212,6 +213,44 @@ namespace Ks.Batch.Util
             }
         }
 
+        public List<Info> FindReport(string source, int year, int month, int state = 0)
+        {
+            {
+                if (IsConnected)
+                {
+                    List<Info> result = null;
+                    try
+                    {
+
+                        Sql = "select value from report where Source ='" + source + "' and period = '"+ year+ month.ToString("D2") +"' and stateId = '"+state+"'";
+                        Command = new SqlCommand(Sql, Connection);
+                        var sqlReader = Command.ExecuteReader();
+
+                        while (sqlReader.Read())
+                        {
+                            result = XmlHelper.XmlToObject<List<Info>>(sqlReader.GetString(0));
+                            Log.InfoFormat("Result: El nombre del servicio {0} es {1}", source, result);
+                        }
+
+                        sqlReader.Close();
+
+                        if (result == null)
+                            Log.InfoFormat("Result: El nombre del Servicio {0} No se ha encontrado", source);
+
+                        return result;
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.FatalFormat("Result: {0} Error: {1}", "DaoBase.NameOfService(" + source + ")", ex.Message);
+                        return null;
+                    }
+                }
+
+                Log.FatalFormat("Result: Base de datos no disponible");
+                return null;
+            }
+        }
+
         public void DeleteReport(string period, string source)
         {
             try
@@ -251,7 +290,7 @@ namespace Ks.Batch.Util
                 Command.Parameters.AddWithValue("@Name", string.Format("Archivos para la caja en el periodo - {0}", batch.PeriodYear.ToString("0000") + batch.PeriodMonth.ToString("00")));
                 Command.Parameters.AddWithValue("@Value", value);
                 Command.Parameters.AddWithValue("@PathBase", batch.PathBase);
-                Command.Parameters.AddWithValue("@StateId", 2);
+                Command.Parameters.AddWithValue("@StateId", (int)ReportState.InProcess);
                 Command.Parameters.AddWithValue("@Period", batch.PeriodYear.ToString("0000") + batch.PeriodMonth.ToString("00"));
                 Command.Parameters.AddWithValue("@Source", batch.SystemName);
                 Command.Parameters.AddWithValue("@ParentKey", guid);
@@ -283,7 +322,7 @@ namespace Ks.Batch.Util
                 Command.Parameters.AddWithValue("@Name", "");
                 Command.Parameters.AddWithValue("@Value", "");
                 Command.Parameters.AddWithValue("@PathBase", "");
-                Command.Parameters.AddWithValue("@StateId", 1);
+                Command.Parameters.AddWithValue("@StateId", (int)ReportState.Waiting);
                 Command.Parameters.AddWithValue("@Period", period);
                 Command.Parameters.AddWithValue("@Source", source);
                 Command.Parameters.AddWithValue("@ParentKey", guid);
@@ -543,11 +582,232 @@ namespace Ks.Batch.Util
             }
         }
 
+        private static InfoLoan AddNewLoan(IDataRecord sqlReader)
+        {
+            return new InfoLoan
+            {
+                LoanPaymentId = sqlReader.GetInt32(sqlReader.GetOrdinal("LoanPaymentId")),
+                LoanId = sqlReader.GetInt32(sqlReader.GetOrdinal("LoanId")),
+                Quota = sqlReader.GetInt32(sqlReader.GetOrdinal("Quota")),
+                MonthlyQuota = sqlReader.GetDecimal(sqlReader.GetOrdinal("MonthlyQuota")),
+                MonthlyFee = sqlReader.GetDecimal(sqlReader.GetOrdinal("MonthlyFee")),
+                MonthlyCapital = sqlReader.GetDecimal(sqlReader.GetOrdinal("MonthlyCapital")),
+                MonthlyPayed = sqlReader.GetDecimal(sqlReader.GetOrdinal("MonthlyPayed")),
+                StateId = sqlReader.GetInt32(sqlReader.GetOrdinal("StateId")),
+                IsAutomatic = sqlReader.GetBoolean(sqlReader.GetOrdinal("IsAutomatic")),
+                BankName = sqlReader.GetString(sqlReader.GetOrdinal("BankName")),
+                AccountNumber = sqlReader.GetString(sqlReader.GetOrdinal("AccountNumber")),
+                TransactionNumber = sqlReader.GetString(sqlReader.GetOrdinal("TransactionNumber")),
+                Reference = sqlReader.GetString(sqlReader.GetOrdinal("Reference")),
+                Description = sqlReader.GetString(sqlReader.GetOrdinal("Description")),
+                Period = sqlReader.GetInt32(sqlReader.GetOrdinal("Period")),
+                NoPayedYet = sqlReader.GetDecimal(sqlReader.GetOrdinal("NoPayedYet")),
+            };
+        }
+
         #endregion 
 
         #region Batch.Out
 
-        public void UpdateDataContribution(List<int> customerIds, int periodYear,int periodMonth, int stateId = (int)ContributionState.EnProceso)
+        /// <summary>
+        /// 1) Obtener los asociados a gestionar
+        /// </summary>
+        /// <param name="code">1 si es actividad, 2 si es retiro </param>
+        /// <param name="customerIds">arreglo de salida con colaboradores encontrados</param>
+        /// <param name="reportOut">Arreglo de datos a devolver para ser guardado en la tabla report</param>
+        /// <param name="fileOut">Arreglo de registros a devolver en formato de archivo </param>
+        /// <returns></returns>
+        public bool GetCustomer(int code, out List<int> customerIds, out Dictionary<int, Info> reportOut, out Dictionary<int, string> fileOut)
+        {
+            customerIds = new List<int>();
+            fileOut = new Dictionary<int, string>();
+            reportOut = new Dictionary<int, Info>();
+
+            try
+            {
+                Log.InfoFormat("Action: 1) {0}", "Buscando a los miliatares activos en estado de activisad (code = 1)");
+
+                Sql = " SELECT EntityId, Attribute =[Key], Value FROM GenericAttribute " +
+                      " WHERE KeyGroup='Customer' and  [Key] in ('Dni','AdmCode') AND " +
+                      " EntityId IN ( SELECT EntityId FROM GenericAttribute " +
+                      " WHERE [Key]='MilitarySituationId' AND Value=" + code + " AND EntityId IN " +
+                      " (SELECT Id FROM CUSTOMER WHERE ACTIVE=" + (int)State.Active + "  ) ) " +
+                      " ORDER BY 1 ";
+
+                Command = new SqlCommand(Sql, Connection);
+                var sqlReader = Command.ExecuteReader();
+
+                var count = 0;
+                var admCode = "";
+                var dni = "";
+
+                var entityId = 0;
+                var repeatEntityId = 0;
+
+                while (sqlReader.Read())
+                {
+                    if (sqlReader.GetString(1).Equals("AdmCode"))
+                    {
+                        count++;
+                        admCode = sqlReader.GetString(2);
+                        entityId = sqlReader.GetInt32(0);
+                    }
+                    if (sqlReader.GetString(1).Equals("Dni"))
+                    {
+                        count++;
+                        dni = sqlReader.GetString(2);
+                        repeatEntityId = sqlReader.GetInt32(0);
+                    }
+                    if (count == 2 && entityId == repeatEntityId)
+                    {
+                        if (code == 1) //actividad
+                            fileOut.Add(entityId, string.Format("8A{0}8001AMOUNT0000000000000001", admCode));
+                        else //retiro
+                            fileOut.Add(entityId, string.Format("0029600820{0}01LE{1}", admCode, dni));
+
+                        customerIds.Add(entityId);
+                        reportOut.Add(entityId, new Info { InfoContribution = null, InfoLoans = null, CustomerId = entityId, AdminCode = admCode, HasAdminCode = true, Dni = dni, HasDni = true });
+                        entityId = repeatEntityId = count = 0;
+                    }
+                }
+                sqlReader.Close();
+                Log.InfoFormat("Action: 1) Cantidad de Militares activos en estado {0}: {1}  = ", code, customerIds.Count);
+            }
+            catch (Exception ex)
+            {
+                Log.FatalFormat("Action: 1) {0} Error: {1}", "Dao.GetCustomer(" + string.Join(",", customerIds.ToArray()) + ")", ex.Message);
+                return false;
+            }
+            return true;
+        }
+
+        #region Contribution
+
+        public bool GetContributionPayments(List<int> customerIds, int periodYear, int periodMonth,  bool updateData, 
+               Dictionary<int, Info> reportOut, int state = (int)ContributionState.Pendiente)
+        {
+            try
+            {
+                Log.InfoFormat("Action: 2) {0} {1} {2}", "Buscamos las contribuciones pendientes de los ", customerIds.Count, " aportantes");
+
+                Sql = "SELECT " +
+                      "c.CustomerId as CustomerId,  " +
+                      "cp.Id as ContributionPaymentId,  " +
+                      "cp.Number as Number,  " +
+                      "cp.NumberOld as NumberOld,  " +
+                      "c.Id as ContributionId,  " +
+                      "cp.Amount1 as Amount1,  " +
+                      "cp.Amount2 as Amount2,  " +
+                      "cp.Amount3 as Amount3,  " +
+                      "cp.AmountOld as AmountOld,  " +
+                      "cp.AmountTotal as AmountTotal,  " +
+                      "cp.AmountPayed as AmountPayed,  " +
+                      "cp.StateId as StateId,  " +
+                      "cp.IsAutomatic as IsAutomatic,  " +
+                      "isnull(cp.BankName,'') as BankName,  " +
+                      "isnull(cp.AccountNumber,'') as AccountNumber,  " +
+                      "isnull(cp.TransactionNumber,'') as TransactionNumber,  " +
+                      "isnull(cp.Reference,'') as Reference,  " +
+                      "isnull(cp.Description,'') as Description  " +
+                      "FROM ContributionPayment cp  " +
+                      "INNER JOIN  Contribution c on c.Id=cp.ContributionId  " +
+                      "WHERE c.CustomerId IN (" + string.Join(",", customerIds.ToArray()) + ") AND  " 
+                      +
+                      (state == (int)ContributionState.Pendiente? " cp.StateId=@StateId AND  " :"  ")
+                      +
+                      "c.active=" + (int)State.Active + " AND  " +
+                      "YEAR(cp.ScheduledDateOnUtc)=@Year AND  " +
+                      "MONTH(cp.ScheduledDateOnUtc)=@Month  ";
+
+                Command = new SqlCommand(Sql, Connection);
+
+                var pYear = new SqlParameter
+                {
+                    ParameterName = "@Year",
+                    SqlDbType = SqlDbType.Int,
+                    Direction = ParameterDirection.Input,
+                    Value = periodYear
+                };
+                var pMonth = new SqlParameter
+                {
+                    ParameterName = "@Month",
+                    SqlDbType = SqlDbType.Int,
+                    Direction = ParameterDirection.Input,
+                    Value = periodMonth
+                };
+                var pStateId = new SqlParameter
+                {
+                    ParameterName = "@StateId",
+                    SqlDbType = SqlDbType.Int,
+                    Direction = ParameterDirection.Input,
+                    Value = state
+                };
+                Command.Parameters.Add(pYear);
+                Command.Parameters.Add(pMonth);
+                Command.Parameters.Add(pStateId);
+                Command.CommandTimeout = 120;
+
+                var sqlReader = Command.ExecuteReader();
+                var customerIds2 = new List<int>();
+
+                while (sqlReader.Read())
+                {
+                    reportOut.TryGetValue(sqlReader.GetInt32(sqlReader.GetOrdinal("CustomerId")), out Info info);
+
+                    if (info != null)
+                    {
+                        info.Year = periodYear;
+                        info.Month = periodMonth;
+                        info.CustomerId = sqlReader.GetInt32(0);
+                        info.InfoContribution = new InfoContribution
+                        {
+                            ContributionPaymentId = sqlReader.GetInt32(sqlReader.GetOrdinal("ContributionPaymentId")),
+                            Number = sqlReader.GetInt32(sqlReader.GetOrdinal("Number")),
+                            NumberOld = sqlReader.GetInt32(sqlReader.GetOrdinal("NumberOld")),
+                            ContributionId = sqlReader.GetInt32(sqlReader.GetOrdinal("ContributionId")),
+                            Amount1 = sqlReader.GetDecimal(sqlReader.GetOrdinal("Amount1")),
+                            Amount2 = sqlReader.GetDecimal(sqlReader.GetOrdinal("Amount2")),
+                            Amount3 = sqlReader.GetDecimal(sqlReader.GetOrdinal("Amount3")),
+                            AmountOld = sqlReader.GetDecimal(sqlReader.GetOrdinal("AmountOld")),
+                            AmountTotal = sqlReader.GetDecimal(sqlReader.GetOrdinal("AmountTotal")),
+                            AmountPayed = sqlReader.GetDecimal(sqlReader.GetOrdinal("AmountPayed")),
+                            StateId = (int)ContributionState.Pendiente,
+                            IsAutomatic = sqlReader.GetBoolean(sqlReader.GetOrdinal("IsAutomatic")),
+                            BankName = sqlReader.GetString(sqlReader.GetOrdinal("BankName")),
+                            AccountNumber = sqlReader.GetString(sqlReader.GetOrdinal("AccountNumber")),
+                            TransactionNumber = sqlReader.GetString(sqlReader.GetOrdinal("TransactionNumber")),
+                            Reference = sqlReader.GetString(sqlReader.GetOrdinal("Reference")),
+                            Description = sqlReader.GetString(sqlReader.GetOrdinal("Description")),
+                        };
+
+                        info.TotalContribution = sqlReader.GetDecimal(sqlReader.GetOrdinal("AmountTotal"));
+                    }
+                    reportOut[sqlReader.GetInt32(0)] = info;
+                }
+                sqlReader.Close();
+
+                foreach (var pk in reportOut)
+                {
+                    if (pk.Value.InfoContribution != null)
+                        customerIds2.Add(pk.Key);
+                }
+
+                Log.InfoFormat("Action: 2) {0} {1} {2}", "Se encontraron", customerIds2.Count, "Aportantantes con aportaciones pendientes");
+
+                if (customerIds2.Count > 0 && updateData)
+                    UpdateDataContribution(customerIds2,periodYear,periodMonth);
+
+            }
+            catch (Exception ex)
+            {
+                Log.FatalFormat("Action: {0} Error: {1}", "Dao.GetContributionPayments(" + string.Join(",", customerIds.ToArray()) + ")", ex.Message);
+                return false;
+            }
+
+            return true;
+        }
+
+        private void UpdateDataContribution(List<int> customerIds, int periodYear,int periodMonth, int stateId = (int)ContributionState.EnProceso)
         {
             try
             {
@@ -587,7 +847,144 @@ namespace Ks.Batch.Util
             }
         }
 
-        public void UpdateDataLoan(List<int> customerIds, int periodYear, int periodMonth, int stateId = (int)LoanState.EnProceso)
+        #endregion
+
+        #region Loan
+
+        public bool GetLoanPayment(List<int> customerIds,int periodYear, int periodMonth, bool updateData,
+            Dictionary<int, Info> reportOut, int state = (int)LoanState.Pendiente)
+        {
+            try
+            {
+                Log.InfoFormat("Action: 4) {0} {1} {2}", "Buscamos los apoyos pendientes de los ", customerIds.Count, " aportantes");
+
+                Sql = " SELECT " +
+                      " L.CustomerId as CustomerId, " +
+                      " LP.Id as LoanPaymentId, " +
+                      " L.Id as LoanId, " +
+                      " LP.Quota as Quota, " +
+                      " LP.MonthlyQuota as MonthlyQuota, " +
+                      " LP.MonthlyFee as MonthlyFee, " +
+                      " LP.MonthlyCapital as MonthlyCapital, " +
+                      " LP.MonthlyPayed AS MonthlyPayed, " +
+                      " LP.StateId as StateId, " +
+                      " LP.IsAutomatic as IsAutomatic, " +
+                      " ISNULL(LP.BankName,'') as BankName, " +
+                      " ISNULL(LP.AccountNumber,'') as AccountNumber, " +
+                      " ISNULL(LP.TransactionNumber,'') as TransactionNumber, " +
+                      " ISNULL(LP.Reference,'') as Reference, " +
+                      " ISNULL(LP.Description,'') as Description, " +
+                      " L.Period as Period, " +
+                      " ISNULL(X.NoPayedYet,L.TOTALAMOUNT) AS NoPayedYet " +
+                      " FROM LoanPayment LP " +
+                      " INNER JOIN Loan L on L.Id=lp.LoanId " +
+                      " LEFT JOIN (" +
+                      "             SELECT LoanId, SUM(_L.TOTALAMOUNT - ISNULL(MonthlyPayed,0)) as NoPayedYet  " +
+                      "             FROM  LoanPayment _LP INNER JOIN Loan _L on _L.Id = _LP.LoanId " +
+                      "             WHERE _LP.StateId = " + (int)LoanState.Pagado + " AND " +
+                      "                   _L.Active= " + (int)State.Active + " AND " +
+                      "                   _L.CustomerId IN (" + string.Join(",", customerIds.ToArray()) + ") " +
+                      "             GROUP BY _LP.LoanId)X ON X.LoanId = L.Id" +
+                      " WHERE " +
+                      " L.CustomerId IN (" + string.Join(",", customerIds.ToArray()) + ") and " +
+                      " L.Active=" + (int)State.Active + " AND" 
+                      +
+                       (state == (int)LoanState.Pendiente ? " LP.StateId=@StateId and  " : "  ") 
+                      +
+                      " YEAR(lp.ScheduledDateOnUtc)=@Year and " +
+                      " MONTH(lp.ScheduledDateOnUtc)=@Month " +
+                      " ORDER BY 1 ";
+
+                Command = new SqlCommand(Sql, Connection);
+
+                var pYear = new SqlParameter
+                {
+                    ParameterName = "@Year",
+                    SqlDbType = SqlDbType.Int,
+                    Direction = ParameterDirection.Input,
+                    Value = periodYear
+                };
+                var pMonth = new SqlParameter
+                {
+                    ParameterName = "@Month",
+                    SqlDbType = SqlDbType.Int,
+                    Direction = ParameterDirection.Input,
+                    Value = periodMonth
+                };
+                var pStateId = new SqlParameter
+                {
+                    ParameterName = "@StateId",
+                    SqlDbType = SqlDbType.Int,
+                    Direction = ParameterDirection.Input,
+                    Value = state
+                };
+                Command.Parameters.Add(pYear);
+                Command.Parameters.Add(pMonth);
+                Command.Parameters.Add(pStateId);
+                Command.CommandTimeout = 120;
+
+                var sqlReader = Command.ExecuteReader();
+
+                Info info = null;
+
+                while (sqlReader.Read())
+                {
+                    if (info == null)
+                    {
+                        reportOut.TryGetValue(sqlReader.GetInt32(sqlReader.GetOrdinal("CustomerId")), out info);
+                        if (info != null) info.InfoLoans = new List<InfoLoan>();
+                    }
+
+                    if (info != null && info.CustomerId == sqlReader.GetInt32(sqlReader.GetOrdinal("CustomerId")))
+                    {
+                        info.InfoLoans.Add(AddNewLoan(sqlReader));
+                        info.TotalLoan += sqlReader.GetDecimal(sqlReader.GetOrdinal("MonthlyQuota"));
+
+                        if (reportOut.ContainsKey(info.CustomerId))
+                            reportOut[info.CustomerId] = info;
+                    }
+                    else
+                    {
+                        //another customer so we should save the last one and get the new customer and put the same infoloans
+                        if (info != null)
+                        {
+                            reportOut[info.CustomerId] = info;
+
+                            reportOut.TryGetValue(sqlReader.GetInt32(sqlReader.GetOrdinal("CustomerId")), out info);
+                            if (info != null) info.InfoLoans = new List<InfoLoan>();
+
+                            if (info != null &&
+                                info.CustomerId == sqlReader.GetInt32(sqlReader.GetOrdinal("CustomerId")))
+                            {
+                                info.InfoLoans.Add(AddNewLoan(sqlReader));
+                                info.TotalLoan += sqlReader.GetDecimal(sqlReader.GetOrdinal("MonthlyQuota"));
+                            }
+                        }
+                    }
+                }
+                sqlReader.Close();
+
+                var customerIds2 = new List<int>();
+
+                foreach (var repo in reportOut)
+                {
+                    if (repo.Value.TotalLoan > 0)
+                        customerIds2.Add(repo.Value.CustomerId);
+                }
+
+                if (customerIds2.Count > 0 && updateData)
+                    UpdateDataLoan(customerIds2, periodYear, periodMonth);
+
+            }
+            catch (Exception ex)
+            {
+                Log.FatalFormat("Action: {0} Error: {1}", "Dao.GetLoanPayments(" + string.Join(",", customerIds.ToArray()) + ")", ex.Message);
+                return false;
+            }
+            return true;
+        }
+
+        private void UpdateDataLoan(List<int> customerIds, int periodYear, int periodMonth, int stateId = (int)LoanState.EnProceso)
         {
             try
             {
@@ -627,6 +1024,8 @@ namespace Ks.Batch.Util
                 Log.FatalFormat("Action: {0} Error: {1}", "Dao.UpdateDataLoan(" + string.Join(",", customerIds.ToArray()) + ")", ex.Message);
             }
         }
+
+        #endregion
 
         #endregion
     }
