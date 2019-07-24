@@ -33,7 +33,7 @@ namespace Ks.Batch.Caja.Out
                 Log.InfoFormat("Action: {0} {1}", SysName, "Iniciado");
                 FileHelper.CreateBusyFile(Batch.PathBase);
 
-                if (1==1)//Batch.Enabled
+                if (Batch.Enabled)
                 {
                     Log.InfoFormat("Action: {0} {1}", Batch.SystemName, "Activo");
                     ExistFile();
