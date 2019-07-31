@@ -4,6 +4,11 @@ namespace Ks.Batch.Util.Model
 {
     public class Info
     {
+        public Info()
+        {
+            InfoContribution = new InfoContribution();
+            InfoLoans = new List<InfoLoan>();
+        }
         public int Year { get; set; }
         public int Month { get; set; }
         public int CustomerId { get; set; }

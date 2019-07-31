@@ -40,25 +40,42 @@ namespace Ks.Batch.Caja.Out
                 #region Write to xml file
                 using (var stream = new MemoryStream())
                 {
-                    var properties = new[] { "MesProc", "CodDes", "NumAdm", "Monto", "FechaDesem", "HoraDesem", "NroCuota", "TotalCuotas", "Saldo" };
-                    var data = new Dictionary<int, Dictionary<int, string>>();
-                    var index = 0;
-                    foreach (var info in ReportOut.Values)
-                    {
-                        var tmp = new Dictionary<int, string>
+                    try
+                    { 
+                        var fileName = Path.Combine(Path.Combine(path, Batch.FolderMoveToDone), "APORT-" + FileHelper.GetDateFormat(DateTime.Now) + ".xlsx");
+                        Log.InfoFormat("Action: Creamos el archivo {0}", fileName);
+
+                        var properties = new[] { "MesProc", "CodDes", "NumAdm", "Monto", "FechaDesem", "HoraDesem", "NroCuota", "TotalCuotas", "Saldo" };
+                        var data = new Dictionary<int, Dictionary<int, string>>();
+                        var index = 0;
+                        foreach (var info in ReportOut.Values)
                         {
-                            { 0, info.Year.ToString() + info.Month.ToString("D2") },
-                            { 1, "APORT" },
-                            { 2, info.AdminCode },
-                            { 3, info.InfoContribution.AmountTotal.ToString() }
-                        };
-                        data.Add(index, tmp);
-                        index++;
+                            if (info.InfoContribution != null)
+                            {
+                                var tmp = new Dictionary<int, string>
+                                {
+                                    { 0, info.Year.ToString() + info.Month.ToString("D2") },
+                                    { 1, "APORT" },
+                                    { 2, info.AdminCode },
+                                    { 3, info.InfoContribution.AmountTotal.ToString() }
+                                };
+                                data.Add(index, tmp);
+                                index++;
+                            }
+                            else
+                            {
+                                Log.ErrorFormat("Action: Parar revisar : {0}", info.AdminCode);
+                            }
+                        }
+                        if (File.Exists(fileName))
+                            File.Delete(fileName);
+                        ExcelFile.CreateReport("Aportaciones", 1, stream, properties, data, fileName);
+
+                    }catch(Exception ex)
+                    {
+                        Log.FatalFormat("Action: Error al crear el archivo : {0}", ex.InnerException);
                     }
-                    var fileName = Path.Combine(Path.Combine(path, Batch.FolderMoveToDone), "APORT-" + FileHelper.GetDateFormat(DateTime.Now) + ".xlsx");
-                    if (File.Exists(fileName))
-                        File.Delete(fileName);
-                    ExcelFile.CreateReport("Aportaciones", 1, stream, properties, data, fileName);
+                    
                 }
                 #endregion
 
@@ -67,16 +84,21 @@ namespace Ks.Batch.Caja.Out
                 #region Write to xml file
                 using (var stream = new MemoryStream())
                 {
-                    var properties = new[] { "MES_PROCESO", "NRO_ADMINIST", "COD_DESCUENTO", "MTO_DESCUENTO", "NUM_CUOTAS", "TOT_CUOTAS", "FEC_DESEMBOLSO", "HOR_DESEMBOLSO", "MTO_SALDO_PRES" };
-                    var data = new Dictionary<int, Dictionary<int, string>>();
-                    var index = 0;
-                    foreach (var info in ReportOut.Values)
+                    try
                     {
-                        if (info.InfoLoans != null)
+                        var fileName = Path.Combine(Path.Combine(path, Batch.FolderMoveToDone), "ASE-" + FileHelper.GetDateFormat(DateTime.Now) + ".xlsx");
+                        Log.InfoFormat("Action: Creamos el archivo {0}", fileName);
+
+                        var properties = new[] { "MES_PROCESO", "NRO_ADMINIST", "COD_DESCUENTO", "MTO_DESCUENTO", "NUM_CUOTAS", "TOT_CUOTAS", "FEC_DESEMBOLSO", "HOR_DESEMBOLSO", "MTO_SALDO_PRES" };
+                        var data = new Dictionary<int, Dictionary<int, string>>();
+                        var index = 0;
+                        foreach (var info in ReportOut.Values)
                         {
-                            foreach (var loan in info.InfoLoans)
+                            if (info.InfoLoans != null)
                             {
-                                var tmp = new Dictionary<int, string>
+                                foreach (var loan in info.InfoLoans)
+                                {
+                                    var tmp = new Dictionary<int, string>
                                 {
                                     { 0, info.Year.ToString() + info.Month.ToString("D2") },
                                     { 1, info.AdminCode },
@@ -88,15 +110,21 @@ namespace Ks.Batch.Caja.Out
                                     { 7, FileHelper.GetTime(DateTime.Now) },
                                     { 8, loan.NoPayedYet.ToString() }
                                 };
-                                data.Add(index, tmp);
-                                index++;
+                                    data.Add(index, tmp);
+                                    index++;
+                                }
                             }
                         }
+                        
+                        if (File.Exists(fileName))
+                            File.Delete(fileName);
+                        ExcelFile.CreateReport("Apoyo", 1, stream, properties, data, fileName);
                     }
-                    var fileName = Path.Combine(Path.Combine(path, Batch.FolderMoveToDone), "ASE-" + FileHelper.GetDateFormat(DateTime.Now) + ".xlsx");
-                    if (File.Exists(fileName))
-                        File.Delete(fileName);
-                    ExcelFile.CreateReport("Apoyo", 1, stream, properties, data, fileName);
+                    catch (Exception ex)
+                    {
+                        Log.FatalFormat("Action: Error al crear el archivo : {0}", ex.InnerException);
+                    }
+
                 }
                 #endregion
 
@@ -113,7 +141,7 @@ namespace Ks.Batch.Caja.Out
             }
             catch (Exception ex)
             {
-                Log.FatalFormat("Action: {0} Error: {1}", "Dao.Process(" + batch.SystemName + ")", ex.Message);
+                Log.FatalFormat("Action: {0} Error: {1}", "Dao.Process(" + batch.SystemName + ")", ex.InnerException);
             }
 
             return Result != null ? Result.ToList() : null;

@@ -25,7 +25,7 @@ namespace Ks.Batch.Merge
             var SysName = ConfigurationManager.AppSettings["SysName"];
 
             var dao = new Dao(connection);
-            dao.Connect();
+            dao.Connect(); 
 
             if (e.Name.ToUpper().Contains("PRE"))
                 isPre = true;
@@ -46,12 +46,12 @@ namespace Ks.Batch.Merge
             //load _copereOut or _copereIn or _cajaOut or _cajaIn
             if (listData.Count == 2)
                 SplitList(listData);
-            
 
-            if (_copereOut != null && _copereIn != null && _copereOut.Count > 0 && _copereIn.Count > 0 && e.Name == "CopereWakeUp.txt")
-                dao.ProcessCopere(_reportCopere, _copereIn, _copereOut,"Copere",isPre);
-            if (_cajaOut != null && _cajaIn != null && _cajaOut.Count > 0 && _cajaIn.Count > 0 && e.Name == "CajaWakeUp.txt")
-                dao.ProcessCaja(_reportCaja, _cajaIn, _cajaOut,"Caja", isPre);
+            var account = batch.SystemName + "." + batch.PeriodYear + "." + batch.PeriodMonth.ToString("D2");
+            if (_copereOut != null && _copereIn != null && _copereOut.Count > 0 && _copereIn.Count > 0 && e.Name.ToUpper().Contains("COPERE"))
+                dao.Process(_reportCopere, _copereIn, _copereOut, "Copere", account, isPre);
+            if (_cajaOut != null && _cajaIn != null && _cajaOut.Count > 0 && _cajaIn.Count > 0 && e.Name.ToUpper().Contains("CAJA"))
+                dao.Process(_reportCaja, _cajaIn, _cajaOut, "Caja", account, isPre);
 
             if (!isPre)
             {
@@ -61,8 +61,6 @@ namespace Ks.Batch.Merge
             }
 
             dao.Close();
-
-            
 
             File.Delete(e.FullPath);
         }

@@ -444,22 +444,14 @@ namespace Ks.Admin.Controllers
             return RedirectToAction("List");
         }
 
-        public ActionResult PreMerge(int id)
+        public ActionResult PreMerge(string type)
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageScheduleBatchs))
                 return AccessDeniedView();
-
-            var schedule = _scheduleBatchService.GetBatchById(id);
-            if (schedule == null)
-                //No  scheduleBatch  found with the specified id
-                return RedirectToAction("List");
-
-            //set page timeout to 5 minutes
-            this.Server.ScriptTimeout = 300;
-
+             
             try {
 
-                if (schedule.SystemName == ("Ks.Batch.Caja.Out") || schedule.SystemName == ("Ks.Batch.Caja.In"))
+                if (type == "Caja")
                 {
                     var path = PATHBASE + @"\Ks.Batch.Merge\Read";
                     path = System.IO.Path.Combine(path, "PreCajaWakeUp.txt");
@@ -484,31 +476,23 @@ namespace Ks.Admin.Controllers
 
 
                 SuccessNotification(_localizationService.GetResource("Admin.Configuration.ScheduleBatch.Imported"));
-                return RedirectToAction("Edit", new { id = schedule.Id });
+                return RedirectToAction("List");
             }
             catch (Exception exc)
             {
                 ErrorNotification(exc);
-                return RedirectToAction("Edit", new { id = schedule.Id });
+                return RedirectToAction("List");
             }
         }
 
-        public ActionResult CreateMerge(int id)
+        public ActionResult CreateMerge(string type)
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageScheduleBatchs))
                 return AccessDeniedView();
 
-            var schedule = _scheduleBatchService.GetBatchById(id);
-            if (schedule == null)
-                //No  scheduleBatch  found with the specified id
-                return RedirectToAction("List");
-
-            //set page timeout to 5 minutes
-            this.Server.ScriptTimeout = 300;
-
             try
             {
-                if (schedule.SystemName == ("Ks.Batch.Caja.Out") || schedule.SystemName == ("Ks.Batch.Caja.In"))
+                if (type == ("Caja"))
                 {
                     var path = PATHBASE + @"\Ks.Batch.Merge\Read";
                     path = System.IO.Path.Combine(path, "CajaWakeUp.txt");
@@ -533,12 +517,12 @@ namespace Ks.Admin.Controllers
 
 
                 SuccessNotification(_localizationService.GetResource("Admin.Configuration.ScheduleBatch.Imported"));
-                return RedirectToAction("Edit", new { id = schedule.Id });
+                return RedirectToAction("List");
             }
             catch (Exception exc)
             {
                 ErrorNotification(exc);
-                return RedirectToAction("Edit", new { id = schedule.Id });
+                return RedirectToAction("List");
             }
 
         }

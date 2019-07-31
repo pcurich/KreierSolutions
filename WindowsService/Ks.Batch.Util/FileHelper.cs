@@ -55,24 +55,27 @@ namespace Ks.Batch.Util
 
         public static void PurgeFile(string pathBase, string nameFile = "busy", string extension = ".txt")
         {
-            var newPath = Path.Combine(pathBase, nameFile + extension);
-            DateTime? oldTime = null;
+            if(File.Exists(Path.Combine(pathBase, nameFile + extension)))
+            { 
+                var newPath = Path.Combine(pathBase, nameFile + extension);
+                DateTime? oldTime = null;
 
-            var lines = File.ReadLines(newPath);
+                var lines = File.ReadLines(newPath);
         
-            foreach (var line in lines)
-            {
-                var r = line.Split('-');
-                if (line.Length > 0)
-                    oldTime = new DateTime(Convert.ToInt32(r[0]), Convert.ToInt32(r[1]), Convert.ToInt32(r[2]), Convert.ToInt32(r[3]), Convert.ToInt32(r[4]), Convert.ToInt32(r[5]));
-            }
+                foreach (var line in lines)
+                {
+                    var r = line.Split('-');
+                    if (line.Length > 0)
+                        oldTime = new DateTime(Convert.ToInt32(r[0]), Convert.ToInt32(r[1]), Convert.ToInt32(r[2]), Convert.ToInt32(r[3]), Convert.ToInt32(r[4]), Convert.ToInt32(r[5]));
+                }
 
-            TimeSpan timeDiff = DateTime.Now -oldTime.Value;
-            if (timeDiff.TotalSeconds > 60)
-            {
-                //Log.Info("Archivo Purgado (60) : "+ timeDiff.TotalSeconds );
-                DeleteBusyFile(pathBase);
-            }            
+                TimeSpan timeDiff = DateTime.Now -oldTime.Value;
+                if (timeDiff.TotalSeconds > 60)
+                {
+                    //Log.Info("Archivo Purgado (60) : "+ timeDiff.TotalSeconds );
+                    DeleteBusyFile(pathBase);
+                }
+            }
         }
 
         public static string GetDateFormat(DateTime date)

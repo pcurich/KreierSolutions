@@ -14,13 +14,30 @@ namespace Ks.Batch.Merge
         /// <returns></returns>
         public static IEnumerable<IEnumerable<T>> Split<T>(this IEnumerable<T> list, int parts)
         {
-            int i = 0;
-            List<int> ll = new List<int>{ 1,2,3};
-
-            var splits = from item in list
-                         group item by i++ % parts into part
-                         select part.AsEnumerable();
-            return splits;
+            int i = 1;
+            var root = new List<IList<T>>();
+            IList<T> child = new List<T>();
+            
+            foreach (var l in list)
+            {
+                if (i == parts)
+                {
+                    child.Add(l);
+                    root.Add(child);
+                    child = new List<T>();
+                    i = 1;
+                }
+                else
+                {
+                    child.Add(l);
+                    i++;
+                }
+            }
+            root.Add(child);
+            //var splits = from item in list
+            //             group item by i++ % parts into part
+            //             select part.AsEnumerable();
+            return root;
         }
     }
 }

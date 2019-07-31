@@ -3,6 +3,7 @@
     public enum ReturnPaymentType
     {
         ApoyoEconomico=1,
-        Aportacion=2
+        Aportacion=2,
+        Excedente = 3
     }
 }

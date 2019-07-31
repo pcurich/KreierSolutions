@@ -351,7 +351,7 @@ namespace Ks.Batch.Util
 
                 Command = new SqlCommand(Sql, Connection);
                 Command.Parameters.AddWithValue("@Key", Guid.NewGuid());
-                Command.Parameters.AddWithValue("@Name", name);
+                Command.Parameters.AddWithValue("@Name", source.Replace("."," "));
                 Command.Parameters.AddWithValue("@Value", value);
                 Command.Parameters.AddWithValue("@PathBase", "");
                 Command.Parameters.AddWithValue("@StateId", ReportState.Completed);
@@ -1026,6 +1026,63 @@ namespace Ks.Batch.Util
         }
 
         #endregion
+
+        #endregion
+
+        #region ReturnPayment
+
+        public void CreateReturnPayment(ReturnPayment returnPayment, WorkFlow workFlow)
+        {
+            try
+            {
+                Log.InfoFormat("Action: Ejecutando una Devolucion");
+
+                Sql = " INSERT INTO ReturnPayment " +
+                      " (AmountToPay , CreatedOnUtc , UpdatedOnUtc , PaymentNumber,StateId, ReturnPaymentTypeId, CustomerId)" +
+                      " VALUES " +
+                      " (@AmountToPay , @CreatedOnUtc , @UpdatedOnUtc , @PaymentNumber, @StateId, @ReturnPaymentTypeId, @CustomerId)"+
+                      " ; SELECT CAST(scope_identity() AS int)";
+                 
+                Command = new SqlCommand(Sql, Connection);
+                Command.Parameters.AddWithValue("@AmountToPay", returnPayment.AmountToPay);
+                Command.Parameters.AddWithValue("@CreatedOnUtc", returnPayment.CreatedOnUtc);
+                Command.Parameters.AddWithValue("@UpdatedOnUtc", returnPayment.UpdatedOnUtc);
+                Command.Parameters.AddWithValue("@PaymentNumber", returnPayment.PaymentNumber);
+                Command.Parameters.AddWithValue("@StateId", returnPayment.StateId);
+                Command.Parameters.AddWithValue("@ReturnPaymentTypeId", returnPayment.ReturnPaymentTypeId);
+                Command.Parameters.AddWithValue("@CustomerId", returnPayment.CustomerId);
+
+                returnPayment.Id = (int)Command.ExecuteScalar();
+
+                workFlow.EntityId = returnPayment.Id;
+                workFlow.GoTo = workFlow.GoTo.Replace("ReturnPaymentId", returnPayment.Id.ToString());
+
+                Sql = " INSERT INTO WorkFlow " +
+                      " (CustomerApprovalId, CustomerCreatedId ,   EntityId ,  EntityName ,  RequireCustomer, RequireSystemRole,   SystemRoleApproval,  CreatedOnUtc,  UpdatedOnUtc,  Active,   Title, Description,  [GoTo])" +
+                      " VALUES " +
+                      " (0,@CustomerCreatedId , @EntityId , @EntityName , @RequireCustomer, @RequireSystemRole, @SystemRoleApproval, @CreatedOnUtc, @UpdatedOnUtc, @Active, @Title, @Description, @GoTo)";
+
+                Command = new SqlCommand(Sql, Connection);
+                Command.Parameters.AddWithValue("@CustomerCreatedId", workFlow.CustomerCreatedId);
+                Command.Parameters.AddWithValue("@EntityId", workFlow.EntityId);
+                Command.Parameters.AddWithValue("@EntityName", workFlow.EntityName);
+                Command.Parameters.AddWithValue("@RequireCustomer", workFlow.RequireCustomer);
+                Command.Parameters.AddWithValue("@RequireSystemRole", workFlow.RequireSystemRole);
+                Command.Parameters.AddWithValue("@SystemRoleApproval", workFlow.SystemRoleApproval);
+                Command.Parameters.AddWithValue("@CreatedOnUtc", workFlow.CreatedOnUtc);
+                Command.Parameters.AddWithValue("@UpdatedOnUtc", workFlow.UpdatedOnUtc);
+                Command.Parameters.AddWithValue("@Title", workFlow.Title);
+                Command.Parameters.AddWithValue("@Active", workFlow.Active);
+                Command.Parameters.AddWithValue("@Description", workFlow.Description);
+                Command.Parameters.AddWithValue("@GoTo", workFlow.GoTo);
+
+                Command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Log.FatalFormat("Action: {0} Error: {1}", "DaoBase.CreateReportIn()", ex.Message);
+            }
+        }
 
         #endregion
     }

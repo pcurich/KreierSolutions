@@ -24,8 +24,11 @@
                 }
                 if (Model.SystemName.Contains("Merge"))
                 {
-                    <a href="@Url.Action("CreateMerge", new { id = Model.Id })" class="k-button">@T("Pre - Sincronizar")</a>
-                    <a href="@Url.Action("PreMerge", new { id = Model.Id })" class="k-button">@T("Sincronizar")</a>
+                    <a href="@Url.Action("PreMerge", new { type = "Caja" })" class="k-button">@T("Pre - Sincronizar")-Caja</a>
+                    <a href="@Url.Action("CreateMerge", new { type = "Caja" })" class="k-button">@T("Sincronizar")-Caja</a>
+
+                    <a href="@Url.Action("PreMerge", new { type = "Copere" })" class="k-button">@T("Pre - Sincronizar")-Copere</a>
+                    <a href="@Url.Action("CreateMerge", new { type = "Copere" })" class="k-button">@T("Sincronizar")-Copere</a>
                 }
             }
 

@@ -40,25 +40,44 @@ namespace Ks.Batch.Copere.Out
                 #region Write to xml file
                 using (var stream = new MemoryStream())
                 {
-                    var properties = new[] { "MesProc", "CodDes", "NumAdm", "Monto", "FechaDesem", "HoraDesem", "NroCuota", "TotalCuotas", "Saldo" };
-                    var data = new Dictionary<int, Dictionary<int, string>>();
-                    var index = 0;
-                    foreach (var info in ReportOut.Values)
+                    try
                     {
-                        var tmp = new Dictionary<int, string>
+                        var fileName = Path.Combine(Path.Combine(path, Batch.FolderMoveToDone), "8001-" + FileHelper.GetDateFormat(DateTime.Now) + ".xlsx");
+                        Log.InfoFormat("Action: Creamos el archivo {0}", fileName);
+
+                        var properties = new[] { "MesProc", "CodDes", "NumAdm", "Monto", "FechaDesem", "HoraDesem", "NroCuota", "TotalCuotas", "Saldo" };
+                        var data = new Dictionary<int, Dictionary<int, string>>();
+                        var index = 0;
+                        foreach (var info in ReportOut.Values)
                         {
-                            { 0, info.Year.ToString() + info.Month.ToString("D2") },
-                            { 1, "8001" },
-                            { 2, info.AdminCode },
-                            { 3, info.InfoContribution.AmountTotal.ToString() }
-                        };
-                        data.Add(index, tmp);
-                        index++;
+                            if (info.InfoContribution != null)
+                            {
+                                var tmp = new Dictionary<int, string>
+                                {
+                                { 0, info.Year.ToString() + info.Month.ToString("D2") },
+                                { 1, "8001" },
+                                { 2, info.AdminCode },
+                                { 3, info.InfoContribution.AmountTotal.ToString() }
+                            };
+                                data.Add(index, tmp);
+                                index++;
+                            }
+                            else
+                            {
+                                Log.ErrorFormat("Action: Parar revisar : {0}", info.AdminCode);
+                            }
+                        }
+
+                        if (File.Exists(fileName))
+                            File.Delete(fileName);
+                        ExcelFile.CreateReport("Aportaciones", 1, stream, properties, data, fileName);
+
                     }
-                    var fileName = Path.Combine(Path.Combine(path, Batch.FolderMoveToDone), "8001-" + FileHelper.GetDateFormat(DateTime.Now) + ".xlsx");
-                    if (File.Exists(fileName))
-                        File.Delete(fileName);
-                    ExcelFile.CreateReport("Aportaciones", 1, stream, properties, data, fileName);
+                    catch (Exception ex)
+                    {
+                        Log.FatalFormat("Action: Error al crear el archivo : {0}", ex.InnerException);
+                    }
+
                 }
                 #endregion
 
@@ -110,7 +129,7 @@ namespace Ks.Batch.Copere.Out
                     CompleteCustomerName();
                     var guid = CreateReportIn(Batch, XmlHelper.Serialize2String(new List<Info>(ReportOut.Values)));
                     CreateReportOut(guid, Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00"), "Ks.Batch.Copere.In");
-                    
+
                 }
 
             }
@@ -128,14 +147,14 @@ namespace Ks.Batch.Copere.Out
         {
             customerIds = new List<int>();
 
-            GetCustomer(CODE, out customerIds,  out Dictionary<int, Info>  tReportOut, fileOut: out Dictionary<int, string> tFileOut);
+            GetCustomer(CODE, out customerIds, out Dictionary<int, Info> tReportOut, fileOut: out Dictionary<int, string> tFileOut);
             ReportOut = tReportOut;
             FileOut = tFileOut;
         }
 
         private void GetContributionPayments(List<int> customerIds)
         {
-            GetContributionPayments(customerIds, Batch.PeriodYear, Batch.PeriodMonth, Batch.UpdateData,   ReportOut, state: (int)ContributionState.Pendiente);
+            GetContributionPayments(customerIds, Batch.PeriodYear, Batch.PeriodMonth, Batch.UpdateData, ReportOut, state: (int)ContributionState.Pendiente);
         }
 
         private void GetLoanPayment(List<int> customerIds)
@@ -220,7 +239,7 @@ namespace Ks.Batch.Copere.Out
             foreach (var loan in loans)
                 Result.Add(loan);
         }
-         
+
         private void CompleteCustomerName()
         {
             var result = GetUserNames(FileOut.Keys.ToList());

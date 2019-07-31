@@ -89,7 +89,7 @@ namespace Ks.Batch.Reverse
                     PathValue = ConfigurationManager.AppSettings["Path"];
                     SysName = ConfigurationManager.AppSettings["SysName"];
 
-                    var dao = new DaoReverseContributions(Connection);
+                    var dao = new DaoReverse(Connection);
                     dao.Connect();
                     Batch = new ScheduleBatch {
                         PathBase = PathValue,
@@ -116,7 +116,7 @@ namespace Ks.Batch.Reverse
 
         private void Install()
         {
-            var dao = new DaoReverseContributions(Connection);
+            var dao = new DaoReverse(Connection);
             dao.Connect();
             dao.Install(Batch);
             dao.Close();

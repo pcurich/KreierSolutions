@@ -21,8 +21,10 @@ namespace Ks.Batch.Reverse
             var connection = ConfigurationManager.ConnectionStrings["ACMR"].ConnectionString;
             var SysName = e.Name;
 
-            var dao = new DaoReverseContributions(connection);
+            var dao = new DaoReverse(connection);
             dao.Connect();
+
+            Log.InfoFormat("Action: {0} {1}", SysName, "Iniciado");
 
             var batch = dao.GetScheduleBatch(SysName);
 
@@ -35,6 +37,8 @@ namespace Ks.Batch.Reverse
             {
                 batch.PeriodMonth--;
             }
+
+            Log.InfoFormat("Action: Periodo a revertir {0}", batch.PeriodYear.ToString("D4") + batch.PeriodMonth.ToString("D2"));
             var result = dao.StartReverse(getCode(SysName),batch);
 
             //LANZAR UN ERROR CRITICO XQ SI UNO DE LOS 2 FALLA, NO TENGO MANERA DE RECREAR TODO OTRA VEZ
