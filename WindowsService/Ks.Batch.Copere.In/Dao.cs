@@ -11,20 +11,21 @@ namespace Ks.Batch.Copere.In
 {
     public class Dao : DaoBase
     {
+        private ScheduleBatch Batch { get; set; }
+
         public Dao(string connetionString)
             : base(connetionString)
         {
-        }
-
-        private ScheduleBatch Batch { get; set; }
+        } 
 
         public void Process(ScheduleBatch batch, List<Info> infos)
         {
             Batch = batch;
-
-            Log.InfoFormat("Action: {0}","Dao.Process(" + batch.SystemName + ")");
-
             var guid = GetParentOut();
+            
+            infos = JoinData(infos);
+
+            Log.InfoFormat("Action: {0}", "Dao.Process(" + batch.SystemName + ")");
 
             if (guid != null)
             {

@@ -429,6 +429,40 @@ namespace Ks.Batch.Util
 
         #region Utilities
 
+        public List<Info> JoinData(List<Info> infos)
+        {
+            var result = new List<Info>();
+            var t = new Dictionary<string, int>();
+
+            foreach (var index in infos)
+            {
+                if (!t.ContainsKey(index.AdminCode))
+                {
+                    t.Add(index.AdminCode, 0);
+                    var totalPayed = infos.Where(x => x.AdminCode == index.AdminCode || x.Dni == index.Dni).Sum(x => x.TotalPayed);
+
+                    result.Add(new Info
+                    {
+                        Year = index.Year,
+                        Month = index.Month,
+                        CustomerId = index.CustomerId,
+                        CompleteName = index.CompleteName,
+                        HasAdminCode = index.HasAdminCode,
+                        AdminCode = index.AdminCode,
+                        HasDni = index.HasDni,
+                        Dni = index.Dni,
+                        TotalContribution = index.TotalContribution,
+                        TotalPayed = totalPayed,
+                        TotalLoan = index.TotalLoan,
+                        InfoContribution = null,
+                        InfoLoans = null
+                    });
+                }
+            }
+
+            return result;
+        }
+
         private string NameOfService(string source)
         {
             if (IsConnected)

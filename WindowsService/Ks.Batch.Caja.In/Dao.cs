@@ -20,6 +20,8 @@ namespace Ks.Batch.Caja.In
             Batch = batch;
             var guid = GetParentOut();
 
+            infos = JoinData(infos);
+
             Log.InfoFormat("Action: {0}","Dao.Process(" + batch.SystemName + ")");
 
             if (guid != null)
@@ -47,7 +49,7 @@ namespace Ks.Batch.Caja.In
                 }
             }
         }
-
+         
         #region Util
 
         private Guid? GetParentOut()

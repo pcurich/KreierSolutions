@@ -47,11 +47,21 @@ namespace Ks.Batch.Merge
             if (listData.Count == 2)
                 SplitList(listData);
 
+            
+
             var account = batch.SystemName + "." + batch.PeriodYear + "." + batch.PeriodMonth.ToString("D2");
             if (_copereOut != null && _copereIn != null && _copereOut.Count > 0 && _copereIn.Count > 0 && e.Name.ToUpper().Contains("COPERE"))
+            {
+                batch.PeriodYear = int.Parse(_reportCopere.Period.Substring(0, 4));
+                batch.PeriodMonth = int.Parse(_reportCopere.Period.Substring(4, 2));
                 dao.Process(_reportCopere, _copereIn, _copereOut, "Copere", account, isPre);
+            }
             if (_cajaOut != null && _cajaIn != null && _cajaOut.Count > 0 && _cajaIn.Count > 0 && e.Name.ToUpper().Contains("CAJA"))
+            {
+                batch.PeriodYear = int.Parse(_reportCaja.Period.Substring(0, 4));
+                batch.PeriodMonth = int.Parse(_reportCaja.Period.Substring(4, 2));
                 dao.Process(_reportCaja, _cajaIn, _cajaOut, "Caja", account, isPre);
+            }
 
             if (!isPre)
             {
