@@ -108,32 +108,42 @@ namespace Ks.Services.ExportImport
                 }
                 catch (Exception e) { }
 
+                #region Title
+
+                worksheet.Cells["C5:J5"].Merge = true;
+                worksheet.Cells["C5:J5"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                worksheet.Cells["C5:J5"].Value = "ESTADO DE CUENTA DE APORTACIONES";
+                worksheet.Cells["C5:J5"].Style.Font.Bold = true;
+                worksheet.Cells["C5:J5"].Style.Font.UnderLine = true;
+
+                #endregion
+
                 #region Summary
-                worksheet.Cells["A6:B8"].Style.Font.Bold = true;
-                worksheet.Cells["G6:H8"].Style.Font.Bold = true;
+                worksheet.Cells["A8:B10"].Style.Font.Bold = true;
+                worksheet.Cells["G8:H10"].Style.Font.Bold = true;
 
-                worksheet.Cells["A6:B6"].Merge = true;
-                worksheet.Cells["A6"].Value = "Aportante:";
-                worksheet.Cells["C6:E6"].Merge = true;
-                worksheet.Cells["C6"].Value = customer.GetFullName();
-                worksheet.Cells["A7:B7"].Merge = true;
-                worksheet.Cells["A7"].Value = "Dni:";
-                worksheet.Cells["C7"].Value = customer.GetGenericAttribute(SystemCustomerAttributeNames.Dni);
                 worksheet.Cells["A8:B8"].Merge = true;
-                worksheet.Cells["A8"].Value = "N° Adm:";
-                worksheet.Cells["C8"].Value = customer.GetGenericAttribute(SystemCustomerAttributeNames.AdmCode);
-
-                worksheet.Cells["G6:H6"].Merge = true;
-                worksheet.Cells["G6"].Value = "Monto:";
-                worksheet.Cells["I6"].Value = contribution.AmountPayed.ToString("c", new CultureInfo("es-PE"));
-                worksheet.Cells["G7:H7"].Merge = true;
-                worksheet.Cells["G7"].Value = "Aportante desde:";
-                worksheet.Cells["I7"].Value = _dateTimeHelper.ConvertToUserTime(contribution.CreatedOnUtc, TimeZoneInfo.Utc).ToShortDateString();
+                worksheet.Cells["A8"].Value = "Aportante:";
+                worksheet.Cells["C8:E8"].Merge = true;
+                worksheet.Cells["C8"].Value = customer.GetFullName();
+                worksheet.Cells["A9:B9"].Merge = true;
+                worksheet.Cells["A9"].Value = "Dni:";
+                worksheet.Cells["C9"].Value = customer.GetGenericAttribute(SystemCustomerAttributeNames.Dni);
+                worksheet.Cells["A10:B10"].Merge = true;
+                worksheet.Cells["A10"].Value = "N° Adm:";
+                worksheet.Cells["C10"].Value = customer.GetGenericAttribute(SystemCustomerAttributeNames.AdmCode);
 
                 worksheet.Cells["G8:H8"].Merge = true;
-                worksheet.Cells["G8"].Value = "Ultimo Pago:";
+                worksheet.Cells["G8"].Value = "Monto:";
+                worksheet.Cells["I8"].Value = contribution.AmountPayed.ToString("c", new CultureInfo("es-PE"));
+                worksheet.Cells["G9:H9"].Merge = true;
+                worksheet.Cells["G9"].Value = "Aportante desde:";
+                worksheet.Cells["I9"].Value = _dateTimeHelper.ConvertToUserTime(contribution.CreatedOnUtc, TimeZoneInfo.Utc).ToShortDateString();
+
+                worksheet.Cells["G10:H10"].Merge = true;
+                worksheet.Cells["G10"].Value = "Ultimo Pago:";
                 if (contribution.UpdatedOnUtc.HasValue)
-                    worksheet.Cells["I8"].Value = _dateTimeHelper.ConvertToUserTime(contribution.UpdatedOnUtc.Value, TimeZoneInfo.Utc).ToShortDateString();
+                    worksheet.Cells["I10"].Value = _dateTimeHelper.ConvertToUserTime(contribution.UpdatedOnUtc.Value, TimeZoneInfo.Utc).ToShortDateString();
                 #endregion
 
                 #region Leyend
@@ -175,14 +185,14 @@ namespace Ks.Services.ExportImport
                     };
                 for (int i = 0; i < properties.Length; i++)
                 {
-                    worksheet.Cells[10, i + 1].Value = properties[i];
-                    worksheet.Cells[10, i + 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                    worksheet.Cells[10, i + 1].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(128, 235, 142));
-                    worksheet.Cells[10, i + 1].Style.Fill.BackgroundColor.Tint = 0.599993896298105M;
-                    worksheet.Cells[10, i + 1].Style.Font.Bold = true;
+                    worksheet.Cells[12, i + 1].Value = properties[i];
+                    worksheet.Cells[12, i + 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    worksheet.Cells[12, i + 1].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(128, 235, 142));
+                    worksheet.Cells[12, i + 1].Style.Fill.BackgroundColor.Tint = 0.599993896298105M;
+                    worksheet.Cells[12, i + 1].Style.Font.Bold = true;
                 }
 
-                int row = 11;
+                int row = 13;
                 decimal ene, feb, mar, abr, may, jun, jul, ago, sep, oct, nov, dic, total;
                 int t;
                 foreach (var p in reportContributionPayment)
@@ -571,42 +581,52 @@ namespace Ks.Services.ExportImport
                 }
                 catch (Exception e) { }
 
+                #region Title
+
+                worksheet.Cells["B5:G5"].Merge = true;
+                worksheet.Cells["B5:G5"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                worksheet.Cells["B5:G5"].Value = "CRONOGRAMA DE PAGOS DE APOYO SOCIAL ECÓNOMICO";
+                worksheet.Cells["B5:G5"].Style.Font.Bold = true;
+                worksheet.Cells["B5:G5"].Style.Font.UnderLine = true;                
+
+                #endregion
+
                 #region Summary
 
-                worksheet.Cells["A6:A9"].Style.Font.Bold = true;
-                worksheet.Cells["E6:E9"].Style.Font.Bold = true;
-                worksheet.Cells["G6:G9"].Style.Font.Bold = true;
+                worksheet.Cells["A8:A11"].Style.Font.Bold = true;
+                worksheet.Cells["E8:E11"].Style.Font.Bold = true;
+                worksheet.Cells["G8:G11"].Style.Font.Bold = true;
 
-                worksheet.Cells["A6"].Value = "Aportante:";
-                worksheet.Cells["B6:C6"].Merge = true;
-                worksheet.Cells["B6"].Value = customer.GetFullName();
-                worksheet.Cells["A7"].Value = "Dni:";
-                worksheet.Cells["B7:C7"].Merge = true;
-                worksheet.Cells["B7"].Value = customer.GetGenericAttribute(SystemCustomerAttributeNames.Dni);
-                worksheet.Cells["A8"].Value = "N° Adm:";
+                worksheet.Cells["A8"].Value = "Aportante:";
                 worksheet.Cells["B8:C8"].Merge = true;
-                worksheet.Cells["B8"].Value = customer.GetGenericAttribute(SystemCustomerAttributeNames.AdmCode);
-                worksheet.Cells["A9"].Value = "Solicitado:";
+                worksheet.Cells["B8"].Value = customer.GetFullName();
+                worksheet.Cells["A9"].Value = "Dni:";
                 worksheet.Cells["B9:C9"].Merge = true;
-                worksheet.Cells["B9"].Value = _dateTimeHelper.ConvertToUserTime(loan.CreatedOnUtc, DateTimeKind.Utc).ToString(CultureInfo.InvariantCulture);
+                worksheet.Cells["B9"].Value = customer.GetGenericAttribute(SystemCustomerAttributeNames.Dni);
+                worksheet.Cells["A10"].Value = "N° Adm:";
+                worksheet.Cells["B10:C10"].Merge = true;
+                worksheet.Cells["B10"].Value = customer.GetGenericAttribute(SystemCustomerAttributeNames.AdmCode);
+                worksheet.Cells["A11"].Value = "Solicitado:";
+                worksheet.Cells["B11:C11"].Merge = true;
+                worksheet.Cells["B11"].Value = _dateTimeHelper.ConvertToUserTime(loan.CreatedOnUtc, DateTimeKind.Utc).ToString(CultureInfo.InvariantCulture);
 
-                worksheet.Cells["E6"].Value = "Plazo:";
-                worksheet.Cells["F6"].Value = string.Format("{0} Meses", loan.Period);
-                worksheet.Cells["E7"].Value = "Cuota Mensual:";
-                worksheet.Cells["F7"].Value = loan.MonthlyQuota.ToString("c", new CultureInfo("es-PE"));
-                worksheet.Cells["E8"].Value = "Importe:";
-                worksheet.Cells["F8"].Value = loan.LoanAmount.ToString("c", new CultureInfo("es-PE"));
-                worksheet.Cells["E9"].Value = "Total a Girar:";
-                worksheet.Cells["F9"].Value = loan.TotalToPay.ToString("c", new CultureInfo("es-PE"));
+                worksheet.Cells["E8"].Value = "Plazo:";
+                worksheet.Cells["F8"].Value = string.Format("{0} Meses", loan.Period);
+                worksheet.Cells["E9"].Value = "Cuota Mensual:";
+                worksheet.Cells["F9"].Value = loan.MonthlyQuota.ToString("c", new CultureInfo("es-PE"));
+                worksheet.Cells["E10"].Value = "Importe:";
+                worksheet.Cells["F10"].Value = loan.LoanAmount.ToString("c", new CultureInfo("es-PE"));
+                worksheet.Cells["E11"].Value = "Total a Girar:";
+                worksheet.Cells["F11"].Value = loan.TotalToPay.ToString("c", new CultureInfo("es-PE"));
 
-                worksheet.Cells["G6"].Value = "T.E.A:";
-                worksheet.Cells["H6"].Value = (loan.Tea / 100).ToString("p", new CultureInfo("es-PE"));
-                worksheet.Cells["G7"].Value = "Seg Desgravamen:";
-                worksheet.Cells["H7"].Value = (loan.Safe / 100).ToString("p", new CultureInfo("es-PE"));
-                worksheet.Cells["G8"].Value = "Total Intereses:";
-                worksheet.Cells["H8"].Value = loan.TotalFeed.ToString("c", new CultureInfo("es-PE"));
-                worksheet.Cells["G9"].Value = "Total Desgravamen:";
-                worksheet.Cells["H9"].Value = loan.TotalSafe.ToString("c", new CultureInfo("es-PE"));
+                worksheet.Cells["G8"].Value = "T.E.A:";
+                worksheet.Cells["H8"].Value = (loan.Tea / 100).ToString("p", new CultureInfo("es-PE"));
+                worksheet.Cells["G9"].Value = "Seg Desgravamen:";
+                worksheet.Cells["H9"].Value = (loan.Safe / 100).ToString("p", new CultureInfo("es-PE"));
+                worksheet.Cells["G10"].Value = "Total Intereses:";
+                worksheet.Cells["H10"].Value = loan.TotalFeed.ToString("c", new CultureInfo("es-PE"));
+                worksheet.Cells["G11"].Value = "Total Desgravamen:";
+                worksheet.Cells["H11"].Value = loan.TotalSafe.ToString("c", new CultureInfo("es-PE"));
 
                 #endregion
 
@@ -617,14 +637,14 @@ namespace Ks.Services.ExportImport
                     };
                 for (var i = 0; i < properties.Length; i++)
                 {
-                    worksheet.Cells[11, i + 1].Value = properties[i];
-                    worksheet.Cells[11, i + 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                    worksheet.Cells[11, i + 1].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(128, 235, 142));
-                    worksheet.Cells[11, i + 1].Style.Fill.BackgroundColor.Tint = 0.599993896298105M;
-                    worksheet.Cells[11, i + 1].Style.Font.Bold = true;
+                    worksheet.Cells[13, i + 1].Value = properties[i];
+                    worksheet.Cells[13, i + 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    worksheet.Cells[13, i + 1].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(128, 235, 142));
+                    worksheet.Cells[13, i + 1].Style.Fill.BackgroundColor.Tint = 0.599993896298105M;
+                    worksheet.Cells[13, i + 1].Style.Font.Bold = true;
                 }
 
-                var row = 12;
+                var row = 14;
                 var totalMonthlyCapital = 0M;
                 var totalMonthlyFee = 0M;
                 var totalMonthlyQuota = 0M;

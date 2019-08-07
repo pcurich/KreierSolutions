@@ -27,6 +27,8 @@ namespace Ks.Batch.Copere.Out
             Batch = batch;
             try
             {
+                var nameFile = string.Format("8001_{0}00.xlsx", Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00"));
+
                 Log.InfoFormat("Action: {0}", "Dao.Process(" + batch.SystemName + ")");
 
                 CultureInfo culture = new CultureInfo("es-PE");
@@ -112,10 +114,9 @@ namespace Ks.Batch.Copere.Out
                             }
                         }
                     }
-                    var fileName = Path.Combine(Path.Combine(path, Batch.FolderMoveToDone), "8033-" + FileHelper.GetDateFormat(DateTime.Now) + ".xlsx");
-                    if (File.Exists(fileName))
-                        File.Delete(fileName);
-                    ExcelFile.CreateReport("Apoyo", 1, stream, properties, data, fileName);
+                    if (File.Exists(nameFile))
+                        File.Delete(nameFile);
+                    ExcelFile.CreateReport("Apoyo", 1, stream, properties, data, nameFile);
                 }
                 #endregion
 

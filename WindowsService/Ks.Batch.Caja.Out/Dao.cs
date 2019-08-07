@@ -41,9 +41,9 @@ namespace Ks.Batch.Caja.Out
                 using (var stream = new MemoryStream())
                 {
                     try
-                    { 
-                        var fileName = Path.Combine(Path.Combine(path, Batch.FolderMoveToDone), "APORT-" + FileHelper.GetDateFormat(DateTime.Now) + ".xlsx");
-                        Log.InfoFormat("Action: Creamos el archivo {0}", fileName);
+                    {
+                        var nameFile = Path.Combine(Path.Combine(path, Batch.FolderMoveToDone),string.Format("6008_{0}00_APORT.xlsx", Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00")));
+                        Log.InfoFormat("Action: Creamos el archivo {0}", nameFile);
 
                         var properties = new[] { "MesProc", "CodDes", "NumAdm", "Monto", "FechaDesem", "HoraDesem", "NroCuota", "TotalCuotas", "Saldo" };
                         var data = new Dictionary<int, Dictionary<int, string>>();
@@ -67,9 +67,9 @@ namespace Ks.Batch.Caja.Out
                                 Log.ErrorFormat("Action: Parar revisar : {0}", info.AdminCode);
                             }
                         }
-                        if (File.Exists(fileName))
-                            File.Delete(fileName);
-                        ExcelFile.CreateReport("Aportaciones", 1, stream, properties, data, fileName);
+                        if (File.Exists(nameFile))
+                            File.Delete(nameFile);
+                        ExcelFile.CreateReport("Aportaciones", 1, stream, properties, data, nameFile);
 
                     }catch(Exception ex)
                     {
@@ -86,8 +86,8 @@ namespace Ks.Batch.Caja.Out
                 {
                     try
                     {
-                        var fileName = Path.Combine(Path.Combine(path, Batch.FolderMoveToDone), "ASE-" + FileHelper.GetDateFormat(DateTime.Now) + ".xlsx");
-                        Log.InfoFormat("Action: Creamos el archivo {0}", fileName);
+                        var nameFile = Path.Combine(Path.Combine(path, Batch.FolderMoveToDone),string.Format("6008_{0}00_ASE.xlsx", Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00")));
+                        Log.InfoFormat("Action: Creamos el archivo {0}", nameFile);
 
                         var properties = new[] { "MES_PROCESO", "NRO_ADMINIST", "COD_DESCUENTO", "MTO_DESCUENTO", "NUM_CUOTAS", "TOT_CUOTAS", "FEC_DESEMBOLSO", "HOR_DESEMBOLSO", "MTO_SALDO_PRES" };
                         var data = new Dictionary<int, Dictionary<int, string>>();
@@ -116,9 +116,9 @@ namespace Ks.Batch.Caja.Out
                             }
                         }
                         
-                        if (File.Exists(fileName))
-                            File.Delete(fileName);
-                        ExcelFile.CreateReport("Apoyo", 1, stream, properties, data, fileName);
+                        if (File.Exists(nameFile))
+                            File.Delete(nameFile);
+                        ExcelFile.CreateReport("Apoyo", 1, stream, properties, data, nameFile);
                     }
                     catch (Exception ex)
                     {

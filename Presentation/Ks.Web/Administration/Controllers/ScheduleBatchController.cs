@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -290,19 +291,16 @@ namespace Ks.Admin.Controllers
                     name = string.Format("6008_{0}00", schedule.PeriodYear.ToString("0000") + schedule.PeriodMonth.ToString("00"));
                 else
                     name = string.Format("8001_{0}00", schedule.PeriodYear.ToString("0000") + schedule.PeriodMonth.ToString("00"));
-                name += "-previo.txt";
+                name += "-previo.zip";
 
                 int max = 4;
-                while (!System.IO.File.Exists(Path.Combine(schedule.PathBase, name))){
+                while (!System.IO.File.Exists(Path.Combine(Path.Combine(schedule.PathBase,schedule.FolderMoveToDone), name))){
                     if (max == 0)
                         break;
                     max--;
                     Thread.Sleep(30 * 1000);
-                }
-
-                var txt = _exportManager.ExportScheduleTxt(schedule);
-                
-                return new TxtDownloadResult(txt, name);
+                } 
+                return File(Path.Combine(Path.Combine(schedule.PathBase, schedule.FolderMoveToDone), name), "application/zip", name);
             }
             catch (Exception exc)
             {
@@ -332,7 +330,7 @@ namespace Ks.Admin.Controllers
                     name = string.Format("6008_{0}00", schedule.PeriodYear.ToString("0000") + schedule.PeriodMonth.ToString("00"));
                 else
                     name = string.Format("8001_{0}00", schedule.PeriodYear.ToString("0000") + schedule.PeriodMonth.ToString("00"));
-                name += ".txt";
+                name += ".zip";
 
                 int max = 4;
                 while (!System.IO.File.Exists(Path.Combine(schedule.PathBase, name))){
@@ -342,9 +340,7 @@ namespace Ks.Admin.Controllers
                     Thread.Sleep(30 * 1000);
                 }
 
-                var txt = _exportManager.ExportScheduleTxt(schedule);
-                
-                return new TxtDownloadResult(txt, name);
+                return File(Path.Combine(Path.Combine(schedule.PathBase, schedule.FolderMoveToDone), name), "application/zip", name);
             }
             catch (Exception exc)
             {

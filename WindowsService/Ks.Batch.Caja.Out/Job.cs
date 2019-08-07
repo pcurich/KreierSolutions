@@ -41,7 +41,7 @@ namespace Ks.Batch.Caja.Out
                     var records = DataBase();
                     if (records.Count != 0)
                     {
-                        SyncFiles(records);
+                        SyncFiles(records, Batch.UpdateData);
                         UpdateScheduleBatch();
                     }
                     else
@@ -70,13 +70,14 @@ namespace Ks.Batch.Caja.Out
             return scheduleBatchs;
         }
 
-        protected void SyncFiles(List<string> result)
+        protected void SyncFiles(List<string> result, bool updateData)
         {
             try
             {
                 var nameFile = string.Format("6008_{0}00.txt", Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00"));
                 Log.InfoFormat("Action: Escribiendo en el archivo {0} la cantidad de {1} lineas", nameFile, result.Count);
                 File.WriteAllLines(System.IO.Path.Combine(System.IO.Path.Combine(Path, Batch.FolderMoveToDone), nameFile), result);
+                ZipHelper.CreateZipFile(System.IO.Path.Combine(Path, Batch.FolderMoveToDone), nameFile.Replace(".txt","")+ (!updateData? "-previo" : ""));
             }
             catch (Exception ex)
             {
