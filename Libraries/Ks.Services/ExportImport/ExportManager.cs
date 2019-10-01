@@ -1199,17 +1199,17 @@ namespace Ks.Services.ExportImport
 
 
                 #region Summary
-                worksheet.Cells["E5:K5"].Merge = true;
-                worksheet.Cells["E6:K6"].Merge = true;
-                worksheet.Cells["E7:K7"].Merge = true;
-                worksheet.Cells["E8:K8"].Merge = true;
-                worksheet.Cells["E5:K8"].Style.Font.Bold = true;
-                worksheet.Cells["E5:K8"].Style.Font.Size = 20;
-                worksheet.Cells["E5:K8"].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
-                worksheet.Cells["E5"].Value = "APOYO SOCIAL ECONOMICO";
-                worksheet.Cells["E6"].Value = "REPORTE";
-                worksheet.Cells["E7"].Value = source.ToUpper();
-                worksheet.Cells["E8"].Value = "DESDE :" + from.ToShortDateString() + " - HASTA:" + to.ToShortDateString();
+                worksheet.Cells["B5:I5"].Merge = true;
+                worksheet.Cells["B6:I6"].Merge = true;
+                worksheet.Cells["B7:I7"].Merge = true;
+                worksheet.Cells["B8:I8"].Merge = true;
+                worksheet.Cells["B5:I8"].Style.Font.Bold = true;
+                worksheet.Cells["B5:I8"].Style.Font.Size = 20;
+                worksheet.Cells["B5:I8"].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
+                worksheet.Cells["B5"].Value = "APOYO SOCIAL ECONOMICO";
+                worksheet.Cells["B6"].Value = "REPORTE";
+                worksheet.Cells["B7"].Value = source.ToUpper();
+                worksheet.Cells["B8"].Value = "DESDE : " + from.ToShortDateString() + " - HASTA: " + to.ToShortDateString();
 
                 #endregion
 
@@ -1217,7 +1217,7 @@ namespace Ks.Services.ExportImport
                 var properties = new[]
                     {
                         "APELLIDOS Y NOMBRE","N° ADMINISTRATIVO","SITUACION MILITAR","FECHA DE GIRO","ORDEN DE PAGO",
-                        "MONTO SOLICITADO","MMONTO ENTREGADO","CUOTAS","MONTO PAGADO","MONTO ADEUDADO",
+                        "MONTO SOLICITADO","MONTO ENTREGADO","CUOTAS","MONTO PAGADO","MONTO ADEUDADO",
                         "ADEUDA"
                     };
                 for (var i = 0; i < properties.Length; i++)
@@ -1254,6 +1254,99 @@ namespace Ks.Services.ExportImport
                     col++;
                     worksheet.Cells[row, col].Value = p.TotalAmount.ToString("c", new CultureInfo("es-PE"));
                     col++;
+                    row++;
+                }
+
+
+                for (var i = 1; i <= worksheet.Dimension.Columns; i++)
+                {
+                    worksheet.Column(i).AutoFit();
+                }
+                xlPackage.Save();
+            }
+        }
+
+        public virtual void ExportLoanToXlsx(MemoryStream stream, DateTime from, DateTime to, string source, IList<ReportLoan> reportLoan)
+        {
+            if (stream == null)
+                throw new ArgumentNullException("stream");
+
+            using (var xlPackage = new ExcelPackage(stream))
+            {
+                // get handle to the existing worksheet
+                var worksheet = xlPackage.Workbook.Worksheets.Add("Apoyo Social Económico");
+                // var imagePath = _webHelper.MapPath(@"C:\inetpub\wwwroot\Acmr\Administration\Content\images\logo.png");
+                try
+                {
+
+                    var image = new Bitmap(new MemoryStream(Convert.FromBase64String(IMAGE)));
+                    var excelImage = worksheet.Drawings.AddPicture("ACMR", image);
+                    excelImage.From.Column = 0;
+                    excelImage.From.Row = 0;
+                }
+                catch (Exception e) { }
+
+
+                #region Summary
+                worksheet.Cells["E5:K5"].Merge = true;
+                worksheet.Cells["E6:K6"].Merge = true;
+                worksheet.Cells["E7:K7"].Merge = true;
+                worksheet.Cells["E8:K8"].Merge = true;
+                worksheet.Cells["E5:K8"].Style.Font.Bold = true;
+                worksheet.Cells["E5:K8"].Style.Font.Size = 20;
+                worksheet.Cells["E5:K8"].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
+                worksheet.Cells["E5"].Value = "APOYO SOCIAL ECONOMICO";
+                worksheet.Cells["E6"].Value = "REPORTE";
+                worksheet.Cells["E7"].Value = source.ToUpper();
+                worksheet.Cells["E8"].Value = "DESDE :" + from.ToShortDateString() + " - HASTA:" + to.ToShortDateString();
+
+                #endregion
+
+                //Create Headers and format them 
+                var properties = new[]
+                    {
+                        "APELLIDOS Y NOMBRE","N° ADMINISTRATIVO","SITUACION MILITAR",
+                        "ORDEN DE PAGO","CUOTAS","TIEMPO APORTANTE","T.E.A.","SEGURO DESGRAVAMEN","IMPORTE SOLICITADO","CUOTA MENSUAL", 
+                        "TOTAL INTERESES","TOTAL SEG DESGRAVAMEN","IMPORTE TOTAL","IMPORTE A PRESTAR","PAGADO A LA FECHA",
+                        "N° CUENTA","BANCO","N° CHEQUE","RETRAZO","ESTADO","CREADO","APROVADO","ACTUALIZADO"
+                    };
+                for (var i = 0; i < properties.Length; i++)
+                {
+                    worksheet.Cells[9, i + 1].Value = properties[i];
+                    worksheet.Cells[9, i + 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    worksheet.Cells[9, i + 1].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(128, 235, 142));
+                    worksheet.Cells[9, i + 1].Style.Fill.BackgroundColor.Tint = 0.599993896298105M;
+                    worksheet.Cells[9, i + 1].Style.Font.Bold = true;
+                }
+
+                var row = 10;
+
+                foreach (var p in reportLoan)
+                {
+                    var col = 1;
+                    worksheet.Cells[row, col].Value = p.LastName + " ,  " + p.FirstName; col++;
+                    worksheet.Cells[row, col].Value = p.AdmCode; col++;
+                    worksheet.Cells[row, col].Value = p.MilitarySituation; col++;
+                    worksheet.Cells[row, col].Value = p.LoanNumber; col++;
+                    worksheet.Cells[row, col].Value = p.Period; col++;
+                    worksheet.Cells[row, col].Value = p.TotalOfCycle; col++; 
+                    worksheet.Cells[row, col].Value = p.Tea; col++;
+                    worksheet.Cells[row, col].Value = p.Safe; col++;
+                    worksheet.Cells[row, col].Value = p.LoanAmount.ToString("c", new CultureInfo("es-PE")); col++;
+                    worksheet.Cells[row, col].Value = p.MonthlyQuota.ToString("c", new CultureInfo("es-PE")); col++;
+                    worksheet.Cells[row, col].Value = p.TotalFeed.ToString("c", new CultureInfo("es-PE")); col++;
+                    worksheet.Cells[row, col].Value = p.TotalSafe.ToString("c", new CultureInfo("es-PE")); col++;
+                    worksheet.Cells[row, col].Value = p.TotalAmount.ToString("c", new CultureInfo("es-PE")); col++;
+                    worksheet.Cells[row, col].Value = p.TotalToPay.ToString("c", new CultureInfo("es-PE")); col++;
+                    worksheet.Cells[row, col].Value = p.TotalPayed.ToString("c", new CultureInfo("es-PE")); col++;
+                    worksheet.Cells[row, col].Value = p.AccountNumber; col++;
+                    worksheet.Cells[row, col].Value = p.BankName; col++;
+                    worksheet.Cells[row, col].Value = p.CheckNumber; col++;
+                    worksheet.Cells[row, col].Value = p.IsDelay?1:0; col++;
+                    worksheet.Cells[row, col].Value = p.Active ? 1 : 0; col++;
+                    worksheet.Cells[row, col].Value = _dateTimeHelper.ConvertToUserTime(p.CreatedOnUtc).ToShortDateString(); col++;
+                    worksheet.Cells[row, col].Value = _dateTimeHelper.ConvertToUserTime(p.ApprovalOnUtc).ToShortDateString(); col++;
+                    worksheet.Cells[row, col].Value = _dateTimeHelper.ConvertToUserTime(p.UpdatedOnUtc).ToShortDateString(); col++;
                     row++;
                 }
 

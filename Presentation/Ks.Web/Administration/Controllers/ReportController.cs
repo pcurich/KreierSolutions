@@ -143,6 +143,12 @@ namespace Ks.Admin.Controllers
                         new SelectListItem {Value = "2", Text = "Copere"},
                         new SelectListItem {Value = "3", Text = "Caja Pensión Militar Policial"}
                     },
+                    Options = new List<SelectListItem>
+                    {
+                        new SelectListItem {Value = "0", Text = "-----------------"},
+                        new SelectListItem {Value = "1", Text = "Resumen"},
+                        new SelectListItem {Value = "2", Text = "Detallado"},
+                    }
                 },
                 ReportContribution = new ReportContribution
                 {
@@ -271,7 +277,7 @@ namespace Ks.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult LoanGeneralReport(ReportListModel model)
+        public ActionResult LoanReport(ReportListModel model)
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageReports))
                 return AccessDeniedView();
@@ -279,42 +285,78 @@ namespace Ks.Admin.Controllers
             var hasError = false;
             var errorMessage = string.Empty;
 
-            if (!model.ReportLoan.From.HasValue)
+            if(model.ReportLoan.OptionId > 0)
             {
-                errorMessage += _localizationService.GetResource("Admin.Catalog.ReportLoan.Fields.From.Required") + " - ";
-                hasError = true;
-            }
-            if (!model.ReportLoan.To.HasValue)
-            {
-                errorMessage += _localizationService.GetResource("Admin.Catalog.ReportLoan.Fields.To.Required") + " - ";
-                hasError = true;
-            }
-            if (!hasError)
-            {
-                var reportLoan = _reportService.GetDetailLoan(
-                model.ReportLoan.From.Value.Year, model.ReportLoan.From.Value.Month, model.ReportLoan.From.Value.Day,
-                model.ReportLoan.To.Value.Year, model.ReportLoan.To.Value.Month, model.ReportLoan.To.Value.Day,
-                model.ReportLoan.TypeId );
-                try
+                if (!model.ReportLoan.From.HasValue)
                 {
-                    byte[] bytes;
-                    using (var stream = new MemoryStream())
+                    errorMessage += _localizationService.GetResource("Admin.Catalog.ReportLoan.Fields.From.Required") + " - ";
+                    hasError = true;
+                }
+                if (!model.ReportLoan.To.HasValue)
+                {
+                    errorMessage += _localizationService.GetResource("Admin.Catalog.ReportLoan.Fields.To.Required") + " - ";
+                    hasError = true;
+                }
+                if (!hasError)
+                {
+                    try
                     {
-                        _exportManager.ExportDetailLoanToXlsx(stream, model.ReportLoan.From.Value, model.ReportLoan.To.Value,
-                            model.ReportLoan.TypeId == 1 ? "COPERE" : "CAJA PENSION MILITAR POLICIAL",
-                            reportLoan);
-                        bytes = stream.ToArray();
+                        byte[] bytes;
+                        if (model.ReportLoan.OptionId == 1) //resumen
+                        {
+                            var reportLoan = _reportService.GetLoan(
+                            model.ReportLoan.From.Value.Year, model.ReportLoan.From.Value.Month, model.ReportLoan.From.Value.Day,
+                            model.ReportLoan.To.Value.Year, model.ReportLoan.To.Value.Month, model.ReportLoan.To.Value.Day,
+                            model.ReportLoan.TypeId);
+
+                            using (var stream = new MemoryStream())
+                            {
+                                _exportManager.ExportLoanToXlsx(stream, model.ReportLoan.From.Value, model.ReportLoan.To.Value,
+                                    model.ReportLoan.TypeId == 2 ? "COPERE" : model.ReportLoan.TypeId == 3 ? "CAJA PENSION MILITAR POLICIAL" : "TODOS",
+                                    reportLoan);
+                                bytes = stream.ToArray();
+                            }
+                            //Response.ContentType = "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                            //Response.AddHeader("content-disposition", "attachment; filename=Aportaciones.xlsx");
+                            return File(bytes, "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Reporte Apoyo Social Economico Detallado.xlsx");
+                        }
+                        else
+                        { // detalle
+
+                            var reportDetailLoan = _reportService.GetDetailLoan(
+                            model.ReportLoan.From.Value.Year, model.ReportLoan.From.Value.Month, model.ReportLoan.From.Value.Day,
+                            model.ReportLoan.To.Value.Year, model.ReportLoan.To.Value.Month, model.ReportLoan.To.Value.Day,
+                            model.ReportLoan.TypeId);
+
+                            using (var stream = new MemoryStream())
+                            {
+                                _exportManager.ExportDetailLoanToXlsx(stream, model.ReportLoan.From.Value, model.ReportLoan.To.Value,
+                                    model.ReportLoan.TypeId == 2 ? "COPERE" : model.ReportLoan.TypeId == 3 ? "CAJA PENSION MILITAR POLICIAL" : "TODOS",
+                                    reportDetailLoan);
+                                bytes = stream.ToArray();
+                            }
+                            //Response.ContentType = "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                            //Response.AddHeader("content-disposition", "attachment; filename=Aportaciones.xlsx");
+                            return File(bytes, "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Reporte Apoyo Social Economico Detallado.xlsx");
+                        }
+
+
+                        
                     }
-                    //Response.ContentType = "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                    //Response.AddHeader("content-disposition", "attachment; filename=Aportaciones.xlsx");
-                    return File(bytes, "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Reporte Apoyo Social Economico.xlsx");
-                }
-                catch (Exception exc)
-                {
-                    ErrorNotification(exc);
-                    return RedirectToAction("List");
+                    catch (Exception exc)
+                    {
+                        ErrorNotification(exc);
+                        return RedirectToAction("List");
+                    }
                 }
             }
+            else
+            {
+                ErrorNotification("Seleccione un tipo de reporte");
+                
+            }
+
+            
             ErrorNotification(errorMessage);
             return RedirectToAction("List");
 

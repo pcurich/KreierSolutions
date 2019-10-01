@@ -58,6 +58,7 @@ namespace Ks.Admin.Models.Report
         public ReportLoan()
         {
             Types = new List<SelectListItem>();
+            Options = new List<SelectListItem>();
         }
 
         [KsResourceDisplayName("Admin.Catalog.ReportLoan.Fields.From")]
@@ -66,6 +67,9 @@ namespace Ks.Admin.Models.Report
         [KsResourceDisplayName("Admin.Catalog.ReportLoan.Fields.To")]
         [UIHint("DateNullable")]
         public DateTime? To { get; set; }
+        [KsResourceDisplayName("Admin.Catalog.ReportLoan.Fields.Option")]
+        public int OptionId { get; set; }
+        public List<SelectListItem> Options { get; set; }
         [KsResourceDisplayName("Admin.Catalog.ReportLoan.Fields.Type")]
         public int TypeId { get; set; }
         public List<SelectListItem> Types { get; set; }

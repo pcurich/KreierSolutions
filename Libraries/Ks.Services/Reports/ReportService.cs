@@ -105,9 +105,81 @@ namespace Ks.Services.Reports
             return new List<ReportGlobal>();
         }
 
-        public virtual IList<ReportLoanDetail> GetDetailLoan(int fromYear, int fromMonth, int fromDay, int toYear, int toMonth, int toDay, int type    )
+        public virtual IList<ReportLoan> GetLoan(int fromYear, int fromMonth, int fromDay, int toYear, int toMonth, int toDay, int type    )
         {
             if (fromYear == 0 || fromMonth == 0 || fromDay == 0 || toYear == 0 || toMonth == 0 || toDay == 0   || type == 0)
+                return new List<ReportLoan>();
+
+            var pFromYear = _dataProvider.GetParameter();
+            pFromYear.ParameterName = "FromYear";
+            pFromYear.Value = fromYear;
+            pFromYear.DbType = DbType.Int32;
+
+            var pFromMonth = _dataProvider.GetParameter();
+            pFromMonth.ParameterName = "FromMonth";
+            pFromMonth.Value = fromMonth;
+            pFromMonth.DbType = DbType.Int32;
+
+            var pFromDay = _dataProvider.GetParameter();
+            pFromDay.ParameterName = "FromDay";
+            pFromDay.Value = fromDay;
+            pFromDay.DbType = DbType.Int32;
+
+            var pToYear = _dataProvider.GetParameter();
+            pToYear.ParameterName = "ToYear";
+            pToYear.Value = toYear;
+            pToYear.DbType = DbType.Int32;
+
+            var pToMonth = _dataProvider.GetParameter();
+            pToMonth.ParameterName = "ToMonth";
+            pToMonth.Value = toMonth;
+            pToMonth.DbType = DbType.Int32;
+
+            var pToDay = _dataProvider.GetParameter();
+            pToDay.ParameterName = "ToDay";
+            pToDay.Value = toDay;
+            pToDay.DbType = DbType.Int32;
+
+            var pType = _dataProvider.GetParameter();
+            pType.ParameterName = "Type";
+            pType.Value = type == 1 ? 0 : type == 2 ? 1 : 2; //1 Todos 2 Copere 3 Caja
+            pType.DbType = DbType.Int32;
+
+            var pNameReport = _dataProvider.GetParameter();
+            pNameReport.ParameterName = "NameReport";
+            pNameReport.Value = "LoanReport";
+            pNameReport.DbType = DbType.String;
+
+            var pReportState = _dataProvider.GetParameter();
+            pReportState.ParameterName = "ReportState";
+            pReportState.Value = (int)ReportState.Completed;
+            pReportState.DbType = DbType.Int32;
+
+            var pSource = _dataProvider.GetParameter();
+            pSource.ParameterName = "Source";
+            pSource.Value = "Ks.Services.Report.GetLoan";
+            pSource.DbType = DbType.String;
+
+            var pTotalRecords = _dataProvider.GetParameter();
+            pTotalRecords.ParameterName = "TotalRecords";
+            pTotalRecords.Direction = ParameterDirection.Output;
+            pTotalRecords.DbType = DbType.Int32;
+
+            //invoke stored procedure
+            var data = _dbContext.ExecuteStoredProcedureList<Report>("ReportLoan", pFromYear, pFromMonth, pFromDay, pToYear, pToMonth, pToDay, pType,  pNameReport, pReportState, pSource, pTotalRecords);
+
+            //return products
+            var totalRecords = (pTotalRecords.Value != DBNull.Value) ? Convert.ToInt32(pTotalRecords.Value) : 0;
+            var firstOrDefault = data.FirstOrDefault();
+            if (firstOrDefault != null && firstOrDefault.Value != null)
+                return new List<ReportLoan>(XmlHelper.XmlToObject<List<ReportLoan>>(firstOrDefault.Value));
+
+            return new List<ReportLoan>();
+        }
+
+        public virtual IList<ReportLoanDetail> GetDetailLoan(int fromYear, int fromMonth, int fromDay, int toYear, int toMonth, int toDay, int type)
+        {
+            if (fromYear == 0 || fromMonth == 0 || fromDay == 0 || toYear == 0 || toMonth == 0 || toDay == 0 || type == 0)
                 return new List<ReportLoanDetail>();
 
             var pFromYear = _dataProvider.GetParameter();
@@ -166,7 +238,7 @@ namespace Ks.Services.Reports
             pTotalRecords.DbType = DbType.Int32;
 
             //invoke stored procedure
-            var data = _dbContext.ExecuteStoredProcedureList<Report>("ReportLoanDetails", pFromYear, pFromMonth, pFromDay, pToYear, pToMonth, pToDay, pType,  pNameReport, pReportState, pSource, pTotalRecords);
+            var data = _dbContext.ExecuteStoredProcedureList<Report>("ReportLoanDetails", pFromYear, pFromMonth, pFromDay, pToYear, pToMonth, pToDay, pType, pNameReport, pReportState, pSource, pTotalRecords);
 
             //return products
             var totalRecords = (pTotalRecords.Value != DBNull.Value) ? Convert.ToInt32(pTotalRecords.Value) : 0;

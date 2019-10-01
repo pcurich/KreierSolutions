@@ -26,17 +26,32 @@ namespace Ks.Batch.Copere.In
             {
                 try
                 {
-                    if (line.Length >= 100 && !line.ToUpper().Contains("TOTAL"))
+                    if (line.Length == 28)
                     {
                         result.Add(new Info
                         {
-                            Year = Convert.ToInt32(line.Substring(5, 4)),
-                            Month = Convert.ToInt32(line.Substring(10, 2)),
+                            Year = Convert.ToInt32(line.Substring(0, 4)),
+                            Month = Convert.ToInt32(line.Substring(4, 2)),
                             HasAdminCode = true,
                             HasDni = false,
-                            AdminCode = line.Substring(34, 9),
-                            TotalPayed = Convert.ToDecimal(line.Substring(86, 10))
+                            AdminCode = line.Substring(10, 9),
+                            TotalPayed = Convert.ToDecimal(line.Substring(19, 9))/100
                         });
+                    }
+                    else
+                    {
+                        if (line.Length >= 100 && !line.ToUpper().Contains("TOTAL"))
+                        {
+                            result.Add(new Info
+                            {
+                                Year = Convert.ToInt32(line.Substring(5, 4)),
+                                Month = Convert.ToInt32(line.Substring(10, 2)),
+                                HasAdminCode = true,
+                                HasDni = false,
+                                AdminCode = line.Substring(34, 9),
+                                TotalPayed = Convert.ToDecimal(line.Substring(86, 10))
+                            });
+                        }
                     }
                 }
                 catch (Exception ex)

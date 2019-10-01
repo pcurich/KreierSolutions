@@ -54,7 +54,7 @@
         @TabContribution()
     </div>
     <div>
-        @TabLoanGeneral()
+        @TabLoanDetail()
     </div>
     @*<div>
             @TabBenefit()
@@ -231,9 +231,9 @@
     }
 }
 
-@helper TabLoanGeneral()
+@helper TabLoanDetail()
 {
-    using (Html.BeginForm("LoanGeneralReport", "Report", FormMethod.Post))
+    using (Html.BeginForm("LoanReport", "Report", FormMethod.Post))
     {
         @Html.AntiForgeryToken()
         <table width="100%">
@@ -254,6 +254,19 @@
                 </td>
 
                 <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ReportLoan.OptionId):
+                </td>
+                <td class="adminData">
+                    @Html.DropDownListFor(model => model.ReportLoan.OptionId, Model.ReportLoan.Options)
+                    @Html.ValidationMessageFor(model => model.ReportLoan.OptionId)
+                    <script>
+                        $(document).ready(function () {
+                            $('#@Html.FieldIdFor(model => model.ReportLoan.OptionId)').width(250).kendoDropDownList();
+                        });
+                    </script>
+                </td>
+
+                <td class="adminTitle">
                     @Html.KsLabelFor(model => model.ReportLoan.TypeId):
                 </td>
                 <td class="adminData">
@@ -265,11 +278,8 @@
                         });
                     </script>
                 </td>
-                <td class="adminTitle"> 
-                </td>
-                <td class="adminData">
-     
-                </td>
+                <td class="adminTitle"></td>
+                <td class="adminData"></td>
 
                 <td></td>
                 <td></td>

@@ -20,6 +20,19 @@ namespace Ks.Batch.Caja.In
             Batch = batch;
             var guid = GetParentOut();
 
+            if (guid == null)
+                return;
+
+            var oldData = GetReportChild(guid.Value, Batch.SystemName, Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00"));
+
+            if (oldData == null || oldData.Count == 0)
+            {
+                //nothing todo
+            }
+            else
+            {
+                infos.AddRange(oldData);
+            }
             infos = JoinData(infos);
 
             Log.InfoFormat("Action: {0}","Dao.Process(" + batch.SystemName + ")");
@@ -83,6 +96,7 @@ namespace Ks.Batch.Caja.In
             }
             return guid;
         }
+
 
         #endregion
     }

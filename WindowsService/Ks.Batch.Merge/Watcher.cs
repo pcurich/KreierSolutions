@@ -29,25 +29,23 @@ namespace Ks.Batch.Merge
 
             if (e.Name.ToUpper().Contains("PRE"))
                 isPre = true;
-            else
                 isPre = false;
 
+            //get Service
             var batch = dao.GetScheduleBatch(SysName);
-            if (!isPre)
-            {
-                batch.Enabled = true;
-                batch.LastExecutionOnUtc = DateTime.UtcNow;
-                dao.UpdateScheduleBatch(batch);
-            }
+
+            #region  update working start
+            batch.Enabled = true;
+            batch.LastExecutionOnUtc = DateTime.UtcNow;
+            dao.UpdateScheduleBatch(batch);
+            #endregion
 
             //Data to calculate
             Dictionary<Report, List<Info>> listData = dao.GetData();
 
             //load _copereOut or _copereIn or _cajaOut or _cajaIn
             if (listData.Count == 2)
-                SplitList(listData);
-
-            
+                SplitList(listData);            
 
             var account = batch.SystemName + "." + batch.PeriodYear + "." + batch.PeriodMonth.ToString("D2");
             if (_copereOut != null && _copereIn != null && _copereOut.Count > 0 && _copereIn.Count > 0 && e.Name.ToUpper().Contains("COPERE"))
@@ -63,15 +61,13 @@ namespace Ks.Batch.Merge
                 dao.Process(_reportCaja, _cajaIn, _cajaOut, "Caja", account, isPre);
             }
 
-            if (!isPre)
-            {
-                batch.Enabled = false;
-                batch.LastExecutionOnUtc = DateTime.UtcNow;
-                dao.UpdateScheduleBatch(batch);
-            }
+            #region  update working end
+            batch.Enabled = false;
+            batch.LastExecutionOnUtc = DateTime.UtcNow;
+            dao.UpdateScheduleBatch(batch);
+            #endregion
 
             dao.Close();
-
             File.Delete(e.FullPath);
         }
 

@@ -11,10 +11,11 @@ namespace Ks.Batch.Copere.Out
     public class Job : IJob
     {
         public static readonly LogWriter Log = HostLogger.Get<Job>();
+
         private ScheduleBatch Batch { get; set; }
         private string Path { get; set; }
         public string SysName;
-        private string Connection { get; set; }
+        private string Connection { get; set; } 
 
         public void Execute(IJobExecutionContext context)
         {
@@ -22,14 +23,14 @@ namespace Ks.Batch.Copere.Out
             Connection = ConfigurationManager.ConnectionStrings["ACMR"].ConnectionString;
             SysName = ConfigurationManager.AppSettings["SysName"];
 
+            Log.InfoFormat("************************************** -- "+SysName + "-- **************************************");
+            
             var dao = new Dao(Connection);
             dao.Connect();
             Batch = dao.GetScheduleBatch(SysName);
             dao.Close();
 
             if (!FileHelper.IsBusy(Batch.PathBase)){
-
-                Log.InfoFormat("Action: {0} {1}", SysName, "Iniciado");
                 FileHelper.CreateBusyFile(Batch.PathBase);
 
                 if (Batch.Enabled)

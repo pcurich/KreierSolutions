@@ -15,8 +15,7 @@ namespace Ks.Batch.Merge
         private List<Info> _listInfo = new List<Info>();
 
 
-        public Dao(string connetionString)
-            : base(connetionString)
+        public Dao(string connetionString) : base(connetionString)
         {
         }
 
@@ -40,7 +39,7 @@ namespace Ks.Batch.Merge
                     while (sqlReader.Read())
                     {
                         var listInfo = XmlHelper.XmlToObject<List<Info>>(sqlReader.GetString(3));
-                        Log.InfoFormat("Action: Reporte extraido: {0} con {1} registros a sincornizar", sqlReader.GetString(2), listInfo.Count());
+                        Log.InfoFormat("Action: Reporte extraido: {0} con {1} registros a sincornizar para el periodo {2} ", sqlReader.GetString(2), listInfo.Count(), sqlReader.GetString(6));
 
                         infoList.Add(new Report
                         {
@@ -58,7 +57,7 @@ namespace Ks.Batch.Merge
                     }
                     sqlReader.Close();
                 }
-                Log.InfoFormat("Action: Extracción exitosa de {0} reportes", infoList.Count());
+                Log.InfoFormat("Action: Extracción exitosa de {0} registros", infoList.Count());
                 return infoList;
             }
             catch (Exception ex)

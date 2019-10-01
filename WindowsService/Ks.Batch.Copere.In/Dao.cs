@@ -22,7 +22,20 @@ namespace Ks.Batch.Copere.In
         {
             Batch = batch;
             var guid = GetParentOut();
+
+            if (guid == null)
+                return;
+
+            var oldData = GetReportChild(guid.Value, Batch.SystemName, Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00"));
             
+            if(oldData == null || oldData.Count == 0)
+            {
+                //nothing todo
+            }
+            else
+            {
+                infos.AddRange(oldData);
+            }
             infos = JoinData(infos);
 
             Log.InfoFormat("Action: {0}", "Dao.Process(" + batch.SystemName + ")");
@@ -36,8 +49,7 @@ namespace Ks.Batch.Copere.In
 
                     Command = new SqlCommand(Sql, Connection);
                     Command.Parameters.AddWithValue("@Key", guid);
-                    Command.Parameters.AddWithValue("@Name", string.Format("Archivo leido por el Coopere en el periodo - {0}",
-                            Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00")));
+                    Command.Parameters.AddWithValue("@Name", string.Format("Archivo leido por el Coopere en el periodo - {0}", Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00")));
                     Command.Parameters.AddWithValue("@Value", XmlHelper.Serialize2String(new List<Info>(infos)));
                     Command.Parameters.AddWithValue("@PathBase", Batch.PathBase);
                     Command.Parameters.AddWithValue("@StateId", 2);
@@ -83,8 +95,7 @@ namespace Ks.Batch.Copere.In
                 return null;
             }
             return guid;
-        }
-
+        } 
         #endregion
     }
 }

@@ -31,11 +31,11 @@ namespace Ks.Batch.Util
             {
                 try
                 {
-                    Log.InfoFormat("Action: Iniciando la conexion a la base de datos");
+                    //Log.InfoFormat("Action: Iniciando la conexion a la base de datos");
                     Connection = new SqlConnection(ConnetionString);
                     Connection.Open();
                     IsConnected = true;
-                    Log.InfoFormat("Action: Conexion a la base de datos establecida correctamente");
+                    //Log.InfoFormat("Action: Conexion a la base de datos establecida correctamente");
                 }
                 catch (Exception ex)
                 {
@@ -53,10 +53,10 @@ namespace Ks.Batch.Util
                 IsConnected = false;
                 try
                 {
-                    Log.InfoFormat("Action: Iniciando el cierre de la conexion a la base de datos");
+                    //Log.InfoFormat("Action: Iniciando el cierre de la conexion a la base de datos");
                     Command.Dispose();
                     Connection.Close();
-                    Log.InfoFormat("Action: Conexion a la base de datos cerrada correctamente");
+                    //Log.InfoFormat("Action: Conexion a la base de datos cerrada correctamente");
                 }
                 catch (Exception ex)
                 {
@@ -432,14 +432,22 @@ namespace Ks.Batch.Util
         public List<Info> JoinData(List<Info> infos)
         {
             var result = new List<Info>();
-            var t = new Dictionary<string, int>();
+            //var t = new Dictionary<string, int>();
+            var t = new List<Info>();
+            t.AddRange(infos);
 
             foreach (var index in infos)
             {
-                if (!t.ContainsKey(index.AdminCode))
+                decimal totalPayed = 0;
+
+                if (index.AdminCode != null && totalPayed ==0)
                 {
-                    t.Add(index.AdminCode, 0);
-                    var totalPayed = infos.Where(x => x.AdminCode == index.AdminCode || x.Dni == index.Dni).Sum(x => x.TotalPayed);
+                    totalPayed = t.Where(x => index.AdminCode.Equals(x.AdminCode)).Sum(x => x.TotalPayed);
+                }
+                if (index.Dni != null && totalPayed == 0)
+                {
+                    totalPayed = t.Where(x => index.Dni.Equals(x.Dni)).Sum(x => x.TotalPayed);
+                } 
 
                     result.Add(new Info
                     {
@@ -457,7 +465,7 @@ namespace Ks.Batch.Util
                         InfoContribution = null,
                         InfoLoans = null
                     });
-                }
+ 
             }
 
             return result;
@@ -639,6 +647,37 @@ namespace Ks.Batch.Util
             };
         }
 
+        /// <summary>
+        /// find the child report to be match with IN variables
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="source"></param>
+        /// <param name="period"></param>
+        /// <returns></returns>
+        public List<Info> GetReportChild(Guid parent, string source, string period)
+        {
+            var info = new List<Info>();
+            try
+            {
+                Connect();
+                if (IsConnected)
+                {
+                    Sql = " SELECT * FROM Report WHERE [key] = '" + parent.ToString() + "' and source = '" + source + "' and period = '" + period + "'";
+                    Command = new SqlCommand(Sql, Connection);
+                    var sqlReader = Command.ExecuteReader();
+                    while (sqlReader.Read())
+                    {
+                        info = XmlHelper.XmlToObject<List<Info>>(sqlReader.GetString(3));
+                    }
+                    sqlReader.Close();
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+            return info;
+        }
         #endregion 
 
         #region Batch.Out
@@ -705,7 +744,7 @@ namespace Ks.Batch.Util
                     }
                 }
                 sqlReader.Close();
-                Log.InfoFormat("Action: 1) Cantidad de Militares activos en estado {0}: {1}  = ", code, customerIds.Count);
+                Log.InfoFormat("Action: 1) Cantidad de Militares activos en estado {0}: {1}", code, customerIds.Count);
             }
             catch (Exception ex)
             {

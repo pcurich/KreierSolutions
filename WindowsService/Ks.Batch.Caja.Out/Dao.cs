@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -27,8 +26,6 @@ namespace Ks.Batch.Caja.Out
             Batch = batch;
             try
             {
-                Log.InfoFormat("Action: {0}", "Dao.Process(" + batch.SystemName + ")");
-
                 CultureInfo culture = new CultureInfo("es-PE");
                 Thread.CurrentThread.CurrentCulture = culture;
                 Thread.CurrentThread.CurrentUICulture = culture;

@@ -22,15 +22,15 @@ namespace Ks.Batch.Caja.Out
             Path = ConfigurationManager.AppSettings["Path"];
             Connection = ConfigurationManager.ConnectionStrings["ACMR"].ConnectionString;
             SysName = ConfigurationManager.AppSettings["SysName"];
-             
+
+            Log.InfoFormat("************************************** -- " + SysName + "-- **************************************");
+
             var dao = new Dao(Connection);
             dao.Connect();
             Batch = dao.GetScheduleBatch(SysName);
             dao.Close();
 
             if (!FileHelper.IsBusy(Batch.PathBase)){
-
-                Log.InfoFormat("Action: {0} {1}", SysName, "Iniciado");
                 FileHelper.CreateBusyFile(Batch.PathBase);
 
                 if (Batch.Enabled)
@@ -87,7 +87,11 @@ namespace Ks.Batch.Caja.Out
 
         protected void ExistFile()
         {
-            var nameFile = string.Format("6008_{0}00.txt", Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00"));
+            var nameFile = string.Format(
+                "6008_{0}00.txt", 
+                Batch.PeriodYear.ToString("0000") + 
+                Batch.PeriodMonth.ToString("00"));
+
             try
             {
                 Log.InfoFormat("Action: {0} {1}", "Buscando Archivo", nameFile);

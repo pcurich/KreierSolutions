@@ -189,7 +189,7 @@ namespace Ks.Admin.Controllers
                 }
             };
 
-            model.States.Insert(0, new SelectListItem {Value = "0", Text = "--------------", Selected = true});
+            model.States.Insert(0, new SelectListItem { Value = "0", Text = "--------------", Selected = true });
 
             return View(model);
         }
@@ -236,8 +236,9 @@ namespace Ks.Admin.Controllers
         {
             var loan = _loanService.GetLoanById(id);
 
-            if (!loan.IsAuthorized) {
-                _loanService.DeleteLoan(loan,false);
+            if (!loan.IsAuthorized)
+            {
+                _loanService.DeleteLoan(loan, false);
                 SuccessNotification("El apoyo social ha sido eliminado del sistema correctamente");
             }
             else
@@ -256,7 +257,7 @@ namespace Ks.Admin.Controllers
                 _loanService.UpdateLoan(loan);
                 SuccessNotification("El apoyo social ha sido cancelado correctamente");
             }
-            
+
             return RedirectToAction("List");
         }
 
@@ -335,7 +336,7 @@ namespace Ks.Admin.Controllers
                 var details = _loanService.GetAllPayments(model.Id, stateId: 1);
                 foreach (var detail in details)
                 {
-                    detail.StateId = (int) LoanState.Cancelado;
+                    detail.StateId = (int)LoanState.Cancelado;
                     detail.ProcessedDateOnUtc = DateTime.UtcNow;
                     _loanService.UpdateLoanPayment(detail);
                 }
@@ -352,7 +353,7 @@ namespace Ks.Admin.Controllers
                 {
                     CustomerCreatedId = _workContext.CurrentCustomer.Id,
                     EntityId = loan.Id,
-                    EntityName = CommonHelper.GetKsCustomTypeConverter(typeof (Loan)).ConvertToInvariantString(new Loan ()),
+                    EntityName = CommonHelper.GetKsCustomTypeConverter(typeof(Loan)).ConvertToInvariantString(new Loan()),
                     RequireCustomer = false,
                     RequireSystemRole = true,
                     SystemRoleApproval = SystemCustomerRoleNames.Employee,
@@ -373,7 +374,7 @@ namespace Ks.Admin.Controllers
             #region close preview Flow
 
             _workFlowService.CloseWorkFlow(loan.Id,
-                CommonHelper.GetKsCustomTypeConverter(typeof (Loan)).
+                CommonHelper.GetKsCustomTypeConverter(typeof(Loan)).
                     ConvertToInvariantString(new Loan()), SystemCustomerRoleNames.Manager);
 
             #endregion
@@ -412,12 +413,12 @@ namespace Ks.Admin.Controllers
             #region close preview Flow
 
             _workFlowService.CloseWorkFlow(loan.Id,
-                CommonHelper.GetKsCustomTypeConverter(typeof (Loan)).
+                CommonHelper.GetKsCustomTypeConverter(typeof(Loan)).
                     ConvertToInvariantString(new Loan()), SystemCustomerRoleNames.Employee);
 
             #endregion
 
-            return RedirectToAction("Edit", new {id = loan.Id});
+            return RedirectToAction("Edit", new { id = loan.Id });
         }
 
         #endregion
@@ -436,13 +437,13 @@ namespace Ks.Admin.Controllers
             {
                 ErrorNotification(
                     "No se puede realizar pagos debido a que el Apoyo Social Económico no se encuentra aprobado");
-                return RedirectToAction("Edit", new {id = loan.Id});
+                return RedirectToAction("Edit", new { id = loan.Id });
             }
 
             if (!loan.Active)
             {
                 ErrorNotification(_localizationService.GetResource("Admin.Customers.Loans.ValidActive"));
-                return RedirectToAction("Edit", new {id = loan.Id});
+                return RedirectToAction("Edit", new { id = loan.Id });
             }
 
             var model = PrepareLoanPayment(loanPayment);
@@ -459,17 +460,17 @@ namespace Ks.Admin.Controllers
 
             var loanPayment = _loanService.GetPaymentById(model.Id);
 
-            if (loanPayment.StateId != (int) LoanState.Pendiente)
+            if (loanPayment.StateId != (int)LoanState.Pendiente)
             {
                 ErrorNotification(_localizationService.GetResource("Admin.Customers.Loans.ValidPayment"));
-                return RedirectToAction("CreatePayment", new {id = loanPayment.Id});
+                return RedirectToAction("CreatePayment", new { id = loanPayment.Id });
             }
 
             if (!ModelState.IsValid)
                 return View(model);
 
             loanPayment.IsAutomatic = false;
-            loanPayment.StateId = (int) LoanState.Pagado;
+            loanPayment.StateId = (int)LoanState.Pagado;
             loanPayment.LoanId = model.LoanId;
             loanPayment.BankName = GetBank(model.BankName);
             loanPayment.AccountNumber = model.AccountNumber;
@@ -492,9 +493,9 @@ namespace Ks.Admin.Controllers
 
             if (continueEditing)
             {
-                return RedirectToAction("CreatePayment", new {id = loanPayment.Id});
+                return RedirectToAction("CreatePayment", new { id = loanPayment.Id });
             }
-            return RedirectToAction("Edit", new {id = loanPayment.LoanId});
+            return RedirectToAction("Edit", new { id = loanPayment.LoanId });
         }
 
         #endregion
@@ -801,10 +802,10 @@ namespace Ks.Admin.Controllers
             {
                 ErrorNotification(
                     "No se puede realizar pagos debido a que el Apoyo Social Económico no se encuentra aprobado");
-                return RedirectToAction("Edit", new {id});
+                return RedirectToAction("Edit", new { id });
             }
 
-            var allPayment = _loanService.GetAllPayments(id, stateId: (int) LoanState.Pendiente);
+            var allPayment = _loanService.GetAllPayments(id, stateId: (int)LoanState.Pendiente);
             var amountToCancel = allPayment.Sum(x => x.MonthlyQuota);
             var loanPaymentModel = new LoanPaymentsModel
             {
@@ -837,7 +838,7 @@ namespace Ks.Admin.Controllers
                     AmountToCancel = amountToCancel
                 };
                 return View(model);
-            } 
+            }
 
             #region Payed more then One Quota
 
@@ -852,7 +853,7 @@ namespace Ks.Admin.Controllers
                     countQuotas++;
                     payment.IsAutomatic = false;
                     payment.MonthlyPayed = payment.MonthlyQuota;
-                    payment.StateId = (int) LoanState.PagoPersonal;
+                    payment.StateId = (int)LoanState.PagoPersonal;
                     payment.BankName = GetBank(model.BankName);
                     payment.AccountNumber = model.AccountNumber;
                     payment.TransactionNumber = model.TransactionNumber;
@@ -883,7 +884,7 @@ namespace Ks.Admin.Controllers
 
                         payment.IsAutomatic = false;
                         payment.MonthlyPayed = model.MonthlyPayed;
-                        payment.StateId = (int) LoanState.PagoParcial;
+                        payment.StateId = (int)LoanState.PagoParcial;
                         payment.BankName = GetBank(model.BankName);
                         payment.AccountNumber = model.AccountNumber;
                         payment.TransactionNumber = model.TransactionNumber;
@@ -909,11 +910,11 @@ namespace Ks.Admin.Controllers
                         var lastLoanPayment = new LoanPayment
                         {
                             IsAutomatic = true,
-                            StateId = (int) LoanState.Pendiente,
+                            StateId = (int)LoanState.Pendiente,
                             LoanId = model.LoanId,
                             Quota = maxQuota + 1,
-                            MonthlyCapital = Math.Round((newQuota/loan.MonthlyQuota)*payment.MonthlyCapital, 2),
-                            MonthlyFee = Math.Round((newQuota/loan.MonthlyQuota)*payment.MonthlyFee, 2),
+                            MonthlyCapital = Math.Round((newQuota / loan.MonthlyQuota) * payment.MonthlyCapital, 2),
+                            MonthlyFee = Math.Round((newQuota / loan.MonthlyQuota) * payment.MonthlyFee, 2),
                             MonthlyPayed = 0,
                             MonthlyQuota = newQuota,
                             ScheduledDateOnUtc = scheduledDateLast.AddMonths(1 - countQuotas),
@@ -953,13 +954,13 @@ namespace Ks.Admin.Controllers
                 var lastLoanPayment = new LoanPayment
                 {
                     IsAutomatic = true,
-                    StateId = (int) LoanState.Devolucion,
+                    StateId = (int)LoanState.Devolucion,
                     LoanId = model.LoanId,
                     Quota = maxQuota + 1,
                     MonthlyCapital = 0,
                     MonthlyFee = 0,
                     MonthlyPayed = 0,
-                    MonthlyQuota = model.MonthlyPayed*-1,
+                    MonthlyQuota = model.MonthlyPayed * -1,
                     ScheduledDateOnUtc = DateTime.UtcNow,
                     ProcessedDateOnUtc = DateTime.UtcNow,
                     Description = "Devolucion debido al pago personal realizado el: " + DateTime.Now,
@@ -977,8 +978,8 @@ namespace Ks.Admin.Controllers
                     CreatedOnUtc = DateTime.UtcNow,
                     UpdatedOnUtc = DateTime.UtcNow,
                     PaymentNumber = loan.LoanNumber,
-                    StateId = (int) ReturnPaymentState.Creado,
-                    ReturnPaymentTypeId = (int) ReturnPaymentType.ApoyoEconomico,
+                    StateId = (int)ReturnPaymentState.Creado,
+                    ReturnPaymentTypeId = (int)ReturnPaymentType.ApoyoEconomico,
                     CustomerId = loan.CustomerId
                 };
 
@@ -992,7 +993,7 @@ namespace Ks.Admin.Controllers
                 {
                     CustomerCreatedId = _workContext.CurrentCustomer.Id,
                     EntityId = returnPayment.Id,
-                    EntityName =CommonHelper.GetKsCustomTypeConverter(typeof (ReturnPayment)).ConvertToInvariantString(new ReturnPayment()),
+                    EntityName = CommonHelper.GetKsCustomTypeConverter(typeof(ReturnPayment)).ConvertToInvariantString(new ReturnPayment()),
                     RequireCustomer = false,
                     RequireSystemRole = true,
                     SystemRoleApproval = SystemCustomerRoleNames.Employee,
@@ -1000,8 +1001,8 @@ namespace Ks.Admin.Controllers
                     UpdatedOnUtc = DateTime.UtcNow,
                     Active = true,
                     Title = "Nueva Devolución",
-                    Description ="Se requiere revision para una devolucion realizada por el pago del apoyo social economico N° " +
-                        loan.LoanNumber +", para el asociado " + customer.GetFullName() + ", con DNI: " +
+                    Description = "Se requiere revision para una devolucion realizada por el pago del apoyo social economico N° " +
+                        loan.LoanNumber + ", para el asociado " + customer.GetFullName() + ", con DNI: " +
                         customer.GetAttribute<string>(SystemCustomerAttributeNames.Dni) +
                         " y con CIP: " + customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode),
                     GoTo = "Admin/ReturnPayment/Edit/" + returnPayment.Id
@@ -1016,9 +1017,9 @@ namespace Ks.Admin.Controllers
 
             if (continueEditing)
             {
-                return RedirectToAction("CreateCustomPayment", new {id = model.LoanId});
+                return RedirectToAction("CreateCustomPayment", new { id = model.LoanId });
             }
-            return RedirectToAction("Edit", new {id = model.LoanId});
+            return RedirectToAction("Edit", new { id = model.LoanId });
         }
 
         #endregion
@@ -1066,13 +1067,15 @@ namespace Ks.Admin.Controllers
 
             var amountToCancel = allPaymentPendient.Sum(x => x.MonthlyCapital);
 
-            if (amountToCancel == model.MonthlyPayed)
+            if (amountToCancel <= model.MonthlyPayed)
             {
+                #region Cancelacion
+
                 foreach (var payment in allPaymentPendient)
                 {
                     payment.MonthlyFee = 0;
                     payment.IsAutomatic = false;
-                    payment.MonthlyPayed = payment.MonthlyCapital; 
+                    payment.MonthlyPayed = payment.MonthlyCapital;
 
                     payment.StateId = (int)LoanState.PagoPersonal;
                     payment.BankName = GetBank(model.BankName);
@@ -1091,16 +1094,87 @@ namespace Ks.Admin.Controllers
                 loan.TotalFeed = allPayments.Sum(x => x.MonthlyFee);
                 loan.IsDelay = false;
                 var allPaymentInProcess = _loanService.GetAllPayments(model.LoanId, stateId: (int)LoanState.EnProceso);
-                if(allPaymentInProcess.Count == 0)
+                if (allPaymentInProcess.Count == 0)
                     loan.Active = false;
 
                 _loanService.UpdateLoan(loan);
+
+                #endregion
+                var returnPaymentValue = model.MonthlyPayed - amountToCancel;
+
+                if (returnPaymentValue > 0)
+                {
+                    #region returpayment
+
+                    var lastLoanPayment = new LoanPayment
+                    {
+                        IsAutomatic = true,
+                        StateId = (int)LoanState.Devolucion,
+                        LoanId = model.LoanId,
+                        Quota = allPaymentPendient.Max(x=>x.Quota) + 1,
+                        MonthlyCapital = 0,
+                        MonthlyFee = 0,
+                        MonthlyPayed = 0,
+                        MonthlyQuota = returnPaymentValue * -1,
+                        ScheduledDateOnUtc = DateTime.UtcNow,
+                        ProcessedDateOnUtc = DateTime.UtcNow,
+                        Description = "Devolucion debido al exceso en la cancelacion del apoyo realizado el: " + DateTime.Now,
+                        BankName = "ACMR",
+                        AccountNumber = "ACMR",
+                        TransactionNumber = "ACMR",
+                        Reference = "Reembolso del Apoyo económico cancelado con anticipación"
+                    };
+
+                    _loanService.InsertLoanPayment(lastLoanPayment);
+
+                    var returnPayment = new ReturnPayment
+                    {
+                        AmountToPay = returnPaymentValue,
+                        CreatedOnUtc = DateTime.UtcNow,
+                        UpdatedOnUtc = DateTime.UtcNow,
+                        PaymentNumber = loan.LoanNumber,
+                        StateId = (int)ReturnPaymentState.Creado,
+                        ReturnPaymentTypeId = (int)ReturnPaymentType.ApoyoEconomico,
+                        CustomerId = loan.CustomerId
+                    };
+
+                    _returnPaymentService.InsertReturnPayment(returnPayment);
+
+                    #endregion
+
+                    #region Flow - Approval required
+
+                    var customer = _customerService.GetCustomerById(loan.CustomerId);
+
+                    _workFlowService.InsertWorkFlow(new WorkFlow
+                    {
+                        CustomerCreatedId = _workContext.CurrentCustomer.Id,
+                        EntityId = returnPayment.Id,
+                        EntityName = CommonHelper.GetKsCustomTypeConverter(typeof(ReturnPayment)).ConvertToInvariantString(new ReturnPayment()),
+                        RequireCustomer = false,
+                        RequireSystemRole = true,
+                        SystemRoleApproval = SystemCustomerRoleNames.Employee,
+                        CreatedOnUtc = DateTime.UtcNow,
+                        UpdatedOnUtc = DateTime.UtcNow,
+                        Active = true,
+                        Title = "Nueva Devolución",
+                        Description = "Se requiere revision para una devolucion realizada por la cancelación del apoyo social economico N° " +
+                            loan.LoanNumber + ", para el asociado " + customer.GetFullName() + ", con DNI: " +
+                            customer.GetAttribute<string>(SystemCustomerAttributeNames.Dni) +
+                            " y con CIP: " + customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode),
+                        GoTo = "Admin/ReturnPayment/Edit/" + returnPayment.Id
+                    });
+
+                    #endregion
+
+                }
+
             }
             else
             {
                 ErrorNotification("El monto ingresado no corresponde al valor pendiente de pago");
 
-                var id = model.Id;  
+                var id = model.Id;
                 model = new LoanPaymentsModel
                 {
                     Banks = _bankSettings.PrepareBanks(),
@@ -1109,7 +1183,7 @@ namespace Ks.Admin.Controllers
                     AmountToCancel = amountToCancel
                 };
                 return View(model);
-            } 
+            }
 
             SuccessNotification(_localizationService.GetResource("Admin.Customers.Customers.Loans.Updated"));
 
@@ -1147,7 +1221,7 @@ namespace Ks.Admin.Controllers
             foreach (var payment in allPayment)
             {
                 payment.IsAutomatic = false;
-                payment.StateId = (int) LoanState.Anulado;
+                payment.StateId = (int)LoanState.Anulado;
                 payment.ProcessedDateOnUtc = DateTime.UtcNow;
                 payment.Description = "El monto fue cancelado debido a un pago de personal";
                 _loanService.UpdateLoanPayment(payment);
