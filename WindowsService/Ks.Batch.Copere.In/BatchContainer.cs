@@ -6,7 +6,7 @@ using Topshelf.Logging;
 
 namespace Ks.Batch.Copere.In
 {
-    public class BatchContainer : IBatchContainer
+    public class BatchContainer : IBatchContainer , IDisposable
     {
         private static readonly LogWriter Log = HostLogger.Get<BatchContainer>();
         private FileSystemWatcher _watcher;
@@ -101,6 +101,21 @@ namespace Ks.Batch.Copere.In
             _watcher.Created += Watcher.FileCreated;
             _watcher.IncludeSubdirectories = false;
             _watcher.EnableRaisingEvents = true;
+            
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _watcher.Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true); 
+            GC.SuppressFinalize(this);
         }
     }
 }

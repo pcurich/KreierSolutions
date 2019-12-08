@@ -6,7 +6,7 @@ using Topshelf.Logging;
 
 namespace Ks.Batch.Caja.In
 {
-    public class BatchContainer : IBatchContainer
+    public class BatchContainer : IBatchContainer, IDisposable
     {
         private static readonly LogWriter Log = HostLogger.Get<BatchContainer>();
         private FileSystemWatcher _watcher;
@@ -18,7 +18,7 @@ namespace Ks.Batch.Caja.In
         public bool Start()
         {
             Read();
-            Install();
+            //Install();
             Log.InfoFormat("Time: {0}; Action: {1}; ", DateTime.Now, "BatchContainer.Start()");
             //Enabled();
             return true;
@@ -46,7 +46,8 @@ namespace Ks.Batch.Caja.In
         }
 
         public void CustomCommand(int commandNumber)
-        { 
+        {
+            //128-255
             Log.InfoFormat("Starting Convertion of '{0}' ", commandNumber);
         }
 
@@ -110,6 +111,20 @@ namespace Ks.Batch.Caja.In
             _watcher.Created += Watcher.FileCreated;
             _watcher.IncludeSubdirectories = false;
             _watcher.EnableRaisingEvents = true;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _watcher.Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

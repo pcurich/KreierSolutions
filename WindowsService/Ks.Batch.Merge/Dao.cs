@@ -5,12 +5,15 @@ using System.Data.SqlClient;
 using System.Linq;
 using Ks.Batch.Util;
 using Ks.Batch.Util.Model;
+using Ks.Batch.Util.Model.Summary;
 using Topshelf.Logging;
 
 namespace Ks.Batch.Merge
 {
     public class Dao : DaoBase
     {
+        public ServiceSetting ServiceSetting { get; set; }
+
         private new static readonly LogWriter Log = HostLogger.Get<Dao>();
         private List<Info> _listInfo = new List<Info>();
 
@@ -29,12 +32,12 @@ namespace Ks.Batch.Merge
                 Connect();
                 if (IsConnected)
                 {
-                    Sql = " SELECT * FROM Report WHERE StateId=" + (int)ReportState.InProcess +" and  ParentKey in " +
-                          " (SELECT TOP 1 ParentKey  FROM Report WHERE StateId=" + (int)ReportState.InProcess +
-                          "  and len(name)<>0  " +
-                          " group by ParentKey having count(ParentKey)=2) ";
+                    Sql = " SELECT * FROM Report WHERE StateId = @StateId and  ParentKey in " +
+                          " (SELECT TOP 1 ParentKey  FROM Report WHERE StateId= @ReportStateId  group by ParentKey having count(ParentKey)=2) ";
 
                     Command = new SqlCommand(Sql, Connection);
+                    Command.Parameters.AddWithValue("@StateId", (int)ReportState.InProcess);
+                    Command.Parameters.AddWithValue("@ReportStateId", (int)ReportState.InProcess);
                     var sqlReader = Command.ExecuteReader();
                     while (sqlReader.Read())
                     {
@@ -69,10 +72,10 @@ namespace Ks.Batch.Merge
         }
 
         #region Caja + Copere
-        public void Process(Report report, List<Info> inData, List<Info> outData, string bankName, string accountNumber, bool isPre)
+        public IDictionary<string, object> Process(Report report,List<Info> inData, List<Info> outData, string bankName, string accountNumber)
         {
             var infoContributionNoCash = new List<InfoContribution>(); // sin liquidez
-            var infoContributionPayedComplete = new List<InfoContribution>(); // los pagos completos
+            var infoContributionPayedComplete = new List<InfoContribution>(); // los pagos completosD:\Mis Documentos\GitHub\KreierSolutions\WindowsService\Ks.Batch.Util\Model\Summary\SummaryOut.cs
             var infoContributionIncomplete = new List<InfoContribution>(); // los puchos
 
             var infoContributionNextQuota = new List<InfoContribution>(); // proximas cuotas 
@@ -80,6 +83,8 @@ namespace Ks.Batch.Merge
             var infoLoanNoCash = new List<InfoLoan>(); // sin liquidez
             var infoLoanPayedComplete = new List<InfoLoan>(); // los pagos completos
             var infoLoanIncomplete = new List<InfoLoan>(); // los puchos
+
+            var infoReturnPayment = new List<Info>();//devoluciones
 
             var infoLoanNextQuota = new List<InfoLoan>(); // proximas cuotas 
 
@@ -127,200 +132,392 @@ namespace Ks.Batch.Merge
                 }
                 else
                 {
-                    if (outLine.TotalContribution == inLine.TotalPayed)
+                    if (!inLine.IsUnique)
                     {
-                        //Caso de prueba 201907-V2-005 - 2
-                        #region Pagado completo en aportaciones y sin liquidez en prestamos
+                        #region Find by Contribution and Loan Total
 
-                        #region Pago completo de la aportacion
+                        #region contribution
 
-                        outLine.InfoContribution.StateId = (int)ContributionState.Pagado;
-                        outLine.InfoContribution.AmountPayed = inLine.TotalPayed;
-                        infoContributionPayedComplete.Add(MappingContribution(outLine.InfoContribution));
-
-                        #endregion
-
-                        #region Sin Liquides en Prestamos
-
-                        foreach (var infoLoan in outLine.InfoLoans)
+                        if (inLine.TotalContribution == 0)
                         {
-                            infoLoan.StateId = (int)LoanState.SinLiquidez;
-                            infoLoan.BankName = bankName;
-                            infoLoan.AccountNumber = accountNumber;
-                            infoLoan.TransactionNumber = report.ParentKey.ToString();
-                            infoLoan.Description = "Monto enviado desde " + bankName + " no cubre el pago de la cuota";
-                            infoLoanNoCash.Add(MappingLoan(infoLoan));
-                            infoLoanNextQuota.Add(BuildNextLoanQuota(MappingLoan(infoLoan)));
+                            #region Pago Sin Liquidez (==0)
+
+                            outLine.InfoContribution.StateId = (int)ContributionState.SinLiquidez;
+                            outLine.InfoContribution.AmountPayed = inLine.TotalContribution;
+                            infoContributionNoCash.Add(MappingContribution(outLine.InfoContribution));
+                            infoContributionNextQuota.Add(BuildNextContributionQuota(MappingContribution(outLine.InfoContribution)));
+
+                            #endregion
+
+                            inLine.TotalPayed = inLine.TotalPayed - inLine.TotalContribution;
                         }
 
-                        #endregion
-
-                        #endregion
-
-                        inLine.TotalPayed = 0;
-                        continue;
-                    }
-
-                    if (outLine.TotalContribution > inLine.TotalPayed)
-                    {
-                        //Caso de prueba 201907-V2-005 - 3
-                        #region Pago por puchos en aportacion  y sin liquidez en prestamos
-
-                        #region Pago por puchos en aportaciones Y Acumula NEXT
-
-                        outLine.InfoContribution.StateId = (int)ContributionState.PagoParcial;
-                        outLine.InfoContribution.AmountPayed = inLine.TotalPayed;
-                        infoContributionIncomplete.Add(MappingContribution(outLine.InfoContribution));
-                        infoContributionNextQuota.Add(BuildNextContributionQuota(MappingContribution(outLine.InfoContribution)));
-
-                        #endregion
-
-                        #region Sin Liquides en Prestamos
-
-                        foreach (var infoLoan in outLine.InfoLoans)
+                        if (outLine.TotalContribution == inLine.TotalContribution)
                         {
-                            infoLoan.StateId = (int)LoanState.SinLiquidez;
-                            infoLoan.BankName = bankName;
-                            infoLoan.AccountNumber = accountNumber;
-                            infoLoan.TransactionNumber = report.ParentKey.ToString();
-                            infoLoan.Description = "Monto enviado desde " + bankName + " no cubre el pago de la cuota";
-                            infoLoanNoCash.Add(MappingLoan(infoLoan));
-                            infoLoanNextQuota.Add(BuildNextLoanQuota(MappingLoan(infoLoan)));
+                            #region Pago completo de la aportacion
+
+                            outLine.InfoContribution.StateId = (int)ContributionState.Pagado;
+                            outLine.InfoContribution.AmountPayed = inLine.TotalContribution;
+                            infoContributionPayedComplete.Add(MappingContribution(outLine.InfoContribution));
+
+                            #endregion
+
+                            inLine.TotalPayed = inLine.TotalPayed - inLine.TotalContribution;
                         }
 
-                        #endregion
-
-                        #endregion
-
-                        inLine.TotalPayed = 0;
-                        continue;
-                    }
-
-                    if (outLine.TotalContribution < inLine.TotalPayed)
-                    {
-                        //Caso de prueba 201907-V2-005 - 3
-                        #region Pago total en aportacion y en puchos en prestamos
-
-                        #region Pago total en aportacion
-
-                        outLine.InfoContribution.StateId = (int)ContributionState.Pagado;
-                        outLine.InfoContribution.AmountPayed = outLine.InfoContribution.AmountTotal;
-                        infoContributionPayedComplete.Add(MappingContribution(outLine.InfoContribution));
-
-                        #endregion
-
-                        inLine.TotalPayed -= outLine.InfoContribution.AmountTotal;
-                        var outLineOrderdedById = outLine.InfoLoans.OrderBy(x => x.LoanId).ToList();
-
-                        foreach (var infoLoan in outLineOrderdedById)
+                        if (outLine.TotalContribution < inLine.TotalContribution)
                         {
-                            infoLoan.BankName = bankName;
-                            infoLoan.AccountNumber = accountNumber;
-                            infoLoan.TransactionNumber = report.ParentKey.ToString();
+                            #region Pago raro en donde lo que se recepciona es mayor a lo que se pide
 
-                            if (inLine.TotalPayed == 0)
+                            outLine.InfoContribution.StateId = (int)ContributionState.Pagado;
+                            outLine.InfoContribution.AmountPayed = outLine.TotalContribution;
+                            infoContributionPayedComplete.Add(MappingContribution(outLine.InfoContribution));
+
+                            #endregion
+
+                            inLine.TotalPayed = inLine.TotalPayed - outLine.TotalContribution;
+                        }
+
+                        if (outLine.TotalContribution > inLine.TotalContribution && inLine.TotalContribution > 0)
+                        {
+                            #region Pago por puchos en aportaciones Y Acumula NEXT
+
+                            outLine.InfoContribution.StateId = (int)ContributionState.PagoParcial;
+                            outLine.InfoContribution.AmountPayed = inLine.TotalContribution;
+                            infoContributionIncomplete.Add(MappingContribution(outLine.InfoContribution));
+                            infoContributionNextQuota.Add(BuildNextContributionQuota(MappingContribution(outLine.InfoContribution)));
+
+                            #endregion
+
+                            inLine.TotalPayed = inLine.TotalPayed - inLine.TotalContribution;
+                        }
+
+
+                        #endregion
+
+                        #region loan
+
+                        var outLineOrderded = outLine.InfoLoans.OrderBy(x => x.LoanPaymentId).ToList();
+                        foreach (var outInfoLoan in outLineOrderded)
+                        {
+                            outInfoLoan.BankName = bankName;
+                            outInfoLoan.AccountNumber = accountNumber;
+                            outInfoLoan.TransactionNumber = report.ParentKey.ToString();
+
+                            if (inLine.TotalLoan == 0)
                             {
-                                //Este caso no podria darse debido a que se valido en
-                                //Caso de prueba 201907-V2-005 - 2
-                                #region No hay liquidez para el APOYO
+                                #region no vino data del cobro
 
+                                outInfoLoan.StateId = (int)LoanState.SinLiquidez;
+                                outInfoLoan.Description = "Monto enviado desde " + bankName + " no cubre el pago de la cuota";
+                                infoLoanNoCash.Add(MappingLoan(outInfoLoan));
+                                infoLoanNextQuota.Add(BuildNextLoanQuota(MappingLoan(outInfoLoan)));
+
+                                #endregion
+
+                                inLine.TotalPayed = inLine.TotalPayed - inLine.TotalLoan;
+                                continue;
+                            }
+
+                            if (inLine.TotalLoan == outInfoLoan.MonthlyQuota)
+                            {
+                                #region pago completo
+
+                                outInfoLoan.StateId = (int)LoanState.Pagado;
+                                outInfoLoan.Description = "Monto enviado desde " + bankName + " pago completo";
+                                outInfoLoan.MonthlyPayed = inLine.TotalLoan;
+                                infoLoanPayedComplete.Add(MappingLoan(outInfoLoan));
+
+                                #endregion
+
+                                inLine.TotalPayed = inLine.TotalPayed - outInfoLoan.MonthlyPayed;
+                                inLine.TotalLoan = 0;
+                                continue;
+                            }
+
+                            if (outInfoLoan.MonthlyQuota < inLine.TotalLoan)
+                            {
+                                #region Pago Compelto por exceso
+
+                                outInfoLoan.StateId = (int)LoanState.Pagado;
+                                outInfoLoan.MonthlyPayed = outInfoLoan.MonthlyQuota;
+                                outInfoLoan.Description = "Pago realizado correctamente por la interfaz " + bankName;
+                                infoLoanPayedComplete.Add(MappingLoan(outInfoLoan));
+
+                                #endregion
+
+                                inLine.TotalPayed = inLine.TotalPayed - outInfoLoan.MonthlyPayed;
+                                inLine.TotalLoan = inLine.TotalLoan - outInfoLoan.MonthlyPayed;
+                                continue;
+                            }
+
+                            if (outInfoLoan.MonthlyQuota > inLine.TotalLoan && inLine.TotalLoan>0)
+                            {
+                                #region pago parcial
+
+                                outInfoLoan.StateId = (int)LoanState.PagoParcial;
+                                outInfoLoan.MonthlyPayed = inLine.TotalLoan;
+                                outInfoLoan.Description = "Pago parcial enviada desde " + bankName + ". Se creara una nueva cuota al final";
+                                infoLoanIncomplete.Add(MappingLoan(outInfoLoan));
+                                infoLoanNextQuota.Add(BuildNextLoanQuota(MappingLoan(outInfoLoan)));
+
+                                #endregion
+
+                                inLine.TotalPayed = inLine.TotalPayed - outInfoLoan.MonthlyPayed;
+                                inLine.TotalLoan = 0;
+                                continue;
+                            }
+
+                        }
+
+                        #endregion
+
+                        #endregion
+                    }
+                    else
+                    {
+                        #region Find by TotalPayed
+
+                        if (outLine.TotalContribution == inLine.TotalPayed)
+                        {
+                            //Caso de prueba 201907-V2-005 - 2
+                            #region Pagado completo en aportaciones y sin liquidez en prestamos
+
+                            #region Pago completo de la aportacion
+
+                            outLine.InfoContribution.StateId = (int)ContributionState.Pagado;
+                            outLine.InfoContribution.AmountPayed = inLine.TotalPayed;
+                            infoContributionPayedComplete.Add(MappingContribution(outLine.InfoContribution));
+
+                            #endregion
+
+                            #region Sin Liquides en Prestamos
+
+                            foreach (var infoLoan in outLine.InfoLoans)
+                            {
                                 infoLoan.StateId = (int)LoanState.SinLiquidez;
-                                infoLoan.MonthlyPayed = 0;
+                                infoLoan.BankName = bankName;
+                                infoLoan.AccountNumber = accountNumber;
+                                infoLoan.TransactionNumber = report.ParentKey.ToString();
                                 infoLoan.Description = "Monto enviado desde " + bankName + " no cubre el pago de la cuota";
-
                                 infoLoanNoCash.Add(MappingLoan(infoLoan));
                                 infoLoanNextQuota.Add(BuildNextLoanQuota(MappingLoan(infoLoan)));
-                                continue;
-
-                                #endregion
                             }
 
-                            if (infoLoan.MonthlyQuota > inLine.TotalPayed)
-                            {
-                                //Caso de prueba 201907-V2-005 - 4
-                                #region Pago Parcial del prestamo
+                            #endregion
 
-                                infoLoan.StateId = (int)LoanState.PagoParcial;
-                                infoLoan.MonthlyPayed = inLine.TotalPayed;
-                                infoLoan.Description = "Pago parcial enviada desde " + bankName + ". Se creara una nueva cuota al final";
-                                infoLoanIncomplete.Add(MappingLoan(infoLoan));
-                                infoLoanNextQuota.Add(BuildNextLoanQuota(MappingLoan(infoLoan)));
+                            #endregion
 
-                                inLine.TotalPayed = 0;
-                                continue;
-
-                                #endregion
-                                //Caso de prueba 201907-V2-005 - 6
-                            }
-
-                            if (infoLoan.MonthlyQuota <= inLine.TotalPayed)
-                            {
-                                //Caso de prueba 201907-V2-005 - 5
-                                #region Pago completo en prestamo
-
-                                infoLoan.StateId = (int)LoanState.Pagado;
-                                infoLoan.MonthlyPayed = infoLoan.MonthlyQuota;
-                                infoLoan.Description = "Pago realizado correctamente por la interfaz " + bankName;
-                                infoLoanPayedComplete.Add(MappingLoan(infoLoan));
-
-                                #endregion
-                                //Caso de prueba 201907-V2-005 - 7
-
-                                inLine.TotalPayed -= infoLoan.MonthlyQuota;
-                                continue;
-                            }
+                            inLine.TotalPayed = 0;
+                            continue;
                         }
 
-                        if (inLine.TotalPayed > 0)
+                        if (outLine.TotalContribution > inLine.TotalPayed)
                         {
-                            inLine.CustomerId = outLine.CustomerId;
-                            ReturnPayment(inLine);
+                            //Caso de prueba 201907-V2-005 - 3
+                            #region Pago por puchos en aportacion  y sin liquidez en prestamos
+
+                            #region Pago por puchos en aportaciones Y Acumula NEXT
+
+                            outLine.InfoContribution.StateId = (int)ContributionState.PagoParcial;
+                            outLine.InfoContribution.AmountPayed = inLine.TotalPayed;
+                            infoContributionIncomplete.Add(MappingContribution(outLine.InfoContribution));
+                            infoContributionNextQuota.Add(BuildNextContributionQuota(MappingContribution(outLine.InfoContribution)));
+
+                            #endregion
+
+                            #region Sin Liquides en Prestamos
+
+                            foreach (var infoLoan in outLine.InfoLoans)
+                            {
+                                infoLoan.StateId = (int)LoanState.SinLiquidez;
+                                infoLoan.BankName = bankName;
+                                infoLoan.AccountNumber = accountNumber;
+                                infoLoan.TransactionNumber = report.ParentKey.ToString();
+                                infoLoan.Description = "Monto enviado desde " + bankName + " no cubre el pago de la cuota";
+                                infoLoanNoCash.Add(MappingLoan(infoLoan));
+                                infoLoanNextQuota.Add(BuildNextLoanQuota(MappingLoan(infoLoan)));
+                            }
+
+                            #endregion
+
+                            #endregion
+
+                            inLine.TotalPayed = 0;
+                            continue;
+                        }
+
+                        if (outLine.TotalContribution < inLine.TotalPayed)
+                        {
+                            //Caso de prueba 201907-V2-005 - 3
+                            #region Pago total en aportacion y en puchos en prestamos
+
+                            #region Pago total en aportacion
+
+                            outLine.InfoContribution.StateId = (int)ContributionState.Pagado;
+                            outLine.InfoContribution.AmountPayed = outLine.InfoContribution.AmountTotal;
+                            infoContributionPayedComplete.Add(MappingContribution(outLine.InfoContribution));
+
+                            #endregion
+
+                            inLine.TotalPayed -= outLine.InfoContribution.AmountTotal;
+                            var outLineOrderdedById = outLine.InfoLoans.OrderBy(x => x.LoanPaymentId).ToList();
+
+                            foreach (var infoLoan in outLineOrderdedById)
+                            {
+                                infoLoan.BankName = bankName;
+                                infoLoan.AccountNumber = accountNumber;
+                                infoLoan.TransactionNumber = report.ParentKey.ToString();
+
+                                if (inLine.TotalPayed == 0)
+                                {
+                                    //Este caso no podria darse debido a que se valido en
+                                    //Caso de prueba 201907-V2-005 - 2
+                                    #region No hay liquidez para el APOYO
+
+                                    infoLoan.StateId = (int)LoanState.SinLiquidez;
+                                    infoLoan.MonthlyPayed = 0;
+                                    infoLoan.Description = "Monto enviado desde " + bankName + " no cubre el pago de la cuota";
+
+                                    infoLoanNoCash.Add(MappingLoan(infoLoan));
+                                    infoLoanNextQuota.Add(BuildNextLoanQuota(MappingLoan(infoLoan)));
+                                    continue;
+
+                                    #endregion
+                                }
+
+                                if (infoLoan.MonthlyQuota > inLine.TotalPayed)
+                                {
+                                    //Caso de prueba 201907-V2-005 - 4
+                                    #region Pago Parcial del prestamo
+
+                                    infoLoan.StateId = (int)LoanState.PagoParcial;
+                                    infoLoan.MonthlyPayed = inLine.TotalPayed;
+                                    infoLoan.Description = "Pago parcial enviada desde " + bankName + ". Se creara una nueva cuota al final";
+                                    infoLoanIncomplete.Add(MappingLoan(infoLoan));
+                                    infoLoanNextQuota.Add(BuildNextLoanQuota(MappingLoan(infoLoan)));
+
+                                    inLine.TotalPayed = 0;
+                                    continue;
+
+                                    #endregion
+                                    //Caso de prueba 201907-V2-005 - 6
+                                }
+
+                                if (infoLoan.MonthlyQuota <= inLine.TotalPayed)
+                                {
+                                    //Caso de prueba 201907-V2-005 - 5
+                                    #region Pago completo en prestamo
+
+                                    infoLoan.StateId = (int)LoanState.Pagado;
+                                    infoLoan.MonthlyPayed = infoLoan.MonthlyQuota;
+                                    infoLoan.Description = "Pago realizado correctamente por la interfaz " + bankName;
+                                    infoLoanPayedComplete.Add(MappingLoan(infoLoan));
+
+                                    #endregion
+                                    //Caso de prueba 201907-V2-005 - 7
+
+                                    inLine.TotalPayed -= infoLoan.MonthlyQuota;
+                                    continue;
+                                }
+                            }
+
+                            #endregion
                         }
 
                         #endregion
                     }
+
+                    #region Return Payment
+                    if (inLine.TotalPayed > 0)
+                    {
+                        inLine.CustomerId = outLine.CustomerId;
+                        infoReturnPayment.Add(inLine);
+                    }
+                    #endregion
                 }
             }
 
             #endregion
 
+            var result = new Dictionary<string, object>
+            {
+                { "infoContributionNoCash", infoContributionNoCash },
+                { "infoContributionPayedComplete", infoContributionPayedComplete },
+                { "infoContributionIncomplete", infoContributionIncomplete },
+                { "infoContributionNextQuota", infoContributionNextQuota },
+                { "infoLoanNoCash", infoLoanNoCash },
+                { "infoLoanPayedComplete", infoLoanPayedComplete },
+                { "infoLoanIncomplete", infoLoanIncomplete },
+                { "infoLoanNextQuota", infoLoanNextQuota },
+                { "infoReturnPayment",infoReturnPayment}
+            };
+
+            return result; 
+        }
+
+        public void UpdateDateBaseWithResult(Report report,IDictionary<string, object> data)
+        {
+            var infoContributionNoCash = (List<InfoContribution>)data["infoContributionNoCash"]; // sin liquidez
+            var infoContributionPayedComplete = (List<InfoContribution>)data["infoContributionPayedComplete"]; // los pagos completosD:\Mis Documentos\GitHub\KreierSolutions\WindowsService\Ks.Batch.Util\Model\Summary\SummaryOut.cs
+            var infoContributionIncomplete = (List<InfoContribution>)data["infoContributionIncomplete"]; // los puchos
+
+            var infoContributionNextQuota = (List<InfoContribution>)data["infoContributionNextQuota"]; // proximas cuotas 
+
+            var infoLoanNoCash = (List<InfoLoan>)data["infoLoanNoCash"]; // sin liquidez
+            var infoLoanPayedComplete = (List<InfoLoan>)data["infoLoanPayedComplete"];// los pagos completos
+            var infoLoanIncomplete = (List<InfoLoan>)data["infoLoanIncomplete"];// los puchos
+
+            var infoReturnPayment = (List<Info>)data["infoReturnPayment"];// devoluciones
+
+            var infoLoanNextQuota = (List<InfoLoan>)data["infoLoanNextQuota"]; // proximas cuotas 
+
             var source = "";
             var value = "";
 
             #region ContributionPayment
+
             if (infoContributionPayedComplete.Count > 0)
             {
-                source = ConfigurationManager.AppSettings["ContributionPayedComplete"];
+                source = ServiceSetting.ContributionPayedComplete;
+                ServiceSetting.SummaryMerge.FileContributionPayedCompleteTotal = infoContributionPayedComplete.Count;
+
                 value = XmlHelper.Serialize2String(new List<InfoContribution>(infoContributionPayedComplete));
                 AddPreReport(report, value, source);
 
-                if (!isPre)
+                if (!ServiceSetting.IsPre)
                 {
                     var infoPartial = LinqExtensions.Split(infoContributionPayedComplete, 50);
                     foreach (var info in infoPartial)
                         UpdateContributionPayment(info.ToList());
                 }
             }
+
             if (infoContributionIncomplete.Count > 0)
             {
-                source = ConfigurationManager.AppSettings["ContributionIncomplete"];
+                source = ServiceSetting.ContributionIncomplete;
+                ServiceSetting.SummaryMerge.FileContributionIncompleteTotal = infoContributionIncomplete.Count;
+
                 value = XmlHelper.Serialize2String(new List<InfoContribution>(infoContributionIncomplete));
                 AddPreReport(report, value, source);
 
-                if (!isPre)
+                if (!ServiceSetting.IsPre)
                 {
                     var infoPartial = LinqExtensions.Split(infoContributionIncomplete, 50);
                     foreach (var info in infoPartial)
                         UpdateContributionPayment(info.ToList());
                 }
             }
+
             if (infoContributionNoCash.Count > 0)
             {
-                source = ConfigurationManager.AppSettings["ContributionNoCash"];
+                source = ServiceSetting.ContributionNoCash;
+                ServiceSetting.SummaryMerge.FileContributionNoCashTotal = infoContributionNoCash.Count;
+
                 value = XmlHelper.Serialize2String(new List<InfoContribution>(infoContributionNoCash));
                 AddPreReport(report, value, source);
 
-                if (!isPre)
+                if (!ServiceSetting.IsPre)
                 {
                     var infoPartial = LinqExtensions.Split(infoContributionNoCash, 50);
                     foreach (var info in infoPartial)
@@ -328,17 +525,17 @@ namespace Ks.Batch.Merge
                 }
             }
 
-            if (infoContributionNextQuota.Count > 0)
-            {
-                source = ConfigurationManager.AppSettings["ContributionNextQuota"];
-                value = XmlHelper.Serialize2String(new List<InfoContribution>(infoContributionNextQuota));
-                AddPreReport(report, value, source);
+            //if (infoContributionNextQuota.Count > 0)
+            //{
+            //    source = ServiceSetting.ContributionNextQuota;
+            //    value = XmlHelper.Serialize2String(new List<InfoContribution>(infoContributionNextQuota));
+            //    AddPreReport(report, value, source);
 
-                if (!isPre)
-                {
-                    UpdateNextContributionPayment(infoContributionNextQuota);
-                }
-            }
+            //    if (!ServiceSetting.IsPre)
+            //    {
+            //        UpdateNextContributionPayment(infoContributionNextQuota);
+            //    }
+            //}
 
             #endregion
 
@@ -346,51 +543,58 @@ namespace Ks.Batch.Merge
 
             if (infoLoanPayedComplete.Count > 0)
             {
-                source = ConfigurationManager.AppSettings["LoanPayedComplete"];
+                source = ServiceSetting.LoanPayedComplete;
+                ServiceSetting.SummaryMerge.DataBaseLoanPayedCompleteTotal = infoLoanPayedComplete.Count;
+
                 value = XmlHelper.Serialize2String(new List<InfoLoan>(infoLoanPayedComplete));
                 AddPreReport(report, value, source);
-                if (!isPre)
+                if (!ServiceSetting.IsPre)
                 {
                     var infoPartial = LinqExtensions.Split(infoLoanPayedComplete, 50);
                     foreach (var info in infoPartial)
                         UpdateLoanPayment(info.ToList());
                 }
             }
+
             if (infoLoanIncomplete.Count > 0)
             {
-                source = ConfigurationManager.AppSettings["LoanIncomplete"];
+                source = ServiceSetting.LoanIncomplete;
+                ServiceSetting.SummaryMerge.DataBaseLoanIncompleteTotal = infoLoanIncomplete.Count;
+
                 value = XmlHelper.Serialize2String(new List<InfoLoan>(infoLoanIncomplete));
                 AddPreReport(report, value, source);
 
-                if (!isPre)
+                if (!ServiceSetting.IsPre)
                 {
                     var infoPartial = LinqExtensions.Split(infoLoanIncomplete, 50);
                     foreach (var info in infoPartial)
                         UpdateLoanPayment(info.ToList());
                 }
             }
+
             if (infoLoanNoCash.Count > 0)
             {
-                source = ConfigurationManager.AppSettings["LoanNoCash"];
+                source = ServiceSetting.LoanNoCash;
+                ServiceSetting.SummaryMerge.DataBaseLoanNoCashTotal = infoLoanNoCash.Count;
+
                 value = XmlHelper.Serialize2String(new List<InfoLoan>(infoLoanNoCash));
                 AddPreReport(report, value, source);
 
-                if (!isPre)
+                if (!ServiceSetting.IsPre)
                 {
                     var infoPartial = LinqExtensions.Split(infoLoanNoCash, 50);
                     foreach (var info in infoPartial)
                         UpdateLoanPayment(info.ToList());
                 }
             }
+
             if (infoLoanNextQuota.Count > 0)
             {
-                if (isPre)
-                {
-                    source = ConfigurationManager.AppSettings["LoanNextQuota"];
-                    value = XmlHelper.Serialize2String(new List<InfoLoan>(infoLoanNextQuota));
-                    AddPreReport(report, value, source);
-                }
-                else
+                source = ServiceSetting.LoanNextQuota;
+                value = XmlHelper.Serialize2String(new List<InfoLoan>(infoLoanNextQuota));
+                AddPreReport(report, value, source);
+
+                if (!ServiceSetting.IsPre)
                 {
                     UpdateNextLoanPayment(infoLoanNextQuota);
                 }
@@ -398,11 +602,21 @@ namespace Ks.Batch.Merge
 
             #endregion
 
+            #region ReturnPayment
+
+            foreach(var inLine in infoReturnPayment)
+            {
+                ReturnPayment(inLine);
+            }
+
+            #endregion
+
             //si no es simulacion entonces si se cierra el flujo, caso contrario ya se actualizo en el pasado
-            if (!isPre)
+            if (!ServiceSetting.IsPre)
+            {
                 CloseReport(report);
-
-
+                CreateReportSummaryUpLoad(report, "SummaryMerge", XmlHelper.Serialize2String(ServiceSetting.SummaryMerge));
+            }
         }
         #endregion
 
@@ -625,7 +839,7 @@ namespace Ks.Batch.Merge
                 //viene de un pago parcial 
                 infoLoan.Description = "Cuota generada automaticamente por pago parcial en la couta Nº " + infoLoan.Quota;
                 var ratio = 1 - (infoLoan.MonthlyPayed / infoLoan.MonthlyQuota);
-                infoLoan.MonthlyQuota = Math.Round(infoLoan.MonthlyQuota * ratio,2);
+                infoLoan.MonthlyQuota = Math.Round(infoLoan.MonthlyQuota * ratio, 2);
                 infoLoan.MonthlyFee = Math.Round(infoLoan.MonthlyFee * ratio, 2);
                 infoLoan.MonthlyCapital = Math.Round(infoLoan.MonthlyCapital * ratio, 2);
                 infoLoan.MonthlyPayed = 0;
@@ -657,7 +871,7 @@ namespace Ks.Batch.Merge
             catch (Exception ex)
             {
                 Log.FatalFormat("Action: {0} Error: {1}", "Dao.CloseReport(" + report.ParentKey + ")", ex.Message);
-            } 
+            }
         }
         private void AddPreReport(Report report, string value, string source)
         {

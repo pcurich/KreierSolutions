@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -199,6 +200,14 @@ namespace Ks.Admin.Controllers
                     model.NextExecutionOn = _dateTimeHelper.ConvertToUserTime(batch.NextExecutionOnUtc.Value, TimeZoneInfo.Utc);
                 if (batch.LastExecutionOnUtc.HasValue)
                     model.LastExecutionOn = _dateTimeHelper.ConvertToUserTime(batch.LastExecutionOnUtc.Value, TimeZoneInfo.Utc);
+
+                model.ReportInterface.AvailableMonths = DateTime.Now.GetMonthsList(_localizationService);
+                model.ReportInterface.AvailableYears = DateTime.Now.GetYearsList(_localizationService);
+                model.ReportInterface.Types = new List<SelectListItem>() {
+                    new SelectListItem { Value="0", Text= _localizationService.GetResource("Admin.Common.Select") },
+                    new SelectListItem { Value="1", Text= "Copere" },
+                    new SelectListItem { Value="2", Text= "Caja" }
+                };
             }
 
             return View(model);
@@ -217,54 +226,64 @@ namespace Ks.Admin.Controllers
                 //No batch found with the specified id
                 return RedirectToAction("List");
 
-            if (ModelState.IsValid)
-            {
-                if (batch.Enabled)
-                {
-                    ErrorNotification(_localizationService.GetResource("Admin.System.ScheduleBatchs.Error"));
-                    return RedirectToAction("Edit", new { id = batch.Id });
-                }
+            //if (ModelState.IsValid)
+            //{
+            //    if (batch.Enabled)
+            //    {
+            //        ErrorNotification(_localizationService.GetResource("Admin.System.ScheduleBatchs.Error"));
+            //        return RedirectToAction("Edit", new { id = batch.Id });
+            //    }
 
-                //Is not Enabled
-                batch = model.ToEntity(batch);
-                if (model.StartExecutionOn.HasValue)
-                {
-                    var hour = model.StartExecutionOn.Value.Hour;
-                    var minute = model.StartExecutionOn.Value.Minute;
-                    var second = model.StartExecutionOn.Value.Second;
+            //    //Is not Enabled
+            //    batch = model.ToEntity(batch);
+            //    if (model.StartExecutionOn.HasValue)
+            //    {
+            //        var hour = model.StartExecutionOn.Value.Hour;
+            //        var minute = model.StartExecutionOn.Value.Minute;
+            //        var second = model.StartExecutionOn.Value.Second;
 
-                    var startExecution = DateTime.Now;
-                    if (batch.SystemName == _scheduleBatchsSetting.ServiceName1)
-                    {
-                        startExecution = new DateTime(DateTime.Now.Year, DateTime.Now.Month, _scheduleBatchsSetting.DayOfProcess1, hour, minute, second);
-                        if (DateTime.Now.Day > _scheduleBatchsSetting.DayOfProcess1)
-                            startExecution = startExecution.AddMonths(1);
-                    }
+            //        var startExecution = DateTime.Now;
+            //        if (batch.SystemName == _scheduleBatchsSetting.ServiceName1)
+            //        {
+            //            startExecution = new DateTime(DateTime.Now.Year, DateTime.Now.Month, _scheduleBatchsSetting.DayOfProcess1, hour, minute, second);
+            //            if (DateTime.Now.Day > _scheduleBatchsSetting.DayOfProcess1)
+            //                startExecution = startExecution.AddMonths(1);
+            //        }
 
-                    if (batch.SystemName == _scheduleBatchsSetting.ServiceName2)
-                    {
-                        startExecution = new DateTime(DateTime.Now.Year, DateTime.Now.Month, _scheduleBatchsSetting.DayOfProcess2, hour, minute, second);
-                        if (DateTime.Now.Day > _scheduleBatchsSetting.DayOfProcess1)
-                            startExecution = startExecution.AddMonths(1);
-                    }
+            //        if (batch.SystemName == _scheduleBatchsSetting.ServiceName2)
+            //        {
+            //            startExecution = new DateTime(DateTime.Now.Year, DateTime.Now.Month, _scheduleBatchsSetting.DayOfProcess2, hour, minute, second);
+            //            if (DateTime.Now.Day > _scheduleBatchsSetting.DayOfProcess1)
+            //                startExecution = startExecution.AddMonths(1);
+            //        }
 
 
-                    batch.StartExecutionOnUtc = _dateTimeHelper.ConvertToUtcTime(startExecution);
-                    batch.NextExecutionOnUtc = _dateTimeHelper.ConvertToUtcTime(startExecution);
-                    batch.LastExecutionOnUtc = null;
-                }
+            //        batch.StartExecutionOnUtc = _dateTimeHelper.ConvertToUtcTime(startExecution);
+            //        batch.NextExecutionOnUtc = _dateTimeHelper.ConvertToUtcTime(startExecution);
+            //        batch.LastExecutionOnUtc = null;
+            //    }
 
-                _scheduleBatchService.UpdateBatch(batch);
-                //_customerActivityService.InsertActivity()
-                SuccessNotification(_localizationService.GetResource("Admin.System.ScheduleBatchs.Updated"));
-                return continueEditing ? RedirectToAction("Edit", new { id = batch.Id }) : RedirectToAction("List");
-            }
+            //    _scheduleBatchService.UpdateBatch(batch);
+            //    //_customerActivityService.InsertActivity()
+            //    SuccessNotification(_localizationService.GetResource("Admin.System.ScheduleBatchs.Updated"));
+
+            //    model.ReportSummaryMerges = _reportService.ExportReportSummaryMergeFromDataBase(9, 2019, 0);
+            //    return continueEditing ? RedirectToAction("Edit", new { id = batch.Id }) : RedirectToAction("List");
+            //}
+
+            model.ReportSummaryMerges = _reportService.ExportReportSummaryMergeFromDataBase(model.PeriodMonth, model.PeriodYear, model.ReportInterface.TypeId);
 
             model.FrecuencyName = ((ScheduleBatchFrecuency)batch.FrecuencyId).ToString();
             model.AvailableFrecuencies = ScheduleBatchFrecuency.Diario.ToSelectList().ToList();
             model.AvailableFrecuencies.Insert(0, new SelectListItem { Value = "0", Text = "-----------" });
             model.AvailableMonths = DateTime.Now.GetMonthsList(_localizationService);
             model.AvailableYears = DateTime.Now.GetYearsList(_localizationService);
+            model.ReportInterface.AvailableMonths = DateTime.Now.GetMonthsList(_localizationService);
+            model.ReportInterface.AvailableYears = DateTime.Now.GetYearsList(_localizationService);
+            model.ReportInterface.Types = new List<SelectListItem>() {
+                new SelectListItem { Value="0", Text= _localizationService.GetResource("Admin.Common.Select") },
+                new SelectListItem { Value="1", Text= "Copere" },
+                new SelectListItem { Value="2", Text= "Caja" }};
 
             return View(model);
         }

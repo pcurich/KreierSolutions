@@ -9,7 +9,6 @@ namespace Ks.Batch.Caja.Out
     {
         private static readonly LogWriter Log = HostLogger.Get<BatchContainer>();
         public string Connection;
-        public string PathValue;
         public string SysName;
         public ScheduleBatch Batch;
         
@@ -84,7 +83,6 @@ namespace Ks.Batch.Caja.Out
         private void Read()
         {
             Connection = ConfigurationManager.ConnectionStrings["ACMR"].ConnectionString;
-            PathValue = ConfigurationManager.AppSettings["Path"];
             SysName = ConfigurationManager.AppSettings["SysName"];
 
             var dao = new Dao(Connection);

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data.SqlClient;
-using System.Globalization;
-using System.Threading;
+using System.Linq;
 using Ks.Batch.Util;
 using Ks.Batch.Util.Model;
 
@@ -27,40 +25,46 @@ namespace Ks.Batch.Copere.In
                 return;
 
             var oldData = GetReportChild(guid.Value, Batch.SystemName, Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00"));
-            
-            if(oldData == null || oldData.Count == 0)
-            {
-                //nothing todo
-            }
+
+            if (oldData == null || oldData.Count == 0)
+                Log.InfoFormat("5.- First Time to load total: {0} | Amount Total: {1} ", oldData.Count, oldData.Sum(x => x.TotalPayed));
             else
             {
                 infos.AddRange(oldData);
+                Log.InfoFormat("5.- Second time to load Record: {0} | Amount Total: {1} ", infos.Count, infos.Sum(x => x.TotalPayed));
             }
+             
             infos = JoinData(infos);
+            Log.InfoFormat("6.- join data Record: {0} | Amount Total: {1} | Contribution: {2} | Loan: {3}", infos.Count, infos.Sum(x => x.TotalPayed), infos.Sum(x => x.TotalContribution), infos.Sum(x => x.TotalLoan));
 
-            Log.InfoFormat("Action: {0}", "Dao.Process(" + batch.SystemName + ")");
+
 
             if (guid != null)
             {
                 try
                 {
-                    Sql = " UPDATE Report set Name=@Name, StateId=@StateId, Value=@Value, PathBase=@PathBase,Source=@Source, DateUtc=@DateUtc" +
-                        " WHERE [Key]=@Key";
+                    Connect();
+                    Sql = " UPDATE Report set Name=@Name, StateId=@StateId, " +
+                          " Value=@Value, PathBase=@PathBase,Source=@Source, DateUtc=@DateUtc" +
+                          " WHERE [Key]=@Key";
 
                     Command = new SqlCommand(Sql, Connection);
                     Command.Parameters.AddWithValue("@Key", guid);
                     Command.Parameters.AddWithValue("@Name", string.Format("Archivo leido por el Coopere en el periodo - {0}", Batch.PeriodYear.ToString("0000") + Batch.PeriodMonth.ToString("00")));
                     Command.Parameters.AddWithValue("@Value", XmlHelper.Serialize2String(new List<Info>(infos)));
                     Command.Parameters.AddWithValue("@PathBase", Batch.PathBase);
-                    Command.Parameters.AddWithValue("@StateId", 2);
+                    Command.Parameters.AddWithValue("@StateId", (int)ReportState.InProcess);
                     Command.Parameters.AddWithValue("@Source", Batch.SystemName);
                     Command.Parameters.AddWithValue("@DateUtc", DateTime.UtcNow);
 
                     Command.ExecuteNonQuery();
+                    Log.InfoFormat("7.- Insert into Report with key {0}", guid);
+                    Close();
                 }
                 catch (Exception ex)
                 {
                     Log.FatalFormat("Action: {0} Error: {1}","Dao.Process(" + batch.SystemName + ")", ex.Message);
+                    Close();
                 }
             }
         }
@@ -72,6 +76,7 @@ namespace Ks.Batch.Copere.In
             Guid? guid = null;
             try
             {
+                Connect();
                 Log.InfoFormat("Action: {0}","Dao.GetParentOut()");
 
                 Sql = " SELECT [Key]  FROM Report " +
@@ -87,13 +92,14 @@ namespace Ks.Batch.Copere.In
                 {
                     guid = sqlReader.GetGuid(0);
                 }
-                sqlReader.Close();
+                sqlReader.Close(); 
             }
             catch (Exception ex)
             {
                 Log.FatalFormat("Action: {0} Error: {1}","Dao.GetParentOut()", ex.Message);
                 return null;
             }
+            Close();
             return guid;
         } 
         #endregion

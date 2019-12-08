@@ -368,6 +368,37 @@ namespace Ks.Batch.Util
             }
         }
 
+        public void CreateReportSummaryUpLoad(Report report, string source, string value)
+        {
+            try
+            {
+                Log.InfoFormat("Action: Crear registro de Reporte resumen para el servicio={0}", source);
+
+                Sql = " INSERT INTO Report " +
+                      " ([Key],Name,Value,PathBase,StateId,Period,Source, ParentKey,DateUtc)" +
+                      " VALUES " +
+                      " (@Key,@Name,@Value,@PathBase,@StateId,@Period,@Source,@ParentKey,@DateUtc)";
+
+
+                Command = new SqlCommand(Sql, Connection);
+                Command.Parameters.AddWithValue("@Key", Guid.NewGuid());
+                Command.Parameters.AddWithValue("@Name", source);
+                Command.Parameters.AddWithValue("@Value", value);
+                Command.Parameters.AddWithValue("@PathBase", "");
+                Command.Parameters.AddWithValue("@StateId", ReportState.Completed);
+                Command.Parameters.AddWithValue("@Period", report.Period);
+                Command.Parameters.AddWithValue("@Source", source);
+                Command.Parameters.AddWithValue("@ParentKey", Guid.NewGuid());
+                Command.Parameters.AddWithValue("@DateUtc", DateTime.UtcNow);
+
+                Command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Log.FatalFormat("Action: {0} Error: {1}", "DaoBase.CreateReportIn()", ex.Message);
+            }
+        }
+
         public ScheduleBatch GetScheduleBatch(string sysName)
         {
             if (IsConnected)
@@ -435,20 +466,34 @@ namespace Ks.Batch.Util
             //var t = new Dictionary<string, int>();
             var t = new List<Info>();
             t.AddRange(infos);
+            var process = new List<String>();
 
             foreach (var index in infos)
             {
                 decimal totalPayed = 0;
+                decimal totalContribution = 0;
+                decimal totalLoan = 0;
 
-                if (index.AdminCode != null && totalPayed ==0)
+                //if ("120737700".Equals(index.AdminCode))
+                //{
+                //    var _t = "";
+                //}
+
+                if (index.HasAdminCode  && totalPayed ==0)
                 {
-                    totalPayed = t.Where(x => index.AdminCode.Equals(x.AdminCode)).Sum(x => x.TotalPayed);
+                    totalContribution = t.Where(x => index.AdminCode.Equals(x.AdminCode)).Sum(x => x.TotalContribution);
+                    totalLoan =         t.Where(x => index.AdminCode.Equals(x.AdminCode)).Sum(x => x.TotalLoan);
+                    totalPayed =        t.Where(x => index.AdminCode.Equals(x.AdminCode)).Sum(x => x.TotalPayed);
                 }
-                if (index.Dni != null && totalPayed == 0)
+                if (index.HasDni && totalPayed == 0)
                 {
-                    totalPayed = t.Where(x => index.Dni.Equals(x.Dni)).Sum(x => x.TotalPayed);
+                    totalContribution = t.Where(x => index.Dni.Equals(x.Dni)).Sum(x => x.TotalContribution);
+                    totalLoan =         t.Where(x => index.Dni.Equals(x.Dni)).Sum(x => x.TotalLoan);
+                    totalPayed =        t.Where(x => index.Dni.Equals(x.Dni)).Sum(x => x.TotalPayed);
                 } 
 
+                if(process.Where(x=>x == index.AdminCode).Count() == 0)
+                {
                     result.Add(new Info
                     {
                         Year = index.Year,
@@ -458,14 +503,17 @@ namespace Ks.Batch.Util
                         HasAdminCode = index.HasAdminCode,
                         AdminCode = index.AdminCode,
                         HasDni = index.HasDni,
-                        Dni = index.Dni,
-                        TotalContribution = index.TotalContribution,
-                        TotalPayed = totalPayed,
-                        TotalLoan = index.TotalLoan,
+                        Dni = index.Dni, 
+                        TotalContribution = totalContribution,
+                        TotalLoan = totalLoan,
+                        TotalPayed = (totalPayed > 0 ? totalPayed : totalContribution + totalLoan),
                         InfoContribution = null,
-                        InfoLoans = null
+                        InfoLoans = null,
+                        IsUnique = index.IsUnique,
                     });
- 
+
+                    process.Add(index.AdminCode);
+                }  
             }
 
             return result;
@@ -671,11 +719,14 @@ namespace Ks.Batch.Util
                     }
                     sqlReader.Close();
                 }
+                Close();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-
+                Log.FatalFormat("Action: {0} Error: {1}", "DaoNase.GetReportChild(" + source + period+ ")", ex.Message);
+                Close();
             }
+            Log.InfoFormat("4.- Second Time to load total: {0} | Amount Total: {1} ", info.Count, info.Sum(x => x.TotalPayed));
             return info;
         }
         #endregion 
@@ -946,16 +997,17 @@ namespace Ks.Batch.Util
                       " ISNULL(LP.AccountNumber,'') as AccountNumber, " +
                       " ISNULL(LP.TransactionNumber,'') as TransactionNumber, " +
                       " ISNULL(LP.Reference,'') as Reference, " +
-                      " ISNULL(LP.Description,'') as Description, " +
+                      " replace(convert(varchar, L.createdOnUtc ,111),'/','') as Description, " +
                       " L.Period as Period, " +
-                      " ISNULL(X.NoPayedYet,L.TOTALAMOUNT) AS NoPayedYet " +
+                      "  case when X.NoPayedYet > 0.0 then (L.TOTALAMOUNT - X.NoPayedYet) else 0 end AS NoPayedYet   " +
+                      //" ISNULL(X.NoPayedYet,L.TOTALAMOUNT) AS NoPayedYet " +
+
                       " FROM LoanPayment LP " +
                       " INNER JOIN Loan L on L.Id=lp.LoanId " +
                       " LEFT JOIN (" +
-                      "             SELECT LoanId, SUM(_L.TOTALAMOUNT - ISNULL(MonthlyPayed,0)) as NoPayedYet  " +
+                      "             SELECT _lp.LoanId, SUM(ISNULL(_LP.MonthlyPayed,0)) as NoPayedYet " +
                       "             FROM  LoanPayment _LP INNER JOIN Loan _L on _L.Id = _LP.LoanId " +
-                      "             WHERE _LP.StateId = " + (int)LoanState.Pagado + " AND " +
-                      "                   _L.Active= " + (int)State.Active + " AND " +
+                      "             WHERE _L.Active= " + (int)State.Active + " AND " +
                       "                   _L.CustomerId IN (" + string.Join(",", customerIds.ToArray()) + ") " +
                       "             GROUP BY _LP.LoanId)X ON X.LoanId = L.Id" +
                       " WHERE " +

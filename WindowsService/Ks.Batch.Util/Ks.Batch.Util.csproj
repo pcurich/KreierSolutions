@@ -79,8 +79,9 @@
     <Compile Include="Model\ReturnPayment.cs" />
     <Compile Include="Model\ReturnPaymentState.cs" />
     <Compile Include="Model\ReturnPaymentType.cs" />
+    <Compile Include="Model\ServiceSetting.cs" />
     <Compile Include="Model\State.cs" />
-    <Compile Include="Model\Summary\SummaryOut.cs" />
+    <Compile Include="Model\Summary\SummaryMerge.cs" />
     <Compile Include="Model\WorkFlow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScheduleBatch.cs" />
