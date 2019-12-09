@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using FluentValidation.Attributes;
 using Ks.Admin.Validators.Batchs;
+using Ks.Core.Domain.Reports;
 using Ks.Web.Framework;
 using Ks.Web.Framework.Mvc;
 
@@ -79,6 +80,7 @@ namespace Ks.Admin.Models.Batchs
 
         public ReportInfo ReportInfo { get; set; }
         public ReportInterface ReportInterface { get; set; }
+        public List<ReportSummaryMerge> ReportSummaryMerges { get; set; }
     }
 
     public class ReportInfo

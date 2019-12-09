@@ -24,5 +24,8 @@ namespace Ks.Services.Reports
         IList<ReportCustomer> GetCustomer();
 
         bool CanRevertBatch(string period, string source1, int state1, string source2, int state2);
+
+        List<ReportSummaryMerge> ExportReportSummaryMergeFromDataBase(int month, int year, int type);
+        List<ReportSummaryMerge> ExportReportSummaryMergeFromFile(int month, int year, int type);
     }
 }

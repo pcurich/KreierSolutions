@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Ks.Batch.Util.Model
 {
+    [Serializable]
     public class Info
     {
         public Info()
@@ -22,5 +24,6 @@ namespace Ks.Batch.Util.Model
         public InfoContribution InfoContribution { get; set; }
         public decimal TotalLoan { get; set; }
         public List<InfoLoan> InfoLoans { get; set; }
+        public bool IsUnique { get; set; }
     }
 }

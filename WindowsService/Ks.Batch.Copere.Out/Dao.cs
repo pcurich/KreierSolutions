@@ -11,7 +11,7 @@ namespace Ks.Batch.Copere.Out
 {
     public class Dao : DaoBase
     {
-        private const int CODE = (int)CustomerMilitarySituation.Actividad;
+        private const int CUSTOMER_MILITARY_SITUATION_ACTIVE = (int)CustomerMilitarySituation.Actividad;
 
         private Dictionary<int, Info> ReportOut { get; set; }
         private Dictionary<int, string> FileOut { get; set; }
@@ -84,7 +84,7 @@ namespace Ks.Batch.Copere.Out
                 {
                     try
                     {
-                        var fileName = Path.Combine(Path.Combine(path, Batch.FolderMoveToDone), "APOYO-8001-" + FileHelper.GetDateFormat(DateTime.Now) + ".xlsx");
+                        var fileName = Path.Combine(Path.Combine(path, Batch.FolderMoveToDone), "APOYO-8033-" + FileHelper.GetDateFormat(DateTime.Now) + ".xlsx");
                         Log.InfoFormat("Action: Creamos el archivo {0}", fileName);
 
                         var properties = new[] { "MES_PROCESO", "NRO_ADMINIST", "COD_DESCUENTO", "MTO_DESCUENTO", "NUM_CUOTAS", "TOT_CUOTAS", "FEC_DESEMBOLSO", "HOR_DESEMBOLSO", "MTO_SALDO_PRES" };
@@ -104,7 +104,7 @@ namespace Ks.Batch.Copere.Out
                                     { 3, loan.MonthlyQuota.ToString()},
                                     { 4, loan.Quota.ToString() },
                                     { 5, loan.Period.ToString() },
-                                    { 6, FileHelper.GetDate(DateTime.Now) },
+                                    { 6, loan.Description },
                                     { 7, FileHelper.GetTime(DateTime.Now) },
                                     { 8, loan.NoPayedYet.ToString() }
                                 };
@@ -152,7 +152,7 @@ namespace Ks.Batch.Copere.Out
         {
             customerIds = new List<int>();
 
-            GetCustomer(CODE, out customerIds, out Dictionary<int, Info> tReportOut, fileOut: out Dictionary<int, string> tFileOut);
+            GetCustomer(CUSTOMER_MILITARY_SITUATION_ACTIVE, out customerIds, out Dictionary<int, Info> tReportOut, fileOut: out Dictionary<int, string> tFileOut);
             ReportOut = tReportOut;
             FileOut = tFileOut;
         }

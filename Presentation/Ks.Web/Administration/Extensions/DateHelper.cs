@@ -37,14 +37,15 @@ namespace Ks.Admin.Extensions
             return listOfYear;
         }
 
-        public static List<SelectListItem> GetYearsList(this DateTime date, ILocalizationService localizationService, int yearMin = 0, int yearMax = 10)
+        public static List<SelectListItem> GetYearsList(this DateTime date, ILocalizationService localizationService, int yearMin = -10, int yearMax = 20)
         {
             var listOfYear = (from i in Enumerable.Range(yearMin, yearMax)
                               let now = DateTime.UtcNow.AddYears(i)
                               select new SelectListItem
                               {
                                   Text = now.Year.ToString(),
-                                  Value = now.Year.ToString()
+                                  Value = now.Year.ToString(),
+                                  Selected = (DateTime.Now.Year == now.Year)
                               }).OrderBy(x => int.Parse(x.Value)).ToList();
 
             listOfYear.Insert(0, new SelectListItem { Value = "0", Text = localizationService.GetResource("Common.Year") });

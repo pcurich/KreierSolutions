@@ -28,12 +28,18 @@
         <li @Html.RenderSelectedTabIndex(1, GetSelectedTabIndex())>
             Archivos
         </li>
+        <li @Html.RenderSelectedTabIndex(2, GetSelectedTabIndex())>
+            Resumen
+        </li>
     </ul>
     <div>
         @TabInfo()
     </div>
     <div>
         @TabFiles()
+    </div>
+    <div>
+        @TabSummary()
     </div>
 </div>
 
@@ -189,4 +195,80 @@
             </td>
         </tr>
     </table>
+}
+@helper TabSummary()
+{
+    @Html.AntiForgeryToken()
+    <table width="100%">
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.ReportInterface.TypeId):
+            </td>
+            <td class="adminData">
+                @Html.DropDownListFor(model => model.ReportInterface.TypeId, Model.ReportInterface.Types)
+                @Html.ValidationMessageFor(model => model.ReportInterface.TypeId)
+                <script>
+                        $(document).ready(function () {
+                            $('#@Html.FieldIdFor(model => model.ReportInterface.TypeId)').width(250).kendoDropDownList();
+                        });
+                </script>
+            </td>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.PeriodYear):
+            </td>
+            <td class="adminData">
+                @Html.DropDownListFor(model => model.PeriodYear, Model.AvailableYears)
+                @Html.ValidationMessageFor(model => model.PeriodYear)
+                <script>
+                        $(document).ready(function () {
+                            $('#@Html.FieldIdFor(model => model.PeriodYear)').width(250).kendoDropDownList();
+                        });
+                </script>
+            </td>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.PeriodMonth):
+            </td>
+            <td class="adminData">
+                @Html.DropDownListFor(model => model.PeriodMonth, Model.AvailableMonths)
+                @Html.ValidationMessageFor(model => model.PeriodMonth)
+                <script>
+                        $(document).ready(function () {
+                            $('#@Html.FieldIdFor(model => model.PeriodMonth)').width(250).kendoDropDownList();
+                        });
+                </script>
+            </td>
+            <td colspan="2">
+                <input type="submit" name="save-continue" class="k-button" value="Consultar" />
+            </td>
+        </tr>
+    </table>
+
+    <br />
+    <hr />
+    <br />
+
+    if (Model.ReportSummaryMerges != null && Model.ReportSummaryMerges.Count > 0)
+    {
+        <table width="50%">
+            <tr>
+                <td><b>Fuente</b></td>
+                <td><b>Estado</b></td>
+                <td><b>Cantidad</b></td>
+                <td><b>Monto</b></td>
+            </tr>
+            @foreach (var m in Model.ReportSummaryMerges)
+            {
+                <tr>
+                    <td class="adminData">@m.Type</td>
+                    <td class="adminData">@m.State</td>
+                    <td class="adminData">@m.Number</td>
+                    <td class="adminData">@m.Payed.ToString("C2")</td>
+                </tr>
+            }
+        </table>
+    }
+
+
+
+
 }

@@ -6,14 +6,10 @@ using Topshelf.Logging;
 
 namespace Ks.Batch.Merge
 {
-    public class BatchContainer : IBatchContainer
+    public class BatchContainer : IBatchContainer, IDisposable
     {
         private static readonly LogWriter Log = HostLogger.Get<BatchContainer>();
         private FileSystemWatcher _watcher;
-        public string Connection;
-        public string PathValue;
-        public string SysName;
-        public ScheduleBatch Batch;
 
         public bool Start()
         {
@@ -21,10 +17,9 @@ namespace Ks.Batch.Merge
             {
                 Read();
                 Install();
-                Log.InfoFormat("Result: " + LogMessages.BatchStartOk, Batch.SystemName);
             }catch(Exception e)
             {
-                Log.InfoFormat("Result: " + LogMessages.BatchStartError, Batch.SystemName, e.Message);
+                Log.InfoFormat("Result: " + e.Message);
             }
             
             return true;
@@ -35,10 +30,10 @@ namespace Ks.Batch.Merge
             try
             {
                 _watcher.Dispose();
-                Log.InfoFormat("Result: " + LogMessages.BatchStopOk, Batch.SystemName);
+                Log.InfoFormat("Result: " + LogMessages.BatchStopOk, "Merge");
             }catch(Exception e)
             {
-                Log.InfoFormat("Result: " + LogMessages.BatchStopError, Batch.SystemName, e.Message);
+                Log.InfoFormat("Result: " + LogMessages.BatchStopError, "Merge", e.Message);
             }
             return true;
         }
@@ -48,11 +43,11 @@ namespace Ks.Batch.Merge
             try
             {
                 _watcher.EnableRaisingEvents = false;
-                Log.InfoFormat("Result: " + LogMessages.BatchPauseOk, Batch.SystemName);
+                Log.InfoFormat("Result: " + LogMessages.BatchPauseOk, "Merge");
             }
             catch(Exception e)
             {
-                Log.InfoFormat("Result: " + LogMessages.BatchPauseError, Batch.SystemName, e.Message);
+                Log.InfoFormat("Result: " + LogMessages.BatchPauseError, "Merge", e.Message);
             }
             return true;
         }
@@ -62,11 +57,11 @@ namespace Ks.Batch.Merge
             try
             {
                 _watcher.EnableRaisingEvents = true;
-                Log.InfoFormat("Result: " + LogMessages.BatchContinueOk, Batch.SystemName);
+                Log.InfoFormat("Result: " + LogMessages.BatchContinueOk, "Merge");
             }
             catch (Exception e)
             {
-                Log.InfoFormat("Result: " + LogMessages.BatchContinueError, Batch.SystemName, e.Message);
+                Log.InfoFormat("Result: " + LogMessages.BatchContinueError, "Merge", e.Message);
             }
             return true;
         }
@@ -84,16 +79,7 @@ namespace Ks.Batch.Merge
             try {
                 lock (this)
                 {
-                    Connection = ConfigurationManager.ConnectionStrings["ACMR"].ConnectionString;
-                    PathValue = ConfigurationManager.AppSettings["Path"];
-                    SysName = ConfigurationManager.AppSettings["SysName"];
-
-                    var dao = new Dao(Connection);
-                    dao.Connect();
-                    Batch = dao.GetScheduleBatch(SysName);
-
-                    _watcher = new FileSystemWatcher(PathValue, "*.txt");
-
+                    _watcher = new FileSystemWatcher(ConfigurationManager.AppSettings["Path"], "*.txt");
                     _watcher.Created += Watcher.FileCreated;
                     _watcher.IncludeSubdirectories = false;
                     _watcher.EnableRaisingEvents = true;
@@ -109,10 +95,26 @@ namespace Ks.Batch.Merge
 
         private void Install()
         {
-            var dao = new Dao(Connection);
+            var dao = new Dao(ConfigurationManager.ConnectionStrings["ACMR"].ConnectionString);
             dao.Connect();
-            dao.Install(Batch);
+            var batch = dao.GetScheduleBatch(ConfigurationManager.AppSettings["SysName"]);
+            //TODO
+            dao.Install(batch);
             dao.Close();
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _watcher.Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         #endregion

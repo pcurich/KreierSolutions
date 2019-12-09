@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using Ks.Batch.Util;
 using Ks.Batch.Util.Model;
+using Ks.Batch.Util.Model.Summary;
 
 namespace Ks.Batch.Merge
 {
@@ -16,55 +18,41 @@ namespace Ks.Batch.Merge
         private static List<Info> _cajaIn;
         private static Report _reportCopere;
         private static Report _reportCaja;
-        private static bool isPre;
+
+        private static ScheduleBatch Batch { get; set; }
+        private static ServiceSetting ServiceSetting;
 
         public static void FileCreated(object sender, FileSystemEventArgs e)
         {
-            Thread.Sleep(1000*3); //3 Sec because is not atomic
-            var connection = ConfigurationManager.ConnectionStrings["ACMR"].ConnectionString;
-            var SysName = ConfigurationManager.AppSettings["SysName"];
+            Thread.Sleep(1000 * 3); //3 Sec because is not atomic
 
-            var dao = new Dao(connection);
-            dao.Connect(); 
+            ReadSetting(e.Name);
 
-            if (e.Name.ToUpper().Contains("PRE"))
-                isPre = true;
-                isPre = false;
+            var dao = new Dao(ServiceSetting.Connection);
+            dao.Connect();
+            dao.ServiceSetting = ServiceSetting;
 
-            //get Service
-            var batch = dao.GetScheduleBatch(SysName);
+            var account = Batch.SystemName + "." + Batch.PeriodYear + "." + Batch.PeriodMonth.ToString("D2");
 
-            #region  update working start
-            batch.Enabled = true;
-            batch.LastExecutionOnUtc = DateTime.UtcNow;
-            dao.UpdateScheduleBatch(batch);
-            #endregion
-
-            //Data to calculate
-            Dictionary<Report, List<Info>> listData = dao.GetData();
-
-            //load _copereOut or _copereIn or _cajaOut or _cajaIn
-            if (listData.Count == 2)
-                SplitList(listData);            
-
-            var account = batch.SystemName + "." + batch.PeriodYear + "." + batch.PeriodMonth.ToString("D2");
             if (_copereOut != null && _copereIn != null && _copereOut.Count > 0 && _copereIn.Count > 0 && e.Name.ToUpper().Contains("COPERE"))
             {
-                batch.PeriodYear = int.Parse(_reportCopere.Period.Substring(0, 4));
-                batch.PeriodMonth = int.Parse(_reportCopere.Period.Substring(4, 2));
-                dao.Process(_reportCopere, _copereIn, _copereOut, "Copere", account, isPre);
+                Batch.PeriodYear = int.Parse(_reportCopere.Period.Substring(0, 4));
+                Batch.PeriodMonth = int.Parse(_reportCopere.Period.Substring(4, 2));
+                var resultList = dao.Process(_reportCopere, _copereIn, _copereOut, "Copere", account);
+                dao.UpdateDateBaseWithResult(_reportCopere, resultList);
             }
             if (_cajaOut != null && _cajaIn != null && _cajaOut.Count > 0 && _cajaIn.Count > 0 && e.Name.ToUpper().Contains("CAJA"))
             {
-                batch.PeriodYear = int.Parse(_reportCaja.Period.Substring(0, 4));
-                batch.PeriodMonth = int.Parse(_reportCaja.Period.Substring(4, 2));
-                dao.Process(_reportCaja, _cajaIn, _cajaOut, "Caja", account, isPre);
+                Batch.PeriodYear = int.Parse(_reportCaja.Period.Substring(0, 4));
+                Batch.PeriodMonth = int.Parse(_reportCaja.Period.Substring(4, 2));
+                var resultList = dao.Process(_reportCaja, _cajaIn, _cajaOut, "Caja", account);
+                dao.UpdateDateBaseWithResult(_reportCaja, resultList);
             }
 
             #region  update working end
-            batch.Enabled = false;
-            batch.LastExecutionOnUtc = DateTime.UtcNow;
-            dao.UpdateScheduleBatch(batch);
+            Batch.Enabled = false;
+            Batch.LastExecutionOnUtc = DateTime.UtcNow;
+            dao.UpdateScheduleBatch(Batch);
             #endregion
 
             dao.Close();
@@ -104,7 +92,58 @@ namespace Ks.Batch.Merge
                             break;
                         }
                 }
+
             }
+
+            ServiceSetting.SummaryMerge.FileContributionTotal = _copereIn != null ? _copereIn.Count(c => c.TotalContribution > 0) : _cajaIn.Count(c => c.TotalContribution > 0);
+            ServiceSetting.SummaryMerge.FileContributionAmount = _copereIn != null ? _copereIn.Sum(c => c.TotalContribution) : _cajaIn.Sum(c => c.TotalContribution);
+            ServiceSetting.SummaryMerge.FileLoanTotal = _copereIn != null ? _copereIn.Count(c => c.TotalLoan > 0) : _cajaIn.Count(c => c.TotalLoan > 0);
+            ServiceSetting.SummaryMerge.FileLoanAmount = _copereIn != null ? _copereIn.Sum(c => c.TotalLoan) : _cajaIn.Sum(c => c.TotalLoan);
+        }
+
+        private static void ReadSetting(string fileName)
+        {
+            ServiceSetting = new ServiceSetting
+            {
+                SummaryMerge = new SummaryMerge(),
+                Path = ConfigurationManager.AppSettings["Path"],
+                DefaultCulture = ConfigurationManager.AppSettings["DefaultCulture"],
+                Connection = ConfigurationManager.ConnectionStrings["ACMR"].ConnectionString,
+                SysName = ConfigurationManager.AppSettings["SysName"],
+                ContributionPayedComplete = ConfigurationManager.AppSettings["ContributionPayedComplete"],
+                ContributionIncomplete = ConfigurationManager.AppSettings["ContributionIncomplete"],
+                ContributionNoCash = ConfigurationManager.AppSettings["ContributionNoCash"],
+                ContributionNextQuota = ConfigurationManager.AppSettings["ContributionNextQuota"],
+                LoanPayedComplete = ConfigurationManager.AppSettings["LoanPayedComplete"],
+                LoanIncomplete = ConfigurationManager.AppSettings["LoanIncomplete"],
+                LoanNoCash = ConfigurationManager.AppSettings["LoanNoCash"],
+                LoanNextQuota = ConfigurationManager.AppSettings["LoanNextQuota"],
+                IsPre = fileName.ToUpper().Contains("PRE") ? true : false
+
+            }; 
+            
+
+            #region  update working start
+
+            var dao = new Dao(ServiceSetting.Connection);
+            dao.Connect();
+            Batch = dao.GetScheduleBatch(ServiceSetting.SysName);
+            Batch.Enabled = true;
+            Batch.LastExecutionOnUtc = DateTime.UtcNow;
+            dao.UpdateScheduleBatch(Batch);
+
+            //Data to calculate
+            var listData = dao.GetData();
+
+            //load _copereOut or _copereIn or _cajaOut or _cajaIn
+            if (listData.Count == 2)
+                SplitList(listData);
+
+            dao.Close();
+
+            #endregion
+
+            
         }
 
         #endregion

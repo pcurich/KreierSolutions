@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -14,8 +13,6 @@ namespace Ks.Batch.Reverse
     {
         private new static readonly LogWriter Log = HostLogger.Get<DaoReverse>();
         private List<Info> _listInfo = new List<Info>();
-        private List<int> _customerIds;
-        private Dictionary<int, Info> ReportOut { get; set; }
         private Dictionary<int, string> FileOut { get; set; }
 
         private ScheduleBatch _batch;
@@ -62,7 +59,7 @@ namespace Ks.Batch.Reverse
                 }
 
             }
-            catch(Exception e)
+            catch(Exception )
             {
                 return result;
             }

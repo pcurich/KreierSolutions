@@ -215,6 +215,7 @@
     <Compile Include="Domain\Reports\ReportState.cs" />
     <Compile Include="Domain\Reports\ReportGlobal.cs" />
     <Compile Include="Domain\Reports\ReportSummaryContribution.cs" />
+    <Compile Include="Domain\Reports\ReportSummaryMerge.cs" />
     <Compile Include="Domain\Security\AclRecord.cs" />
     <Compile Include="Domain\Security\DefaultPermissionRecord.cs" />
     <Compile Include="Domain\Security\IAclSupported.cs" />
