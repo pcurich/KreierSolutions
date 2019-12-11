@@ -1,0 +1,12 @@
+CD C:\KS\ACMR\WinService\Ks.Batch.Caja.In\Deploy
+Ks.Batch.Caja.In install
+CD C:\KS\ACMR\WinService\Ks.Batch.Caja.Out\Deploy
+Ks.Batch.Caja.Out install
+CD C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy
+Ks.Batch.Copere.In install
+CD C:\KS\ACMR\WinService\Ks.Batch.Copere.Out\Deploy
+Ks.Batch.Copere.Out install
+CD C:\KS\ACMR\WinService\Ks.Batch.Merge\Deploy
+Ks.Batch.Merge install
+CD C:\KS\ACMR\WinService\Ks.Batch.Reverse\Deploy
+Ks.Batch.Reverse install
