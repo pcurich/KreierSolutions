@@ -2156,7 +2156,7 @@ namespace Ks.Services.ExportImport
             }
         }
 
-        public void ExportReportInfoMergeToXlsx(MemoryStream stream, string source, List<Info> send, List<Info> recive)
+        public void ExportReportInfoMergeToXlsx(MemoryStream stream, string source, List<Info> recive , List<Info>send )
         {
             if (stream == null)
                 throw new ArgumentNullException("stream");
@@ -2279,7 +2279,7 @@ namespace Ks.Services.ExportImport
                         worksheet.Cells[row, col].Value = infoLoan.Description;
                         col++;
                         row++;
-                        col = col - 12;
+                        //col = col - 12;
                     } 
                 }
 

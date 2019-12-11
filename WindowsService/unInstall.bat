@@ -1,0 +1,12 @@
+CD C:\KS\ACMR\WinService\Ks.Batch.Caja.In\Deploy
+Ks.Batch.Caja.In uninstall
+CD C:\KS\ACMR\WinService\Ks.Batch.Caja.Out\Deploy
+Ks.Batch.Caja.Out uninstall
+CD C:\KS\ACMR\WinService\Ks.Batch.Copere.In\Deploy
+Ks.Batch.Copere.In uninstall
+CD C:\KS\ACMR\WinService\Ks.Batch.Copere.Out\Deploy
+Ks.Batch.Copere.Out uninstall
+CD C:\KS\ACMR\WinService\Ks.Batch.Merge\Deploy
+Ks.Batch.Merge uninstall
+CD C:\KS\ACMR\WinService\Ks.Batch.Reverse\Deploy
+Ks.Batch.Reverse uninstall
