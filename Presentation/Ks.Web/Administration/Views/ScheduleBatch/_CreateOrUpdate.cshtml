@@ -202,14 +202,14 @@
     <table width="100%">
         <tr>
             <td class="adminTitle">
-                @Html.KsLabelFor(model => model.ReportInterface.TypeId):
+                @Html.KsLabelFor(model => model.ReportInterfaceTable.TypeId):
             </td>
             <td class="adminData">
-                @Html.DropDownListFor(model => model.ReportInterface.TypeId, Model.ReportInterface.Types)
-                @Html.ValidationMessageFor(model => model.ReportInterface.TypeId)
+                @Html.DropDownListFor(model => model.ReportInterfaceTable.TypeId, Model.ReportInterfaceTable.Types)
+                @Html.ValidationMessageFor(model => model.ReportInterfaceTable.TypeId)
                 <script>
                         $(document).ready(function () {
-                            $('#@Html.FieldIdFor(model => model.ReportInterface.TypeId)').width(250).kendoDropDownList();
+                            $('#@Html.FieldIdFor(model => model.ReportInterfaceTable.TypeId)').width(250).kendoDropDownList();
                         });
                 </script>
             </td>

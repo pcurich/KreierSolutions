@@ -79,7 +79,7 @@ namespace Ks.Admin.Controllers
             model.AvailableMonths = DateTime.Now.GetMonthsList(_localizationService);
             model.AvailableYears = DateTime.Now.GetYearsList(_localizationService);
             return model;
-        }
+        } 
 
         #endregion
 
@@ -113,15 +113,25 @@ namespace Ks.Admin.Controllers
             model.ReportInfo.SubTypes.Add(new SelectListItem { Text = "Recepcion", Value = "2" });
             model.ReportInfo.SubTypes.Add(new SelectListItem { Text = "Resultado", Value = "3" });
 
-            model.ReportInterface.AvailableMonths = DateTime.Now.GetMonthsList(_localizationService);
-            model.ReportInterface.AvailableYears = DateTime.Now.GetYearsList(_localizationService,-20,22);
+            model.ReportInterfaceFile.AvailableMonths = DateTime.Now.GetMonthsList(_localizationService);
+            model.ReportInterfaceFile.AvailableYears = DateTime.Now.GetYearsList(_localizationService,-20,22);
 
-            model.ReportInterface.States.Add(new SelectListItem { Text = "Activo", Value = "2" });
-            model.ReportInterface.States.Add(new SelectListItem { Text = "Inactivo", Value = "1" });
+            model.ReportInterfaceFile.States.Add(new SelectListItem { Text = "Activo", Value = "2" });
+            model.ReportInterfaceFile.States.Add(new SelectListItem { Text = "Inactivo", Value = "1" });
 
             
-            model.ReportInterface.Types=Ks.Web.Framework.Extensions.GetDescriptions(typeof(CustomerMilitarySituation));
-            model.ReportInterface.Types.Insert(0, new SelectListItem { Text = "---------------", Value = "0" });
+            model.ReportInterfaceFile.Types=Ks.Web.Framework.Extensions.GetDescriptions(typeof(CustomerMilitarySituation));
+            model.ReportInterfaceFile.Types.Insert(0, new SelectListItem { Text = "---------------", Value = "0" });
+
+            model.ReportInterfaceTable.AvailableMonths = DateTime.Now.GetMonthsList(_localizationService);
+            model.ReportInterfaceTable.AvailableYears = DateTime.Now.GetYearsList(_localizationService, -20, 22);
+
+            model.ReportInterfaceTable.States.Add(new SelectListItem { Text = "Activo", Value = "2" });
+            model.ReportInterfaceTable.States.Add(new SelectListItem { Text = "Inactivo", Value = "1" });
+
+
+            model.ReportInterfaceTable.Types = Ks.Web.Framework.Extensions.GetDescriptions(typeof(CustomerMilitarySituation));
+            model.ReportInterfaceTable.Types.Insert(0, new SelectListItem { Text = "---------------", Value = "0" });
 
             return View(model);
         }
@@ -201,9 +211,17 @@ namespace Ks.Admin.Controllers
                 if (batch.LastExecutionOnUtc.HasValue)
                     model.LastExecutionOn = _dateTimeHelper.ConvertToUserTime(batch.LastExecutionOnUtc.Value, TimeZoneInfo.Utc);
 
-                model.ReportInterface.AvailableMonths = DateTime.Now.GetMonthsList(_localizationService);
-                model.ReportInterface.AvailableYears = DateTime.Now.GetYearsList(_localizationService);
-                model.ReportInterface.Types = new List<SelectListItem>() {
+                model.ReportInterfaceTable.AvailableMonths = DateTime.Now.GetMonthsList(_localizationService);
+                model.ReportInterfaceTable.AvailableYears = DateTime.Now.GetYearsList(_localizationService);
+                model.ReportInterfaceTable.Types = new List<SelectListItem>() {
+                    new SelectListItem { Value="0", Text= _localizationService.GetResource("Admin.Common.Select") },
+                    new SelectListItem { Value="1", Text= "Copere" },
+                    new SelectListItem { Value="2", Text= "Caja" }
+                };
+
+                model.ReportInterfaceFile.AvailableMonths = DateTime.Now.GetMonthsList(_localizationService);
+                model.ReportInterfaceFile.AvailableYears = DateTime.Now.GetYearsList(_localizationService);
+                model.ReportInterfaceFile.Types = new List<SelectListItem>() {
                     new SelectListItem { Value="0", Text= _localizationService.GetResource("Admin.Common.Select") },
                     new SelectListItem { Value="1", Text= "Copere" },
                     new SelectListItem { Value="2", Text= "Caja" }
@@ -224,63 +242,26 @@ namespace Ks.Admin.Controllers
             var batch = _scheduleBatchService.GetBatchById(model.Id);
             if (batch == null)
                 //No batch found with the specified id
-                return RedirectToAction("List");
+                return RedirectToAction("List"); 
 
-            //if (ModelState.IsValid)
-            //{
-            //    if (batch.Enabled)
-            //    {
-            //        ErrorNotification(_localizationService.GetResource("Admin.System.ScheduleBatchs.Error"));
-            //        return RedirectToAction("Edit", new { id = batch.Id });
-            //    }
-
-            //    //Is not Enabled
-            //    batch = model.ToEntity(batch);
-            //    if (model.StartExecutionOn.HasValue)
-            //    {
-            //        var hour = model.StartExecutionOn.Value.Hour;
-            //        var minute = model.StartExecutionOn.Value.Minute;
-            //        var second = model.StartExecutionOn.Value.Second;
-
-            //        var startExecution = DateTime.Now;
-            //        if (batch.SystemName == _scheduleBatchsSetting.ServiceName1)
-            //        {
-            //            startExecution = new DateTime(DateTime.Now.Year, DateTime.Now.Month, _scheduleBatchsSetting.DayOfProcess1, hour, minute, second);
-            //            if (DateTime.Now.Day > _scheduleBatchsSetting.DayOfProcess1)
-            //                startExecution = startExecution.AddMonths(1);
-            //        }
-
-            //        if (batch.SystemName == _scheduleBatchsSetting.ServiceName2)
-            //        {
-            //            startExecution = new DateTime(DateTime.Now.Year, DateTime.Now.Month, _scheduleBatchsSetting.DayOfProcess2, hour, minute, second);
-            //            if (DateTime.Now.Day > _scheduleBatchsSetting.DayOfProcess1)
-            //                startExecution = startExecution.AddMonths(1);
-            //        }
-
-
-            //        batch.StartExecutionOnUtc = _dateTimeHelper.ConvertToUtcTime(startExecution);
-            //        batch.NextExecutionOnUtc = _dateTimeHelper.ConvertToUtcTime(startExecution);
-            //        batch.LastExecutionOnUtc = null;
-            //    }
-
-            //    _scheduleBatchService.UpdateBatch(batch);
-            //    //_customerActivityService.InsertActivity()
-            //    SuccessNotification(_localizationService.GetResource("Admin.System.ScheduleBatchs.Updated"));
-
-            //    model.ReportSummaryMerges = _reportService.ExportReportSummaryMergeFromDataBase(9, 2019, 0);
-            //    return continueEditing ? RedirectToAction("Edit", new { id = batch.Id }) : RedirectToAction("List");
-            //}
-
-            model.ReportSummaryMerges = _reportService.ExportReportSummaryMergeFromDataBase(model.PeriodMonth, model.PeriodYear, model.ReportInterface.TypeId);
+            model.ReportSummaryMerges = _reportService.ExportReportSummaryMergeFromDataBase(model.PeriodMonth, model.PeriodYear, model.ReportInterfaceTable.TypeId);
 
             model.FrecuencyName = ((ScheduleBatchFrecuency)batch.FrecuencyId).ToString();
             model.AvailableFrecuencies = ScheduleBatchFrecuency.Diario.ToSelectList().ToList();
             model.AvailableFrecuencies.Insert(0, new SelectListItem { Value = "0", Text = "-----------" });
             model.AvailableMonths = DateTime.Now.GetMonthsList(_localizationService);
             model.AvailableYears = DateTime.Now.GetYearsList(_localizationService);
-            model.ReportInterface.AvailableMonths = DateTime.Now.GetMonthsList(_localizationService);
-            model.ReportInterface.AvailableYears = DateTime.Now.GetYearsList(_localizationService);
-            model.ReportInterface.Types = new List<SelectListItem>() {
+
+            model.ReportInterfaceTable.AvailableMonths = DateTime.Now.GetMonthsList(_localizationService);
+            model.ReportInterfaceTable.AvailableYears = DateTime.Now.GetYearsList(_localizationService);
+            model.ReportInterfaceTable.Types = new List<SelectListItem>() {
+                new SelectListItem { Value="0", Text= _localizationService.GetResource("Admin.Common.Select") },
+                new SelectListItem { Value="1", Text= "Copere" },
+                new SelectListItem { Value="2", Text= "Caja" }};
+
+            model.ReportInterfaceFile.AvailableMonths = DateTime.Now.GetMonthsList(_localizationService);
+            model.ReportInterfaceFile.AvailableYears = DateTime.Now.GetYearsList(_localizationService);
+            model.ReportInterfaceFile.Types = new List<SelectListItem>() {
                 new SelectListItem { Value="0", Text= _localizationService.GetResource("Admin.Common.Select") },
                 new SelectListItem { Value="1", Text= "Copere" },
                 new SelectListItem { Value="2", Text= "Caja" }};
@@ -429,22 +410,62 @@ namespace Ks.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult ListReport(ScheduleBatchModel model)
+        public ActionResult ListReportFromFile(ScheduleBatchModel model)
+        {
+            List<Info> info = new List<Info>();
+            var source = "";
+            if (model.ReportInterfaceFile.TypeId == 1) //Copere Recepcion
+                source = "Ks.Batch.Copere.In";
+
+            if (model.ReportInterfaceFile.TypeId == 2) //Caja Recepcion
+                source = "Ks.Batch.Caja.In";
+
+            info = _reportService.GetInfo(source, model.ReportInterfaceFile.YearId.ToString("0000") + model.ReportInterfaceFile.MonthId.ToString("00"));
+            
+            var admCodes = String.Join(",", new List<string>(info.Select(x => x.AdminCode)).ToArray() );
+
+
+            byte[] bytes;
+            try
+            {
+
+                var interfaceLoan = _reportService.GetInterfaceLoanByAdminCode(admCodes,
+                model.ReportInterfaceFile.YearId, model.ReportInterfaceFile.MonthId, model.ReportInterfaceFile.TypeId, model.ReportInterfaceFile.StateId - 1);
+                var interfaceContribution = _reportService.GetInterfaceContributionByAdminCode(admCodes,
+                    model.ReportInterfaceFile.YearId, model.ReportInterfaceFile.MonthId, model.ReportInterfaceFile.TypeId, model.ReportInterfaceFile.StateId - 1);
+
+                using (var stream = new MemoryStream())
+                {
+                    _exportManager.ExportinterfaceToXlsx(stream, model.ReportInterfaceFile.YearId, model.ReportInterfaceFile.MonthId, interfaceLoan, interfaceContribution);
+                    bytes = stream.ToArray();
+                }
+            }
+            catch (Exception exc)
+            {
+                ErrorNotification(exc);
+                return RedirectToAction("List");
+            }
+            return File(bytes, "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Reporte de Interfaz.xlsx");
+        }
+        
+
+        [HttpPost]
+        public ActionResult ListReportFromTable(ScheduleBatchModel model)
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageScheduleBatchs))
                 return AccessDeniedView();
 
 
             var interfaceLoan = _reportService.GetInterfaceLoan(
-                model.ReportInterface.YearId, model.ReportInterface.MonthId, model.ReportInterface.TypeId, model.ReportInterface.StateId - 1);
+                model.ReportInterfaceTable.YearId, model.ReportInterfaceTable.MonthId, model.ReportInterfaceTable.TypeId, model.ReportInterfaceTable.StateId - 1);
             var interfaceContribution = _reportService.GetInterfaceContribution(
-                model.ReportInterface.YearId, model.ReportInterface.MonthId, model.ReportInterface.TypeId,model.ReportInterface.StateId-1);
+                model.ReportInterfaceTable.YearId, model.ReportInterfaceTable.MonthId, model.ReportInterfaceTable.TypeId,model.ReportInterfaceTable.StateId-1);
             try
                 {
                     byte[] bytes;
                     using (var stream = new MemoryStream())
                     {
-                        _exportManager.ExportinterfaceToXlsx(stream, model.ReportInterface.YearId, model.ReportInterface.MonthId, interfaceLoan,interfaceContribution);
+                        _exportManager.ExportinterfaceToXlsx(stream, model.ReportInterfaceTable.YearId, model.ReportInterfaceTable.MonthId, interfaceLoan,interfaceContribution);
                         bytes = stream.ToArray();
                     }
                     //Response.ContentType = "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
