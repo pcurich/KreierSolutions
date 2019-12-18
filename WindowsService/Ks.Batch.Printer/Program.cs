@@ -1,4 +1,5 @@
-﻿using Topshelf;
+﻿using System.Globalization;
+using Topshelf;
 
 namespace Ks.Batch.Printer
 {
@@ -6,6 +7,9 @@ namespace Ks.Batch.Printer
     {
         static void Main(string[] args)
         {
+            CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("es-PE");
+            CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("es-PE");
+
             HostFactory.Run(serviceConfig =>
             {
                 serviceConfig.UseNLog();
