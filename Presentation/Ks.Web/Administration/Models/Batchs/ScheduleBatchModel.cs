@@ -19,7 +19,8 @@ namespace Ks.Admin.Models.Batchs
             AvailableMonths = new List<SelectListItem>();
             AvailableYears = new List<SelectListItem>();
             ReportInfo = new ReportInfo();
-            ReportInterface =  new ReportInterface();
+            ReportInterfaceFile =  new ReportInterface();
+            ReportInterfaceTable = new ReportInterface();
         }
 
         [KsResourceDisplayName("Admin.System.ScheduleBatchs.Fields.Name")]
@@ -79,7 +80,8 @@ namespace Ks.Admin.Models.Batchs
         public List<SelectListItem> AvailableFrecuencies { get; set; }
 
         public ReportInfo ReportInfo { get; set; }
-        public ReportInterface ReportInterface { get; set; }
+        public ReportInterface ReportInterfaceTable { get; set; }
+        public ReportInterface ReportInterfaceFile { get; set; }
         public List<ReportSummaryMerge> ReportSummaryMerges { get; set; }
     }
 

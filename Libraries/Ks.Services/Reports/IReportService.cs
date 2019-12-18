@@ -20,6 +20,10 @@ namespace Ks.Services.Reports
         IList<ReportBankPayment> GetBankPayment(int fromYear, int fromMonth, int fromDay, int toYear, int toMonth, int toDay, int typeId = -1, int sourceId = -1);
         IList<ReportInterfaceLoan> GetInterfaceLoan(int yearId, int monthId, int type, int state);
         IList<ReportInterfaceContribution> GetInterfaceContribution(int yearId, int monthId, int type, int state);
+
+        IList<ReportInterfaceLoan> GetInterfaceLoanByAdminCode(string admCodes,int yearId, int monthId, int type, int state);
+        IList<ReportInterfaceContribution> GetInterfaceContributionByAdminCode(string admCodes,int yearId, int monthId, int type, int state);
+
         IList<ReportChecks> GetChecks(int yearFrom, int monthFrom, int dayFrom, int yearTo, int monthTo, int dayTo, int typeId);
         IList<ReportCustomer> GetCustomer();
 

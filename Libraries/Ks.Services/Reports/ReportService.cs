@@ -738,6 +738,127 @@ namespace Ks.Services.Reports
             return new List<ReportInterfaceContribution>();
         }
 
+        public virtual IList<ReportInterfaceLoan> GetInterfaceLoanByAdminCode(string admCodes,int yearId, int monthId, int type, int state)
+        {
+            var pAdmCodes = _dataProvider.GetParameter();
+            pAdmCodes.ParameterName = "AdmCodes";
+            pAdmCodes.Value = admCodes;
+            pAdmCodes.DbType = DbType.String;
+
+            var pYear = _dataProvider.GetParameter();
+            pYear.ParameterName = "Year";
+            pYear.Value = yearId;
+            pYear.DbType = DbType.Int32;
+
+            var pMonth = _dataProvider.GetParameter();
+            pMonth.ParameterName = "Month";
+            pMonth.Value = monthId;
+            pMonth.DbType = DbType.Int32;
+
+            var pType = _dataProvider.GetParameter();
+            pType.ParameterName = "Type";
+            pType.Value = type;
+            pType.DbType = DbType.Int32;
+
+            var pState = _dataProvider.GetParameter();
+            pState.ParameterName = "State";
+            pState.Value = state;
+            pState.DbType = DbType.Int32;
+
+            var pNameReport = _dataProvider.GetParameter();
+            pNameReport.ParameterName = "NameReport";
+            pNameReport.Value = "InterfaceLoan";
+            pNameReport.DbType = DbType.String;
+
+            var pReportState = _dataProvider.GetParameter();
+            pReportState.ParameterName = "ReportState";
+            pReportState.Value = (int)ReportState.Completed;
+            pReportState.DbType = DbType.Int32;
+
+            var pSource = _dataProvider.GetParameter();
+            pSource.ParameterName = "Source";
+            pSource.Value = "Ks.Services.Report.GetInterfaceLoan";
+            pSource.DbType = DbType.String;
+
+            var pTotalRecords = _dataProvider.GetParameter();
+            pTotalRecords.ParameterName = "TotalRecords";
+            pTotalRecords.Direction = ParameterDirection.Output;
+            pTotalRecords.DbType = DbType.Int32;
+
+            //invoke stored procedure
+            var data = _dbContext.ExecuteStoredProcedureList<Report>("ReportInterfaceLoanByAdmCode", pAdmCodes,
+                pYear, pMonth, pType, pState, pNameReport, pReportState, pSource, pTotalRecords);
+
+            //return products
+            var totalRecords = (pTotalRecords.Value != DBNull.Value) ? Convert.ToInt32(pTotalRecords.Value) : 0;
+            var firstOrDefault = data.FirstOrDefault();
+            if (firstOrDefault != null && firstOrDefault.Value != null)
+                return new List<ReportInterfaceLoan>(XmlHelper.XmlToObject<List<ReportInterfaceLoan>>(firstOrDefault.Value));
+
+            return new List<ReportInterfaceLoan>();
+        }
+
+        public virtual IList<ReportInterfaceContribution> GetInterfaceContributionByAdminCode(string admCodes,int yearId, int monthId, int type, int state)
+        {
+            var pAdmCodes = _dataProvider.GetParameter();
+            pAdmCodes.ParameterName = "AdmCodes";
+            pAdmCodes.Value = admCodes;
+            pAdmCodes.DbType = DbType.String;
+
+            var pYear = _dataProvider.GetParameter();
+            pYear.ParameterName = "Year";
+            pYear.Value = yearId;
+            pYear.DbType = DbType.Int32;
+
+            var pMonth = _dataProvider.GetParameter();
+            pMonth.ParameterName = "Month";
+            pMonth.Value = monthId;
+            pMonth.DbType = DbType.Int32;
+
+            var pType = _dataProvider.GetParameter();
+            pType.ParameterName = "Type";
+            pType.Value = type;
+            pType.DbType = DbType.Int32;
+
+            var pState = _dataProvider.GetParameter();
+            pState.ParameterName = "State";
+            pState.Value = state;
+            pState.DbType = DbType.Int32;
+
+            var pNameReport = _dataProvider.GetParameter();
+            pNameReport.ParameterName = "NameReport";
+            pNameReport.Value = "InterfaceContribution";
+            pNameReport.DbType = DbType.String;
+
+            var pReportState = _dataProvider.GetParameter();
+            pReportState.ParameterName = "ReportState";
+            pReportState.Value = (int)ReportState.Completed;
+            pReportState.DbType = DbType.Int32;
+
+            var pSource = _dataProvider.GetParameter();
+            pSource.ParameterName = "Source";
+            pSource.Value = "Ks.Services.Report.GetInterfaceContribution";
+            pSource.DbType = DbType.String;
+
+            var pTotalRecords = _dataProvider.GetParameter();
+            pTotalRecords.ParameterName = "TotalRecords";
+            pTotalRecords.Direction = ParameterDirection.Output;
+            pTotalRecords.DbType = DbType.Int32;
+
+            //invoke stored procedure
+            var data = _dbContext.ExecuteStoredProcedureList<Report>("ReportInterfaceContributionByAdmCode", pAdmCodes,
+                pYear, pMonth, pType, pState,
+                pNameReport, pReportState, pSource, pTotalRecords);
+
+            //return products
+            var totalRecords = (pTotalRecords.Value != DBNull.Value) ? Convert.ToInt32(pTotalRecords.Value) : 0;
+            var firstOrDefault = data.FirstOrDefault();
+            if (firstOrDefault != null && firstOrDefault.Value != null)
+                return new List<ReportInterfaceContribution>(XmlHelper.XmlToObject<List<ReportInterfaceContribution>>(firstOrDefault.Value));
+
+            return new List<ReportInterfaceContribution>();
+        }
+
         public virtual IList<ReportChecks> GetChecks(int fromYear, int fromMonth, int fromDay, int toYear, int toMonth, int toDay, int type)
         {
             if (fromYear == 0 || fromMonth == 0 || fromDay == 0 || toYear == 0 || toMonth == 0 || toDay == 0)
