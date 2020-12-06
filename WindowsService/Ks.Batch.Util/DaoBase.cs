@@ -221,27 +221,31 @@ namespace Ks.Batch.Util
                     List<Info> result = null;
                     try
                     {
+                        //Sql = "select value from report where Source ='" + source + "' and period = '"+ year+ month.ToString("D2") +"' and stateId = '"+state+"'";
+                        //el estado ya no tnendria nada que ver
+                        Sql = "select value from report where Source ='" + source + "' and period = '" + year + month.ToString("D2") + "'";
 
-                        Sql = "select value from report where Source ='" + source + "' and period = '"+ year+ month.ToString("D2") +"' and stateId = '"+state+"'";
+                        Log.InfoFormat(LogMessages.FindInfoReport, Sql);
+
                         Command = new SqlCommand(Sql, Connection);
                         var sqlReader = Command.ExecuteReader();
 
                         while (sqlReader.Read())
                         {
                             result = XmlHelper.XmlToObject<List<Info>>(sqlReader.GetString(0));
-                            Log.InfoFormat("Result: El nombre del servicio {0} es {1}", source, result);
+                            Log.InfoFormat(LogMessages.FindInfoReportResult, result.Count);
                         }
 
                         sqlReader.Close();
 
                         if (result == null)
-                            Log.InfoFormat("Result: El nombre del Servicio {0} No se ha encontrado", source);
+                            Log.InfoFormat("El Servicio {0} No se ha encontrado", source);
 
                         return result;
                     }
                     catch (Exception ex)
                     {
-                        Log.FatalFormat("Result: {0} Error: {1}", "DaoBase.NameOfService(" + source + ")", ex.Message);
+                        Log.FatalFormat("Servicio {0} con Error: {1}", source , ex.Message);
                         return null;
                     }
                 }

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29519.181
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.572
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C936187E-7DA2-4E0E-B1C4-6CEFA1715CEE}"
 	ProjectSection(SolutionItems) = preProject
@@ -23,6 +23,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ks.Batch.Reverse", "Ks.Batch.Reverse\Ks.Batch.Reverse.csproj", "{488806E4-CF6C-4BD5-8C61-FD26C21C9450}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ks.Batch.Printer", "Ks.Batch.Printer\Ks.Batch.Printer.csproj", "{D15492A1-7257-4F7A-A66C-AFC004F5A96E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ks.Batch.Ftp.Upload", "Ks.Batch.Ftp.Upload\Ks.Batch.Ftp.Upload.csproj", "{777AB1EF-2879-4E86-B871-DC44E722C176}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -62,6 +64,10 @@ Global
 		{D15492A1-7257-4F7A-A66C-AFC004F5A96E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D15492A1-7257-4F7A-A66C-AFC004F5A96E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D15492A1-7257-4F7A-A66C-AFC004F5A96E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{777AB1EF-2879-4E86-B871-DC44E722C176}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{777AB1EF-2879-4E86-B871-DC44E722C176}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{777AB1EF-2879-4E86-B871-DC44E722C176}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{777AB1EF-2879-4E86-B871-DC44E722C176}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

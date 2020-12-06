@@ -43,6 +43,6 @@ namespace Ks.Batch.Util
                    FrecuencyId == obj.FrecuencyId && PeriodYear == obj.PeriodYear && PeriodMonth == obj.PeriodMonth &&
                    StartExecutionOnUtc == obj.StartExecutionOnUtc && NextExecutionOnUtc == obj.NextExecutionOnUtc &&
                    LastExecutionOnUtc == obj.LastExecutionOnUtc && Enabled == obj.Enabled;
-        }
+        } 
     }
 }

@@ -96,15 +96,15 @@ namespace Ks.Batch.Reverse
                         SystemName = SysName,
                         Name = "Reversa"
                     };
-                        // dao.GetScheduleBatch(SysName);
+                    // dao.GetScheduleBatch(SysName);
+                    Log.InfoFormat(LogMessages.BatchReadOk);
 
                     _watcher = new FileSystemWatcher(PathValue);
-
                     _watcher.Created += Watcher.FileCreated;
                     _watcher.IncludeSubdirectories = false;
                     _watcher.EnableRaisingEvents = true;
 
-                    Log.InfoFormat(LogMessages.BatchReadOk);
+                    Log.InfoFormat(LogMessages.BatchWaitFile);
                 }
             }
             catch (Exception e)

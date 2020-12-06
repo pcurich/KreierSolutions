@@ -36,8 +36,11 @@ namespace Ks.Services.Reports
         {
             var query = from cr in _reportRepository.Table
                         orderby cr.Id
-                        where ((cr.Source == source1 && cr.StateId == state1) || (cr.Source == source2 && cr.StateId == state2)) && cr.Period == period  
+                        //where ((cr.Source == source1 && cr.StateId == state1) || (cr.Source == source2 && cr.StateId == state2)) && cr.Period == period  
+                        where ((cr.Source == source1 ) || (cr.Source == source2 )) && cr.Period == period
                         select cr;
+            //Ya no voy a considerar el estado del reporte ya que puede incluso estar en 5. El servicio igual limpia  en las tablas de detalle
+
             var canBeDeleted = query.Count();
 
             return canBeDeleted == 2;
