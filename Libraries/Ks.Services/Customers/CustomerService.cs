@@ -772,6 +772,26 @@ namespace Ks.Services.Customers
 
         #endregion
 
+        #region Customer Generic Attribute
+        public virtual int[] GetCustomersByGenericAttribute(string systemCustomerAttributeName, string systemCustomerAttributeValue  )
+        {
+            var query = _customerRepository.Table;
+            query = query.Where(c => !c.Deleted ); 
+            query = query
+                    .Join(_gaRepository.Table, x => x.Id, y => y.EntityId, (x, y) => new { Customer = x, Attribute = y })
+                    .Where((
+                        z => 
+                        z.Attribute.KeyGroup == "Customer" &&
+                        z.Attribute.Key == systemCustomerAttributeName &&
+                        z.Attribute.Value == systemCustomerAttributeValue))
+                    .Select(z => z.Customer);
+            int[] ids = query.Select(x => x.Id).ToArray();
+ 
+            return ids;
+        }
+       
+        #endregion
+
         #endregion
     }
 }

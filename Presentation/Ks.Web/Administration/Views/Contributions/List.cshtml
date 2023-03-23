@@ -49,6 +49,14 @@
         </tr>
         <tr>
             <td class="adminTitle">
+                @Html.KsLabelFor(model => model.CycleOfDelay):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.CycleOfDelay)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
                 @Html.KsLabelFor(model => model.StateId):
             </td>
             <td class="adminData">
@@ -123,6 +131,10 @@
                   title: "@T("Admin.Contract.Contribution.Fields.CustomerAdmCode")",
                   width: 50
               }, {
+                  field: "DelayCycles",
+                  title: "@T("Admin.Contract.Contribution.Fields.DelayCycles")",
+                  width: 50
+              },{
                   field: "AmountMeta",
                   title: "@T("Admin.Contract.Contribution.Fields.AmountMeta")",
                   width: 50,
@@ -253,7 +265,8 @@
                             SearchDni: $('#@Html.FieldIdFor(model => model.SearchDni)').val(),
                             SearchAdmCode: $('#@Html.FieldIdFor(model => model.SearchAdmCode)').val(),
                             SearchAuthorizeDiscount: $('#@Html.FieldIdFor(model => model.SearchAuthorizeDiscount)').val(),
-                            StateId: $('#@Html.FieldIdFor(model => model.StateId)').val()
+                            StateId: $('#@Html.FieldIdFor(model => model.StateId)').val(),
+                            CycleOfDelay: $('#@Html.FieldIdFor(model => model.CycleOfDelay)').val()
                         };
                         addAntiForgeryToken(data);
                         return data;

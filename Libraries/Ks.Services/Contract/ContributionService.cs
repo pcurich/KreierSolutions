@@ -6,12 +6,13 @@ using System.Linq;
 using Ks.Core;
 using Ks.Core.Caching;
 using Ks.Core.Data;
+using Ks.Core.Domain.Common;
 using Ks.Core.Domain.Contract;
 using Ks.Core.Domain.Customers;
 using Ks.Core.Domain.Reports;
 using Ks.Data;
 using Ks.Services.Events;
- 
+using Ks.Services.Helpers;
 
 namespace Ks.Services.Contract
 {
@@ -41,7 +42,7 @@ namespace Ks.Services.Contract
         private readonly IRepository<Customer> _customerRepository;
         private readonly IRepository<Contribution> _contributionRepository;
         private readonly IRepository<ContributionPayment> _contributionPaymentRepository;
-        private readonly ICacheManager _cacheManager;
+         private readonly ICacheManager _cacheManager;
         private readonly IEventPublisher _eventPublisher;
         private readonly IDataProvider _dataProvider;
         private readonly IDbContext _dbContext;
@@ -50,11 +51,11 @@ namespace Ks.Services.Contract
 
         #region Constructor
 
-        public ContributionService(IRepository<Customer> customerRepository, IRepository<Contribution> contributionRepository, IRepository<ContributionPayment> contributionPaymentRepository, ICacheManager cacheManager, IEventPublisher eventPublisher, IDataProvider dataProvider, IDbContext dbContext)
+        public ContributionService(IRepository<Customer> customerRepository, IRepository<Contribution> contributionRepository, IRepository<ContributionPayment> contributionPaymentRepository,    ICacheManager cacheManager, IEventPublisher eventPublisher, IDataProvider dataProvider, IDbContext dbContext)
         {
             _customerRepository = customerRepository;
             _contributionRepository = contributionRepository;
-            _contributionPaymentRepository = contributionPaymentRepository;
+            _contributionPaymentRepository = contributionPaymentRepository; 
             _cacheManager = cacheManager;
             _eventPublisher = eventPublisher;
             _dataProvider = dataProvider;
@@ -73,7 +74,7 @@ namespace Ks.Services.Contract
             UpdateContribution(contribution);
         }
 
-        public virtual List<Contribution> GetContributionGroupByDelay()
+        public virtual IPagedList<Contribution> GetContributionGroupByDelay()
         {
             var query = from c in _contributionRepository.Table
                         where c.IsDelay
@@ -87,11 +88,15 @@ namespace Ks.Services.Contract
 
             var contributions = query.ToList();
 
-            return contributions.Select(contribution => new Contribution
+            var result = contributions.Select(contribution => new Contribution
             {
                 DelayCycles= Convert.ToInt32(contribution.CycleOfDelay),
                 AmountPayed = Convert.ToInt32(contribution.AmountPayed)
-            }).ToList();
+            }); 
+
+            var contributions2 = new PagedList<Contribution>(result.AsQueryable(), 0, 100000);
+
+            return contributions2;
         }
         
         public virtual IPagedList<Contribution> SearchContributionByCustomerId(int customerId, int stateId = -1,
@@ -129,6 +134,26 @@ namespace Ks.Services.Contract
 
             return new PagedList<Contribution>(contribution, pageIndex, pageSize);
         }
+
+        public virtual IPagedList<Contribution> SearchContributionByCycleOfDelay(int CycleOfDelay,
+           int stateId = -1, int pageIndex = 0,
+           int pageSize = Int32.MaxValue)
+        {
+
+            var query = from c in _contributionRepository.Table
+                        orderby c.CreatedOnUtc
+                        where c.DelayCycles == CycleOfDelay
+                        select c;
+
+            if (stateId >= 0)
+            {
+                query = stateId == 0 ? query.Where(x => x.Active == false) : query.Where(x => x.Active == true);
+            }
+
+            var contribution = query.ToList();
+
+            return new PagedList<Contribution>(contribution, pageIndex, pageSize);
+        } 
 
         public virtual List<Contribution> GetContributionsByCustomer(int customerId = 0, int stateId = -1)
         {
@@ -237,6 +262,45 @@ namespace Ks.Services.Contract
             return new PagedList<ContributionPayment>(query.ToList(), pageIndex, pageSize);
         }
 
+        public virtual int UpdatePaymentAmount(int militarSituation, int contributionState = (int)ContributionState.Pendiente, decimal amount1 = 0, decimal amount2 = 0, decimal amount3 = 0)
+        { 
+            var pMilitarSituation = _dataProvider.GetParameter();
+            pMilitarSituation.ParameterName = "MilitarSituation";
+            pMilitarSituation.Value = militarSituation;
+            pMilitarSituation.DbType = DbType.Int32;
+
+            var pContributionState = _dataProvider.GetParameter();
+            pContributionState.ParameterName = "ContributionState";
+            pContributionState.Value = contributionState;
+            pContributionState.DbType = DbType.Int32;
+
+            var pAmount1 = _dataProvider.GetParameter();
+            pAmount1.ParameterName = "Amount1";
+            pAmount1.Value = amount1;
+            pAmount1.DbType = DbType.Decimal;
+
+            var pAmount2 = _dataProvider.GetParameter();
+            pAmount2.ParameterName = "Amount2";
+            pAmount2.Value = amount2;
+            pAmount2.DbType = DbType.Decimal;
+
+            var pAmount3 = _dataProvider.GetParameter();
+            pAmount3.ParameterName = "Amount3";
+            pAmount3.Value = amount3;
+            pAmount3.DbType = DbType.Decimal;
+
+            var pTotalRecords = _dataProvider.GetParameter();
+            pTotalRecords.ParameterName = "TotalRecords";
+            pTotalRecords.Direction = ParameterDirection.Output;
+            pTotalRecords.DbType = DbType.Int32;
+
+            //invoke stored procedure
+            var data = _dbContext.ExecuteStoredProcedureList<Report>("ActualizarCalendarioCuotas", pMilitarSituation, pContributionState, pAmount1, pAmount2, pAmount3, pTotalRecords);
+            var totalRecords = (pTotalRecords.Value != DBNull.Value) ? Convert.ToInt32(pTotalRecords.Value) : 0;
+            return totalRecords; 
+ 
+        }
+
         public virtual ContributionPayment GetPaymentById(int contributionPaymentId)
         {
             var query = from c in _contributionPaymentRepository.Table
@@ -319,7 +383,7 @@ namespace Ks.Services.Contract
         }
 
         public virtual IList<ReportContributionPayment> GetReportContributionPaymentFuture
-            (int contributionId, int pageIndex = 0, int pageSize = Int32.MaxValue)
+            (int contributionId, string storeName,int pageIndex = 0, int pageSize = Int32.MaxValue)
         {
             if (contributionId == 0)
                 return new List<ReportContributionPayment>();
@@ -350,7 +414,7 @@ namespace Ks.Services.Contract
             pTotalRecords.DbType = DbType.Int32;
 
             //invoke stored procedure
-            var data = _dbContext.ExecuteStoredProcedureList<Report>("SummaryReportContributionPaymentFuture", pContributionId, pNameReport, pReportState, pSource, pTotalRecords);
+            var data = _dbContext.ExecuteStoredProcedureList<Report>(storeName, pContributionId, pNameReport, pReportState, pSource, pTotalRecords);
 
             //return products
             var totalRecords = (pTotalRecords.Value != DBNull.Value) ? Convert.ToInt32(pTotalRecords.Value) : 0;

@@ -267,25 +267,7 @@ namespace Ks.Admin.Controllers
 
             var paymentSettings = _settingService.LoadSetting<ContributionSettings>( );
 
-            var model = paymentSettings.ToModel();
-            model.Amount1Sources= new List<SelectListItem>
-            {
-                new SelectListItem{Value = "0", Text = "Todos" },
-                new SelectListItem{Value = "1", Text = "Copere" },
-                new SelectListItem{Value = "2", Text = "Caja" },
-            };
-            model.Amount2Sources = new List<SelectListItem>
-            {
-                new SelectListItem{Value = "0", Text = "Todos" },
-                new SelectListItem{Value = "1", Text = "Copere" },
-                new SelectListItem{Value = "2", Text = "Caja" },
-            };
-            model.Amount3Sources = new List<SelectListItem>
-            {
-                new SelectListItem{Value = "0", Text = "Todos" },
-                new SelectListItem{Value = "1", Text = "Copere" },
-                new SelectListItem{Value = "2", Text = "Caja" },
-            };
+            var model = paymentSettings.ToModel(); 
             return View(model);
         }
 
@@ -295,17 +277,71 @@ namespace Ks.Admin.Controllers
         {
             var paymentSettings = _settingService.LoadSetting<ContributionSettings>();
 
+            #region clean
             if (model.NameAmount1 == null)
                 model.NameAmount1 = "";
             if (model.NameAmount2 == null)
                 model.NameAmount2 = "";
             if (model.NameAmount3 == null)
                 model.NameAmount3 = "";
+            if (model.NameAmount4 == null)
+                model.NameAmount4 = "";
+            if (model.NameAmount5 == null)
+                model.NameAmount5 = "";
+            if (model.NameAmount6 == null)
+                model.NameAmount6 = "";
 
+            if (!model.IsActiveAmount1)
+            {
+                model.Is1OnReport = false;
+                model.NameAmount1 = "";
+                model.Amount1 = 0;
+            }
+
+            if (!model.IsActiveAmount2)
+            {
+                model.Is2OnReport = false;
+                model.NameAmount2 = "";
+                model.Amount2 = 0;
+            }
+
+            if (!model.IsActiveAmount3)
+            {
+                model.Is3OnReport = false;
+                model.NameAmount3 = "";
+                model.Amount3 = 0;
+            }
+
+            if (!model.IsActiveAmount4)
+            {
+                model.Is4OnReport = false;
+                model.NameAmount4 = "";
+                model.Amount4 = 0;
+            }
+
+            if (!model.IsActiveAmount5)
+            {
+                model.Is5OnReport = false;
+                model.NameAmount5 = "";
+                model.Amount5 = 0;
+            }
+            if (!model.IsActiveAmount6)
+            {
+                model.Is6OnReport = false;
+                model.NameAmount6 = "";
+                model.Amount6 = 0;
+            }
+            #endregion
 
             if (ModelState.IsValid)
             {
                 paymentSettings = model.ToEntity(paymentSettings);
+                paymentSettings.Amount1Source = ((int)CustomerMilitarySituation.Actividad);
+                paymentSettings.Amount2Source = ((int)CustomerMilitarySituation.Actividad);
+                paymentSettings.Amount3Source = ((int)CustomerMilitarySituation.Actividad);
+                paymentSettings.Amount4Source = ((int)CustomerMilitarySituation.Retiro);
+                paymentSettings.Amount5Source = ((int)CustomerMilitarySituation.Retiro);
+                paymentSettings.Amount6Source = ((int)CustomerMilitarySituation.Retiro);
                 _settingService.SaveSetting(paymentSettings);
 
                 //now clear settings cache
@@ -322,87 +358,67 @@ namespace Ks.Admin.Controllers
                 return RedirectToAction("Contributions");
             }
 
-            model.Amount1Sources = new List<SelectListItem>
-            {
-                new SelectListItem{Value = "0", Text = "Todos" },
-                new SelectListItem{Value = "1", Text = "Copere" },
-                new SelectListItem{Value = "2", Text = "Caja" },
-            };
-            model.Amount2Sources = new List<SelectListItem>
-            {
-                new SelectListItem{Value = "0", Text = "Todos" },
-                new SelectListItem{Value = "1", Text = "Copere" },
-                new SelectListItem{Value = "2", Text = "Caja" },
-            };
-            model.Amount3Sources = new List<SelectListItem>
-            {
-                new SelectListItem{Value = "0", Text = "Todos" },
-                new SelectListItem{Value = "1", Text = "Copere" },
-                new SelectListItem{Value = "2", Text = "Caja" },
-            };
+            //model.Amount1Sources = new List<SelectListItem>
+            //{
+            //    new SelectListItem{Value = "0", Text = "Todos" },
+            //    new SelectListItem{Value = "1", Text = "Copere" },
+            //    new SelectListItem{Value = "2", Text = "Caja" },
+            //};
+            //model.Amount2Sources = new List<SelectListItem>
+            //{
+            //    new SelectListItem{Value = "0", Text = "Todos" },
+            //    new SelectListItem{Value = "1", Text = "Copere" },
+            //    new SelectListItem{Value = "2", Text = "Caja" },
+            //};
+            //model.Amount3Sources = new List<SelectListItem>
+            //{
+            //    new SelectListItem{Value = "0", Text = "Todos" },
+            //    new SelectListItem{Value = "1", Text = "Copere" },
+            //    new SelectListItem{Value = "2", Text = "Caja" },
+            //};
             return View(model);
 
+        }
+
+        [HttpPost ] 
+        public ActionResult ViewResultPopup(ContributionSettingsModel model)
+        {
+            var contributionsDelays = _contributionService.GetContributionGroupByDelay(); 
+
+            var gridModel = new DataSourceResult
+            {
+                Data = contributionsDelays.Select(PrepareToChangeModelForList) ,
+                Total = contributionsDelays.TotalCount
+            };
+
+            return Json(gridModel);
+             
+        }
+        
+
+        [HttpPost, ActionName("Contributions")]
+        [FormValueRequired("ResetCopere")]
+        public ActionResult ResetCopere(ContributionSettingsModel model)
+        {
+            //int[] customerId = _customerService.GetCustomersByGenericAttribute(SystemCustomerAttributeNames.MilitarySituationId, ((int)CustomerMilitarySituation.Actividad).ToString());
+            var paymentSettings = _settingService.LoadSetting<ContributionSettings>();
+
+            int size = _contributionService.UpdatePaymentAmount((int)CustomerMilitarySituation.Actividad, (int)ContributionState.Pendiente, paymentSettings.Amount1, paymentSettings.Amount2, paymentSettings.Amount3);
+            SuccessNotification(string.Format("Se han actualizado {0} cuotas en estado pendiente con situacion militar en {1}", size, CustomerMilitarySituation.Actividad));
+            return RedirectToAction("Contributions");
         }
 
         [HttpPost, ActionName("Contributions")]
-        [FormValueRequired("viewresultpopup")]
-        public ActionResult ViewResultPopup(ContributionSettingsModel model)
+        [FormValueRequired("ResetCaja")]
+        public ActionResult ResetCaja(ContributionSettingsModel model)
         {
-            var contributionsDelays = _contributionService.GetContributionGroupByDelay();
-            model.CustumerToChange = new List<CustumerToChange>();
-            foreach (var contributionsDelay in contributionsDelays)
-            {
-                model.CustumerToChange.Add(new CustumerToChange
-                {
-                    Delay = contributionsDelay.DelayCycles,
-                    Size = Convert.ToInt32(contributionsDelay.AmountPayed)
-                });
-            }
+            //int[] customerId = _customerService.GetCustomersByGenericAttribute(SystemCustomerAttributeNames.MilitarySituationId, ((int)CustomerMilitarySituation.Retiro).ToString());
+            var paymentSettings = _settingService.LoadSetting<ContributionSettings>();
 
-            //#region Borrar
-            //contributionsDelays = new List<Contribution>
-            //{
-            //    new Contribution{DelayCycles = 1, AmountPayed = 1236},
-            //    new Contribution{DelayCycles = 2, AmountPayed = 1013},
-            //    new Contribution{DelayCycles = 3, AmountPayed = 892},
-            //    new Contribution{DelayCycles = 4, AmountPayed = 400},
-            //    new Contribution{DelayCycles = 5, AmountPayed = 120},
-            //    new Contribution{DelayCycles = 6, AmountPayed = 12},
-            //};
-            //foreach (var contributionsDelay in contributionsDelays)
-            //{
-            //    model.CustumerToChange.Add(new CustumerToChange
-            //    {
-            //        Delay = contributionsDelay.DelayCycles,
-            //        Size = Convert.ToInt32(contributionsDelay.AmountPayed)
-            //    });
-            //}
-
-            //#endregion
-
-            model.Amount1Sources = new List<SelectListItem>
-            {
-                new SelectListItem{Value = "0", Text = "Todos" },
-                new SelectListItem{Value = "1", Text = "Copere" },
-                new SelectListItem{Value = "2", Text = "Caja" },
-            };
-            model.Amount2Sources = new List<SelectListItem>
-            {
-                new SelectListItem{Value = "0", Text = "Todos" },
-                new SelectListItem{Value = "1", Text = "Copere" },
-                new SelectListItem{Value = "2", Text = "Caja" },
-            };
-            model.Amount3Sources = new List<SelectListItem>
-            {
-                new SelectListItem{Value = "0", Text = "Todos" },
-                new SelectListItem{Value = "1", Text = "Copere" },
-                new SelectListItem{Value = "2", Text = "Caja" },
-            };
-
-            return View(model);
-
+            int size = _contributionService.UpdatePaymentAmount((int)CustomerMilitarySituation.Retiro, (int)ContributionState.Pendiente, paymentSettings.Amount4, paymentSettings.Amount5, paymentSettings.Amount6);
+            SuccessNotification(string.Format("Se han actualizado {0} cuotas en estado pendiente con situacion militar en {1}",size, CustomerMilitarySituation.Retiro));
+            return RedirectToAction("Contributions");
         }
-
         #endregion
 
         #region Loans
@@ -737,6 +753,20 @@ namespace Ks.Admin.Controllers
             _customerActivityService.InsertActivity("DeleteSetting", _localizationService.GetResource("ActivityLog.DeleteSetting"), setting.Name);
 
             return new NullJsonResult();
+        }
+
+        #endregion
+
+        #region Helper
+
+        [NonAction]
+        protected virtual CustumerToChange PrepareToChangeModelForList(Contribution contribution)
+        {
+            return new CustumerToChange
+            {
+                Delay = contribution.DelayCycles,
+                Size = Convert.ToInt32(contribution.AmountPayed)
+            };
         }
 
         #endregion

@@ -139,6 +139,11 @@ namespace Ks.Admin.Controllers
             if (contributions == null && model.SearchAuthorizeDiscount.HasValue)
                 contributions = _contributionService.SearchContributionByAuthorizeDiscount(model.SearchAuthorizeDiscount.Value, model.StateId);
 
+            //3= find by CycleOfDelay
+            if (contributions == null && model.CycleOfDelay > 0)
+                contributions = _contributionService.SearchContributionByCycleOfDelay(model.CycleOfDelay, model.StateId);
+
+
             if (contributions == null)
                 contributions = new PagedList<Contribution>(new List<Contribution>(), 0, 10);
 
@@ -360,15 +365,15 @@ namespace Ks.Admin.Controllers
         }
 
         [HttpPost, ActionName("Edit")]
-        [FormValueRequired("exportexcel")]
-        public ActionResult ExportExcel(ContributionPaymentListModel model)
+        [FormValueRequired("exportexcel-customer")]
+        public ActionResult ExportExcelExternal(ContributionPaymentListModel model)
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributions))
                 return AccessDeniedView();
 
             var customer = _customerService.GetCustomerById(model.CustomerId);
             var contribution = _contributionService.GetContributionById(model.ContributionId);
-            var reportContributionPayment = _contributionService.GetReportContributionPaymentFuture(model.ContributionId);
+            var reportContributionPayment = _contributionService.GetReportContributionPaymentFuture( model.ContributionId, "SummaryReportContributionPaymentFutureExternal");
             try
             {
                 byte[] bytes;
@@ -379,7 +384,36 @@ namespace Ks.Admin.Controllers
                 }
                 //Response.ContentType = "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
                 //Response.AddHeader("content-disposition", "attachment; filename=Aportaciones.xlsx");
-                return File(bytes, "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Aportaciones.xlsx");
+                return File(bytes, "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Aportaciones-Asociado.xlsx");
+            }
+            catch (Exception exc)
+            {
+                ErrorNotification(exc);
+                return RedirectToAction("List");
+            }
+        }
+
+        [HttpPost, ActionName("Edit")]
+        [FormValueRequired("exportexcel-acmr")]
+        public ActionResult ExportExcelInternal(ContributionPaymentListModel model)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributions))
+                return AccessDeniedView();
+
+            var customer = _customerService.GetCustomerById(model.CustomerId);
+            var contribution = _contributionService.GetContributionById(model.ContributionId);
+            var reportContributionPayment = _contributionService.GetReportContributionPaymentFuture( model.ContributionId, "SummaryReportContributionPaymentFutureInternal");
+            try
+            {
+                byte[] bytes;
+                using (var stream = new MemoryStream())
+                {
+                    _exportManager.ExportReportContributionPaymentToXlsx(stream, customer, contribution, reportContributionPayment);
+                    bytes = stream.ToArray();
+                }
+                //Response.ContentType = "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                //Response.AddHeader("content-disposition", "attachment; filename=Aportaciones.xlsx");
+                return File(bytes, "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Aportaciones-ACMR.xlsx");
             }
             catch (Exception exc)
             {

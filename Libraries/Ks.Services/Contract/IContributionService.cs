@@ -17,8 +17,8 @@ namespace Ks.Services.Contract
         /// <summary>
         /// Gets the contribution group by delay.
         /// </summary>
-        /// <returns></returns>
-        List<Contribution> GetContributionGroupByDelay();
+        /// <returns></returns> 
+        IPagedList<Contribution> GetContributionGroupByDelay();
 
         /// <summary>
         /// Searches the contribution by customer identifier.
@@ -39,6 +39,17 @@ namespace Ks.Services.Contract
         /// <param name="pageSize">Size of the page.</param>
         /// <returns></returns>
         IPagedList<Contribution> SearchContributionByAuthorizeDiscount(int authorizeDiscountBool, int stateId = -1, int pageIndex = 0, int pageSize = int.MaxValue);
+
+        /// <summary>
+        /// Searches the contribution by Authorize Discount.
+        /// </summary>
+        /// <param name="CycleOfDelay">The nnumber of Cycles.</param>
+        /// <param name="stateId">The state identifier.</param>
+        /// <param name="pageIndex">Index of the page.</param>
+        /// <param name="pageSize">Size of the page.</param>
+        /// <returns></returns>
+        IPagedList<Contribution> SearchContributionByCycleOfDelay(int CycleOfDelay, int stateId = -1, int pageIndex = 0, int pageSize = int.MaxValue);
+
 
         /// <summary>
         /// Gets the contributions by customer.
@@ -86,6 +97,8 @@ namespace Ks.Services.Contract
             int number = 0, int stateId = -1, string accountNumber = "",
             bool? type = null, int pageIndex = 0, int pageSize = Int32.MaxValue);
 
+        int UpdatePaymentAmount(int militarSituation, int contributionState = (int)ContributionState.Pendiente, decimal amount1 = 0, decimal amount2 = 0, decimal amount3 = 0);
+
         /// <summary>
         /// Gets the payment by identifier.
         /// </summary>
@@ -110,13 +123,15 @@ namespace Ks.Services.Contract
         IList<ReportContributionPayment> GetReportContributionPayment(int contributionId, int pageIndex = 0, int pageSize = Int32.MaxValue);
 
         /// <summary>
-        /// Gets the report contribution payment future.
+        /// Gets the report contribution payment future  
         /// </summary>
         /// <param name="contributionId">The contribution identifier.</param>
+        /// <param name="storeName">SummaryReportContributionPaymentFutureExternal or SummaryReportContributionPaymentFutureInternal</param>
         /// <param name="pageIndex">Index of the page.</param>
         /// <param name="pageSize">Size of the page.</param>
         /// <returns></returns>
-        IList<ReportContributionPayment> GetReportContributionPaymentFuture(int contributionId, int pageIndex = 0, int pageSize = Int32.MaxValue);
+        IList<ReportContributionPayment> GetReportContributionPaymentFuture(int contributionId, string storeName, int pageIndex = 0, int pageSize = Int32.MaxValue);
+         
 
         /// <summary>
         /// Determines whether [is payment valid] [the specified account number].

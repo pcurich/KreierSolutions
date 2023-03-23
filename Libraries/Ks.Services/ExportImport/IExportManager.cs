@@ -21,7 +21,7 @@ namespace Ks.Services.ExportImport
         /// <returns>Result in TXT (string) format</returns>
         string ExportStatesToTxt(IList<StateProvince> states);
 
-        void ExportReportContributionPaymentToXlsx(Stream stream, Customer customer, Contribution contribution, IList<ReportContributionPayment> reportContributionPayment);
+        void ExportReportContributionPaymentToXlsx(Stream stream, Customer customer, Contribution contribution, IList<ReportContributionPayment> reportContributionPayment); 
         string ExportReportContributionPaymentToPdf( Customer customer, Contribution contribution, IList<ReportContributionPayment> reportContributionPayment);
         void ExportReportLoanPaymentToXlsx(Stream stream, Customer customer, Loan loan, IList<ReportLoanPayment> reportLoanPayment);
         void ExportReportLoanPaymentKardexToXlsx(Stream stream, Customer customer, Loan loan, IList<ReportLoanPaymentKardex> reportLoanPaymentKardex);
