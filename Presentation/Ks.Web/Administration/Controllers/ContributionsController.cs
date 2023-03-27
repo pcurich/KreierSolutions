@@ -273,40 +273,49 @@ namespace Ks.Admin.Controllers
 
             var contributionPayment = _contributionService.GetPaymentById(model.Id);
 
-            if (contributionPayment.StateId != (int)ContributionState.Pendiente)
+            if (model.IsErrorByInterface)
             {
-                ErrorNotification(_localizationService.GetResource("Admin.Customers.Contributions.ValidPayment"));
-                return RedirectToAction("CreatePayment", new { id = contributionPayment.Id });
+                CreatePaymentSinLiquidez(model, contributionPayment);
             }
-
-            if (model.AmountPayed != contributionPayment.AmountTotal)
+            else
             {
-                ErrorNotification(_localizationService.GetResource("Admin.Customers.Contributions.CancelPayment"));
-                return RedirectToAction("CreatePayment", new { id = contributionPayment.Id });
+                if (contributionPayment.StateId != (int)ContributionState.Pendiente)
+                {
+                    ErrorNotification(_localizationService.GetResource("Admin.Customers.Contributions.ValidPayment"));
+                    return RedirectToAction("CreatePayment", new { id = contributionPayment.Id });
+                }
+
+                if (model.AmountPayed != contributionPayment.AmountTotal && contributionPayment.StateId != (int)ContributionState.SinLiquidez)
+                {
+                    ErrorNotification(_localizationService.GetResource("Admin.Customers.Contributions.CancelPayment"));
+                    return RedirectToAction("CreatePayment", new { id = contributionPayment.Id });
+                }
+
+                if (!ModelState.IsValid)
+                    return View(model);
+
+                 contributionPayment.IsAutomatic = false;
+                 contributionPayment.StateId = (int)ContributionState.PagoPersonal;
+                 contributionPayment.ContributionId = model.ContributionId;
+                 contributionPayment.BankName = GetBank(model.BankName);
+                 contributionPayment.AccountNumber = model.AccountNumber;
+                 contributionPayment.TransactionNumber = model.TransactionNumber;
+                 contributionPayment.Reference = model.Reference;
+                 contributionPayment.Description = model.Description;
+                 contributionPayment.ProcessedDateOnUtc = DateTime.UtcNow;
+                 contributionPayment.AmountPayed = contributionPayment.AmountTotal;
+ 
+
+                _contributionService.UpdateContributionPayment(contributionPayment);
             }
-
-            if (!ModelState.IsValid)
-                return View(model);
-
-            contributionPayment.IsAutomatic = false;
-            contributionPayment.StateId = (int)ContributionState.PagoPersonal;
-            contributionPayment.ContributionId = model.ContributionId;
-            contributionPayment.BankName = GetBank(model.BankName);
-            contributionPayment.AccountNumber = model.AccountNumber;
-            contributionPayment.TransactionNumber = model.TransactionNumber;
-            contributionPayment.Reference = model.Reference;
-            contributionPayment.Description = model.Description;
-            contributionPayment.ProcessedDateOnUtc = DateTime.UtcNow;
-            contributionPayment.AmountPayed = contributionPayment.AmountTotal;
-
-            _contributionService.UpdateContributionPayment(contributionPayment);
+            
 
             var contribution = _contributionService.GetContributionById(model.ContributionId);
             contribution.UpdatedOnUtc = DateTime.UtcNow;
             contribution.AmountPayed += model.AmountPayed;
 
-            contribution.DelayCycles = 0;
-            contribution.IsDelay = false;
+            contribution.DelayCycles = _contributionService.GetPaymentByContributionId(model.ContributionId).Count(x=>x.StateId == (int)ContributionState.SinLiquidez);
+            contribution.IsDelay = contribution.DelayCycles>0;
 
             if (contributionPayment.Number == _contributionSettings.TotalCycle)
             {
@@ -709,16 +718,22 @@ namespace Ks.Admin.Controllers
         [NonAction]
         protected virtual ContributionPaymentsModel PrepareContributionPayment(ContributionPayment contributionPayment)
         {
+            int[] exclude =new int[] {1,2, 3, 5, 6, 7};
             var model = contributionPayment.ToModel();
             model.Banks = _bankSettings.PrepareBanks();
+            model.NewStates = ContributionState.Pendiente.ToSelectList(false, exclude).ToList();
             model.ScheduledDateOn = _dateTimeHelper.ConvertToUserTime(contributionPayment.ScheduledDateOnUtc, DateTimeKind.Utc);
             if (contributionPayment.ProcessedDateOnUtc.HasValue)
                 model.ProcessedDateOn = _dateTimeHelper.ConvertToUserTime(contributionPayment.ProcessedDateOnUtc.Value, DateTimeKind.Utc);
             var state = ContributionState.Pendiente.ToSelectList()
                 .FirstOrDefault(x => x.Value == contributionPayment.StateId.ToString());
-            if (state != null)
-                model.State = state.Text;
 
+            if (state != null)
+            {
+                model.StateId = contributionPayment.StateId;
+                model.State = state.Text;
+            }
+            model.NewStates.Insert(0, new SelectListItem { Value = "0", Text = "----------------" });
             return model;
         }
 
@@ -737,6 +752,25 @@ namespace Ks.Admin.Controllers
                 return _bankSettings.NameBank5;
 
             return string.Empty;
+        }
+
+        [NonAction]
+        protected virtual void CreatePaymentSinLiquidez(ContributionPaymentsModel model, ContributionPayment contributionPayment)
+        {
+            if (model.IsErrorByInterface)
+            { 
+                if (model.NewStateId == (int)ContributionState.Pagado &&
+                    contributionPayment.StateId == (int)ContributionState.SinLiquidez)
+                {
+                    contributionPayment.IsAutomatic = true;
+                    contributionPayment.StateId = model.NewStateId;
+                    contributionPayment.ContributionId = model.ContributionId;
+                    contributionPayment.Description = contributionPayment.Description + "|El usuario " + _workContext.CurrentCustomer.Username + "ha modificado el estado de la cuota";
+                    contributionPayment.ProcessedDateOnUtc = DateTime.UtcNow;
+                    contributionPayment.AmountPayed = contributionPayment.AmountTotal;
+                    _contributionService.UpdateContributionPayment(contributionPayment);
+                }
+            }
         }
 
         #endregion

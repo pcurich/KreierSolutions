@@ -78,50 +78,50 @@
         @{
             if (Model.IsActiveAmount1)
             {
-        <tr>
-            <td class="adminTitle">
-                @Html.KsLabel(Model.NameAmount1):
-            </td>
-            <td class="adminData">
-                @Model.Amount1.ToString("c", new CultureInfo("es-PE"))
-                @Html.HiddenFor(model => model.Amount1)
-            </td>
-        </tr>
+                <tr>
+                    <td class="adminTitle">
+                        @Html.KsLabel(Model.NameAmount1):
+                    </td>
+                    <td class="adminData">
+                        @Model.Amount1.ToString("c", new CultureInfo("es-PE"))
+                        @Html.HiddenFor(model => model.Amount1)
+                    </td>
+                </tr>
             }
             if (Model.IsActiveAmount2)
             {
-        <tr>
-            <td class="adminTitle">
-                @Html.KsLabel(Model.NameAmount2):
-            </td>
-            <td class="adminData">
-                @Model.Amount2.ToString("c", new CultureInfo("es-PE"))
-                @Html.HiddenFor(model => model.Amount2)
-            </td>
-        </tr>
+                <tr>
+                    <td class="adminTitle">
+                        @Html.KsLabel(Model.NameAmount2):
+                    </td>
+                    <td class="adminData">
+                        @Model.Amount2.ToString("c", new CultureInfo("es-PE"))
+                        @Html.HiddenFor(model => model.Amount2)
+                    </td>
+                </tr>
             }
             if (Model.IsActiveAmount3)
             {
-        <tr>
-            <td class="adminTitle">
-                @Html.KsLabel(Model.NameAmount3):
-            </td>
-            <td class="adminData">
-                @Model.Amount3.ToString("c", new CultureInfo("es-PE"))
-                @Html.HiddenFor(model => model.Amount3)
-            </td>
-        </tr>
+                <tr>
+                    <td class="adminTitle">
+                        @Html.KsLabel(Model.NameAmount3):
+                    </td>
+                    <td class="adminData">
+                        @Model.Amount3.ToString("c", new CultureInfo("es-PE"))
+                        @Html.HiddenFor(model => model.Amount3)
+                    </td>
+                </tr>
             }
 
-        <tr>
-            <td class="adminTitle">
-                @Html.KsLabelFor(model => model.AmountTotal):
-            </td>
-            <td class="adminData">
-                @Model.AmountTotal.ToString("c", new CultureInfo("es-PE"))
-                @Html.HiddenFor(model => model.AmountTotal)
-            </td>
-        </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.AmountTotal):
+                </td>
+                <td class="adminData">
+                    @Model.AmountTotal.ToString("c", new CultureInfo("es-PE"))
+                    @Html.HiddenFor(model => model.AmountTotal)
+                </td>
+            </tr>
         }
         <tr>
             <td class="adminTitle">
@@ -131,14 +131,82 @@
                 @Model.ScheduledDateOn
             </td>
         </tr>
-
     </table>
 
 
 }
 @helper TabPayment()
 {
-    <table class="adminContent">
+    <script type="text/javascript">
+            var temp = 0;
+            $(document).ready(function () {
+
+                $("#@Html.FieldIdFor(model => model.IsErrorByInterface)").click(toggleIsErrorByInterface);
+
+                toggleIsErrorByInterface();
+            });
+
+
+        function toggleIsErrorByInterface() {
+                if ($('#@Html.FieldIdFor(model => model.IsErrorByInterface)').is(':checked')) {
+                    $('#pnlIsErrorByInterfaceEnabled').show();
+                    $('#pnlIsNoErrorByInterfaceEnabled').hide();
+                } else {
+                    $('#pnlIsErrorByInterfaceEnabled').hide();
+                    $('#pnlIsNoErrorByInterfaceEnabled').show();
+                }
+            }
+    </script>
+
+    if (Model.StateId == 5)
+        {
+            <table class="adminContent">
+                <tr>
+                    <td class="adminTitle">
+                        @Html.KsLabelFor(model => model.IsErrorByInterface):
+                    </td>
+                    <td class="adminData">
+                        @Html.EditorFor(model => model.IsErrorByInterface)
+                    </td>
+                </tr>
+            </table>
+        } 
+    
+
+
+
+
+    <br />
+    <hr />
+    <br />
+
+    <table class="adminContent" id="pnlIsErrorByInterfaceEnabled">
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.State):
+            </td>
+            <td class="adminData">
+                @Model.State
+            </td>
+        </tr>
+
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.NewStateId):
+            </td>
+            <td class="adminData">
+                @Html.DropDownListFor(model => model.NewStateId, Model.NewStates)
+                <script>
+                        $(document).ready(function() {
+                            $('#@Html.FieldIdFor(x => x.NewStateId)').width(250).kendoDropDownList();
+                        });
+                </script>
+            </td>
+        </tr>
+    </table>
+
+    <table class="adminContent" id="pnlIsNoErrorByInterfaceEnabled">
+
         <tr>
             <td class="adminTitle">
                 @Html.KsLabelFor(model => model.AmountPayed):
