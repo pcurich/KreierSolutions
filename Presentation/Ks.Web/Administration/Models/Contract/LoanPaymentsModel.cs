@@ -15,6 +15,7 @@ namespace Ks.Admin.Models.Contract
         public LoanPaymentsModel()
         {
             Banks = new List<SelectListItem>();
+            NewStates = new List<SelectListItem>();
         }
 
         public int LoanId { get; set; }
@@ -37,6 +38,9 @@ namespace Ks.Admin.Models.Contract
         [UIHint("Decimal")]
         public decimal AmountToCancel { get; set; }
         public int StateId { get; set; }
+        [KsResourceDisplayName("Admin.Contract.LoanPayments.Fields.NewStateId")]
+        public int NewStateId { get; set; }
+        public List<SelectListItem> NewStates { get; set; }
         public bool IsAutomatic { get; set; }
         [KsResourceDisplayName("Admin.Contract.LoanPayments.Fields.Type")]
         public string Type { get; set; }
@@ -51,8 +55,10 @@ namespace Ks.Admin.Models.Contract
         public string Reference { get; set; }
         [KsResourceDisplayName("Admin.Contract.LoanPayments.Fields.Description")]
         public string Description { get; set; }
+        [KsResourceDisplayName("Admin.Contract.LoanPayments.Fields.IsErrorByInterface")]
+        public bool IsErrorByInterface { set; get; }
         [KsResourceDisplayName("Admin.Contract.LoanPayments.Fields.ScheduledDateOn")]
-        public DateTime ScheduledDateOn { get; set; }
+        public DateTime ScheduledDateOn { get; set; }        
         [KsResourceDisplayName("Admin.Contract.LoanPayments.Fields.ProcessedDateOn")]
         public DateTime? ProcessedDateOn { get; set; }
         [KsResourceDisplayName("Admin.Contract.LoanPayments.Fields.State")]

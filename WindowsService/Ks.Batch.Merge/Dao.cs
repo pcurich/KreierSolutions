@@ -591,6 +591,8 @@ namespace Ks.Batch.Merge
             if (infoLoanNextQuota.Count > 0)
             {
                 source = ServiceSetting.LoanNextQuota;
+                ServiceSetting.SummaryMerge.DataBaseLoanNextQuota = infoLoanNextQuota.Count;
+
                 value = XmlHelper.Serialize2String(new List<InfoLoan>(infoLoanNextQuota));
                 AddPreReport(report, value, source);
 
@@ -604,10 +606,14 @@ namespace Ks.Batch.Merge
 
             #region ReturnPayment
 
-            foreach(var inLine in infoReturnPayment)
+            if (!ServiceSetting.IsPre)
             {
-                ReturnPayment(inLine);
+                foreach (var inLine in infoReturnPayment)
+                {
+                    ReturnPayment(inLine);
+                } 
             }
+                
 
             #endregion
 
@@ -684,7 +690,7 @@ namespace Ks.Batch.Merge
                 xml = xml.Replace('\n', ' ');
                 xml = xml.Replace('\r', ' ');
                 xml = xml.Replace("<?xml version=\"1.0\"?>", "");
-
+                  
                 Sql = "UpdateLoanPayment @XmlPackage ";
                 Command = new SqlCommand(Sql, Connection);
                 Command.CommandTimeout = 1800;

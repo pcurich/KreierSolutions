@@ -26,7 +26,10 @@ namespace Ks.Batch.Merge
         {
             Thread.Sleep(1000 * 3); //3 Sec because is not atomic
 
-            ReadSetting(e.Name);
+            ReadServiceSetting(e.Name);
+            ReadBatchService();
+
+            LoadDataFromReport();
 
             var dao = new Dao(ServiceSetting.Connection);
             dao.Connect();
@@ -101,7 +104,7 @@ namespace Ks.Batch.Merge
             ServiceSetting.SummaryMerge.FileLoanAmount = _copereIn != null ? _copereIn.Sum(c => c.TotalLoan) : _cajaIn.Sum(c => c.TotalLoan);
         }
 
-        private static void ReadSetting(string fileName)
+        private static void ReadServiceSetting(string fileName)
         {
             ServiceSetting = new ServiceSetting
             {
@@ -119,19 +122,26 @@ namespace Ks.Batch.Merge
                 LoanNoCash = ConfigurationManager.AppSettings["LoanNoCash"],
                 LoanNextQuota = ConfigurationManager.AppSettings["LoanNextQuota"],
                 IsPre = fileName.ToUpper().Contains("PRE") ? true : false
-
             }; 
-            
+ 
+        }
 
-            #region  update working start
-
+        private static void ReadBatchService()
+        {
             var dao = new Dao(ServiceSetting.Connection);
             dao.Connect();
             Batch = dao.GetScheduleBatch(ServiceSetting.SysName);
             Batch.Enabled = true;
             Batch.LastExecutionOnUtc = DateTime.UtcNow;
             dao.UpdateScheduleBatch(Batch);
+            dao.Close();
+             
+        }
 
+        private static void LoadDataFromReport()
+        {
+            var dao = new Dao(ServiceSetting.Connection);
+            dao.Connect();
             //Data to calculate
             var listData = dao.GetData();
 
@@ -140,10 +150,6 @@ namespace Ks.Batch.Merge
                 SplitList(listData);
 
             dao.Close();
-
-            #endregion
-
-            
         }
 
         #endregion

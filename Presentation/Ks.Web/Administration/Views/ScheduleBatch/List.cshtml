@@ -40,6 +40,9 @@
         <li @Html.RenderSelectedTabIndex(3, GetSelectedTabIndex())>
             Reporte (Archivos)
         </li>
+        <li @Html.RenderSelectedTabIndex(4, GetSelectedTabIndex())>
+            Logs de servicios
+        </li>
     </ul>
     <div>
         @TabList()
@@ -53,6 +56,9 @@
     <div>
         @TabReportFile()
     </div>
+    <div>
+        @TabLogs()
+    </div>
 </div>
 
 @*save selected tab index*@
@@ -60,7 +66,6 @@
 
 @helper TabList()
 {
-
     <table class="adminContent">
         <tr>
             <td>
@@ -326,7 +331,7 @@
                             $('#@Html.FieldIdFor(model => model.ReportInterfaceFile.TypeId)').width(250).kendoDropDownList();
                         });
                     </script>
-                </td> 
+                </td>
                 <td></td>
                 <td colspan="2">
                     <input type="submit" class="k-button" value="Exporta" />
@@ -334,4 +339,67 @@
             </tr>
         </table>
     }
+}
+
+@helper TabLogs()
+{
+    <table class="adminContent">
+        <tr>
+            <td>
+                <div id="log-batchs-grid"></div>
+
+                <script>
+                    $(document).ready(function() {
+                        $("#log-batchs-grid").kendoGrid({
+                            dataSource: {
+                                type: "json",
+                                transport: {
+                                    read: {
+                                        url: "@Html.Raw(Url.Action("ListBatchsLogs", "ScheduleBatch"))",
+                                        type: "POST",
+                                        dataType: "json",
+                                        data: addAntiForgeryToken
+                                    }
+                                },
+                                schema: {
+                                    data: "Data",
+                                    total: "Total",
+                                    errors: "Errors"
+                                },
+                                error: function(e) {
+                                    display_kendoui_grid_error(e);
+                                    // Cancel the changes
+                                    this.cancelChanges();
+                                },
+                                serverPaging: true,
+                                serverFiltering: true,
+                                serverSorting: true
+                            },
+                            pageable: {
+                                refresh: true,
+                                numeric: false,
+                                previousNext: false,
+                                info: false
+                            },
+                            editable: {
+                                confirmation: false,
+                                mode: "inline"
+                            },
+                            scrollable: false,
+                            columns: [
+                                {
+                                    field: "Name",
+                                    title: "@T("Admin.System.ScheduleBatchs.Fields.Name")"
+                                }, {
+                                    field: "Name",
+                                    title: "@T("Admin.Common.Edit")",
+                                    template: '<a href="DowloadLog?name=#=Name#">@T("Admin.Catalog.Products.Fields.Download")</a>'
+                                }
+                            ]
+                        });
+                    });
+                </script>
+            </td>
+        </tr>
+    </table>
 }

@@ -295,7 +295,7 @@ namespace Ks.Services.Contract
             pTotalRecords.DbType = DbType.Int32;
 
             //invoke stored procedure
-            var data = _dbContext.ExecuteStoredProcedureList<Report>("ActualizarCalendarioCuotas", pMilitarSituation, pContributionState, pAmount1, pAmount2, pAmount3, pTotalRecords);
+            var data = _dbContext.ExecuteStoredProcedureList<Report>("UpdateDuesCalendar", pMilitarSituation, pContributionState, pAmount1, pAmount2, pAmount3, pTotalRecords);
             var totalRecords = (pTotalRecords.Value != DBNull.Value) ? Convert.ToInt32(pTotalRecords.Value) : 0;
             return totalRecords; 
  

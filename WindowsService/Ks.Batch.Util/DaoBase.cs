@@ -281,7 +281,7 @@ namespace Ks.Batch.Util
             var guid = Guid.NewGuid();
             try
             {
-                Log.InfoFormat("Action: Crear registro de Reporte de entrada con guid={0}", guid);
+                Log.InfoFormat("Action: Crear registro de Reporte de entrada con guid={0} para el sistema {1} con el estado {2}", guid,batch.SystemName, (int)ReportState.InProcess);
 
                 Sql = " INSERT INTO Report " +
                       " ([Key],Name,Value,PathBase,StateId,Period,Source, ParentKey,DateUtc)" +
@@ -291,7 +291,7 @@ namespace Ks.Batch.Util
 
                 Command = new SqlCommand(Sql, Connection);
                 Command.Parameters.AddWithValue("@Key", guid);
-                Command.Parameters.AddWithValue("@Name", string.Format("Archivos para la caja en el periodo - {0}", batch.PeriodYear.ToString("0000") + batch.PeriodMonth.ToString("00")));
+                Command.Parameters.AddWithValue("@Name", string.Format("Archivos para el sistema {0} en el periodo - {1}",batch.SystemName, batch.PeriodYear.ToString("0000") + batch.PeriodMonth.ToString("00")));
                 Command.Parameters.AddWithValue("@Value", value);
                 Command.Parameters.AddWithValue("@PathBase", batch.PathBase);
                 Command.Parameters.AddWithValue("@StateId", (int)ReportState.InProcess);
@@ -313,7 +313,7 @@ namespace Ks.Batch.Util
         {
             try
             {
-                Log.InfoFormat("Action: Crear registro de Reporte de salida con guid={0}", guid);
+                Log.InfoFormat("Action: Crear registro de Reporte de salida con guid={0} para el sistema {1} con el estado {2}", guid, source, (int)ReportState.Waiting);
 
                 Sql = " INSERT INTO Report " +
                       " ([Key],Name,Value,PathBase,StateId,Period,Source, ParentKey,DateUtc)" +
@@ -386,7 +386,7 @@ namespace Ks.Batch.Util
 
                 Command = new SqlCommand(Sql, Connection);
                 Command.Parameters.AddWithValue("@Key", Guid.NewGuid());
-                Command.Parameters.AddWithValue("@Name", source);
+                Command.Parameters.AddWithValue("@Name", report.Source);
                 Command.Parameters.AddWithValue("@Value", value);
                 Command.Parameters.AddWithValue("@PathBase", "");
                 Command.Parameters.AddWithValue("@StateId", ReportState.Completed);

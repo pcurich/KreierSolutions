@@ -148,7 +148,6 @@ namespace Ks.Batch.Caja.Out
 
         private void GetCustomer(out List<int> customerIds)
         {
-            customerIds = new List<int>();
             GetCustomer(CODE, out customerIds, out Dictionary<int, Info> tReportOut, fileOut: out Dictionary<int, string> tFileOut);
             ReportOut = tReportOut;
             FileOut = tFileOut;

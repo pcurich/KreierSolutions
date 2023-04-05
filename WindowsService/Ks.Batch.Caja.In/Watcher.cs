@@ -19,8 +19,9 @@ namespace Ks.Batch.Caja.In
         {
             Thread.Sleep(1000 * 3); //10 Sec because is not atomic
 
-            ReadSetting(e.Name);
-             
+            ReadServiceSetting(e.Name);
+            ReadBatchService();
+
             try
             {
                 var infos = InfoService.ReadFile(e.FullPath,ServiceSetting.DefaultCulture);
@@ -69,7 +70,7 @@ namespace Ks.Batch.Caja.In
             File.Move(fullPath, Path.Combine(Path.Combine(ServiceSetting.Path, Batch.FolderMoveToDone), fileName));
         }
 
-        private static void ReadSetting(string fileName)
+        private static void ReadServiceSetting(string fileName)
         {
             //CPMP 2019 05_6008 MAYO            
             Log.InfoFormat("1.- Read File: {0} ", fileName);
@@ -87,6 +88,11 @@ namespace Ks.Batch.Caja.In
                 FileMonth = fileName.Split(' ')[2].Substring(0, 2),
             };
 
+            Log.InfoFormat("2.- [ReadServiceSetting]: SysName: {0} | ContributionCode: {1} | LoanCode: {2} ", ServiceSetting.SysName, ServiceSetting.ContributionCode, ServiceSetting.LoanCode);
+        }
+
+         private static void ReadBatchService()
+         {
             var dao = new Dao(ServiceSetting.Connection);
             dao.Connect();
             Batch = dao.GetScheduleBatch(ServiceSetting.SysName);
@@ -94,9 +100,7 @@ namespace Ks.Batch.Caja.In
             Batch.PeriodMonth = Convert.ToInt32(ServiceSetting.FileMonth);
             Batch.StartExecutionOnUtc = DateTime.UtcNow;
             dao.Close();
-
-            Log.InfoFormat("2.- SysName: {0} | ContributionCode: {1} | LoanCode: {2} ", ServiceSetting.SysName, ServiceSetting.ContributionCode, ServiceSetting.LoanCode);
-        }
+         }
         #endregion
     }
 }

@@ -26,6 +26,7 @@ namespace Ks.Batch.Util.Model
         public string LoanNoCash { get; set; }
         public string LoanNextQuota { get; set; }
 
+        public string FileFormat { get; set; }
         public SummaryMerge SummaryMerge { get; set; }
 
         public ServiceSetting()

@@ -79,6 +79,8 @@ namespace Ks.Services.Contract
         /// <param name="loanPaymentId">The loan payment identifier.</param>
         /// <returns></returns>
         LoanPayment GetPaymentById(int loanPaymentId);
+
+        List<LoanPayment> GetPaymentByLoanId(int contributionId = 0);
         /// <summary>
         /// Updates the loan payment.
         /// </summary>

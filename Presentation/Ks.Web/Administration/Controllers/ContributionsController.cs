@@ -388,6 +388,10 @@ namespace Ks.Admin.Controllers
                 byte[] bytes;
                 using (var stream = new MemoryStream())
                 {
+                    contribution.AmountPayed = reportContributionPayment.Sum(x =>
+                    {
+                        return (x.Ene + x.Feb + x.Mar + x.Abr + x.May + x.Jul + x.Jun + x.Ago + x.Sep + x.Oct + x.Nov + x.Dic);
+                    });
                     _exportManager.ExportReportContributionPaymentToXlsx(stream, customer, contribution, reportContributionPayment);
                     bytes = stream.ToArray();
                 }
@@ -765,7 +769,7 @@ namespace Ks.Admin.Controllers
                     contributionPayment.IsAutomatic = true;
                     contributionPayment.StateId = model.NewStateId;
                     contributionPayment.ContributionId = model.ContributionId;
-                    contributionPayment.Description = contributionPayment.Description + "|El usuario " + _workContext.CurrentCustomer.Username + "ha modificado el estado de la cuota";
+                    contributionPayment.Description = contributionPayment.Description + "|El usuario " + _workContext.CurrentCustomer.Username + " ha modificado el estado de la cuota";
                     contributionPayment.ProcessedDateOnUtc = DateTime.UtcNow;
                     contributionPayment.AmountPayed = contributionPayment.AmountTotal;
                     _contributionService.UpdateContributionPayment(contributionPayment);

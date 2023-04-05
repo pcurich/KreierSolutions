@@ -229,6 +229,19 @@ namespace Ks.Services.Contract
             return result;
         }
 
+        public virtual List<LoanPayment> GetPaymentByLoanId(int loanId = 0)
+        {
+            if (loanId == 0)
+                return new List<LoanPayment>();
+
+            var query = from c in _loanPaymentRepository.Table
+                        where c.LoanId == loanId
+                        select c;
+
+            return query.ToList();
+
+        }
+
         public virtual void UpdateLoanPayment(LoanPayment loanPayment)
         {
             if (loanPayment == null)

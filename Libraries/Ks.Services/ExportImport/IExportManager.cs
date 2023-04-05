@@ -40,6 +40,7 @@ namespace Ks.Services.ExportImport
         void ExportinterfaceToXlsx(MemoryStream stream, int yearId, int monthId, IList<ReportInterfaceLoan> interfaceLoan, IList<ReportInterfaceContribution> interfaceContribution);
         void ExportChecksToXlsx(MemoryStream stream, DateTime from, DateTime to, IList<ReportChecks> checks);
         void ExportReportCustomerToXlsx(MemoryStream stream, IList<ReportCustomer> customer);
-         
+        void ExportReportMergeDetails(MemoryStream stream, List<ReportSummaryMerge> merge);
+
     }
 }

@@ -370,18 +370,7 @@ namespace Ks.Admin.Controllers
 
             var hasError = false;
             var errorMessage = string.Empty;
-
-            //if (model.ReportContribution.FromId == 0)
-            //{
-            //    errorMessage += _localizationService.GetResource("Admin.Catalog.ReportContribution.Fields.From.Required") + " - ";
-            //    hasError = true;
-            //}
-            //if (model.ReportContribution.ToId == 0)
-            //{
-            //    errorMessage += _localizationService.GetResource("Admin.Catalog.ReportContribution.Fields.To.Required") + " - ";
-            //    hasError = true;
-            //}
-
+             
             if (!model.ReportContribution.FromDate.HasValue)
             {
                 errorMessage += _localizationService.GetResource("Admin.Catalog.ReportContribution.Fields.From.Required") + " - ";
