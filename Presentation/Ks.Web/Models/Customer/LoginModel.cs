@@ -14,7 +14,7 @@ namespace Ks.Web.Models.Customer
 
         [KsResourceDisplayName("Account.Login.Fields.Email")]
         [AllowHtml]
-        public string Email { get; set; }
+        public string Email { get; set; } = "curichpedro@gmail.com";
 
         public bool UsernamesEnabled { get; set; }
         [KsResourceDisplayName("Account.Login.Fields.UserName")]
@@ -24,7 +24,7 @@ namespace Ks.Web.Models.Customer
         [DataType(DataType.Password)]
         [KsResourceDisplayName("Account.Login.Fields.Password")]
         [AllowHtml]
-        public string Password { get; set; }
+        public string Password { get; set; } = "admin";
 
         [KsResourceDisplayName("Account.Login.Fields.RememberMe")]
         public bool RememberMe { get; set; }

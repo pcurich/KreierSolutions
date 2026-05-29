@@ -1,0 +1,98 @@
+﻿@model ContributionPaymentListRefactorModel
+@Html.HiddenFor(model => model.ContributionId)
+@Html.HiddenFor(model => model.CustomerId)
+
+<script>
+    $(document).ready(function () {
+        $("#contributionmovepayment-edit").kendoTabStrip({
+            animation: {
+                open: {
+                    effects: "fadeIn"
+                }
+            },
+            select: tabstrip_on_tab_select
+        });
+    });
+</script>
+
+<div id="contributionmovepayment-edit">
+    <ul>
+        <li @Html.RenderSelectedTabIndex(0, GetSelectedTabIndex())>
+            @T("Common.Summary")
+        </li>
+    </ul>
+    <div>
+        @TabSummary()
+    </div>
+</div>
+@{
+    //custom tabs
+    var eventMessage = new AdminTabStripCreated(this.Html, "customer-edit");
+    EngineContext.Current.Resolve<IEventPublisher>().Publish(eventMessage);
+    foreach (var eventBlock in eventMessage.BlocksToRender)
+    {
+        @eventBlock
+    }
+}
+
+@*save selected tab index*@
+<input type="hidden" id="selected-tab-index" name="selected-tab-index" value="@(GetSelectedTabIndex())">
+@helper TabSummary()
+{
+
+    <table width="100%">
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.CustomerName):
+            </td>
+            <td class="adminData">
+                @Model.CustomerName
+            </td>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.CustomerAdminCode):
+            </td>
+            <td class="adminData">
+                @Model.CustomerAdminCode
+            </td>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.CustomerDni):
+            </td>
+            <td class="adminData">
+                @Model.CustomerDni
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.CustomerFrom):
+            </td>
+            <td class="adminData">
+                @Model.CustomerFrom
+            </td>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.FirstPaymentDate):
+            </td>
+            <td class="adminData">
+                @Model.FirstPaymentDate
+            </td>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.LastPaymentDate):
+            </td>
+            <td class="adminData">
+                @Model.LastPaymentDate
+            </td>
+        </tr>
+    </table>
+    <hr />
+    <table width="100%">
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.NewPaymentDate):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.NewPaymentDate)
+                @Html.RequiredHint()
+                @Html.ValidationMessageFor(model => model.NewPaymentDate)
+            </td>
+        </tr>
+    </table>
+}

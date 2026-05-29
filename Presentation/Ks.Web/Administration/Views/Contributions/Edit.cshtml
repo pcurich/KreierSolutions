@@ -12,6 +12,10 @@
             @T("Admin.Contract.Contribution.AddNew") @Html.ActionLink("(" + T("Admin.Contract.Contribution.BackToList") + ")", "List")
         </div>
         <div class="options">
+            <input type="button" id="downloadtemplate" class="k-button" value="@T("Admin.Contract.Contribution.DownloadTemplate")" />
+            @*<input type="button" id="uploadtemplate" class="k-button" value="@T("Admin.Contract.Contribution.DonwloadTemplate")" />*@
+            <input type="button" id="uploadtemplate" class="k-button" value="@T("Admin.Configuration.Languages.Import")" />
+            <input type="button" id="movepayments" class="k-button" value="@T("Admin.Contract.Contribution.MovePayments")" />
             <input type="button" id="createcustompayment" class="k-button" value="@T("Admin.Contract.LoanPayments.CustomPayment")" />
             <input type="submit" name="exportexcel-all" class="k-button" value="@T("Admin.Contract.Contribution.ExportToExcel")" />
             <input type="submit" name="exportexcel" class="k-button" value="Expotar Pagos Futuros" />
@@ -20,8 +24,62 @@
                 $('#createcustompayment').click(function() {
                     window.location.replace('@Url.Action("CreateCustomPayment", "Contributions", new {id = Model.ContributionId})');
                 });
+                $('#movepayments').click(function() {
+                    window.location.replace('@Url.Action("Movepayments", "Contributions", new {id = Model.ContributionId})');
+                });
+                $('#downloadtemplate').click(function() {
+                    window.location.replace('@Url.Action("DownloadTemplate", "Contributions", new {id = Model.ContributionId})');
+                });
+
             </script>
         </div>
     </div>
     @Html.Partial("_CreateOrUpdate", Model)
 }
+
+@*import resources form*@
+<div id="importxml-window" style="display:none;">
+    @using (Html.BeginForm("UploadTemplate", "Contributions", new { id = Model.ContributionId }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        <table style="text-align: left;">
+            <tr>
+                <td>
+                    @T("Admin.Configuration.Languages.XmlFile"):
+                </td>
+                <td>
+                    <input type="file" id="importxmlfile" name="importxmlfile" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <strong>@T("Admin.Configuration.Languages.XmlFile.Note1")</strong>
+                    <br />
+                    <strong>@T("Admin.Configuration.Languages.XmlFile.Note2")</strong>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input id="importxmlsubmit" type="submit" class="k-button" value="@T("Admin.Configuration.Languages.Import")" />
+                </td>
+            </tr>
+        </table>
+    }
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#uploadtemplate").click(function (e) {
+            e.preventDefault();
+            var window = $("#importxml-window");
+            if (!window.data("kendoWindow")) {
+                window.kendoWindow({
+                    modal: true,
+                    width: "400px",
+                    title: "@T("Admin.Configuration.Languages.Import")",
+                    actions: ["Close"]
+                });
+            }
+            window.data('kendoWindow').center().open();
+        });
+    });
+</script>

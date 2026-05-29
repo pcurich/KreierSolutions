@@ -26,13 +26,15 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>..\bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ExcludeGeneratedDebugSymbol>true</ExcludeGeneratedDebugSymbol>
     <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisIgnoreGeneratedCode>true</CodeAnalysisIgnoreGeneratedCode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -1364,6 +1366,8 @@
     <Content Include="Views\Check\Edit.cshtml" />
     <Content Include="Views\Check\_CreateOrUpdate.cshtml" />
     <Content Include="Views\Loans\CreateEndPayment.cshtml" />
+    <Content Include="Views\Contributions\MovePayments.cshtml" />
+    <Content Include="Views\Contributions\_CreateOrUpdateMovePayments.cshtml" />
     <None Include="Views\Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1440,6 +1444,7 @@
     <Compile Include="Models\Contract\ContributionPaymentListModel.cs" />
     <Compile Include="Models\Contract\ContributionListModel.cs" />
     <Compile Include="Models\Contract\ContributionModel.cs" />
+    <Compile Include="Models\Contract\ContributionPaymentListRefactorModel.cs" />
     <Compile Include="Models\Contract\LoanListModel.cs" />
     <Compile Include="Models\Contract\LoanModel.cs" />
     <Compile Include="Models\Contract\ContributionPaymentsModel.cs" />

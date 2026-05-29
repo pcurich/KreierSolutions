@@ -22,6 +22,7 @@ using Ks.Web.Framework;
 using Ks.Web.Framework.Controllers;
 using Ks.Web.Framework.Kendoui;
 using Ks.Core.Domain.Messages;
+using System.Text;
 
 namespace Ks.Admin.Controllers
 {
@@ -181,7 +182,7 @@ namespace Ks.Admin.Controllers
                 CustomerName = customer.GetFullName(),
                 CustomerAdminCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode),
                 CustomerDni = customer.GetAttribute<string>(SystemCustomerAttributeNames.Dni),
-                CustomerFrom = _dateTimeHelper.ConvertToUserTime(contribution.CreatedOnUtc, DateTimeKind.Utc),
+                CustomerFrom = contribution.CreatedOnUtc,
                 AuthorizeDiscount = contribution.AuthorizeDiscount,
                 MilitarySituationId = military == 1 ? "COPERE" : military == 2 ? "CPMP" : "OTROS",
                 Types = new List<SelectListItem>
@@ -410,6 +411,7 @@ namespace Ks.Admin.Controllers
                 return RedirectToAction("List");
             }
         }
+        
 
         #endregion
 
@@ -668,6 +670,146 @@ namespace Ks.Admin.Controllers
 
         }
 
+        public ActionResult MovePayments(int id)
+        {
+            var contribution = _contributionService.GetContributionById(id);
+            var customer = _customerService.GetCustomerById(contribution.CustomerId);
+            var military = customer.GetAttribute<int>(SystemCustomerAttributeNames.MilitarySituationId);
+            var dateOfAdmission = customer.GetAttribute<DateTime>(SystemCustomerAttributeNames.DateOfAdmission);
+            var contributionPayment = _contributionService.GetPaymentByContributionId(id);
+            var firstPaymentDate = contributionPayment.Min(x => x.ScheduledDateOnUtc);
+            var lastPaymentDate = contributionPayment.Max(x => x.ScheduledDateOnUtc);
+            var newPaymentDate = new DateTime(dateOfAdmission.Year, dateOfAdmission.Month, _contributionSettings.DayOfPaymentContribution);
+
+            var model = new ContributionPaymentListRefactorModel
+            {
+                ContributionId = id,
+                CustomerId = contribution.CustomerId,
+                CustomerName = customer.GetFullName(),
+                CustomerAdminCode = customer.GetAttribute<string>(SystemCustomerAttributeNames.AdmCode),
+                CustomerDni = customer.GetAttribute<string>(SystemCustomerAttributeNames.Dni),
+                CustomerFrom = contribution.CreatedOnUtc,
+                FirstPaymentDate = firstPaymentDate,
+                LastPaymentDate = lastPaymentDate,
+                NewPaymentDate = newPaymentDate,
+                AuthorizeDiscount = contribution.AuthorizeDiscount,
+                MilitarySituationId = military == 1 ? "COPERE" : military == 2 ? "CPMP" : "OTROS",
+            };
+
+            return View(model);
+        }
+
+        [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
+        public ActionResult MovePayments(ContributionPaymentListRefactorModel model, bool continueEditing)
+        {
+            var contribution = _contributionService.GetContributionById(model.ContributionId);
+            var customer = _customerService.GetCustomerById(contribution.CustomerId);
+            var contributionPayment = _contributionService.GetPaymentByContributionId(model.ContributionId);
+            var firstPaymentDate = contributionPayment.Min(x => x.ScheduledDateOnUtc);
+            var monthsDifference = GetAbsoluteMonthsDifference(firstPaymentDate, model.NewPaymentDate.Value);
+            foreach (var payment in contributionPayment)
+            {
+                payment.ScheduledDateOnUtc = payment.ScheduledDateOnUtc.AddMonths(monthsDifference);
+                _contributionService.UpdateContributionPayment(payment);
+            }
+            contributionPayment = _contributionService.GetPaymentByContributionId(model.ContributionId);
+
+            SuccessNotification(_localizationService.GetResource("Admin.Customers.Customers.Contribution.Updated"));
+            
+            if (continueEditing)
+            {
+                return RedirectToAction("MovePayments", new { id = model.ContributionId });
+            }
+
+            return RedirectToAction("Edit", new { id = model.ContributionId });
+        }
+
+        public ActionResult DownloadTemplate(int id)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributions))
+                return AccessDeniedView();
+
+            var contributionPayment = _contributionService.GetPaymentByContributionId(id);
+
+            var sb = new System.Text.StringBuilder();
+
+            // Cabecera
+            sb.AppendLine("Id|Numero|NumeroAnterior|ContribucionId|Monto1|Monto2|Monto3|MontoAnterior|MontoTotal|MontoPagado|Estado|EsAutomatico|Banco|NumeroCuenta|NumeroTransaccion|Referencia|Descripcion|FechaProgramada|FechaProcesada");
+
+            // Datos
+            foreach (var payment in contributionPayment)
+            {
+                sb.AppendLine(string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}|{9}|{10}|{11}|{12}|{13}|{14}|{15}|{16}|{17}|{18}",
+                    payment.Id,
+                    payment.Number,
+                    payment.NumberOld,
+                    payment.ContributionId,
+                    payment.Amount1,
+                    payment.Amount2,
+                    payment.Amount3,
+                    payment.AmountOld,
+                    payment.AmountTotal,
+                    payment.AmountPayed,
+                    payment.ContributionState,
+                    payment.IsAutomatic,
+                    payment.BankName,
+                    payment.AccountNumber,
+                    payment.TransactionNumber,
+                    payment.Reference,
+                    payment.Description,
+                    payment.ScheduledDateOnUtc.ToString("dd/MM/yyyy"),
+                    payment.ProcessedDateOnUtc.HasValue ? payment.ProcessedDateOnUtc.Value.ToString("dd/MM/yyyy") : string.Empty
+                ));
+            }
+
+            var bytes = System.Text.Encoding.UTF8.GetBytes(sb.ToString());
+            return File(bytes, "text/csv", id + ".csv");
+        }
+
+        [HttpPost]
+        public ActionResult UploadTemplate(int id, FormCollection form)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributions))
+                return AccessDeniedView();
+
+            this.Server.ScriptTimeout = 300;
+
+            var file = Request.Files["importxmlfile"];
+            if (file == null || file.ContentLength == 0)
+            {
+                ErrorNotification("No se seleccionó ningún archivo.");
+                return RedirectToAction("Edit", new { id = id });
+            }
+
+            List<string> validationErrors;
+            List<ContributionPayment> paymentsToUpdate;
+
+            // Leer el stream en memoria para poder usarlo dos veces
+            var fileBytes = new byte[file.ContentLength];
+            file.InputStream.Read(fileBytes, 0, file.ContentLength);
+
+            // 1) Validar primero sin persistir
+            using (var ms = new MemoryStream(fileBytes))
+            {
+                paymentsToUpdate = ValidateCsvPayments(id, ms, out validationErrors);
+            }
+
+            if (validationErrors.Any())
+            {
+                foreach (var error in validationErrors)
+                    ErrorNotification(error);
+
+                return RedirectToAction("Edit", new { id = id });
+            }
+
+            // 2) Sin errores: persistir
+            foreach (var contributionPayment in paymentsToUpdate)
+                _contributionService.UpdateContributionPayment(contributionPayment);
+
+            SuccessNotification(string.Format("Se actualizaron {0} pagos correctamente.", paymentsToUpdate.Count));
+            return RedirectToAction("Edit", new { id = id });
+        }
+
         #endregion
 
         #region Utilities
@@ -703,6 +845,159 @@ namespace Ks.Admin.Controllers
                 return _bankSettings.NameBank5;
 
             return string.Empty;
+        }
+
+        [NonAction]
+        protected virtual int GetAbsoluteMonthsDifference(DateTime date1, DateTime date2)
+        {
+            int meses = Math.Abs(((date2.Year - date1.Year) * 12) + date2.Month - date1.Month);
+            return meses;
+        }
+
+        [NonAction]
+        protected virtual List<ContributionPayment> ValidateCsvPayments(int id, Stream stream, out List<string> errors)
+        {
+            errors = new List<string>();
+            var result = new List<ContributionPayment>();
+
+            var stateMap = new Dictionary<string, int>
+            {
+                { "EnProceso",    (int)ContributionState.EnProceso    },
+                { "Pendiente",     (int)ContributionState.Pendiente    },
+                { "PagoParcial",  (int)ContributionState.PagoParcial  },
+                { "Pagado",        (int)ContributionState.Pagado       },
+                { "SinLiquidez",  (int)ContributionState.SinLiquidez  },
+                { "Devolucion",    (int)ContributionState.Devolucion   },
+                { "PagoPersonal", (int)ContributionState.PagoPersonal }
+            };
+
+            using (var sr = new StreamReader(stream, Encoding.UTF8))
+            {
+                // Saltar cabecera
+                // Saltar cabecera y detectar separador
+                var header = sr.ReadLine();
+                var separator = (header != null && header.Contains('|')) ? '|' : ';';
+
+                var lineNumber = 1;
+                var dateFormats = new[] { "yyyy-MM-dd", "dd/MM/yyyy" };
+
+                while (!sr.EndOfStream)
+                {
+                    lineNumber++;
+                    var line = sr.ReadLine();
+
+                    if (string.IsNullOrWhiteSpace(line))
+                        continue;
+
+                    var cols = line.Split(separator);
+
+                    // Validar número de columnas
+                    if (cols.Length != 19)
+                    {
+                        errors.Add(string.Format("Línea {0}: se esperaban 19 columnas, se encontraron {1}.", lineNumber, cols.Length));
+                        break;
+                    }
+
+                    // Validar Id
+                    int paymentId;
+                    if (!int.TryParse(cols[0].Trim(), out paymentId))
+                    {
+                        errors.Add(string.Format("Línea {0}: el Id '{1}' no es válido.", lineNumber, cols[0].Trim()));
+                        continue;
+                    }
+
+                    // Validar que el pago exista y pertenezca a la contribución
+                    var contributionPayment = _contributionService.GetPaymentById(paymentId);
+                    if (contributionPayment == null)
+                    {
+                        errors.Add(string.Format("Línea {0}: no se encontró el pago con Id {1}.", lineNumber, paymentId));
+                        continue;
+                    }
+                    if (contributionPayment.ContributionId != id)
+                    {
+                        errors.Add(string.Format("Línea {0}: el pago Id {1} no pertenece a la contribución {2}.", lineNumber, paymentId, id));
+                        continue;
+                    }
+
+                    // Validar Estado
+                    int stateId;
+                    if (!stateMap.TryGetValue(cols[10].Trim(), out stateId))
+                    {
+                        errors.Add(string.Format("Línea {0}: el estado '{1}' no es reconocido.", lineNumber, cols[10].Trim()));
+                        continue;
+                    }
+
+                    // Validar decimales
+                    decimal amount1, amount2, amount3, amountOld, amountTotal, amountPayed;
+                    if (!decimal.TryParse(cols[4].Trim(), out amount1)) { errors.Add(string.Format("Línea {0}: Monto1 '{1}' no es válido.", lineNumber, cols[4].Trim())); continue; }
+                    if (!decimal.TryParse(cols[5].Trim(), out amount2)) { errors.Add(string.Format("Línea {0}: Monto2 '{1}' no es válido.", lineNumber, cols[5].Trim())); continue; }
+                    if (!decimal.TryParse(cols[6].Trim(), out amount3)) { errors.Add(string.Format("Línea {0}: Monto3 '{1}' no es válido.", lineNumber, cols[6].Trim())); continue; }
+                    if (!decimal.TryParse(cols[7].Trim(), out amountOld)) { errors.Add(string.Format("Línea {0}: MontoAnterior '{1}' no válido.", lineNumber, cols[7].Trim())); continue; }
+                    if (!decimal.TryParse(cols[8].Trim(), out amountTotal)) { errors.Add(string.Format("Línea {0}: MontoTotal '{1}' no válido.", lineNumber, cols[8].Trim())); continue; }
+                    if (!decimal.TryParse(cols[9].Trim(), out amountPayed)) { errors.Add(string.Format("Línea {0}: MontoPagado '{1}' no válido.", lineNumber, cols[9].Trim())); continue; }
+
+                    // Validar booleano
+                    bool isAutomatic;
+                    if (!bool.TryParse(cols[11].Trim(), out isAutomatic))
+                    {
+                        errors.Add(string.Format("Línea {0}: EsAutomatico '{1}' no es válido (use True o False).", lineNumber, cols[11].Trim()));
+                        continue;
+                    }
+
+                    // Validar FechaProgramada
+                    DateTime scheduledDate;
+                    if (!TryParseDate(cols[17].Trim(), dateFormats, out scheduledDate))
+                    {
+                        errors.Add(string.Format("Línea {0}: FechaProgramada '{1}' no tiene el formato dd/MM/yyyy.", lineNumber, cols[17].Trim()));
+                        continue;
+                    }
+
+                    // Validar FechaProcesada (opcional)
+                    DateTime? processedDate = null;
+                    if (!string.IsNullOrWhiteSpace(cols[18].Trim()))
+                    {
+                        DateTime tempDate;
+                        if (!TryParseDate(cols[18].Trim(), dateFormats, out tempDate)) 
+                        {
+                            errors.Add(string.Format("Línea {0}: FechaProcesada '{1}' no tiene el formato dd/MM/yyyy.", lineNumber, cols[18].Trim()));
+                            continue;
+                        }
+                        processedDate = tempDate;
+                    }
+
+                    // Fila válida: mapear entidad
+                    contributionPayment.StateId = stateId;
+                    contributionPayment.Amount1 = amount1;
+                    contributionPayment.Amount2 = amount2;
+                    contributionPayment.Amount3 = amount3;
+                    contributionPayment.AmountOld = amountOld;
+                    contributionPayment.AmountTotal = amountTotal;
+                    contributionPayment.AmountPayed = amountPayed;
+                    contributionPayment.IsAutomatic = isAutomatic;
+                    contributionPayment.BankName = cols[12].Trim();
+                    contributionPayment.AccountNumber = cols[13].Trim();
+                    contributionPayment.TransactionNumber = cols[14].Trim();
+                    contributionPayment.Reference = cols[15].Trim();
+                    contributionPayment.Description = cols[16].Trim();
+                    contributionPayment.ScheduledDateOnUtc = scheduledDate;
+                    contributionPayment.ProcessedDateOnUtc = processedDate;
+
+                    result.Add(contributionPayment);
+                }
+            }
+
+            return result;
+        }
+
+        [NonAction]
+        protected virtual bool TryParseDate(string value, string[] formats, out DateTime result)
+        {
+            return DateTime.TryParseExact(
+                value,
+                formats,
+                System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.None,
+                out result);
         }
 
         #endregion

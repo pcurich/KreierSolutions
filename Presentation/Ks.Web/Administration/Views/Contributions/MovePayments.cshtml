@@ -1,0 +1,21 @@
+﻿@model ContributionPaymentListRefactorModel
+@{
+    //page title
+    ViewBag.Title = T("Admin.Contract.Contribution.AddNew").Text;
+}
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "Contribution-form" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="section-header">
+        <div class="title">
+            |
+            <img src="@Url.Content("~/Administration/Content/images/ico-catalog.png")" alt="" />
+            @T("Admin.Contract.Contribution.MovePayments") @Html.ActionLink("(" + T("Admin.Contract.Contribution.BackToList") + ")", "List")
+        </div>
+        <div class="options">
+            <input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")" />
+        </div>
+    </div>
+    @Html.Partial("_CreateOrUpdateMovePayments", Model)
+
+}
