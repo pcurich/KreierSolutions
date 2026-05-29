@@ -22,6 +22,7 @@
 
         public int DataBaseLoanTotal { get; set; }
         public decimal DataBaseLoanAmount { get; set; }
+        public int DataBaseLoanNextQuota { get; set; }
         public int DataBaseLoanNoCashTotal { get; set; }
         public int DataBaseLoanPayedCompleteTotal { get; set; }
         public int DataBaseLoanIncompleteTotal { get; set; }

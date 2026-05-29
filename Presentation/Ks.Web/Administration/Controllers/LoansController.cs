@@ -460,32 +460,42 @@ namespace Ks.Admin.Controllers
 
             var loanPayment = _loanService.GetPaymentById(model.Id);
 
-            if (loanPayment.StateId != (int)LoanState.Pendiente)
+            if (model.IsErrorByInterface)
             {
-                ErrorNotification(_localizationService.GetResource("Admin.Customers.Loans.ValidPayment"));
-                return RedirectToAction("CreatePayment", new { id = loanPayment.Id });
+                CreatePaymentSinLiquidez(model, loanPayment);
             }
+            else
+            {
+                if (loanPayment.StateId != (int)LoanState.Pendiente)
+                {
+                    ErrorNotification(_localizationService.GetResource("Admin.Customers.Loans.ValidPayment"));
+                    return RedirectToAction("CreatePayment", new { id = loanPayment.Id });
+                }
 
-            if (!ModelState.IsValid)
-                return View(model);
+                if (!ModelState.IsValid)
+                    return View(model);
 
-            loanPayment.IsAutomatic = false;
-            loanPayment.StateId = (int)LoanState.Pagado;
-            loanPayment.LoanId = model.LoanId;
-            loanPayment.BankName = GetBank(model.BankName);
-            loanPayment.AccountNumber = model.AccountNumber;
-            loanPayment.TransactionNumber = model.TransactionNumber;
-            loanPayment.Reference = model.Reference;
-            loanPayment.Description = model.Description;
-            loanPayment.ProcessedDateOnUtc = DateTime.UtcNow;
-            loanPayment.MonthlyPayed = loanPayment.MonthlyQuota;
+                loanPayment.IsAutomatic = false;
+                loanPayment.StateId = (int)LoanState.Pagado;
+                loanPayment.LoanId = model.LoanId;
+                loanPayment.BankName = GetBank(model.BankName);
+                loanPayment.AccountNumber = model.AccountNumber;
+                loanPayment.TransactionNumber = model.TransactionNumber;
+                loanPayment.Reference = model.Reference;
+                loanPayment.Description = model.Description;
+                loanPayment.ProcessedDateOnUtc = DateTime.UtcNow;
+                loanPayment.MonthlyPayed = loanPayment.MonthlyQuota;
 
-            _loanService.UpdateLoanPayment(loanPayment);
+                _loanService.UpdateLoanPayment(loanPayment);
+            } 
+
+            
 
             var loan = _loanService.GetLoanById(model.LoanId);
             loan.UpdatedOnUtc = DateTime.UtcNow;
             loan.TotalPayed += model.MonthlyPayed;
-            loan.IsDelay = false;
+            var cycles =  _loanService.GetPaymentByLoanId(model.LoanId).Count(x => x.StateId == (int)LoanState.SinLiquidez);
+            loan.IsDelay  = cycles > 0;
 
             _loanService.UpdateLoan(loan);
 
@@ -1201,8 +1211,10 @@ namespace Ks.Admin.Controllers
         [NonAction]
         protected virtual LoanPaymentsModel PrepareLoanPayment(LoanPayment loanPayment)
         {
+            int[] exclude = new int[] { 1, 2, 3, 5, 6, 7, 8, 9};
             var model = loanPayment.ToModel();
             model.Banks = _bankSettings.PrepareBanks();
+            model.NewStates = LoanState.Pendiente.ToSelectList(false, exclude).ToList();
             model.ScheduledDateOn = _dateTimeHelper.ConvertToUserTime(loanPayment.ScheduledDateOnUtc, DateTimeKind.Utc);
             if (loanPayment.ProcessedDateOnUtc.HasValue)
                 model.ProcessedDateOn = _dateTimeHelper.ConvertToUserTime(loanPayment.ProcessedDateOnUtc.Value,
@@ -1210,8 +1222,12 @@ namespace Ks.Admin.Controllers
             var state = LoanState.Pendiente.ToSelectList()
                 .FirstOrDefault(x => x.Value == loanPayment.StateId.ToString());
             if (state != null)
+            {
+                model.StateId = loanPayment.StateId;
                 model.State = state.Text;
-
+            }
+                
+            model.NewStates.Insert(0, new SelectListItem { Value = "0", Text = "----------------" });
             return model;
         }
 
@@ -1244,6 +1260,25 @@ namespace Ks.Admin.Controllers
                 return _bankSettings.NameBank5;
 
             return string.Empty;
+        }
+
+        [NonAction]
+        protected virtual void CreatePaymentSinLiquidez(LoanPaymentsModel model, LoanPayment loanPayment)
+        {
+            if (model.IsErrorByInterface)
+            {
+                if (model.NewStateId == (int)LoanState.Pagado &&
+                    loanPayment.StateId == (int)LoanState.SinLiquidez)
+                {
+                    loanPayment.IsAutomatic = true;
+                    loanPayment.StateId = model.NewStateId;
+                    loanPayment.LoanId = model.LoanId;
+                    loanPayment.Description = loanPayment.Description + "|El usuario " + _workContext.CurrentCustomer.Username + " ha modificado el estado de la cuota";
+                    loanPayment.ProcessedDateOnUtc = DateTime.UtcNow;
+                    loanPayment.MonthlyPayed = loanPayment.MonthlyQuota;
+                    _loanService.UpdateLoanPayment(loanPayment);
+                }
+            }
         }
 
         #endregion

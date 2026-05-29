@@ -103,7 +103,71 @@
 }
 @helper TabPayment()
 {
-    <table class="adminContent">
+    <script type="text/javascript">
+            var temp = 0;
+            $(document).ready(function () {
+
+                $("#@Html.FieldIdFor(model => model.IsErrorByInterface)").click(toggleIsErrorByInterface);
+
+                toggleIsErrorByInterface();
+            });
+
+
+        function toggleIsErrorByInterface() {
+                if ($('#@Html.FieldIdFor(model => model.IsErrorByInterface)').is(':checked')) {
+                    $('#pnlIsErrorByInterfaceEnabled').show();
+                    $('#pnlIsNoErrorByInterfaceEnabled').hide();
+                } else {
+                    $('#pnlIsErrorByInterfaceEnabled').hide();
+                    $('#pnlIsNoErrorByInterfaceEnabled').show();
+                }
+            }
+    </script>
+
+    if (Model.StateId == 5)
+    {
+        <table class="adminContent">
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.IsErrorByInterface):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.IsErrorByInterface)
+                </td>
+            </tr>
+        </table>
+    }
+
+    <br />
+    <hr />
+    <br />
+
+    <table class="adminContent" id="pnlIsErrorByInterfaceEnabled">
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.State):
+            </td>
+            <td class="adminData">
+                @Model.State
+            </td>
+        </tr>
+
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.NewStateId):
+            </td>
+            <td class="adminData">
+                @Html.DropDownListFor(model => model.NewStateId, Model.NewStates)
+                <script>
+                        $(document).ready(function() {
+                            $('#@Html.FieldIdFor(x => x.NewStateId)').width(250).kendoDropDownList();
+                        });
+                </script>
+            </td>
+        </tr>
+    </table>
+
+    <table class="adminContent" id="pnlIsNoErrorByInterfaceEnabled">
         <tr>
             <td class="adminTitle">
                 @Html.KsLabelFor(model => model.MonthlyPayed):
@@ -119,7 +183,7 @@
             </td>
             <td class="adminData">
                 @{
-                    if (Model.StateId !=(int)(LoanState.Pendiente))
+                    if (Model.StateId != (int)(LoanState.Pendiente))
                     {
                         @Model.BankName
                     }
@@ -135,35 +199,35 @@
                 }
             </td>
         </tr>
-         
-                <tr>
-                    <td class="adminTitle">
-                        @Html.KsLabelFor(model => model.AccountNumber):
-                    </td>
-                    <td class="adminData">
-                        @Html.TextBoxFor(model => model.AccountNumber, new { @readonly = "readonly", @class = "text-box single-line" })
-                        @Html.ValidationMessageFor(model => model.AccountNumber)
-                    </td>
-                </tr>
-                <tr>
-                    <td class="adminTitle">
-                        @Html.KsLabelFor(model => model.TransactionNumber):
-                    </td>
-                    <td class="adminData">
-                        @Html.EditorFor(model => model.TransactionNumber)
-                        @Html.ValidationMessageFor(model => model.TransactionNumber)
-                    </td>
-                </tr>
-                <tr>
-                    <td class="adminTitle">
-                        @Html.KsLabelFor(model => model.Reference):
-                    </td>
-                    <td class="adminData">
-                        @Html.EditorFor(model => model.Reference)
-                        @Html.ValidationMessageFor(model => model.Reference)
-                    </td>
-                </tr>
-            
+
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.AccountNumber):
+            </td>
+            <td class="adminData">
+                @Html.TextBoxFor(model => model.AccountNumber, new { @readonly = "readonly", @class = "text-box single-line" })
+                @Html.ValidationMessageFor(model => model.AccountNumber)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.TransactionNumber):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.TransactionNumber)
+                @Html.ValidationMessageFor(model => model.TransactionNumber)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.KsLabelFor(model => model.Reference):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => model.Reference)
+                @Html.ValidationMessageFor(model => model.Reference)
+            </td>
+        </tr>
+
         <tr>
             <td class="adminTitle">
                 @Html.KsLabelFor(model => model.ProcessedDateOn):

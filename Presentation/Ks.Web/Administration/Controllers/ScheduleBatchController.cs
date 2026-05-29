@@ -155,6 +155,71 @@ namespace Ks.Admin.Controllers
             return Json(gridModel);
         }
 
+
+        [HttpPost]
+        public ActionResult ListBatchsLogs()
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageScheduleBatchs))
+                return AccessDeniedView();
+
+
+            var models = Directory.GetFiles(System.IO.Path.Combine(@"C:\inetpub\wwwroot\Acmr\App_Data\Service\Logs")).Select(
+                x =>
+                {
+                    var model = new ScheduleBatchFiles
+                    {
+                        Name = x
+                    };
+                    return model;
+                }).ToList();
+
+            var gridModel = new DataSourceResult
+            {
+                Data = models,
+                Total = models.Count
+            };
+
+            return Json(gridModel);
+        }
+         
+        public ActionResult DowloadLog(string name)
+        {
+            byte[] fileBytes = System.IO.File.ReadAllBytes(name);
+            string fileName = name;//.Split(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).Reverse().First();
+            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
+        }
+
+        [HttpPost]
+        //[ParameterBasedOnFormName("merge")]
+        [FormValueRequired("merge")]
+        public ActionResult DowloadMergeFile(string period, int typeId, int stateId)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageScheduleBatchs))
+                return AccessDeniedView();
+
+            var periodMonth = int.Parse(period.Substring(4, 2));
+            var periodYear = int.Parse(period.Substring(0,4));
+            var reportSummaryMergeDetails = _reportService.ExportReportSummaryMergeDetailsFromDataBase(periodMonth, periodYear, typeId, stateId);
+
+            try
+            {
+                byte[] bytes;
+                using (var stream = new MemoryStream())
+                {
+                    _exportManager.ExportReportMergeDetails(stream, reportSummaryMergeDetails);
+                    bytes = stream.ToArray();
+                }
+                //Response.ContentType = "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                //Response.AddHeader("content-disposition", "attachment; filename=Aportaciones.xlsx");
+                return File(bytes, "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Reporte Sincronizacion estado - " + periodYear + "_" + periodMonth.ToString("00")+ ".xlsx");
+            }
+            catch (Exception exc)
+            {
+                ErrorNotification(exc);
+                return RedirectToAction("List");
+            }
+        }
+
         public ActionResult Edit(int id)
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageScheduleBatchs))
@@ -287,12 +352,20 @@ namespace Ks.Admin.Controllers
                 _scheduleBatchService.UpdateBatch(schedule);
 
                 string name = string.Empty;
-                if (schedule.SystemName.Trim().ToUpper() == ("KS.BATCH.CAJA.OUT"))
-                    name = string.Format("6008_{0}00", schedule.PeriodYear.ToString("0000") + schedule.PeriodMonth.ToString("00"));
-                else
-                    name = string.Format("8001_{0}00", schedule.PeriodYear.ToString("0000") + schedule.PeriodMonth.ToString("00"));
+                switch (schedule.SystemName.Trim().ToUpper()) {
+                    case "KS.BATCH.CAJA.OUT":
+                        {
+                            name = string.Format("6008_{0}00", schedule.PeriodYear.ToString("0000") + schedule.PeriodMonth.ToString("00"));
+                            break;
+                        }
+                    case "KS.BATCH.COPERE.OUT":
+                        {
+                            name = string.Format("8001_{0}00", schedule.PeriodYear.ToString("0000") + schedule.PeriodMonth.ToString("00"));
+                            break;
+                        }
+                }
                 name += "-previo.zip";
-
+ 
                 int max = 4;
                 while (!System.IO.File.Exists(Path.Combine(Path.Combine(schedule.PathBase,schedule.FolderMoveToDone), name))){
                     if (max == 0)
@@ -326,10 +399,19 @@ namespace Ks.Admin.Controllers
                 _scheduleBatchService.UpdateBatch(schedule);
 
                 string name = string.Empty;
-                if (schedule.SystemName == ("Ks.Batch.Caja.Out"))
-                    name = string.Format("6008_{0}00", schedule.PeriodYear.ToString("0000") + schedule.PeriodMonth.ToString("00"));
-                else
-                    name = string.Format("8001_{0}00", schedule.PeriodYear.ToString("0000") + schedule.PeriodMonth.ToString("00"));
+                switch (schedule.SystemName.Trim().ToUpper())
+                {
+                    case "KS.BATCH.CAJA.OUT":
+                        {
+                            name = string.Format("6008_{0}00", schedule.PeriodYear.ToString("0000") + schedule.PeriodMonth.ToString("00"));
+                            break;
+                        }
+                    case "KS.BATCH.COPERE.OUT":
+                        {
+                            name = string.Format("8001_{0}00", schedule.PeriodYear.ToString("0000") + schedule.PeriodMonth.ToString("00"));
+                            break;
+                        }
+                }
                 name += ".zip";
 
                 int max = 4;
@@ -348,6 +430,55 @@ namespace Ks.Admin.Controllers
                 return RedirectToAction("List");
             }
 
+        }
+
+        public ActionResult ImportTxt(int id)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageScheduleBatchs))
+                return AccessDeniedView();
+
+            var schedule = _scheduleBatchService.GetBatchById(id);
+            if (schedule == null)
+                //No  scheduleBatch  found with the specified id
+                return RedirectToAction("List");
+
+            //set page timeout to 5 minutes
+            this.Server.ScriptTimeout = 300;
+
+            try
+            {
+                schedule.Enabled = true;
+                schedule.UpdateData = true;
+
+                var file = Request.Files["importtxtfile"];
+                if (file != null && file.ContentLength > 0)
+                {
+                    using (var sr = new StreamReader(file.InputStream, Encoding.UTF8))
+                    {
+                        string content = sr.ReadToEnd();
+                        var path = Path.Combine(schedule.PathBase, schedule.FolderRead);
+                        string destPath = Path.Combine(path, file.FileName);
+
+                        if (!System.IO.Directory.Exists(path))
+                            Directory.CreateDirectory(path);
+                        System.IO.File.WriteAllText(destPath, content);
+                    }
+
+                }
+                else
+                {
+                    ErrorNotification(_localizationService.GetResource("Admin.Common.UploadFile"));
+                    return RedirectToAction("Edit", new { id = schedule.Id });
+                }
+
+                SuccessNotification(_localizationService.GetResource("Admin.Configuration.ScheduleBatch.Imported"));
+                return RedirectToAction("Edit", new { id = schedule.Id });
+            }
+            catch (Exception exc)
+            {
+                ErrorNotification(exc);
+                return RedirectToAction("Edit", new { id = schedule.Id });
+            }
         }
 
 
@@ -627,52 +758,7 @@ namespace Ks.Admin.Controllers
         }
 
 
-        [HttpPost]
-        public ActionResult ImportTxt(int id, FormCollection form)
-        {
-            if (!_permissionService.Authorize(StandardPermissionProvider.ManageScheduleBatchs))
-                return AccessDeniedView();
-
-            var schedule = _scheduleBatchService.GetBatchById(id);
-            if (schedule == null)
-                //No  scheduleBatch  found with the specified id
-                return RedirectToAction("List");
-
-            //set page timeout to 5 minutes
-            this.Server.ScriptTimeout = 300;
-
-            try
-            {
-                var file = Request.Files["importtxtfile"];
-                if (file != null && file.ContentLength > 0)
-                {
-                    using (var sr = new StreamReader(file.InputStream, Encoding.UTF8))
-                    {
-                        string content = sr.ReadToEnd();
-                        var path = Path.Combine(schedule.PathBase, schedule.FolderRead);
-                        string destPath = Path.Combine(path, file.FileName);
-
-                        if (!System.IO.Directory.Exists(path))
-                            Directory.CreateDirectory(path);
-                        System.IO.File.WriteAllText(destPath, content);
-                    }
-
-                }
-                else
-                {
-                    ErrorNotification(_localizationService.GetResource("Admin.Common.UploadFile"));
-                    return RedirectToAction("Edit", new { id = schedule.Id });
-                }
-
-                SuccessNotification(_localizationService.GetResource("Admin.Configuration.ScheduleBatch.Imported"));
-                return RedirectToAction("Edit", new { id = schedule.Id });
-            }
-            catch (Exception exc)
-            {
-                ErrorNotification(exc);
-                return RedirectToAction("Edit", new { id = schedule.Id });
-            }
-        }
+        
 
         [HttpPost]
         public ActionResult ListFiles(int id, DataSourceRequest command)
@@ -682,7 +768,12 @@ namespace Ks.Admin.Controllers
 
             var schedule = _scheduleBatchService.GetBatchById(id);
 
-            var models = Directory.GetFiles(System.IO.Path.Combine(schedule.PathBase, schedule.FolderMoveToDone)).Select(
+            var files = Directory.GetFiles(System.IO.Path.Combine(schedule.PathBase, schedule.FolderMoveToDone));
+            var models = new List<ScheduleBatchFiles>();
+
+            if (files.Length > 0)
+            {
+                models = files.Select(
                 x =>
                 {
                     var model = new ScheduleBatchFiles
@@ -691,6 +782,7 @@ namespace Ks.Admin.Controllers
                     };
                     return model;
                 }).ToList();
+            } 
 
             var gridModel = new DataSourceResult
             {

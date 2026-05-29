@@ -149,9 +149,7 @@ namespace Ks.Batch.Copere.Out
         #region Process
 
         private void GetCustomer(out List<int> customerIds)
-        {
-            customerIds = new List<int>();
-
+        { 
             GetCustomer(CUSTOMER_MILITARY_SITUATION_ACTIVE, out customerIds, out Dictionary<int, Info> tReportOut, fileOut: out Dictionary<int, string> tFileOut);
             ReportOut = tReportOut;
             FileOut = tFileOut;

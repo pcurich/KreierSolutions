@@ -1043,6 +1043,64 @@ namespace Ks.Services.Reports
             return new List<ReportSummaryMerge>();
         }
 
+        public virtual List<ReportSummaryMerge> ExportReportSummaryMergeDetailsFromDataBase(int month, int year, int type, int stateId)
+        {
+            if (year == 0 || month == 0)
+                return new List<ReportSummaryMerge>();
+
+            var pYear = _dataProvider.GetParameter();
+            pYear.ParameterName = "Year";
+            pYear.Value = year;
+            pYear.DbType = DbType.Int32;
+
+            var pMonth = _dataProvider.GetParameter();
+            pMonth.ParameterName = "Month";
+            pMonth.Value = month;
+            pMonth.DbType = DbType.Int32;
+
+            var pType = _dataProvider.GetParameter();
+            pType.ParameterName = "Type";
+            pType.Value = type;
+            pType.DbType = DbType.Int32;
+
+            var pStateId = _dataProvider.GetParameter();
+            pStateId.ParameterName = "StateId";
+            pStateId.Value = stateId;
+            pStateId.DbType = DbType.Int32;
+
+
+            var pNameReport = _dataProvider.GetParameter();
+            pNameReport.ParameterName = "NameReport";
+            pNameReport.Value = "SummaryReportFromMergeDetails";
+            pNameReport.DbType = DbType.String;
+
+            var pReportState = _dataProvider.GetParameter();
+            pReportState.ParameterName = "ReportState";
+            pReportState.Value = (int)ReportState.Completed;
+            pReportState.DbType = DbType.Int32;
+
+            var pSource = _dataProvider.GetParameter();
+            pSource.ParameterName = "Source";
+            pSource.Value = "Ks.Services.Report.ExportReportSummaryMergeFromDataBase";
+            pSource.DbType = DbType.String;
+
+            var pTotalRecords = _dataProvider.GetParameter();
+            pTotalRecords.ParameterName = "TotalRecords";
+            pTotalRecords.Direction = ParameterDirection.Output;
+            pTotalRecords.DbType = DbType.Int32;
+
+            //invoke stored procedure
+            var data = _dbContext.ExecuteStoredProcedureList<Report>("SummaryMergeDetails", pYear, pMonth, pType, pStateId,pNameReport, pReportState, pSource, pTotalRecords);
+
+            //return products
+            var totalRecords = (pTotalRecords.Value != DBNull.Value) ? Convert.ToInt32(pTotalRecords.Value) : 0;
+            var firstOrDefault = data.FirstOrDefault();
+            if (firstOrDefault != null && firstOrDefault.Value != null)
+                return new List<ReportSummaryMerge>(XmlHelper.XmlToObject<List<ReportSummaryMerge>>(firstOrDefault.Value));
+
+            return new List<ReportSummaryMerge>();
+        }
+
         public virtual List<ReportSummaryMerge> ExportReportSummaryMergeFromFile(int month, int year, int type)
         {
             return null;

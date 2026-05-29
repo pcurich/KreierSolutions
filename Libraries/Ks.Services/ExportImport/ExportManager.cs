@@ -2524,7 +2524,81 @@ namespace Ks.Services.ExportImport
                 xlPackage.Save();
             }
         }
-        
+
+
+        public virtual void ExportReportMergeDetails(MemoryStream stream, List<ReportSummaryMerge> merge)
+        {
+            if (stream == null)
+                throw new ArgumentNullException("stream");
+
+            using (var xlPackage = new ExcelPackage(stream))
+            {
+                // get handle to the existing worksheet
+                var worksheet = xlPackage.Workbook.Worksheets.Add("Sincronizar");
+                // var imagePath = _webHelper.MapPath(@"C:\inetpub\wwwroot\Acmr\Administration\Content\images\logo.png");
+                try
+                {
+
+                    var image = new Bitmap(new MemoryStream(Convert.FromBase64String(IMAGE)));
+                    var excelImage = worksheet.Drawings.AddPicture("ACMR", image);
+                    excelImage.From.Column = 0;
+                    excelImage.From.Row = 0;
+                }
+                catch (Exception e)
+                {
+                }
+
+                #region Summary
+
+                worksheet.Cells["B5:D5"].Merge = true;
+                worksheet.Cells["B6:D6"].Merge = true;
+                worksheet.Cells["B5:D6"].Style.Font.Bold = true;
+                worksheet.Cells["B5:D6"].Style.Font.Size = 20;
+                worksheet.Cells["B5:D6"].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
+                worksheet.Cells["B5"].Value = "Sincronizacion";
+                worksheet.Cells["B6"].Value = "";
+
+                #endregion
+ 
+                //Create Headers and format them 
+                var properties = new List<string>
+                {
+                    "FUENTE","ESTADO","CANTIDAD","MONTO"
+                };
+ 
+ 
+                for (var i = 0; i < properties.Count; i++)
+                {
+                    worksheet.Cells[7, i + 1].Value = properties[i];
+                    worksheet.Cells[7, i + 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    worksheet.Cells[7, i + 1].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(128, 235, 142));
+                    worksheet.Cells[7, i + 1].Style.Fill.BackgroundColor.Tint = 0.599993896298105M;
+                    worksheet.Cells[7, i + 1].Style.Font.Bold = true;
+                }
+
+                var row = 8;
+
+                foreach (var p in merge)
+                {
+                    var col = 1;
+                    worksheet.Cells[row, col].Value = p.Type;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.State;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.Number;
+                    col++;
+                    worksheet.Cells[row, col].Value = p.Payed;
+                    col++;
+                    row++;
+                }
+
+                for (var i = 1; i <= worksheet.Dimension.Columns; i++)
+                {
+                    worksheet.Column(i).AutoFit();
+                }
+                xlPackage.Save();
+            }
+        }
         #endregion
 
         #region Utilities

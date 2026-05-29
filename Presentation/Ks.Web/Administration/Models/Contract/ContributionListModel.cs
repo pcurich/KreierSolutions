@@ -24,6 +24,8 @@ namespace Ks.Admin.Models.Contract
         public bool IsActive { get; set; }
         [KsResourceDisplayName("Admin.Contract.Contribution.Fields.State")]
         public int StateId { get; set; }
+        [KsResourceDisplayName("Admin.Configuration.Settings.ContributionSettings.CycleOfDelay")]
+        public int CycleOfDelay { get; set; }
         public List<SelectListItem> States { get; set; }
 
 

@@ -19,9 +19,12 @@ namespace Ks.Batch.Copere.In
         {
             Thread.Sleep(1000 * 3); //10 Sec because is not atomic
 
-            ReadSetting(e.Name);
+            ReadServiceSetting(e.Name); 
+            ReadBatchService();
 
-            if (!(ServiceSetting.ContributionCode == "" && ServiceSetting.LoanCode == "")) {
+            var isFileOk = ValidateFileName(e.Name);
+            
+            if (!(ServiceSetting.ContributionCode == "" && ServiceSetting.LoanCode == "") && isFileOk) {
                 try
                 {
                     var infos = InfoService.ReadFile(e.FullPath, ServiceSetting.DefaultCulture, ServiceSetting.ContributionCode != "", ServiceSetting.LoanCode != "");
@@ -70,13 +73,12 @@ namespace Ks.Batch.Copere.In
             File.Move(fullPath, Path.Combine(Path.Combine(ServiceSetting.Path, Batch.FolderMoveToDone), fileName));
         }
 
-        private static void ReadSetting(string fileName)
+        private static void ReadServiceSetting(string fileName)
         {
+            
             //EC.ACT.NOMINAL_8001_102019.text            
             fileName = fileName.Substring(0, fileName.Length - 4);
             var length = fileName.Length;
-
-            Log.InfoFormat("1.- Read File: {0} ", fileName);
 
             ServiceSetting = new ServiceSetting
             {
@@ -84,13 +86,19 @@ namespace Ks.Batch.Copere.In
                 DefaultCulture = ConfigurationManager.AppSettings["DefaultCulture"],
                 Connection = ConfigurationManager.ConnectionStrings["ACMR"].ConnectionString,
                 SysName = ConfigurationManager.AppSettings["SysName"],
-                IsUnique= bool.Parse(ConfigurationManager.AppSettings["IsUnique"]),
+                IsUnique = bool.Parse(ConfigurationManager.AppSettings["IsUnique"]),
                 ContributionCode = ConfigurationManager.AppSettings["ContributionCode"],
                 LoanCode = ConfigurationManager.AppSettings["LoanCode"],
                 FileYear = fileName.Substring(length - 4, 4),
                 FileMonth = fileName.Substring(length - 6, 2),
+                FileFormat = ConfigurationManager.AppSettings["FileFormat"],
             };
 
+            Log.InfoFormat("2.- [ReadServiceSetting]: SysName: {0} | ContributionCode: {1} | LoanCode: {2} ", ServiceSetting.SysName, ServiceSetting.ContributionCode, ServiceSetting.LoanCode);
+        }
+
+        private static void ReadBatchService()
+        {
             var dao = new Dao(ServiceSetting.Connection);
             dao.Connect();
             Batch = dao.GetScheduleBatch(ServiceSetting.SysName);
@@ -98,21 +106,39 @@ namespace Ks.Batch.Copere.In
             Batch.PeriodMonth = Convert.ToInt32(ServiceSetting.FileMonth);
             Batch.StartExecutionOnUtc = DateTime.UtcNow;
             dao.Close();
+        }
 
-            if (fileName.Contains(ServiceSetting.ContributionCode) && !fileName.Contains(ServiceSetting.LoanCode))            
-                ServiceSetting.LoanCode = "";
+        private static bool ValidateFileName(string fileName)
+        {
+            var result = false;
+            var fileFormatContribution = string.Format(ServiceSetting.FileFormat, ServiceSetting.ContributionCode, Batch.PeriodMonth.ToString("00") + Batch.PeriodYear);
+            var fileFormatLoan = string.Format(ServiceSetting.FileFormat, ServiceSetting.LoanCode, Batch.PeriodMonth.ToString("00") + Batch.PeriodYear);
             
-            if (!fileName.Contains(ServiceSetting.ContributionCode) && fileName.Contains(ServiceSetting.LoanCode))
-                ServiceSetting.ContributionCode = "";
+            fileName = fileName.Substring(0, fileName.Length - 4);
 
-            if (!fileName.Contains(ServiceSetting.ContributionCode) && !fileName.Contains(ServiceSetting.LoanCode))
+            if (fileName.Contains(fileFormatContribution) && !fileName.Contains(fileFormatLoan))
             {
+                Log.InfoFormat("1.- Read File Contribution: {0} ", fileName);
+                ServiceSetting.LoanCode = "";
+                result = true;
+            }
+            if (fileName.Contains(fileFormatLoan) && !fileName.Contains(fileFormatContribution))
+            {
+                Log.InfoFormat("1.- Read File Loan: {0} ", fileName);
+                ServiceSetting.ContributionCode = "";
+                result = true;
+            }
+
+            if (!fileName.Contains(fileFormatLoan) && !fileName.Contains(fileFormatContribution))
+            {
+                Log.InfoFormat("1.- Can not Read File  {0} ", fileName);
                 ServiceSetting.ContributionCode = "";
                 ServiceSetting.LoanCode = "";
             }
 
-            Log.InfoFormat("2.- SysName: {0} | ContributionCode: {1} | LoanCode: {2} ", ServiceSetting.SysName, ServiceSetting.ContributionCode, ServiceSetting.LoanCode);
+            return result;
         }
+
         #endregion
     }
 }

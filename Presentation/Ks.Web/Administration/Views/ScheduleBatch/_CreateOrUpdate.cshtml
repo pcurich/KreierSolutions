@@ -255,6 +255,7 @@
                 <td><b>Estado</b></td>
                 <td><b>Cantidad</b></td>
                 <td><b>Monto</b></td>
+                <td><b>Descargar</b></td>
             </tr>
             @foreach (var m in Model.ReportSummaryMerges)
             {
@@ -263,6 +264,15 @@
                     <td class="adminData">@m.State</td>
                     <td class="adminData">@m.Number</td>
                     <td class="adminData">@m.Payed.ToString("C2")</td>
+                    <td class="adminData">
+                        @using (Html.BeginForm("DowloadMergeFile", "ScheduleBatch",  FormMethod.Post))
+                        {
+                            <input id="period" name="period" type="hidden" value=@(Model.PeriodYear.ToString()+Model.PeriodMonth.ToString("00")) />
+                            <input id="typeId" name="typeId" type="hidden" value=@Model.ReportInterfaceTable.TypeId />
+                            <input id="stateId" name="stateId" type="hidden" value=@m.StateId />
+                            <input  type="submit" name="merge" class="k-button" value="@T("Admin.Catalog.Products.Fields.Download")" />
+                        }
+                    </td>
                 </tr>
             }
         </table>

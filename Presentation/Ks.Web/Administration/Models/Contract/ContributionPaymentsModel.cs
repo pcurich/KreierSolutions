@@ -15,6 +15,7 @@ namespace Ks.Admin.Models.Contract
         public ContributionPaymentsModel()
         {
             Banks= new List<SelectListItem>();
+            NewStates = new List<SelectListItem>();
         }
         [KsResourceDisplayName("Admin.Contract.ContributionPayments.Fields.Number")]
         public int Number { get; set; }
@@ -49,6 +50,9 @@ namespace Ks.Admin.Models.Contract
         public string NameAmount3 { get; set; }
         public bool IsActiveAmount3 { set; get; }
 
+        [KsResourceDisplayName("Admin.Contract.ContributionPayments.Fields.IsErrorByInterface")]
+        public bool IsErrorByInterface { set; get; }
+
 
         [KsResourceDisplayName("Admin.Contract.ContributionPayments.Fields.ScheduledDateOn")]
         public DateTime ScheduledDateOn { get; set; }
@@ -56,6 +60,11 @@ namespace Ks.Admin.Models.Contract
         public DateTime? ProcessedDateOn { get; set; }
         [KsResourceDisplayName("Admin.Contract.ContributionPayments.Fields.StateId")]
         public string State { get; set; }
+
+        public int StateId { get; set; }
+        [KsResourceDisplayName("Admin.Contract.ContributionPayments.Fields.NewStateId")]
+        public int NewStateId { get; set; }
+        public List<SelectListItem> NewStates { get; set; }
         [KsResourceDisplayName("Admin.Contract.ContributionPayments.Fields.Type")]
         public string Type { get; set; }
         [KsResourceDisplayName("Admin.Contract.ContributionPayments.Fields.BankName")]

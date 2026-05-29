@@ -140,6 +140,11 @@ namespace Ks.Admin.Controllers
             if (contributions == null && model.SearchAuthorizeDiscount.HasValue)
                 contributions = _contributionService.SearchContributionByAuthorizeDiscount(model.SearchAuthorizeDiscount.Value, model.StateId);
 
+            //3= find by CycleOfDelay
+            if (contributions == null && model.CycleOfDelay > 0)
+                contributions = _contributionService.SearchContributionByCycleOfDelay(model.CycleOfDelay, model.StateId);
+
+
             if (contributions == null)
                 contributions = new PagedList<Contribution>(new List<Contribution>(), 0, 10);
 
@@ -269,40 +274,49 @@ namespace Ks.Admin.Controllers
 
             var contributionPayment = _contributionService.GetPaymentById(model.Id);
 
-            if (contributionPayment.StateId != (int)ContributionState.Pendiente)
+            if (model.IsErrorByInterface)
             {
-                ErrorNotification(_localizationService.GetResource("Admin.Customers.Contributions.ValidPayment"));
-                return RedirectToAction("CreatePayment", new { id = contributionPayment.Id });
+                CreatePaymentSinLiquidez(model, contributionPayment);
             }
-
-            if (model.AmountPayed != contributionPayment.AmountTotal)
+            else
             {
-                ErrorNotification(_localizationService.GetResource("Admin.Customers.Contributions.CancelPayment"));
-                return RedirectToAction("CreatePayment", new { id = contributionPayment.Id });
+                if (contributionPayment.StateId != (int)ContributionState.Pendiente)
+                {
+                    ErrorNotification(_localizationService.GetResource("Admin.Customers.Contributions.ValidPayment"));
+                    return RedirectToAction("CreatePayment", new { id = contributionPayment.Id });
+                }
+
+                if (model.AmountPayed != contributionPayment.AmountTotal && contributionPayment.StateId != (int)ContributionState.SinLiquidez)
+                {
+                    ErrorNotification(_localizationService.GetResource("Admin.Customers.Contributions.CancelPayment"));
+                    return RedirectToAction("CreatePayment", new { id = contributionPayment.Id });
+                }
+
+                if (!ModelState.IsValid)
+                    return View(model);
+
+                 contributionPayment.IsAutomatic = false;
+                 contributionPayment.StateId = (int)ContributionState.PagoPersonal;
+                 contributionPayment.ContributionId = model.ContributionId;
+                 contributionPayment.BankName = GetBank(model.BankName);
+                 contributionPayment.AccountNumber = model.AccountNumber;
+                 contributionPayment.TransactionNumber = model.TransactionNumber;
+                 contributionPayment.Reference = model.Reference;
+                 contributionPayment.Description = model.Description;
+                 contributionPayment.ProcessedDateOnUtc = DateTime.UtcNow;
+                 contributionPayment.AmountPayed = contributionPayment.AmountTotal;
+ 
+
+                _contributionService.UpdateContributionPayment(contributionPayment);
             }
-
-            if (!ModelState.IsValid)
-                return View(model);
-
-            contributionPayment.IsAutomatic = false;
-            contributionPayment.StateId = (int)ContributionState.PagoPersonal;
-            contributionPayment.ContributionId = model.ContributionId;
-            contributionPayment.BankName = GetBank(model.BankName);
-            contributionPayment.AccountNumber = model.AccountNumber;
-            contributionPayment.TransactionNumber = model.TransactionNumber;
-            contributionPayment.Reference = model.Reference;
-            contributionPayment.Description = model.Description;
-            contributionPayment.ProcessedDateOnUtc = DateTime.UtcNow;
-            contributionPayment.AmountPayed = contributionPayment.AmountTotal;
-
-            _contributionService.UpdateContributionPayment(contributionPayment);
+            
 
             var contribution = _contributionService.GetContributionById(model.ContributionId);
             contribution.UpdatedOnUtc = DateTime.UtcNow;
             contribution.AmountPayed += model.AmountPayed;
 
-            contribution.DelayCycles = 0;
-            contribution.IsDelay = false;
+            contribution.DelayCycles = _contributionService.GetPaymentByContributionId(model.ContributionId).Count(x=>x.StateId == (int)ContributionState.SinLiquidez);
+            contribution.IsDelay = contribution.DelayCycles>0;
 
             if (contributionPayment.Number == _contributionSettings.TotalCycle)
             {
@@ -361,15 +375,48 @@ namespace Ks.Admin.Controllers
         }
 
         [HttpPost, ActionName("Edit")]
-        [FormValueRequired("exportexcel")]
-        public ActionResult ExportExcel(ContributionPaymentListModel model)
+        [FormValueRequired("exportexcel-customer")]
+        public ActionResult ExportExcelExternal(ContributionPaymentListModel model)
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributions))
                 return AccessDeniedView();
 
             var customer = _customerService.GetCustomerById(model.CustomerId);
             var contribution = _contributionService.GetContributionById(model.ContributionId);
-            var reportContributionPayment = _contributionService.GetReportContributionPaymentFuture(model.ContributionId);
+            var reportContributionPayment = _contributionService.GetReportContributionPaymentFuture( model.ContributionId, "SummaryReportContributionPaymentFutureExternal");
+            try
+            {
+                byte[] bytes;
+                using (var stream = new MemoryStream())
+                {
+                    contribution.AmountPayed = reportContributionPayment.Sum(x =>
+                    {
+                        return (x.Ene + x.Feb + x.Mar + x.Abr + x.May + x.Jul + x.Jun + x.Ago + x.Sep + x.Oct + x.Nov + x.Dic);
+                    });
+                    _exportManager.ExportReportContributionPaymentToXlsx(stream, customer, contribution, reportContributionPayment);
+                    bytes = stream.ToArray();
+                }
+                //Response.ContentType = "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                //Response.AddHeader("content-disposition", "attachment; filename=Aportaciones.xlsx");
+                return File(bytes, "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Aportaciones-Asociado.xlsx");
+            }
+            catch (Exception exc)
+            {
+                ErrorNotification(exc);
+                return RedirectToAction("List");
+            }
+        }
+
+        [HttpPost, ActionName("Edit")]
+        [FormValueRequired("exportexcel-acmr")]
+        public ActionResult ExportExcelInternal(ContributionPaymentListModel model)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageContributions))
+                return AccessDeniedView();
+
+            var customer = _customerService.GetCustomerById(model.CustomerId);
+            var contribution = _contributionService.GetContributionById(model.ContributionId);
+            var reportContributionPayment = _contributionService.GetReportContributionPaymentFuture( model.ContributionId, "SummaryReportContributionPaymentFutureInternal");
             try
             {
                 byte[] bytes;
@@ -380,7 +427,7 @@ namespace Ks.Admin.Controllers
                 }
                 //Response.ContentType = "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
                 //Response.AddHeader("content-disposition", "attachment; filename=Aportaciones.xlsx");
-                return File(bytes, "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Aportaciones.xlsx");
+                return File(bytes, "aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Aportaciones-ACMR.xlsx");
             }
             catch (Exception exc)
             {
@@ -817,16 +864,22 @@ namespace Ks.Admin.Controllers
         [NonAction]
         protected virtual ContributionPaymentsModel PrepareContributionPayment(ContributionPayment contributionPayment)
         {
+            int[] exclude =new int[] {1,2, 3, 5, 6, 7};
             var model = contributionPayment.ToModel();
             model.Banks = _bankSettings.PrepareBanks();
+            model.NewStates = ContributionState.Pendiente.ToSelectList(false, exclude).ToList();
             model.ScheduledDateOn = _dateTimeHelper.ConvertToUserTime(contributionPayment.ScheduledDateOnUtc, DateTimeKind.Utc);
             if (contributionPayment.ProcessedDateOnUtc.HasValue)
                 model.ProcessedDateOn = _dateTimeHelper.ConvertToUserTime(contributionPayment.ProcessedDateOnUtc.Value, DateTimeKind.Utc);
             var state = ContributionState.Pendiente.ToSelectList()
                 .FirstOrDefault(x => x.Value == contributionPayment.StateId.ToString());
-            if (state != null)
-                model.State = state.Text;
 
+            if (state != null)
+            {
+                model.StateId = contributionPayment.StateId;
+                model.State = state.Text;
+            }
+            model.NewStates.Insert(0, new SelectListItem { Value = "0", Text = "----------------" });
             return model;
         }
 

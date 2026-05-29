@@ -212,6 +212,7 @@
     <Compile Include="ExportImport\IExportManager.cs" />
     <Compile Include="ExportImport\IImportManager.cs" />
     <Compile Include="ExportImport\ImportManager.cs" />
+    <Compile Include="Helpers\ArrayHelper.cs" />
     <Compile Include="Helpers\DateHelper.cs" />
     <Compile Include="Helpers\DateTimeHelper.cs" />
     <Compile Include="Helpers\DateTimeSettings.cs" />

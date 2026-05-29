@@ -180,5 +180,9 @@ namespace Ks.Services.Customers
         void DeleteCustomerInRole(int customerId, int customerRoleId);
 
         #endregion
+
+        #region Customer Generic Attribute
+        int[] GetCustomersByGenericAttribute(string systemCustomerAttributeName, string systemCustomerAttributeValues);
+        #endregion
     }
 }

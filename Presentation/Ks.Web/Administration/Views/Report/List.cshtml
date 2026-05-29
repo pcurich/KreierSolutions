@@ -45,7 +45,7 @@
         </li>
         <li @Html.RenderSelectedTabIndex(5, GetSelectedTabIndex())>
             @T("Admin.Catalog.Report.SumaryBankPayment")
-        </li> 
+        </li>
     </ul>
     <div>
         @TabGlobal()
@@ -253,6 +253,8 @@
                     @Html.ValidationMessageFor(model => model.ReportLoan.To)
                 </td>
 
+            </tr>
+            <tr>
                 <td class="adminTitle">
                     @Html.KsLabelFor(model => model.ReportLoan.OptionId):
                 </td>
@@ -278,11 +280,11 @@
                         });
                     </script>
                 </td>
+            </tr>
+            <tr>
                 <td class="adminTitle"></td>
                 <td class="adminData"></td>
 
-                <td></td>
-                <td></td>
                 <td></td>
                 <td></td>
                 <td colspan="2">
@@ -342,6 +344,66 @@
                 </td>
             </tr>
             <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td colspan="2">
+                    <input type="submit" class="k-button" value="@T("Admin.Common.ExportToExcel")" />
+                </td>
+            </tr>
+        </table>
+    }
+}
+
+@helper TabCheck()
+{
+    using (Html.BeginForm("Checks", "Report", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <table width="100%">
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ReportCheck.From):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.ReportCheck.From)
+                    @Html.ValidationMessageFor(model => model.ReportCheck.From)
+                </td>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ReportCheck.To):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.ReportCheck.To)
+                    @Html.ValidationMessageFor(model => model.ReportCheck.To)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.KsLabelFor(model => model.ReportCheck.TypeId):
+                </td>
+                <td class="adminData">
+                    @Html.DropDownListFor(model => model.ReportCheck.TypeId, Model.ReportCheck.Types)
+                    @Html.ValidationMessageFor(model => model.ReportCheck.TypeId)
+                    <script>
+                        $(document).ready(function () {
+                            $('#@Html.FieldIdFor(model => model.ReportCheck.TypeId)').width(250).kendoDropDownList();
+                        });
+                    </script>
+                </td>
+                <td class="adminTitle">
+                    @*@Html.KsLabelFor(model => model.ReportLoan.StatesId):*@
+                </td>
+                <td class="adminData">
+                    @*@Html.DropDownListFor(model => model.ReportLoan.StatesId, Model.ReportLoan.States)
+                        @Html.ValidationMessageFor(model => model.ReportLoan.StatesId)
+                        <script>
+                            $(document).ready(function () {
+                                $('#@Html.FieldIdFor(model => model.ReportLoan.StatesId)').width(250).kendoDropDownList();
+                            });
+                        </script>*@
+                </td>
+
                 <td></td>
                 <td></td>
                 <td></td>
@@ -482,63 +544,5 @@
     }
 }
 
-@helper TabCheck()
-{
-    using (Html.BeginForm("Checks", "Report", FormMethod.Post))
-    {
-        @Html.AntiForgeryToken()
-        <table width="100%">
-            <tr>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.ReportCheck.From):
-                </td>
-                <td class="adminData">
-                    @Html.EditorFor(model => model.ReportCheck.From)
-                    @Html.ValidationMessageFor(model => model.ReportCheck.From)
-                </td>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.ReportCheck.To):
-                </td>
-                <td class="adminData">
-                    @Html.EditorFor(model => model.ReportCheck.To)
-                    @Html.ValidationMessageFor(model => model.ReportCheck.To)
-                </td>
-            </tr>
-            <tr>
-                <td class="adminTitle">
-                    @Html.KsLabelFor(model => model.ReportCheck.TypeId):
-                </td>
-                <td class="adminData">
-                    @Html.DropDownListFor(model => model.ReportCheck.TypeId, Model.ReportCheck.Types)
-                    @Html.ValidationMessageFor(model => model.ReportCheck.TypeId)
-                    <script>
-                        $(document).ready(function () {
-                            $('#@Html.FieldIdFor(model => model.ReportCheck.TypeId)').width(250).kendoDropDownList();
-                        });
-                    </script>
-                </td>
-                <td class="adminTitle">
-                    @*@Html.KsLabelFor(model => model.ReportLoan.StatesId):*@
-                </td>
-                <td class="adminData">
-                    @*@Html.DropDownListFor(model => model.ReportLoan.StatesId, Model.ReportLoan.States)
-                        @Html.ValidationMessageFor(model => model.ReportLoan.StatesId)
-                        <script>
-                            $(document).ready(function () {
-                                $('#@Html.FieldIdFor(model => model.ReportLoan.StatesId)').width(250).kendoDropDownList();
-                            });
-                        </script>*@
-                </td>
 
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td colspan="2">
-                    <input type="submit" class="k-button" value="@T("Admin.Common.ExportToExcel")" />
-                </td>
-            </tr>
-        </table>
-    }
-}
- 
+

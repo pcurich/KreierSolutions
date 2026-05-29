@@ -33,6 +33,30 @@ namespace Ks.Admin.Validators.Settings
                         return new ValidationFailure("NameAmount3", localizationService.GetResource("Admin.Configuration.Settings.PaymentSettings.Fields.NameAmount3.Required"));
                     if (x.Amount3 <= 0)
                         return new ValidationFailure("Amount3", localizationService.GetResource("Admin.Configuration.Settings.PaymentSettings.Fields.Amount3.GreaterThanZero"));
+                } 
+
+                if (x.IsActiveAmount4)
+                {
+                    if (string.IsNullOrWhiteSpace(x.NameAmount4))
+                        return new ValidationFailure("NameAmount4", localizationService.GetResource("Admin.Configuration.Settings.PaymentSettings.Fields.NameAmount1.Required"));
+                    if (x.Amount4 <= 0)
+                        return new ValidationFailure("Amount4", localizationService.GetResource("Admin.Configuration.Settings.PaymentSettings.Fields.Amount1.GreaterThanZero"));
+                }
+
+                if (x.IsActiveAmount5)
+                {
+                    if (string.IsNullOrWhiteSpace(x.NameAmount5))
+                        return new ValidationFailure("NameAmount5", localizationService.GetResource("Admin.Configuration.Settings.PaymentSettings.Fields.NameAmount5.Required"));
+                    if (x.Amount5 <= 0)
+                        return new ValidationFailure("Amount5", localizationService.GetResource("Admin.Configuration.Settings.PaymentSettings.Fields.Amount5.GreaterThanZero"));
+                }
+
+                if (x.IsActiveAmount6)
+                {
+                    if (string.IsNullOrWhiteSpace(x.NameAmount6))
+                        return new ValidationFailure("NameAmount6", localizationService.GetResource("Admin.Configuration.Settings.PaymentSettings.Fields.NameAmount6.Required"));
+                    if (x.Amount6 <= 0)
+                        return new ValidationFailure("Amount6", localizationService.GetResource("Admin.Configuration.Settings.PaymentSettings.Fields.Amount6.GreaterThanZero"));
                 }
 
                 return null;

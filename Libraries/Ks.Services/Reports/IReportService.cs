@@ -30,6 +30,8 @@ namespace Ks.Services.Reports
         bool CanRevertBatch(string period, string source1, int state1, string source2, int state2);
 
         List<ReportSummaryMerge> ExportReportSummaryMergeFromDataBase(int month, int year, int type);
+        List<ReportSummaryMerge> ExportReportSummaryMergeDetailsFromDataBase(int month, int year, int type, int stateId);
+
         List<ReportSummaryMerge> ExportReportSummaryMergeFromFile(int month, int year, int type);
     }
 }
